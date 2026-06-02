@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Melbourne Property Valuation</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Metropolitan Melbourne</p>
+        <h1>Property Valuation</h1>
+      </div>
+      <nav aria-label="Primary navigation">
+        <a href="#valuation">Valuation</a>
+        <a href="#comparables">Comparables</a>
+        <a href="#location">Location</a>
+        <a href="#data-sources">Data</a>
+        <a href="#loan">Loan</a>
+        <a href="#uploads">Uploads</a>
+        <a href="#investor">Investor Hub</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <button class="language-toggle" id="language-toggle" type="button">简体中文</button>
+    </header>
+
+    <main>
+      <section class="search-panel" aria-label="Search property">
+        <div class="search-copy">
+          <p class="eyebrow">Free first-layer estimate</p>
+          <h2>Enter a Melbourne address. Get a quick estimate. Leave details for the full report.</h2>
+          <p class="hero-note">
+            Built for early-stage lead capture using public data, manually curated samples and client-supplied evidence.
+          </p>
+        </div>
+        <form class="search-box">
+          <label for="address">Property address</label>
+          <div class="search-row">
+            <input
+              id="address"
+              name="address"
+              value="46 Bishop Street, Oakleigh VIC 3166"
+              autocomplete="street-address"
+            />
+            <button id="start-valuation" type="button">Get free estimate</button>
+          </div>
+          <div class="type-row" role="group" aria-label="Property type">
+            <button class="chip active" data-type="House" type="button">House</button>
+            <button class="chip" data-type="Vacant land" type="button">Vacant land</button>
+            <button class="chip" data-type="Townhouse" type="button">Townhouse</button>
+            <button class="chip" data-type="Villa" type="button">Villa</button>
+            <button class="chip" data-type="Apartment" type="button">Apartment</button>
+            <button class="chip" data-type="Other" type="button">Other</button>
+          </div>
+        </form>
+      </section>
+
+      <div class="layout">
+        <aside class="side-panel" aria-label="Valuation checks">
+          <section class="panel lead-panel">
+            <p class="eyebrow">Full report</p>
+            <h2>Leave details to unlock</h2>
+            <p>Basic estimate is free. Register to view comparable adjustments, planning notes and report download options.</p>
+            <form class="lead-form">
+              <label for="lead-email">Email</label>
+              <input id="lead-email" type="email" placeholder="you@example.com" />
+              <label for="lead-name">Name</label>
+              <input id="lead-name" type="text" placeholder="Your name" />
+              <label for="lead-phone">Phone <span>optional</span></label>
+              <input id="lead-phone" type="tel" placeholder="For PDF download" />
+              <label class="consent">
+                <input id="lead-consent" type="checkbox" />
+                <span>You may contact me about this property report.</span>
+              </label>
+              <button id="unlock-report" type="button">Register and unlock</button>
+              <p class="form-message" id="lead-message" aria-live="polite"></p>
+            </form>
+          </section>
+
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Check Status</h2>
+              <span class="status medium" id="check-status">Medium</span>
+            </div>
+            <ol class="checklist">
+              <li class="done">Portal cross-check</li>
+              <li class="done">Recent sales scan</li>
+              <li class="done">Suburb fundamentals</li>
+              <li class="done">Micro-location review</li>
+              <li class="warn">Title confirmation</li>
+              <li class="warn">Current condition</li>
+            </ol>
+          </section>
+
+          <section class="panel">
+            <h2>Manual Uploads</h2>
+            <div class="upload-list">
+              <button type="button">Upload Section 32</button>
+              <button type="button">Upload title plan</button>
+              <button type="button">Upload photos</button>
+              <button type="button">Enter manual data</button>
+            </div>
+          </section>
+        </aside>
+
+        <section class="content">
+          <section class="summary" id="valuation">
+            <div class="summary-main">
+              <p class="eyebrow">First-layer desktop valuation</p>
+              <h2 id="property-address">46 Bishop Street, Oakleigh VIC 3166</h2>
+              <div class="value-band">
+                <div>
+                  <span>Estimated value</span>
+                  <strong id="estimated-value">$1.90m - $2.09m</strong>
+                </div>
+                <div>
+                  <span>Midpoint</span>
+                  <strong id="midpoint">$1.995m</strong>
+                </div>
+                <div>
+                  <span>Confidence</span>
+                  <strong id="confidence">Medium</strong>
+                </div>
+              </div>
+            </div>
+            <div class="summary-card">
+              <h3>Why this estimate?</h3>
+              <ul id="reasons">
+                <li>Premium Oakleigh family house profile.</li>
+                <li>687 sqm land, pending title confirmation.</li>
+                <li>Strong access to Oakleigh Station and Eaton Mall.</li>
+                <li>Current condition and easements need confirmation.</li>
+              </ul>
+            </div>
+          </section>
+
+          <section class="grid-two">
+            <article class="panel metric-card">
+              <span>Comparable influence</span>
+              <strong>60%-70%</strong>
+              <p>Recent same-type evidence is the valuation anchor.</p>
+            </article>
+            <article class="panel metric-card">
+              <span>Visible range cap</span>
+              <strong>±10%</strong>
+              <p>Low-confidence cases request more evidence instead of widening forever.</p>
+            </article>
+          </section>
+
+          <section class="panel data-source-panel" id="data-sources">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Free public data first</p>
+                <h2>What this first version checks before asking the client for more.</h2>
+              </div>
+              <span class="status medium">MVP</span>
+            </div>
+            <div class="source-grid">
+              <article>
+                <h3>Automatic / free checks</h3>
+                <ul class="compact-list">
+                  <li>Public sale evidence and manually curated comparable samples</li>
+                  <li>Address normalization and property type selection</li>
+                  <li>Suburb fundamentals from public statistics and market notes</li>
+                  <li>Basic map, street and access review where public tools allow it</li>
+                </ul>
+              </article>
+              <article>
+                <h3>Client supplied evidence</h3>
+                <ul class="compact-list">
+                  <li>Title search, title plan and Section 32</li>
+                  <li>Current photos, renovation notes and condition details</li>
+                  <li>Known easements, overlays, leases or body corporate documents</li>
+                  <li>Phone and contact consent required before PDF download</li>
+                </ul>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel loan-panel" id="loan">
+            <div class="panel-header">
+              <div>
+                <p class="eyebrow">Loan / LVR scenario</p>
+                <h2>How much could be borrowed against this value?</h2>
+              </div>
+              <div class="lvr-buttons" role="group" aria-label="Select LVR">
+                <button class="lvr active" data-lvr="0.6" type="button">60%</button>
+                <button class="lvr" data-lvr="0.7" type="button">70%</button>
+                <button class="lvr" data-lvr="0.8" type="button">80%</button>
+              </div>
+            </div>
+            <div class="loan-grid">
+              <div>
+                <span>Selected LVR</span>
+                <strong id="selected-lvr">60%</strong>
+              </div>
+              <div>
+                <span>Indicative max loan</span>
+                <strong id="max-loan">$1.197m</strong>
+              </div>
+              <div>
+                <span>Required equity before costs</span>
+                <strong id="required-equity">$798k</strong>
+              </div>
+            </div>
+            <p class="loan-disclaimer">
+              Indicative only. This is not a loan approval, credit assessment or
+              personal financial advice. Actual borrowing capacity depends on lender
+              policy, income, expenses and full application assessment.
+            </p>
+          </section>
+
+          <section class="panel" id="comparables">
+            <div class="panel-header">
+              <h2>Key Comparables</h2>
+              <button class="ghost detail-trigger" type="button">View adjustments</button>
+            </div>
+            <div class="locked-strip" id="locked-strip">
+              <strong>Full comparable adjustments are locked.</strong>
+              <span>Create a free account to view all sales evidence and adjustment notes.</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Address</th>
+                    <th>Sale</th>
+                    <th>Date</th>
+                    <th>Land</th>
+                    <th>Config</th>
+                    <th>Similarity</th>
+                  </tr>
+                </thead>
+                <tbody id="comparables-body">
+                  <tr>
+                    <td>33 Tamar Grove</td>
+                    <td>$1.80m</td>
+                    <td>Apr 2026</td>
+                    <td>539 sqm</td>
+                    <td>3 / 2 / 1</td>
+                    <td><span class="pill">Good</span></td>
+                  </tr>
+                  <tr>
+                    <td>16 Lincoln Avenue</td>
+                    <td>$1.56m</td>
+                    <td>Mar 2026</td>
+                    <td>Unknown</td>
+                    <td>4 / 2 / 2</td>
+                    <td><span class="pill">Medium</span></td>
+                  </tr>
+                  <tr>
+                    <td>140 Atherton Road</td>
+                    <td>$1.571m</td>
+                    <td>Dec 2025</td>
+                    <td>628 sqm</td>
+                    <td>4 / 3 / 2</td>
+                    <td><span class="pill">Medium</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="grid-two location-grid" id="location">
+            <article class="panel detail-panel" data-detail="micro-location evidence">
+              <h2>Micro-location</h2>
+              <dl class="facts">
+                <div>
+                  <dt>Street rank</dt>
+                  <dd id="street-rank">Top 25%, estimated</dd>
+                </div>
+                <div>
+                  <dt>Street type</dt>
+                  <dd id="street-type">Quiet residential street</dd>
+                </div>
+                <div>
+                  <dt>Amenity access</dt>
+                  <dd id="amenity-access">Strong</dd>
+                </div>
+                <div>
+                  <dt>Parking pressure</dt>
+                  <dd id="parking-pressure">To be checked</dd>
+                </div>
+              </dl>
+            </article>
+
+            <article class="panel map-card" aria-label="Location map preview">
+              <div class="map-grid">
+                <span class="pin target">46</span>
+                <span class="pin station">Station</span>
+                <span class="pin shops">Eaton Mall</span>
+                <span class="road horizontal"></span>
+                <span class="road vertical"></span>
+              </div>
+            </article>
+          </section>
+
+          <section class="grid-two fundamentals-grid">
+            <article class="panel detail-panel" data-detail="suburb fundamentals">
+              <h2>Suburb Fundamentals</h2>
+              <ul class="compact-list" id="suburb-list">
+                <li>Strong transport and retail access.</li>
+                <li>Demand support from Chadstone, Monash University and Monash Medical.</li>
+                <li>Comparison set: Hughesdale, Huntingdale, Clayton, Murrumbeena.</li>
+              </ul>
+            </article>
+
+            <article class="panel detail-panel" data-detail="planning and potential">
+              <h2>Planning & Potential</h2>
+              <dl class="facts">
+                <div>
+                  <dt>Land source</dt>
+                  <dd id="land-source">Portal, not title-confirmed</dd>
+                </div>
+                <div>
+                  <dt>Granny flat potential</dt>
+                  <dd id="granny-potential">Medium, subject to controls</dd>
+                </div>
+                <div>
+                  <dt>Approval certainty</dt>
+                  <dd id="approval-certainty">Not approved</dd>
+                </div>
+              </dl>
+            </article>
+          </section>
+
+          <section class="panel upload-panel" id="uploads">
+            <div>
+              <p class="eyebrow">Improve accuracy</p>
+              <h2>Upload missing evidence to revise the estimate.</h2>
+              <p>
+                Title, Section 32, current photos and inspection notes can upgrade
+                confidence and narrow the valuation range.
+              </p>
+              <p class="pdf-note">
+                PDF download requires phone number and contact consent.
+              </p>
+            </div>
+            <div class="report-actions">
+              <button type="button">Upload evidence</button>
+              <button class="ghost" id="download-pdf" type="button">Download PDF</button>
+            </div>
+          </section>
+
+          <section class="panel investor-panel" id="investor">
+            <div>
+              <p class="eyebrow">Investor Hub</p>
+              <h2>Explore property-backed investment themes.</h2>
+              <p>
+                General information only. Specific private opportunities require
+                investor profile, eligibility review and compliance approval.
+              </p>
+              <div class="investor-lock" id="investor-lock">
+                <strong>Investor Hub details are locked.</strong>
+                <span>Register to view investor education, profile questions and gated opportunity workflow.</span>
+              </div>
+            </div>
+            <div class="theme-grid">
+              <button class="theme-card detail-trigger" data-detail="property-backed private credit" type="button">
+                Private credit
+              </button>
+              <button class="theme-card detail-trigger" data-detail="development finance themes" type="button">
+                Development finance
+              </button>
+              <button class="theme-card detail-trigger" data-detail="income property themes" type="button">
+                Income property
+              </button>
+            </div>
+            <div class="investor-detail hidden" id="investor-detail">
+              <article>
+                <h3>Investor profile</h3>
+                <ul>
+                  <li>Investment purpose and preferred strategy</li>
+                  <li>Budget / intended allocation range</li>
+                  <li>Risk tolerance and investment horizon</li>
+                  <li>Wholesale or sophisticated investor status</li>
+                </ul>
+              </article>
+              <article>
+                <h3>Gated access</h3>
+                <ul>
+                  <li>Registered users see education and market themes</li>
+                  <li>Profile completed users can request opportunity summaries</li>
+                  <li>Eligible investors may access IM / DD materials after review</li>
+                </ul>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel contact-panel" id="contact">
+            <div>
+              <p class="eyebrow">Contact Us</p>
+              <h2>Have a property, finance or investment question?</h2>
+              <p>
+                Send the address and your question by email, or scan the QR code
+                to connect with us. We can review the case and tell you what
+                evidence is still missing.
+              </p>
+              <a class="contact-email" href="mailto:info@propertyvaluationdemo.com.au">
+                info@propertyvaluationdemo.com.au
+              </a>
+            </div>
+            <div class="qr-card" aria-label="Contact QR code placeholder">
+              <div class="qr-placeholder" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <strong>WeChat / QR code</strong>
+              <p>Replace this placeholder with your real QR image before launch.</p>
+            </div>
+          </section>
+        </section>
+      </div>
+    </main>
+    <dialog class="unlock-modal" id="unlock-modal">
+      <div class="modal-content">
+        <p class="eyebrow">Full report locked</p>
+        <h2 id="unlock-title">Create a free account to view this detail.</h2>
+        <p>
+          Register to unlock comparable adjustments, suburb fundamentals,
+          micro-location evidence and planning checks. PDF download requires
+          phone number and contact consent.
+        </p>
+        <div class="modal-actions">
+          <button id="modal-register" type="button">Register to unlock</button>
+          <button class="ghost" id="modal-close" type="button">Not now</button>
+        </div>
+      </div>
+    </dialog>
+    <script src="app.js"></script>
+  </body>
+</html>
