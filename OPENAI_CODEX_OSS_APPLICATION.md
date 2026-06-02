@@ -11,7 +11,7 @@ Official form: https://openai.com/form/codex-for-oss/
 - GitHub repository URL: https://github.com/yuhaifengfrank-svg/melbourne-property-valuation, repository must be public
 - Role: Primary maintainer
 - Interested in: Codex Security and API credits for my project
-- OpenAI Organization ID: TODO
+- OpenAI Organization ID: org-PkQH5HICBlDIfVaJPKFxBc1L
 
 ## Repository
 
