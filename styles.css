@@ -246,6 +246,7 @@ button:hover {
 }
 
 .panel {
+  min-width: 0;
   padding: 20px;
 }
 
@@ -897,7 +898,7 @@ th {
   .theme-grid,
   .investor-detail,
   .contact-panel {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .side-panel {
@@ -910,16 +911,26 @@ th {
 }
 
 @media (max-width: 680px) {
+  main {
+    overflow-x: hidden;
+  }
+
   .topbar {
     align-items: flex-start;
     flex-direction: column;
+    gap: 14px;
+    position: static;
+  }
+
+  nav {
+    width: 100%;
   }
 
   .search-row,
   .facts div,
   .upload-panel,
   .locked-strip {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .search-row {
