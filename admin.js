@@ -98,6 +98,31 @@ function renderDetail(lead) {
   `;
 }
 
+function csvCell(value) {
+  return `"${String(value ?? "").replaceAll('"', '""')}"`;
+}
+
+function exportLeads() {
+  const headers = [
+    "Priority", "Lead Score", "Name", "Email", "Phone", "Contact Consent", "PDF Download",
+    "Property Address", "Property Type", "Estimated Value", "Confidence", "Selected LVR",
+    "Event Type", "Approximate Region", "Submitted At"
+  ];
+  const rows = leads.map((lead) => [
+    lead.priority, lead.lead_score, lead.name, lead.email, lead.phone || "", lead.contact_consent ? "Yes" : "No",
+    lead.pdf_download ? "Yes" : "No", lead.property_address, lead.property_type || "", lead.estimated_value || "",
+    lead.confidence || "", lead.selected_lvr || "", lead.event_type, regionOf(lead), lead.created_at
+  ]);
+  const csv = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `aushomevalue-leads-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 async function loadLeads() {
   const key = sessionStorage.getItem("aushomevalueAdminKey") || byId("admin-key").value;
   byId("admin-message").textContent = "Loading customer records...";
@@ -123,6 +148,7 @@ byId("admin-key-form").addEventListener("submit", async (event) => {
 
 byId("lead-search").addEventListener("input", renderLeads);
 byId("priority-filter").addEventListener("change", renderLeads);
+byId("export-leads").addEventListener("click", exportLeads);
 byId("refresh-leads").addEventListener("click", () => loadLeads().catch((error) => alert(error.message)));
 
 if (sessionStorage.getItem("aushomevalueAdminKey")) loadLeads().catch(() => sessionStorage.removeItem("aushomevalueAdminKey"));

@@ -76,8 +76,24 @@ export default async function handler(request, response) {
       return json(response, 200, { leads, summary: summary[0] });
     }
 
+    if (request.method === "DELETE") {
+      if (!isAdmin(request)) return json(response, 401, { error: "Unauthorized" });
+
+      const body = typeof request.body === "string" ? JSON.parse(request.body) : request.body || {};
+      const id = Number(body.id);
+      if (!Number.isInteger(id) || id < 1) return json(response, 400, { error: "Valid lead id is required" });
+
+      const deleted = await sql`
+        DELETE FROM leads
+        WHERE id = ${id} AND name ILIKE '%DO NOT CONTACT%'
+        RETURNING id
+      `;
+      if (!deleted.length) return json(response, 404, { error: "Only test records marked DO NOT CONTACT can be deleted" });
+      return json(response, 200, { ok: true, deletedId: deleted[0].id });
+    }
+
     if (request.method !== "POST") {
-      response.setHeader("Allow", "GET, POST");
+      response.setHeader("Allow", "GET, POST, DELETE");
       return json(response, 405, { error: "Method not allowed" });
     }
 
