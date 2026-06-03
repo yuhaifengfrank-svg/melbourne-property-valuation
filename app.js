@@ -221,6 +221,7 @@ const uiText = {
       'label[for="lead-phone"]': "Phone optional",
       ".consent span": "You may contact me about this property report.",
       "#unlock-report": "Register and unlock",
+      ".form-provider-note": "Submission details are sent through our email delivery provider.",
       ".side-panel .panel:nth-of-type(2) h2": "Check Status",
       ".side-panel .panel:nth-of-type(3) h2": "Manual Uploads",
       ".summary-main .eyebrow": "First-layer desktop valuation",
@@ -297,6 +298,7 @@ const uiText = {
       'label[for="lead-phone"]': "电话 选填",
       ".consent span": "我同意你可以就这份房产报告联系我。",
       "#unlock-report": "注册并解锁",
+      ".form-provider-note": "提交资料会通过我们的邮件发送服务转交。",
       ".side-panel .panel:nth-of-type(2) h2": "检查状态",
       ".side-panel .panel:nth-of-type(3) h2": "手工上传",
       ".summary-main .eyebrow": "第一层桌面估值",
@@ -620,7 +622,31 @@ function renderLockState() {
   });
 }
 
-function saveLead({ pdfDownload = false } = {}) {
+async function sendLeadNotification(lead) {
+  const response = await fetch("https://formsubmit.co/ajax/info@aushomevalue.com.au", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    body: JSON.stringify({
+      _subject: `New AusHomeValue lead: ${lead.address}`,
+      _template: "table",
+      name: lead.name,
+      email: lead.email,
+      phone: lead.phone || "Not supplied",
+      property_address: lead.address,
+      estimated_value: lead.value,
+      contact_consent: lead.consent ? "Yes" : "No",
+      pdf_download: lead.pdfDownload ? "Yes" : "No",
+      submitted_at: lead.createdAt
+    })
+  });
+
+  if (!response.ok) throw new Error("Lead notification failed");
+}
+
+async function saveLead({ pdfDownload = false } = {}) {
   const email = byId("lead-email").value.trim();
   const name = byId("lead-name").value.trim();
   const phone = byId("lead-phone").value.trim();
@@ -655,18 +681,30 @@ function saveLead({ pdfDownload = false } = {}) {
   const existing = JSON.parse(localStorage.getItem("valuationLeads") || "[]");
   existing.push(lead);
   localStorage.setItem("valuationLeads", JSON.stringify(existing));
-  message.textContent = pdfDownload
-    ? language === "zh"
-      ? "PDF 信息已记录，演示报告已下载。"
-      : "PDF details captured. Demo report downloaded."
+  let notified = false;
+  try {
+    await sendLeadNotification(lead);
+    notified = true;
+  } catch (error) {
+    console.error(error);
+  }
+
+  message.textContent = notified
+    ? pdfDownload
+      ? language === "zh"
+        ? "PDF 信息已记录，线索邮件已发送。"
+        : "PDF details captured. Lead notification sent."
+      : language === "zh"
+        ? "完整报告已解锁，线索邮件已发送。"
+        : "Full report unlocked. Lead notification sent."
     : language === "zh"
-      ? "完整报告已解锁，线索已保存到演示存储。"
-      : "Full report unlocked. Lead saved in demo storage.";
+      ? "完整报告已解锁，但线索邮件发送失败，请稍后再试。"
+      : "Full report unlocked, but the lead notification could not be sent. Please try again later.";
   return true;
 }
 
-function downloadDemoReport() {
-  if (!saveLead({ pdfDownload: true })) return;
+async function downloadDemoReport() {
+  if (!(await saveLead({ pdfDownload: true }))) return;
   const report = [
     `Property report: ${currentValuation.address}`,
     `Estimated value: ${currentValuation.value}`,
@@ -755,8 +793,8 @@ byId("language-toggle").addEventListener("click", () => {
   applyLanguage();
 });
 
-byId("unlock-report").addEventListener("click", () => {
-  if (!saveLead()) return;
+byId("unlock-report").addEventListener("click", async () => {
+  if (!(await saveLead())) return;
   unlocked = true;
   renderLockState();
   renderComparables(currentValuation.comparables);
