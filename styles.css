@@ -831,25 +831,11 @@ th {
   margin: 8px 0 0;
 }
 
-.qr-placeholder {
-  aspect-ratio: 1;
-  background:
-    linear-gradient(90deg, #17211d 12px, transparent 12px) 0 0 / 28px 28px,
-    linear-gradient(#17211d 12px, transparent 12px) 0 0 / 28px 28px,
-    #f4f6f5;
-  border: 10px solid white;
-  box-shadow: inset 0 0 0 1px var(--line);
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 34%;
+.contact-qr {
+  display: block;
+  height: auto;
   margin-bottom: 12px;
-  padding: 14px;
-}
-
-.qr-placeholder span {
-  background: white;
-  border: 8px solid #17211d;
-  box-shadow: inset 0 0 0 8px white, inset 0 0 0 16px #17211d;
+  width: 100%;
 }
 
 .pdf-note {
