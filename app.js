@@ -16,9 +16,9 @@ const valuations = [
     ],
     reasonsZh: [
       "Oakleigh 优质家庭型独立屋。",
-      "约 687 平方米土地，仍需 title 确认。",
+      "约 687 平方米土地，仍需产权文件确认。",
       "靠近 Oakleigh Station 和 Eaton Mall，生活便利性强。",
-      "当前房况和 easement 仍需确认。"
+      "当前房况和地役权仍需确认。"
     ],
     comparables: [
       ["33 Tamar Grove", "$1.80m", "Apr 2026", "539 sqm", "3 / 2 / 1", "Good"],
@@ -49,9 +49,16 @@ const valuations = [
       landSource: "Portal, not title-confirmed",
       granny: "Medium, subject to controls",
       approval: "Not approved",
-      landSourceZh: "门户网站来源，未由 title 确认",
+      landSourceZh: "门户网站来源，未由产权文件确认",
       grannyZh: "中等，受规划限制影响",
       approvalZh: "未获批准"
+    },
+    map: {
+      target: "46",
+      station: "Oakleigh Station",
+      shops: "Eaton Mall",
+      stationZh: "Oakleigh 火车站",
+      shopsZh: "Eaton Mall 商场"
     }
   },
   {
@@ -71,8 +78,8 @@ const valuations = [
     ],
     reasonsZh: [
       "3房2卫2车位，租金支撑较强。",
-      "530 平方米土地来自门户网站，未由 title 确认。",
-      "相关地址 1/9 和 2/9 需要 title 审查。",
+      "530 平方米土地来自门户网站，未由产权文件确认。",
+      "相关地址 1/9 和 2/9 需要产权审查。",
       "Oakleigh 安静且便利的街道。"
     ],
     comparables: [
@@ -86,7 +93,7 @@ const valuations = [
       amenity: "Strong",
       parking: "Low to moderate",
       rankZh: "区内前 25% 到中间 50%，估算",
-      typeZh: "安静的 house / villa 混合街道",
+      typeZh: "安静的独立屋 / 别墅混合街道",
       amenityZh: "强",
       parkingZh: "低到中等"
     },
@@ -97,8 +104,8 @@ const valuations = [
     ],
     suburbZh: [
       "Oakleigh 交通、零售和租赁需求较强。",
-      "McIntosh Street 有 house、villa 和 townhouse 混合存量。",
-      "土地/title 不确定性使 confidence 降低。"
+      "McIntosh Street 有独立屋、别墅和联排住宅混合存量。",
+      "土地和产权不确定性使置信度降低。"
     ],
     planning: {
       landSource: "Portal only, conflict risk",
@@ -107,6 +114,13 @@ const valuations = [
       landSourceZh: "仅门户网站来源，有冲突风险",
       grannyZh: "低到中等",
       approvalZh: "未获批准"
+    },
+    map: {
+      target: "9",
+      station: "Oakleigh Station",
+      shops: "Eaton Mall",
+      stationZh: "Oakleigh 火车站",
+      shopsZh: "Eaton Mall 商场"
     }
   },
   {
@@ -128,7 +142,7 @@ const valuations = [
       "4房2卫2车位的家庭型独立屋。",
       "530 平方米土地由用户确认。",
       "同街指导价证据支持 $1.3m 中段到 $1.4m 区间。",
-      "Title、overlay 和当前房况仍需确认。"
+      "产权文件、规划覆盖层和当前房况仍需确认。"
     ],
     comparables: [
       ["4 Moresby Street", "$1.35m-$1.40m", "Guide", "530 sqm", "4 / 3 / 2", "Strong"],
@@ -159,9 +173,16 @@ const valuations = [
       landSource: "User-confirmed, title still required",
       granny: "Low to Medium",
       approval: "Not approved",
-      landSourceZh: "用户确认，仍需 title",
+      landSourceZh: "用户确认，仍需产权文件",
       grannyZh: "低到中等",
       approvalZh: "未获批准"
+    },
+    map: {
+      target: "18",
+      station: "Huntingdale Station",
+      shops: "Clayton Road",
+      stationZh: "Huntingdale 火车站",
+      shopsZh: "Clayton Road 商圈"
     }
   }
 ];
@@ -207,6 +228,10 @@ const uiText = {
       ".value-band div:nth-child(2) span": "Midpoint",
       ".value-band div:nth-child(3) span": "Confidence",
       ".summary-card h3": "Why this estimate?",
+      ".grid-two .metric-card:nth-child(1) span": "Comparable influence",
+      ".grid-two .metric-card:nth-child(1) p": "Recent same-type evidence is the valuation anchor.",
+      ".grid-two .metric-card:nth-child(2) span": "Visible range cap",
+      ".grid-two .metric-card:nth-child(2) p": "Low-confidence cases request more evidence instead of widening forever.",
       "#data-sources .eyebrow": "Free public data first",
       "#data-sources h2": "What this first version checks before asking the client for more.",
       "#data-sources .status": "MVP",
@@ -227,6 +252,7 @@ const uiText = {
       "#uploads h2": "Upload missing evidence to revise the estimate.",
       "#uploads p:not(.eyebrow):not(.pdf-note)": "Title, Section 32, current photos and inspection notes can upgrade confidence and narrow the valuation range.",
       ".pdf-note": "PDF download requires phone number and contact consent.",
+      "#upload-evidence": "Upload evidence",
       "#download-pdf": "Download PDF",
       "#investor .eyebrow": "Investor Hub",
       "#investor h2": "Explore property-backed investment themes.",
@@ -239,6 +265,7 @@ const uiText = {
       "#contact .contact-email": "info@aushomevalue.com.au",
       "#contact .qr-card strong": "WeChat / QR code",
       "#contact .qr-card p": "Replace this placeholder with your real QR image before launch.",
+      ".modal-content .eyebrow": "Full report locked",
       "#modal-register": "Register to unlock",
       "#modal-close": "Not now",
       ".modal-content p:not(.eyebrow)": "Register to unlock comparable adjustments, suburb fundamentals, micro-location evidence and planning checks. PDF download requires phone number and contact consent."
@@ -277,6 +304,10 @@ const uiText = {
       ".value-band div:nth-child(2) span": "估值中点",
       ".value-band div:nth-child(3) span": "置信度",
       ".summary-card h3": "为什么是这个估值？",
+      ".grid-two .metric-card:nth-child(1) span": "可比成交影响权重",
+      ".grid-two .metric-card:nth-child(1) p": "近期同类型成交是估值的主要锚点。",
+      ".grid-two .metric-card:nth-child(2) span": "展示区间上限",
+      ".grid-two .metric-card:nth-child(2) p": "低置信度案例应要求补充证据，而不是无限扩大估值区间。",
       "#data-sources .eyebrow": "先用免费公开数据",
       "#data-sources h2": "第一版会先自动检查这些内容，再向客户索取补充资料。",
       "#data-sources .status": "MVP",
@@ -295,8 +326,9 @@ const uiText = {
       ".fundamentals-grid .detail-panel:nth-child(2) h2": "规划与潜力",
       "#uploads .eyebrow": "提高准确度",
       "#uploads h2": "上传缺失资料以修正估值。",
-      "#uploads p:not(.eyebrow):not(.pdf-note)": "Title、Section 32、当前照片和检查记录可以提升置信度并收窄估值区间。",
+      "#uploads p:not(.eyebrow):not(.pdf-note)": "产权文件、Section 32、当前照片和检查记录可以提升置信度并收窄估值区间。",
       ".pdf-note": "下载 PDF 需要填写电话并授权联系。",
+      "#upload-evidence": "上传资料",
       "#download-pdf": "下载 PDF",
       "#investor .eyebrow": "投资中心",
       "#investor h2": "探索地产支持型投资主题。",
@@ -309,6 +341,7 @@ const uiText = {
       "#contact .contact-email": "info@aushomevalue.com.au",
       "#contact .qr-card strong": "微信 / 二维码",
       "#contact .qr-card p": "上线前把这个占位二维码替换成你的真实二维码图片。",
+      ".modal-content .eyebrow": "完整报告已锁定",
       "#modal-register": "注册解锁",
       "#modal-close": "暂不",
       ".modal-content p:not(.eyebrow)": "注册后可查看可比成交调整、区域基本面、微位置证据和规划检查。下载 PDF 需要填写电话并授权联系。"
@@ -338,16 +371,16 @@ const labelSets = {
     }
   },
   zh: {
-    checkItems: ["门户数据交叉检查", "近期成交扫描", "区域基本面", "微位置检查", "Title 确认", "当前房况"],
-    uploadButtons: ["上传 Section 32", "上传 Title Plan", "上传照片", "手工填写资料"],
+    checkItems: ["门户数据交叉检查", "近期成交扫描", "区域基本面", "微位置检查", "产权确认", "当前房况"],
+    uploadButtons: ["上传 Section 32", "上传产权图", "上传照片", "手工填写资料"],
     tableHeaders: ["地址", "成交价", "日期", "土地", "房型", "相似度"],
     factLabels: ["街道排名", "街道类型", "便利性", "停车压力", "土地来源", "奶奶房潜力", "批准确定性"],
-    chips: ["独立屋", "空地", "联排", "Villa", "公寓", "其他"],
+    chips: ["独立屋", "空地", "联排", "别墅", "公寓", "其他"],
     investorButtons: ["地产私募债", "开发融资", "收益型地产"],
     sourceHeadings: ["自动 / 免费检查", "客户补充资料"],
     sourceLists: [
       ["公开成交证据和手工整理的可比样本", "地址标准化和房产类型选择", "公开统计和市场笔记里的区域基本面", "在公开工具允许范围内检查地图、街道和进出便利性"],
-      ["Title search、title plan 和 Section 32", "当前照片、装修记录和房况说明", "已知 easement、overlay、租约或 body corporate 文件", "下载 PDF 前需要电话和联系授权"]
+      ["产权查询、产权图和 Section 32", "当前照片、装修记录和房况说明", "已知地役权、规划覆盖层、租约或业主委员会文件", "下载 PDF 前需要电话和联系授权"]
     ],
     investorDetail: {
       headings: ["投资人画像", "权限访问"],
@@ -403,6 +436,59 @@ function getLocalizedLocation(data, key) {
   return language === "zh" && data.location[`${key}Zh`] ? data.location[`${key}Zh`] : data.location[key];
 }
 
+const dynamicText = {
+  zh: {
+    "Low": "低",
+    "Low-Medium": "低至中等",
+    "Medium": "中等",
+    "Good": "良好",
+    "Strong": "强",
+    "Unknown": "未知",
+    "Not assessed": "未评估",
+    "Manual review": "人工复核",
+    "Sample unavailable": "暂无样本"
+  }
+};
+
+function localizeValue(value) {
+  if (language !== "zh") return value;
+  if (dynamicText.zh[value]) return dynamicText.zh[value];
+  if (/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) \d{4}$/.test(value)) {
+    const [month, year] = value.split(" ");
+    const monthNumber = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"].indexOf(month) + 1;
+    return `${year}年${monthNumber}月`;
+  }
+  if (/^\d+ sqm$/.test(value)) return value.replace(" sqm", " 平方米");
+  if (/^\d+ bed$/.test(value)) return value.replace(" bed", "房");
+  if (value === "Guide") return "指导价";
+  return value;
+}
+
+function addressSeed(address) {
+  return [...address].reduce((total, char) => total + char.charCodeAt(0), 0);
+}
+
+function renderMap(data) {
+  const seed = addressSeed(data.address);
+  const map = data.map || {};
+  const target = byId("map-target");
+  const station = byId("map-station");
+  const shops = byId("map-shops");
+  const houseNumber = data.address.match(/^\d+/)?.[0] || "?";
+
+  target.textContent = map.target || houseNumber;
+  station.textContent =
+    (language === "zh" ? map.stationZh : map.station) || (language === "zh" ? "附近车站" : "Nearby station");
+  shops.textContent = (language === "zh" ? map.shopsZh : map.shops) || (language === "zh" ? "附近商圈" : "Nearby shops");
+
+  target.style.left = `${30 + (seed % 35)}%`;
+  target.style.top = `${28 + (seed % 30)}%`;
+  station.style.right = `${8 + (seed % 18)}%`;
+  station.style.bottom = `${10 + (seed % 20)}%`;
+  shops.style.left = `${8 + (seed % 20)}%`;
+  shops.style.top = `${8 + (seed % 18)}%`;
+}
+
 function renderComparables(rows) {
   const body = byId("comparables-body");
   body.innerHTML = "";
@@ -414,10 +500,10 @@ function renderComparables(rows) {
       if (index === 5) {
         const pill = document.createElement("span");
         pill.className = "pill";
-        pill.textContent = cell;
+        pill.textContent = localizeValue(cell);
         td.appendChild(pill);
       } else {
-        td.textContent = cell;
+        td.textContent = localizeValue(cell);
       }
       tr.appendChild(td);
     });
@@ -428,10 +514,10 @@ function renderComparables(rows) {
 function renderValuation(data) {
   currentValuation = data;
   byId("property-address").textContent = data.address;
-  byId("estimated-value").textContent = data.value;
-  byId("midpoint").textContent = data.midpoint;
-  byId("confidence").textContent = data.confidence;
-  byId("check-status").textContent = data.status;
+  byId("estimated-value").textContent = localizeValue(data.value);
+  byId("midpoint").textContent = localizeValue(data.midpoint);
+  byId("confidence").textContent = localizeValue(data.confidence);
+  byId("check-status").textContent = localizeValue(data.status);
   byId("street-rank").textContent = getLocalizedLocation(data, "rank");
   byId("street-type").textContent = getLocalizedLocation(data, "type");
   byId("amenity-access").textContent = getLocalizedLocation(data, "amenity");
@@ -442,6 +528,7 @@ function renderValuation(data) {
   setList("reasons", getLocalizedArray(data, "reasons"));
   setList("suburb-list", getLocalizedArray(data, "suburb"));
   renderComparables(data.comparables);
+  renderMap(data);
   renderLoanScenario();
   renderLockState();
   document.querySelectorAll(".chip").forEach((chip) => {
@@ -506,7 +593,7 @@ function applyLanguage() {
 }
 
 function formatMoney(value) {
-  if (!Number.isFinite(value)) return "Manual review";
+  if (!Number.isFinite(value)) return localizeValue("Manual review");
   if (value >= 1000000) return `$${(value / 1000000).toFixed(3).replace(/0+$/, "").replace(/\.$/, "")}m`;
   return `$${Math.round(value / 1000)}k`;
 }
@@ -615,23 +702,37 @@ byId("start-valuation").addEventListener("click", () => {
     confidence: "Low",
     status: "Low",
     reasons: [
-      language === "zh" ? "当前演示只支持部分样本地址。" : "This demo currently supports selected sample addresses.",
-      language === "zh" ? "真实部署时会调用估值 API 和数据源。" : "A real deployment would call the valuation API and data sources.",
-      language === "zh" ? "请尝试 46 Bishop Street、9 McIntosh Street 或 18 Moresby Street。" : "Please try 46 Bishop Street, 9 McIntosh Street or 18 Moresby Street."
+      "This demo currently supports selected sample addresses.",
+      "A real deployment would call the valuation API and data sources.",
+      "Please try 46 Bishop Street, 9 McIntosh Street or 18 Moresby Street."
+    ],
+    reasonsZh: [
+      "当前演示只支持部分样本地址。",
+      "真实部署时会调用估值 API 和数据源。",
+      "请尝试 46 Bishop Street、9 McIntosh Street 或 18 Moresby Street。"
     ],
     comparables: [],
     location: {
       rank: "Unknown",
       type: "Unknown",
       amenity: "Unknown",
-      parking: "Unknown"
+      parking: "Unknown",
+      rankZh: "未知",
+      typeZh: "未知",
+      amenityZh: "未知",
+      parkingZh: "未知"
     },
-    suburb: [language === "zh" ? "演示模式下没有可用的区域基本面。" : "No suburb fundamentals available in demo mode."],
+    suburb: ["No suburb fundamentals available in demo mode."],
+    suburbZh: ["演示模式下没有可用的区域基本面。"],
     planning: {
       landSource: "Unknown",
       granny: "Unknown",
-      approval: "Not assessed"
-    }
+      approval: "Not assessed",
+      landSourceZh: "未知",
+      grannyZh: "未知",
+      approvalZh: "未评估"
+    },
+    map: {}
   });
 });
 

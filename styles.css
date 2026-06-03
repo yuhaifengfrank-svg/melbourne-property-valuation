@@ -268,8 +268,16 @@ button:hover {
   top: 14px;
 }
 
+.zh-mode .detail-panel::after {
+  content: "点击解锁详情";
+}
+
 .detail-panel.unlocked::after {
   content: "Details unlocked";
+}
+
+.zh-mode .detail-panel.unlocked::after {
+  content: "详情已解锁";
 }
 
 .panel h2,
