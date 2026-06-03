@@ -219,9 +219,9 @@ const uiText = {
       'label[for="lead-email"]': "Email",
       'label[for="lead-name"]': "Name",
       'label[for="lead-phone"]': "Phone optional",
+      ".form-provider-note": "Submission details are securely stored for report delivery and customer follow-up. We may record an approximate visitor region, but do not display your full IP address.",
       ".consent span": "You may contact me about this property report.",
       "#unlock-report": "Register and unlock",
-      ".form-provider-note": "Submission details are sent through our email delivery provider.",
       ".side-panel .panel:nth-of-type(2) h2": "Check Status",
       ".side-panel .panel:nth-of-type(3) h2": "Manual Uploads",
       ".summary-main .eyebrow": "First-layer desktop valuation",
@@ -296,9 +296,9 @@ const uiText = {
       'label[for="lead-email"]': "邮箱",
       'label[for="lead-name"]': "姓名",
       'label[for="lead-phone"]': "电话 选填",
+      ".form-provider-note": "提交资料将安全保存，用于发送报告和客户跟进。系统可能记录大致访问地区，但不会在后台显示你的完整 IP 地址。",
       ".consent span": "我同意你可以就这份房产报告联系我。",
       "#unlock-report": "注册并解锁",
-      ".form-provider-note": "提交资料会通过我们的邮件发送服务转交。",
       ".side-panel .panel:nth-of-type(2) h2": "检查状态",
       ".side-panel .panel:nth-of-type(3) h2": "手工上传",
       ".summary-main .eyebrow": "第一层桌面估值",
@@ -646,6 +646,35 @@ async function sendLeadNotification(lead) {
   if (!response.ok) throw new Error("Lead notification failed");
 }
 
+async function saveLeadToDatabase(lead) {
+  const response = await fetch("/api/leads", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    body: JSON.stringify({
+      name: lead.name,
+      email: lead.email,
+      phone: lead.phone,
+      contactConsent: lead.consent,
+      pdfDownload: lead.pdfDownload,
+      propertyAddress: lead.address,
+      propertyType: lead.propertyType,
+      estimatedValue: lead.value,
+      midpointValue: lead.midpointValue,
+      confidence: lead.confidence,
+      selectedLvr: lead.selectedLvr,
+      language: lead.language,
+      eventType: lead.eventType,
+      analysis: lead.analysis
+    })
+  });
+
+  if (!response.ok) throw new Error("Lead database save failed");
+  return response.json();
+}
+
 async function saveLead({ pdfDownload = false } = {}) {
   const email = byId("lead-email").value.trim();
   const name = byId("lead-name").value.trim();
@@ -675,13 +704,31 @@ async function saveLead({ pdfDownload = false } = {}) {
     pdfDownload,
     address: currentValuation.address,
     value: currentValuation.value,
+    midpointValue: currentValuation.midpointValue,
+    confidence: currentValuation.confidence,
+    propertyType: document.querySelector(".chip.active")?.dataset.type || currentValuation.type,
+    selectedLvr: Math.round(selectedLvr * 100),
+    language,
+    eventType: pdfDownload ? "pdf_download" : "report_unlock",
+    analysis: {
+      reasons: currentValuation.reasons,
+      comparables: currentValuation.comparables,
+      location: currentValuation.location,
+      suburb: currentValuation.suburb,
+      planning: currentValuation.planning
+    },
     createdAt: new Date().toISOString()
   };
 
-  const existing = JSON.parse(localStorage.getItem("valuationLeads") || "[]");
-  existing.push(lead);
-  localStorage.setItem("valuationLeads", JSON.stringify(existing));
+  let stored = false;
   let notified = false;
+  try {
+    await saveLeadToDatabase(lead);
+    stored = true;
+  } catch (error) {
+    console.error(error);
+  }
+
   try {
     await sendLeadNotification(lead);
     notified = true;
@@ -689,18 +736,20 @@ async function saveLead({ pdfDownload = false } = {}) {
     console.error(error);
   }
 
-  message.textContent = notified
+  message.textContent = stored
     ? pdfDownload
       ? language === "zh"
-        ? "PDF 信息已记录，线索邮件已发送。"
-        : "PDF details captured. Lead notification sent."
+        ? "PDF 信息已记录，客户资料已保存。"
+        : "PDF details captured. Customer record saved."
       : language === "zh"
-        ? "完整报告已解锁，线索邮件已发送。"
-        : "Full report unlocked. Lead notification sent."
+        ? "完整报告已解锁，客户资料已保存。"
+        : "Full report unlocked. Customer record saved."
     : language === "zh"
-      ? "完整报告已解锁，但线索邮件发送失败，请稍后再试。"
-      : "Full report unlocked, but the lead notification could not be sent. Please try again later.";
-  return true;
+      ? "暂时无法保存客户资料，请稍后再试。"
+      : "Customer details could not be saved. Please try again later.";
+
+  if (stored && !notified) console.warn("Customer record saved, but lead notification email failed.");
+  return stored;
 }
 
 async function downloadDemoReport() {

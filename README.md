@@ -16,13 +16,23 @@ The project focuses first on house valuations. A user enters an address, confirm
 
 ## Prototype
 
-This repository currently contains a static web prototype:
+This repository contains a static client interface plus a Vercel serverless lead-capture API:
 
 - `index.html`: client UI
 - `styles.css`: visual styling
 - `app.js`: sample valuation data and interactive behavior
+- `api/leads.js`: PostgreSQL-backed lead capture and admin API
+- `admin.html`: private lead analysis dashboard
 
 Open `index.html` in a browser to run the prototype locally.
+
+## Deployment Environment
+
+The Vercel deployment requires:
+
+- `DATABASE_URL`: PostgreSQL connection string, typically provided by a Neon integration
+- `ADMIN_KEY`: private key used to open the lead analysis dashboard
+- `IP_HASH_SALT`: optional private salt used when hashing visitor IP addresses
 
 ## Documentation
 
@@ -46,4 +56,3 @@ The system is not intended to replace formal bank valuation, legal advice, finan
 - Add title, zoning, overlay, easement, and condition verification flows
 - Add model versioning and audit trails
 - Expand from houses to vacant land, townhouses, villas, and apartments
-

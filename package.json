@@ -1,0 +1,13 @@
+{
+  "name": "aushomevalue",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "echo 'Static site with Vercel serverless API'",
+    "vercel-build": "echo 'Static site with Vercel serverless API'"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.1"
+  }
+}
