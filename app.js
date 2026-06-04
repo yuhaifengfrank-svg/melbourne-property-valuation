@@ -187,8 +187,54 @@ const valuations = [
   }
 ];
 
+const emptyValuation = {
+  aliases: [],
+  address: "Enter an address to start",
+  addressZh: "请输入地址开始",
+  type: "House",
+  value: "Pending",
+  valueZh: "待输入",
+  midpoint: "Pending",
+  midpointZh: "待输入",
+  midpointValue: NaN,
+  confidence: "Pending",
+  confidenceZh: "待输入",
+  status: "Pending",
+  statusZh: "待输入",
+  reasons: [
+    "Enter a Melbourne property address to generate a first-layer estimate.",
+    "Register after the estimate to unlock comparable sales, micro-location and planning checks."
+  ],
+  reasonsZh: [
+    "请输入墨尔本房产地址，生成第一层估值。",
+    "估值后注册，即可解锁可比成交、微位置和规划检查。"
+  ],
+  comparables: [],
+  location: {
+    rank: "Pending",
+    type: "Pending",
+    amenity: "Pending",
+    parking: "Pending",
+    rankZh: "待输入",
+    typeZh: "待输入",
+    amenityZh: "待输入",
+    parkingZh: "待输入"
+  },
+  suburb: ["Suburb fundamentals will appear after an address is entered."],
+  suburbZh: ["输入地址后会显示区域基本面。"],
+  planning: {
+    landSource: "Pending",
+    granny: "Pending",
+    approval: "Pending",
+    landSourceZh: "待输入",
+    grannyZh: "待输入",
+    approvalZh: "待输入"
+  },
+  map: {}
+};
+
 let unlocked = false;
-let currentValuation = valuations[0];
+let currentValuation = emptyValuation;
 let selectedLvr = 0.6;
 let language = "en";
 
@@ -482,7 +528,8 @@ const dynamicText = {
     "Unknown": "未知",
     "Not assessed": "未评估",
     "Manual review": "人工复核",
-    "Sample unavailable": "暂无样本"
+    "Sample unavailable": "暂无样本",
+    "Pending": "待输入"
   }
 };
 
@@ -549,11 +596,11 @@ function renderComparables(rows) {
 
 function renderValuation(data) {
   currentValuation = data;
-  byId("property-address").textContent = data.address;
+  byId("property-address").textContent = language === "zh" && data.addressZh ? data.addressZh : data.address;
   byId("estimated-value").textContent = localizeValue(data.value);
   byId("midpoint").textContent = localizeValue(data.midpoint);
   byId("confidence").textContent = localizeValue(data.confidence);
-  byId("mobile-property-address").textContent = data.address;
+  byId("mobile-property-address").textContent = language === "zh" && data.addressZh ? data.addressZh : data.address;
   byId("mobile-estimated-value").textContent = localizeValue(data.value);
   byId("mobile-midpoint").textContent = localizeValue(data.midpoint);
   byId("mobile-confidence").textContent = localizeValue(data.confidence);
@@ -626,6 +673,7 @@ function applyLanguage() {
   setCollectionText(".theme-card", labels.investorButtons);
   setSourcePanel(labels);
   setInvestorDetail(labels.investorDetail);
+  byId("address").placeholder = language === "zh" ? "输入墨尔本房产地址" : "Enter a Melbourne property address";
   byId("lead-email").placeholder = language === "zh" ? "you@example.com" : "you@example.com";
   byId("lead-name").placeholder = language === "zh" ? "你的姓名" : "Your name";
   byId("lead-phone").placeholder = language === "zh" ? "下载 PDF 时需要" : "For PDF download";
@@ -841,12 +889,12 @@ byId("start-valuation").addEventListener("click", () => {
     reasons: [
       "This demo currently supports selected sample addresses.",
       "A real deployment would call the valuation API and data sources.",
-      "Please try 46 Bishop Street, 9 McIntosh Street or 18 Moresby Street."
+      "Please try 9 McIntosh Street or 18 Moresby Street."
     ],
     reasonsZh: [
       "当前演示只支持部分样本地址。",
       "真实部署时会调用估值 API 和数据源。",
-      "请尝试 46 Bishop Street、9 McIntosh Street 或 18 Moresby Street。"
+      "请尝试 9 McIntosh Street 或 18 Moresby Street。"
     ],
     comparables: [],
     location: {
