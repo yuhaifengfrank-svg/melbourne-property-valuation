@@ -571,6 +571,80 @@ const emptyValuation = {
   map: {}
 };
 
+const commercialPendingValuation = {
+  aliases: [],
+  address: "Commercial valuation module coming soon",
+  addressZh: "商业地产估值模块后续开放",
+  type: "Commercial",
+  value: "Coming soon",
+  valueZh: "后续开放",
+  midpoint: "Pending",
+  midpointZh: "待开放",
+  midpointValue: NaN,
+  confidence: "Pending",
+  confidenceZh: "待开放",
+  status: "Pending",
+  statusZh: "待开放",
+  reasons: [
+    "Commercial property needs a separate valuation model and is not priced with the residential framework.",
+    "Future checks will include rental income, lease term, tenant covenant, outgoings, cap rate and vacancy risk.",
+    "For early commercial enquiries, leave contact details and send lease documents or income information for manual review."
+  ],
+  reasonsZh: [
+    "商业地产需要独立估值模型，不能用住宅模型直接估。",
+    "后续检查会包括租金收入、租约期限、租客质量、outgoings、cap rate 和空置风险。",
+    "如果现在有商业地产咨询，可以留下联系方式，并补充租约或收益资料做人工复核。"
+  ],
+  comparables: [],
+  location: {
+    rank: "Trade area to be assessed",
+    type: "Commercial catchment",
+    amenity: "Tenant and customer access pending",
+    parking: "Loading / customer parking pending",
+    rankZh: "商圈等级待评估",
+    typeZh: "商业覆盖区域",
+    amenityZh: "租客和客流便利性待评估",
+    parkingZh: "装卸 / 客户停车待评估"
+  },
+  suburb: [
+    "Commercial analysis will review trade area, foot traffic, tenant mix, vacancy, competing supply and business exposure.",
+    "Income evidence and lease documents are more important than residential-style bedroom/land comparisons.",
+    "A commercial module will be built separately after the residential MVP is stable."
+  ],
+  suburbZh: [
+    "商业地产分析会评估商圈、客流、租户组合、空置率、竞争供应和经营风险。",
+    "收益证据和租约文件比住宅的房间数/土地比较更重要。",
+    "商业地产模块会在住宅 MVP 稳定后单独开发。"
+  ],
+  planning: {
+    landSource: "Lease and income schedule required",
+    granny: "Cap rate / yield model pending",
+    approval: "Zoning, use and tenancy risk pending",
+    landSourceZh: "需要租约和收益表",
+    grannyZh: "Cap rate / yield 模型待开发",
+    approvalZh: "Zoning、用途和租约风险待评估"
+  },
+  planningLabels: {
+    en: ["Income evidence", "Yield / cap rate", "Use / tenancy risk"],
+    zh: ["收益证据", "收益率 / cap rate", "用途 / 租约风险"]
+  },
+  modelNotes: [
+    "Commercial model will be separate from residential: income, lease quality and market yield will be the primary valuation anchors.",
+    "Future core fields: net income, lease expiry, options, WALE, tenant covenant, outgoings, incentives, vacancy, zoning/use and comparable yields."
+  ],
+  modelNotesZh: [
+    "Commercial 模型会独立于住宅模型：收益、租约质量和市场 yield 会是主要估值锚点。",
+    "后续核心字段：净收益、租约到期、续租权、WALE、租户质量、outgoings、incentives、空置率、zoning/use 和可比 yield。"
+  ],
+  map: {
+    target: "C",
+    station: "Trade area",
+    shops: "Tenant mix",
+    stationZh: "商圈",
+    shopsZh: "租户组合"
+  }
+};
+
 let unlocked = false;
 let currentValuation = emptyValuation;
 let selectedLvr = 0.6;
@@ -802,7 +876,7 @@ const labelSets = {
     uploadButtons: ["Upload Section 32", "Upload title plan", "Upload photos", "Enter manual data"],
     tableHeaders: ["Address", "Sale", "Date", "Land", "Config", "Similarity"],
     factLabels: ["Street rank", "Street type", "Amenity access", "Parking pressure", "Land source", "Granny flat potential", "Approval certainty"],
-    chips: ["House", "Vacant land", "Townhouse", "Villa", "Unit", "Apartment"],
+    chips: ["House", "Vacant land", "Townhouse", "Villa", "Unit", "Apartment", "Commercial"],
     investorButtons: ["Private credit", "Development finance", "Income property"],
     sourceHeadings: ["Automatic / free checks", "Client supplied evidence"],
     sourceLists: [
@@ -822,7 +896,7 @@ const labelSets = {
     uploadButtons: ["上传 Section 32", "上传产权图", "上传照片", "手工填写资料"],
     tableHeaders: ["地址", "成交价", "日期", "土地", "房型", "相似度"],
     factLabels: ["街道排名", "街道类型", "便利性", "停车压力", "土地来源", "奶奶房潜力", "批准确定性"],
-    chips: ["独立屋", "空地", "联排", "别墅", "单元房", "公寓"],
+    chips: ["独立屋", "空地", "联排", "别墅", "单元房", "公寓", "商业地产"],
     investorButtons: ["地产私募债", "开发融资", "收益型地产"],
     sourceHeadings: ["自动 / 免费检查", "客户补充资料"],
     sourceLists: [
@@ -1795,6 +1869,15 @@ async function downloadDemoReport() {
 
 byId("start-valuation").addEventListener("click", () => {
   const selectedType = document.querySelector(".chip.active")?.dataset.type || "House";
+  if (selectedType === "Commercial") {
+    renderValuation({
+      ...commercialPendingValuation,
+      address: byId("address").value || commercialPendingValuation.address,
+      addressZh: byId("address").value || commercialPendingValuation.addressZh
+    });
+    if (window.matchMedia("(max-width: 680px)").matches) scrollToSection(".mobile-value-card");
+    return;
+  }
   const match = findValuation(byId("address").value, selectedType);
   if (match) {
     renderValuation(match);

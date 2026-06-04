@@ -263,6 +263,10 @@ button:hover {
   color: var(--accent);
 }
 
+.commercial-chip {
+  border-style: dashed;
+}
+
 .layout {
   align-items: start;
   display: grid;
