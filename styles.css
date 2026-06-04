@@ -416,12 +416,6 @@ button:hover {
   background: var(--accent-2);
 }
 
-.upload-list {
-  display: grid;
-  gap: 10px;
-  margin-top: 16px;
-}
-
 .lead-panel p {
   color: var(--muted);
   margin: 10px 0 16px;
@@ -567,7 +561,6 @@ button:hover {
   margin-top: 3px;
 }
 
-.upload-list button,
 .ghost {
   background: white;
   border: 1px solid var(--line);
@@ -801,6 +794,11 @@ button:hover {
   font-weight: 700;
   margin: 0;
   min-height: 18px;
+}
+
+#manual-data-notes {
+  min-height: 140px;
+  resize: vertical;
 }
 
 .lead-panel .form-provider-note {

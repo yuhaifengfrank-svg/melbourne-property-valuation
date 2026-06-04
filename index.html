@@ -16,7 +16,6 @@
         <a href="#valuation">Valuation</a>
         <a href="#comparables">Comparables</a>
         <a href="#location">Location</a>
-        <a href="#data-sources">Data</a>
         <a href="#loan">Loan</a>
         <a href="#uploads">Uploads</a>
         <a href="#investor">Investor Hub</a>
@@ -148,15 +147,6 @@
             </ol>
           </section>
 
-          <section class="panel">
-            <h2>Manual Uploads</h2>
-            <div class="upload-list">
-              <button type="button">Upload Section 32</button>
-              <button type="button">Upload title plan</button>
-              <button type="button">Upload photos</button>
-              <button type="button">Enter manual data</button>
-            </div>
-          </section>
         </aside>
 
         <section class="content">
@@ -190,60 +180,15 @@
 
           <section class="grid-two">
             <article class="panel metric-card">
-              <span>Comparable influence</span>
-              <strong>60%-70%</strong>
-              <p>Recent same-type evidence is the valuation anchor.</p>
+              <span>Fast starting point</span>
+              <strong>Address in, estimate out</strong>
+              <p>Start with a quick estimate, then unlock the detailed report when you are ready.</p>
             </article>
             <article class="panel metric-card">
-              <span>Visible range cap</span>
-              <strong>±10%</strong>
-              <p>Low-confidence cases request more evidence instead of widening forever.</p>
+              <span>Clear next steps</span>
+              <strong>Know what to check</strong>
+              <p>The report highlights useful follow-up items such as title, planning and condition evidence.</p>
             </article>
-          </section>
-
-          <section class="panel data-source-panel" id="data-sources">
-            <div class="panel-header">
-              <div>
-                <p class="eyebrow">Free public data first</p>
-                <h2>What this first version checks before asking the client for more.</h2>
-              </div>
-              <span class="status medium">MVP</span>
-            </div>
-            <div class="source-grid">
-              <article>
-                <h3>Automatic / free checks</h3>
-                <ul class="compact-list">
-                  <li>Public sale evidence and manually curated comparable samples</li>
-                  <li>Address normalization and property type selection</li>
-                  <li>Suburb fundamentals from public statistics and market notes</li>
-                  <li>Basic map, street and access review where public tools allow it</li>
-                </ul>
-              </article>
-              <article>
-                <h3>Client supplied evidence</h3>
-                <ul class="compact-list">
-                  <li>Title search, title plan and Section 32</li>
-                  <li>Current photos, renovation notes and condition details</li>
-                  <li>Known easements, overlays, leases or body corporate documents</li>
-                  <li>Phone and contact consent required before PDF download</li>
-                </ul>
-              </article>
-            </div>
-            <div class="market-crosscheck" aria-live="polite">
-              <div class="market-crosscheck-header">
-                <div>
-                  <h3 id="market-crosscheck-title">Market source cross-check</h3>
-                  <p id="market-crosscheck-summary">
-                    Enter an address to generate weighted public-market source checks.
-                  </p>
-                </div>
-                <strong id="market-crosscheck-score">Pending</strong>
-              </div>
-              <div class="market-source-grid" id="market-source-grid"></div>
-              <p class="source-disclaimer" id="market-crosscheck-note">
-                Public portal data is treated as secondary evidence and must be cross-checked against title, council and government records where available.
-              </p>
-            </div>
           </section>
 
           <section class="panel loan-panel" id="loan">
@@ -414,6 +359,7 @@
                 multiple
                 accept=".pdf,.txt,.jpg,.jpeg,.png,.heic,.doc,.docx"
               />
+              <button class="ghost" id="enter-manual-data" type="button">Enter manual notes</button>
               <button class="ghost" id="download-pdf" type="button">Download PDF</button>
             </div>
             <p class="upload-message" id="upload-message" aria-live="polite"></p>
@@ -570,6 +516,20 @@
             Open original image
           </a>
           <button class="ghost" id="qr-close" type="button">Close</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog class="unlock-modal" id="manual-data-modal">
+      <div class="modal-content">
+        <p class="eyebrow">Manual evidence</p>
+        <h2>Add extra property notes.</h2>
+        <p>
+          Add title, planning, condition, street, rental or inspection notes. These notes will be included in the evidence review and PDF report.
+        </p>
+        <textarea id="manual-data-notes" rows="6" placeholder="Example: title confirms land size, renovated kitchen, quiet wide street, no visible easement."></textarea>
+        <div class="modal-actions">
+          <button id="manual-data-save" type="button">Apply notes</button>
+          <button class="ghost" id="manual-data-close" type="button">Cancel</button>
         </div>
       </div>
     </dialog>

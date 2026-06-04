@@ -609,12 +609,12 @@ const commercialPendingValuation = {
   suburb: [
     "Commercial analysis will review trade area, foot traffic, tenant mix, vacancy, competing supply and business exposure.",
     "Income evidence and lease documents are more important than residential-style bedroom/land comparisons.",
-    "A commercial module will be built separately after the residential MVP is stable."
+    "A commercial module will be built separately after the residential workflow is stable."
   ],
   suburbZh: [
     "商业地产分析会评估商圈、客流、租户组合、空置率、竞争供应和经营风险。",
     "收益证据和租约文件比住宅的房间数/土地比较更重要。",
-    "商业地产模块会在住宅 MVP 稳定后单独开发。"
+    "商业地产模块会在住宅估值流程稳定后单独开发。"
   ],
   planning: {
     landSource: "Lease and income schedule required",
@@ -829,17 +829,23 @@ function buildMarketCrosscheck(data = currentValuation) {
 function renderMarketCrosscheck(data = currentValuation) {
   const crosscheck = buildMarketCrosscheck(data);
   currentValuation.marketCrosscheck = crosscheck;
-  byId("market-crosscheck-title").textContent = language === "zh" ? "市场来源交叉比对" : "Market source cross-check";
-  byId("market-crosscheck-summary").textContent = language === "zh" ? crosscheck.summaryZh : crosscheck.summary;
-  byId("market-crosscheck-score").textContent =
+  const title = byId("market-crosscheck-title");
+  const summary = byId("market-crosscheck-summary");
+  const score = byId("market-crosscheck-score");
+  const note = byId("market-crosscheck-note");
+  const grid = byId("market-source-grid");
+  if (!title || !summary || !score || !note || !grid) return;
+
+  title.textContent = language === "zh" ? "市场来源交叉比对" : "Market source cross-check";
+  summary.textContent = language === "zh" ? crosscheck.summaryZh : crosscheck.summary;
+  score.textContent =
     crosscheck.score === null
       ? localizeValue(crosscheck.band)
       : `${crosscheck.score}/100 · ${localizeValue(crosscheck.band)}`;
-  byId("market-crosscheck-note").textContent = language === "zh"
+  note.textContent = language === "zh"
     ? "公开门户数据属于第二层证据，需要和产权、council、政府规划资料交叉比对，不能直接当成权威来源。"
     : "Public portal data is secondary evidence and must be cross-checked against title, council and government records where available.";
 
-  const grid = byId("market-source-grid");
   grid.innerHTML = "";
   crosscheck.sources.forEach((source) => {
     const card = document.createElement("article");
@@ -877,7 +883,6 @@ const uiText = {
       'nav a[href="#valuation"]': "Valuation",
       'nav a[href="#comparables"]': "Comparables",
       'nav a[href="#location"]': "Location",
-      'nav a[href="#data-sources"]': "Data",
       'nav a[href="#loan"]': "Loan",
       'nav a[href="#uploads"]': "Uploads",
       'nav a[href="#investor"]': "Investor Hub",
@@ -903,19 +908,17 @@ const uiText = {
       ".consent span": "You may contact me about this property report.",
       "#unlock-report": "Register and unlock",
       ".side-panel .panel:nth-of-type(2) h2": "Check Status",
-      ".side-panel .panel:nth-of-type(3) h2": "Manual Uploads",
       ".summary-main .eyebrow": "First-layer desktop valuation",
       ".value-band div:nth-child(1) span": "Estimated value",
       ".value-band div:nth-child(2) span": "Midpoint",
       ".value-band div:nth-child(3) span": "Confidence",
       ".summary-card h3": "Why this estimate?",
-      ".grid-two .metric-card:nth-child(1) span": "Comparable influence",
-      ".grid-two .metric-card:nth-child(1) p": "Recent same-type evidence is the valuation anchor.",
-      ".grid-two .metric-card:nth-child(2) span": "Visible range cap",
-      ".grid-two .metric-card:nth-child(2) p": "Low-confidence cases request more evidence instead of widening forever.",
-      "#data-sources .eyebrow": "Free public data first",
-      "#data-sources h2": "What this first version checks before asking the client for more.",
-      "#data-sources .status": "MVP",
+      ".grid-two .metric-card:nth-child(1) span": "Fast starting point",
+      ".grid-two .metric-card:nth-child(1) strong": "Address in, estimate out",
+      ".grid-two .metric-card:nth-child(1) p": "Start with a quick estimate, then unlock the detailed report when you are ready.",
+      ".grid-two .metric-card:nth-child(2) span": "Clear next steps",
+      ".grid-two .metric-card:nth-child(2) strong": "Know what to check",
+      ".grid-two .metric-card:nth-child(2) p": "The report highlights useful follow-up items such as title, planning and condition evidence.",
       ".loan-panel .eyebrow": "Loan / LVR scenario",
       ".loan-panel h2": "How much could be borrowed against this value?",
       ".loan-grid div:nth-child(1) span": "Selected LVR",
@@ -957,6 +960,11 @@ const uiText = {
       "#modal-register": "Register to unlock",
       "#modal-close": "Not now",
       ".modal-content p:not(.eyebrow)": "Register to unlock comparable adjustments, suburb fundamentals, micro-location evidence and planning checks. PDF download requires phone number and contact consent.",
+      "#manual-data-modal .eyebrow": "Manual evidence",
+      "#manual-data-modal h2": "Add extra property notes.",
+      "#manual-data-modal p:not(.eyebrow)": "Add title, planning, condition, street, rental or inspection notes. These notes will be included in the evidence review and PDF report.",
+      "#manual-data-save": "Apply notes",
+      "#manual-data-close": "Cancel",
       "#report-guide .eyebrow": "Report unlocked",
       "#report-guide h3": "Your detail report is ready below.",
       "#report-guide > p:not(.eyebrow)": "Start with comparable sales, then check micro-location, suburb fundamentals and planning potential.",
@@ -984,7 +992,6 @@ const uiText = {
       'nav a[href="#valuation"]': "估值",
       'nav a[href="#comparables"]': "可比成交",
       'nav a[href="#location"]': "位置",
-      'nav a[href="#data-sources"]': "数据",
       'nav a[href="#loan"]': "贷款",
       'nav a[href="#uploads"]': "上传",
       'nav a[href="#investor"]': "投资中心",
@@ -1016,13 +1023,12 @@ const uiText = {
       ".value-band div:nth-child(2) span": "估值中点",
       ".value-band div:nth-child(3) span": "置信度",
       ".summary-card h3": "为什么是这个估值？",
-      ".grid-two .metric-card:nth-child(1) span": "可比成交影响权重",
-      ".grid-two .metric-card:nth-child(1) p": "近期同类型成交是估值的主要锚点。",
-      ".grid-two .metric-card:nth-child(2) span": "展示区间上限",
-      ".grid-two .metric-card:nth-child(2) p": "低置信度案例应要求补充证据，而不是无限扩大估值区间。",
-      "#data-sources .eyebrow": "先用免费公开数据",
-      "#data-sources h2": "第一版会先自动检查这些内容，再向客户索取补充资料。",
-      "#data-sources .status": "MVP",
+      ".grid-two .metric-card:nth-child(1) span": "快速起点",
+      ".grid-two .metric-card:nth-child(1) strong": "输入地址，获得估值",
+      ".grid-two .metric-card:nth-child(1) p": "先获得一个快速估值，需要时再解锁详细报告。",
+      ".grid-two .metric-card:nth-child(2) span": "清晰下一步",
+      ".grid-two .metric-card:nth-child(2) strong": "知道还要检查什么",
+      ".grid-two .metric-card:nth-child(2) p": "报告会提示产权、规划、房况等有助于进一步确认的资料。",
       ".loan-panel .eyebrow": "贷款 / LVR 情景",
       ".loan-panel h2": "按这个估值大概可以借多少？",
       ".loan-grid div:nth-child(1) span": "选择 LVR",
@@ -1064,6 +1070,11 @@ const uiText = {
       "#modal-register": "注册解锁",
       "#modal-close": "暂不",
       ".modal-content p:not(.eyebrow)": "注册后可查看可比成交调整、区域基本面、微位置证据和规划检查。下载 PDF 需要填写电话并授权联系。",
+      "#manual-data-modal .eyebrow": "手工资料",
+      "#manual-data-modal h2": "补充物业资料。",
+      "#manual-data-modal p:not(.eyebrow)": "可以填写产权、规划、房况、街道、租金或检查记录。这些内容会进入资料复核和 PDF 报告。",
+      "#manual-data-save": "应用资料",
+      "#manual-data-close": "取消",
       "#report-guide .eyebrow": "报告已解锁",
       "#report-guide h3": "详细报告已经在下面开放。",
       "#report-guide > p:not(.eyebrow)": "建议先看可比成交，再看微位置、区域基本面和规划潜力。",
@@ -1088,16 +1099,10 @@ const uiText = {
 const labelSets = {
   en: {
     checkItems: ["Portal cross-check", "Recent sales scan", "Suburb fundamentals", "Micro-location review", "Title confirmation", "Current condition"],
-    uploadButtons: ["Upload Section 32", "Upload title plan", "Upload photos", "Enter manual data"],
     tableHeaders: ["Address", "Sale", "Date", "Land", "Config", "Similarity"],
     factLabels: ["Street rank", "Street type", "Amenity access", "Parking pressure", "Land source", "Granny flat potential", "Approval certainty"],
     chips: ["House", "Vacant land", "Townhouse", "Villa", "Unit", "Apartment", "Commercial"],
     investorButtons: ["Private credit", "Development finance", "Income property"],
-    sourceHeadings: ["Layer 1: free authoritative public data", "Layer 2-3: market data cross-check"],
-    sourceLists: [
-      ["ABS Census / QuickStats / DataPacks / SEIFA for suburb fundamentals", "RBA / APRA public statistics for interest-rate and credit context", "State, council and planning sources for title, zoning, overlays and permits", "Public maps, aerial imagery and government property/planning records where available"],
-      ["Commercial portals, agent results and market publications are secondary, not authoritative", "Market source confidence is weighted: 8 sources aligned = 100; missing sources reduce the score by source weight", "Higher-volume / higher-recognition sources carry higher weights, but the weights remain configurable and should be calibrated with usage data", "If fewer than 3 market sources are available, confidence is capped and missing evidence is requested"]
-    ],
     investorDetail: {
       headings: ["Investor profile", "Gated access"],
       lists: [
@@ -1108,16 +1113,10 @@ const labelSets = {
   },
   zh: {
     checkItems: ["门户数据交叉检查", "近期成交扫描", "区域基本面", "微位置检查", "产权确认", "当前房况"],
-    uploadButtons: ["上传 Section 32", "上传产权图", "上传照片", "手工填写资料"],
     tableHeaders: ["地址", "成交价", "日期", "土地", "房型", "相似度"],
     factLabels: ["街道排名", "街道类型", "便利性", "停车压力", "土地来源", "奶奶房潜力", "批准确定性"],
     chips: ["独立屋", "空地", "联排", "别墅", "单元房", "公寓", "商业地产"],
     investorButtons: ["地产私募债", "开发融资", "收益型地产"],
-    sourceHeadings: ["第一层：免费权威公开数据", "第二/三层：市场数据交叉比对"],
-    sourceLists: [
-      ["ABS Census / QuickStats / DataPacks / SEIFA 用于区域基本面", "RBA / APRA 公开统计用于利率和信贷环境", "州政府、Council 和 planning 来源用于产权、zoning、overlays 和 permits", "在公开工具允许范围内使用地图、航拍和政府 property/planning records"],
-      ["商业网站、agent 结果和市场发布是第二层，不是权威来源", "市场来源置信度采用加权模型：8 个来源全部一致 = 100；少一个按该来源权重扣分", "流量/知名度/成交覆盖更高的来源权重更高，但权重应可配置并根据实际数据校准", "如果少于 3 个市场来源，置信度必须封顶，并要求客户补资料"]
-    ],
     investorDetail: {
       headings: ["投资人画像", "权限访问"],
       lists: [
@@ -1366,10 +1365,7 @@ function buildEvidenceSummary(files, detectedTypes, adjustedMidpoint, rangePerce
   ];
 }
 
-async function applyEvidenceFiles(files) {
-  const fileList = Array.from(files);
-  if (!fileList.length) return;
-
+function applyEvidenceSources(sources, sourceLabel = "uploaded evidence") {
   if (!Number.isFinite(currentValuation.midpointValue)) {
     byId("upload-message").textContent =
       language === "zh"
@@ -1378,9 +1374,11 @@ async function applyEvidenceFiles(files) {
     return;
   }
 
-  const fileTexts = await Promise.all(fileList.map((file) => readFileText(file)));
+  if (!sources.length) return;
+  const fileList = sources.map((source) => ({ name: source.name }));
+  const fileTexts = sources.map((source) => source.text || "");
   const detectedTypes = [
-    ...new Set(fileList.flatMap((file, index) => detectEvidenceTypes(file.name, fileTexts[index])))
+    ...new Set(sources.flatMap((source) => detectEvidenceTypes(source.name, source.text)))
   ];
   const allText = fileTexts.join("\n").toLowerCase();
   const hasPositiveCondition = /renovated|good condition|well maintained|updated kitchen|updated bathroom|优良|翻新|维护良好/.test(allText);
@@ -1414,8 +1412,31 @@ async function applyEvidenceFiles(files) {
   renderEvidenceReview(evidenceSummary);
   byId("upload-message").textContent =
     language === "zh"
-      ? `${fileList.length} 个文件已读取，估值已根据资料修正。`
-      : `${fileList.length} file${fileList.length === 1 ? "" : "s"} read. Estimate revised using uploaded evidence.`;
+      ? `${fileList.length} 项资料已读取，估值已根据资料修正。`
+      : `${fileList.length} ${sourceLabel} item${fileList.length === 1 ? "" : "s"} read. Estimate revised using evidence.`;
+}
+
+async function applyEvidenceFiles(files) {
+  const fileList = Array.from(files);
+  if (!fileList.length) return;
+  const fileTexts = await Promise.all(fileList.map((file) => readFileText(file)));
+  applyEvidenceSources(
+    fileList.map((file, index) => ({ name: file.name, text: fileTexts[index] })),
+    "uploaded"
+  );
+}
+
+function applyManualDataNotes() {
+  const notes = byId("manual-data-notes").value.trim();
+  if (!notes) {
+    byId("upload-message").textContent =
+      language === "zh" ? "请先填写手工资料内容。" : "Please enter manual property notes first.";
+    return;
+  }
+  byId("manual-data-modal").close();
+  applyEvidenceSources([{ name: "manual-property-notes.txt", text: notes }], "manual");
+  byId("manual-data-notes").value = "";
+  scrollToSection("#uploads");
 }
 
 function addressSeed(address) {
@@ -1529,17 +1550,6 @@ function setInvestorDetail(labels) {
   });
 }
 
-function setSourcePanel(labels) {
-  document.querySelectorAll("#data-sources h3").forEach((heading, index) => {
-    heading.textContent = labels.sourceHeadings[index] || heading.textContent;
-  });
-  document.querySelectorAll("#data-sources article").forEach((article, articleIndex) => {
-    article.querySelectorAll("li").forEach((li, liIndex) => {
-      li.textContent = labels.sourceLists[articleIndex]?.[liIndex] || li.textContent;
-    });
-  });
-}
-
 function applyLanguage() {
   const text = uiText[language];
   const labels = labelSets[language];
@@ -1548,18 +1558,20 @@ function applyLanguage() {
   byId("language-toggle").textContent = text.toggle;
   setTexts(text.selectors);
   setCollectionText(".checklist li", labels.checkItems);
-  setCollectionText(".upload-list button", labels.uploadButtons);
   setCollectionText(".chip", labels.chips);
   setCollectionText("th", labels.tableHeaders);
   setCollectionText(".facts dt", labels.factLabels);
   setCollectionText(".theme-card", labels.investorButtons);
-  setSourcePanel(labels);
   setInvestorDetail(labels.investorDetail);
   byId("suburb").placeholder = language === "zh" ? "例如 Oakleigh" : "Oakleigh";
   byId("address").placeholder = language === "zh" ? "例如 Unit 2, 11 McIntosh Street" : "Unit 2, 11 McIntosh Street";
   byId("lead-email").placeholder = language === "zh" ? "you@example.com" : "you@example.com";
   byId("lead-name").placeholder = language === "zh" ? "你的姓名" : "Your name";
   byId("lead-phone").placeholder = language === "zh" ? "下载 PDF 时需要" : "For PDF download";
+  byId("manual-data-notes").placeholder =
+    language === "zh"
+      ? "例如：产权确认土地面积，厨房翻新，街道安静较宽，没有明显地役权。"
+      : "Example: title confirms land size, renovated kitchen, quiet wide street, no visible easement.";
   renderValuation(currentValuation);
   if (activeInvestorTheme) renderInvestorTheme(activeInvestorTheme);
 }
@@ -1693,7 +1705,6 @@ function addReportSection(lines, title, items = []) {
 
 function buildDetailedReportLines() {
   const evidence = currentValuation.evidenceSummary || uploadedEvidenceSummary;
-  const marketCrosscheck = currentValuation.marketCrosscheck || buildMarketCrosscheck(currentValuation);
   const generatedAt = new Date().toLocaleString("en-AU", { timeZone: "Australia/Melbourne" });
   const recipientName = byId("lead-name").value.trim() || "Not supplied";
   const selectedPropertyType = document.querySelector(".chip.active")?.dataset.type || currentValuation.type;
@@ -1739,13 +1750,11 @@ function buildDetailedReportLines() {
     ["Required equity before costs", equityValue]
   ]);
 
-  addReportSection(lines, "2. Model framework and weighting logic", [
-    "- Comparable sales are the primary valuation anchor. When there are at least three recent same-type sales within six months, comparable evidence should carry around 60% to 70% influence.",
-    "- If recent comparable evidence is limited, the model lowers comparable reliance and asks for more evidence instead of widening the range indefinitely.",
-    "- The visible range is capped around +/-10% from the benchmark. Higher uncertainty is expressed through confidence and missing checks, not by making the range too wide.",
-    "- Micro-location, street quality, land source, property condition, planning potential and suburb fundamentals adjust the benchmark after comparable sales.",
-    "- Uploaded evidence can improve confidence, narrow the range and slightly revise the midpoint when it confirms title, planning, condition or street factors.",
-    ...((currentValuation.modelNotes || []).map((note) => `- ${note}`))
+  addReportSection(lines, "2. How to read this estimate", [
+    "- Treat this report as a practical starting point for property research, not a formal valuation.",
+    "- The estimate is easier to rely on when recent comparable sales, property condition, title information and planning context all point in the same direction.",
+    "- Where information is missing or uncertain, the report highlights what should be checked next instead of overstating certainty.",
+    "- Additional title documents, photos, floorplans, leases or inspection notes can help refine the review."
   ]);
 
   addReportSection(lines, "3. Valuation rationale", currentValuation.reasons.map((reason) => `- ${reason}`));
@@ -1789,47 +1798,23 @@ function buildDetailedReportLines() {
     ["Manual title requirement", "Title search and title plan remain authoritative where portal land size or property configuration is inconsistent."]
   ]);
 
-  addReportSection(lines, "9. Data source audit", [
-    "- Source hierarchy: Layer 1 is free authoritative public data; Layer 2 is commercial/portal/agent market data; Layer 3 is cross-checking and client-supplied confirmation.",
-    "- ABS suburb research sources: Census QuickStats, Census DataPacks, Community Profiles and SEIFA indexes.",
-    "- RBA/APRA public statistics should be used for rate, credit and macro lending context rather than relying on market commentary alone.",
-    "- Victoria authority sources should include Land Use Victoria/LANDATA, VicPlan, Planning Property Report, State Revenue Office / Valuer-General publications where relevant, and council planning registers/maps.",
-    "- Portal, agent and commercial market data must be cross-checked against each other and should not be treated as authoritative when title, council or government data is available.",
-    "- Cross-check rule: at least 3 independent market sources are required before relying on non-authoritative market data; 5+ sources are preferred for higher-confidence outputs.",
-    "- Weighted market-source model: realestate.com.au 24, Domain 22, agent sold/auction results 14, property.com.au 12, PropertyValue/OnTheHouse style AVM profile 8, View/Homely style portal evidence 6, rental portal evidence 6, local market/suburb report 8. Total = 100 when all eight source groups align.",
-    "- Missing-source rule: if a source group is unavailable, subtract its weight. Conflict rule: if a source group materially conflicts with the majority, subtract its weight and apply a conflict penalty before setting confidence.",
-    "- Market-source confidence bands: 90-100 Very High, 75-89 High, 60-74 Medium-High, 45-59 Medium, below 45 Low. This is source confidence, not a formal valuation certainty.",
-    "- If fewer than 3 sources are available, or if the sources conflict, confidence must be capped and the missing evidence must be shown to the user.",
-    "- Client-supplied evidence: title search, title plan, Section 32, current photos, renovation notes, inspection notes, leases, body corporate records and planning correspondence.",
-    "- Conflict rule: where portal data conflicts with title/council/government material, the authoritative source wins and confidence is adjusted.",
-    "- Missing fields should be requested from the client instead of being guessed."
-  ]);
-
-  addReportSection(lines, "9A. Public market cross-check queue", [
-    ["Market-source confidence", marketCrosscheck.score === null ? marketCrosscheck.band : `${marketCrosscheck.score}/100 (${marketCrosscheck.band})`],
-    ["Independent source groups generated", marketCrosscheck.independentCount],
-    ...marketCrosscheck.sources.map((source) => `- ${source.name}: weight ${source.weight}; status ${source.status}; role ${source.role}; public check ${source.url}`),
-    "- Compliance note: this report records public check links and source weights. It does not bypass portal controls or treat portal material as authoritative.",
-    "- Production note: live page reading should use official APIs, authorised data feeds, or a server workflow that respects each source's terms and robots policy."
-  ]);
-
-  addReportSection(lines, "10. Loan / LVR scenario", [
+  addReportSection(lines, "9. Loan / LVR scenario", [
     ["Selected LVR", `${Math.round(selectedLvr * 100)}%`],
     ["Indicative maximum loan", loanValue],
     ["Required equity before costs", equityValue],
     "This is not a loan approval or borrowing capacity assessment. Actual lending depends on lender policy, income, expenses, credit history and full application review."
   ]);
 
-  addReportSection(lines, "11. Investor Hub themes", investorThemeLines);
+  addReportSection(lines, "10. Investor Hub themes", investorThemeLines);
 
-  addReportSection(lines, "12. How to use this report", [
+  addReportSection(lines, "11. How to use this report", [
     "- Start with the executive valuation summary, then read the comparable sales and uploaded evidence review to understand what supports the range.",
     "- Treat the micro-location, planning and data-source sections as a checklist for what should be confirmed before making a decision.",
     "- If you have additional documents, photos, agent feedback, lease details or planning correspondence, send them through and the case can be reviewed again.",
     "- If you want to discuss lending, investment finance, private credit or next steps, contact AusHomeValue by WeChat QR code or email."
   ]);
 
-  addReportSection(lines, "13. Missing checks and next actions", [
+  addReportSection(lines, "12. Missing checks and next actions", [
     "- Confirm title search, title plan and Section 32 with authoritative documents.",
     "- Review current property condition, renovation quality and visible defects.",
     "- Confirm planning overlays, easements, covenants and council constraints.",
@@ -2236,6 +2221,18 @@ byId("evidence-files").addEventListener("change", async (event) => {
 });
 
 byId("download-pdf").addEventListener("click", downloadDemoReport);
+
+byId("enter-manual-data").addEventListener("click", () => {
+  const modal = byId("manual-data-modal");
+  if (typeof modal.showModal === "function" && !modal.open) modal.showModal();
+  byId("manual-data-notes").focus();
+});
+
+byId("manual-data-save").addEventListener("click", applyManualDataNotes);
+
+byId("manual-data-close").addEventListener("click", () => {
+  byId("manual-data-modal").close();
+});
 
 document.querySelectorAll(".theme-card").forEach((button) => {
   button.addEventListener("click", () => {

@@ -88,6 +88,7 @@ function makeDocument() {
     "upload-evidence", "evidence-files", "download-pdf", "unlock-report", "modal-close", "modal-register",
     "guide-comparables", "guide-location", "guide-close", "pdf-fill-details", "pdf-close", "open-qr-modal",
     "qr-close", "unlock-title", "unlock-modal", "report-guide-modal", "pdf-requirements-modal", "qr-modal",
+    "enter-manual-data", "manual-data-modal", "manual-data-notes", "manual-data-save", "manual-data-close",
     "investor-theme-title", "investor-theme-copy", "investor-theme-list", "investor-theme-detail",
     "evidence-revision-note", "market-crosscheck-title", "market-crosscheck-summary", "market-crosscheck-score",
     "market-source-grid", "market-crosscheck-note"
@@ -127,7 +128,6 @@ function makeDocument() {
       if (selector.includes("detail-panel")) return [new MockElement(), new MockElement(), new MockElement()];
       if (selector.includes("theme-card")) return [];
       if (selector.includes("checklist")) return [];
-      if (selector.includes("upload-list")) return [];
       if (selector === "th") return [];
       if (selector === ".facts dt") return planningLabels;
       return [];
@@ -278,7 +278,7 @@ for (const testCase of cases) {
     sourceScore: marketCrosscheck.score ?? "pending",
     hasCorePortals: marketCrosscheck.sources.some((source) => source.name === "realestate.com.au") &&
       marketCrosscheck.sources.some((source) => source.name === "Domain"),
-    reportHasCrosscheck: reportText.includes("9A. Public market cross-check queue"),
+    reportHidesInternalLogic: !/Layer 1|Layer 2|Layer 3|source confidence|Weighted market-source|Public market cross-check queue|realestate\.com\.au 24|Domain 22/i.test(reportText),
     pdf: header.startsWith("%PDF-1.") ? "ok" : "failed",
     reportLines: reportLines.length
   });
@@ -291,7 +291,7 @@ const failures = results.filter((row) => {
   if (row.type !== "Commercial" && !row.changed) return true;
   if (row.type !== "Commercial" && row.marketSources !== 8) return true;
   if (row.type !== "Commercial" && !row.hasCorePortals) return true;
-  if (!row.reportHasCrosscheck) return true;
+  if (!row.reportHidesInternalLogic) return true;
   if (row.type === "Commercial" && row.changed !== "pending") return true;
   return false;
 });

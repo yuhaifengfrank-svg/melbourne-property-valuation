@@ -114,6 +114,7 @@ function makeDocument() {
     "upload-evidence", "evidence-files", "download-pdf", "unlock-report", "modal-close", "modal-register",
     "guide-comparables", "guide-location", "guide-close", "pdf-fill-details", "pdf-close", "open-qr-modal",
     "qr-close", "unlock-title", "unlock-modal", "report-guide-modal", "pdf-requirements-modal", "qr-modal",
+    "enter-manual-data", "manual-data-modal", "manual-data-notes", "manual-data-save", "manual-data-close",
     "investor-theme-title", "investor-theme-copy", "investor-theme-list", "investor-theme-detail",
     "evidence-revision-note", "market-crosscheck-title", "market-crosscheck-summary", "market-crosscheck-score",
     "market-source-grid", "market-crosscheck-note"
@@ -153,7 +154,8 @@ function makeDocument() {
     ".mobile-value-card": new MockElement("mobile-value-card", recorder),
     ".lead-panel": new MockElement("lead-panel", recorder),
     "#comparables": new MockElement("comparables", recorder),
-    "#location": new MockElement("location", recorder)
+    "#location": new MockElement("location", recorder),
+    "#uploads": new MockElement("uploads", recorder)
   };
 
   const document = {
@@ -181,7 +183,6 @@ function makeDocument() {
       if (selector === ".fundamentals-grid .detail-panel:nth-child(2) dt") return planningLabels;
       if (selector.includes("detail-panel")) return detailPanels;
       if (selector.includes("checklist")) return [];
-      if (selector.includes("upload-list")) return [];
       if (selector === "th") return [];
       if (selector === ".facts dt") return planningLabels;
       return [];
@@ -203,6 +204,7 @@ const css = fs.readFileSync(new URL("./styles.css", import.meta.url), "utf8");
 
 assert.match(html, /<meta name="viewport" content="width=device-width, initial-scale=1" \/>/);
 assert.ok(html.indexOf('class="mobile-value-card"') < html.indexOf('class="layout"'), "mobile summary should appear before detailed sections");
+assert.doesNotMatch(html, /Free public data first|Layer 1|Layer 2|Layer 3|Market source cross-check|MVP|source confidence/i);
 assert.match(css, /@media \(max-width: 680px\)/);
 assert.match(css, /\.mobile-value-card[\s\S]*width: calc\(100vw - 40px\)/);
 assert.match(css, /\.upload-panel[\s\S]*grid-template-columns: minmax\(0, 1fr\)/);
@@ -253,8 +255,6 @@ await elements.get("start-valuation").click();
 assert.equal(elements.get("mobile-property-address").textContent, "9 McIntosh Street, Oakleigh VIC 3166");
 assert.equal(elements.get("mobile-estimated-value").textContent, "$1.14m - $1.36m");
 assert.ok(recorder.scrolls.includes("mobile-value-card"), "mobile valuation should scroll to quick result card");
-assert.equal(elements.get("market-crosscheck-score").textContent, "72/100 · Medium-High");
-assert.equal(elements.get("market-source-grid").children.length, 8, "mobile page should render all market source checks");
 
 await elements.get("mobile-report-cta").click();
 assert.ok(recorder.scrolls.includes("lead-panel"), "locked mobile CTA should take user to registration form");
@@ -262,6 +262,13 @@ assert.ok(recorder.focuses.includes("lead-email"), "locked mobile CTA should foc
 
 await elements.get("upload-evidence").click();
 assert.ok(recorder.clicks.includes("evidence-files"), "upload button should trigger hidden file input");
+
+await elements.get("enter-manual-data").click();
+assert.ok(elements.get("manual-data-modal").open, "manual data button should open notes modal");
+elements.get("manual-data-notes").value = "title confirms land size, renovated kitchen, quiet wide street, no visible easement";
+await elements.get("manual-data-save").click();
+assert.ok(!elements.get("manual-data-modal").open, "manual data save should close modal");
+assert.match(elements.get("upload-message").textContent, /manual evidence|manual item|evidence/i);
 
 await elements.get("download-pdf").click();
 assert.ok(elements.get("pdf-requirements-modal").open, "PDF without phone and consent should open requirement modal");
