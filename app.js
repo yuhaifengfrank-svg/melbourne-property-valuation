@@ -1113,11 +1113,11 @@ function buildDetailedReportLines() {
 
   addReportSection(lines, "11. Investor Hub themes", investorThemeLines);
 
-  addReportSection(lines, "12. Report download and lead workflow", [
-    "- Basic estimate is available without registration.",
-    "- Detailed comparable adjustments, investor workflow and PDF download require registration.",
-    "- PDF download requires phone number and contact consent so the case can be followed up.",
-    "- Uploaded evidence is captured in the report summary and can be used to reprioritise leads in the dashboard."
+  addReportSection(lines, "12. How to use this report", [
+    "- Start with the executive valuation summary, then read the comparable sales and uploaded evidence review to understand what supports the range.",
+    "- Treat the micro-location, planning and data-source sections as a checklist for what should be confirmed before making a decision.",
+    "- If you have additional documents, photos, agent feedback, lease details or planning correspondence, send them through and the case can be reviewed again.",
+    "- If you want to discuss lending, investment finance, private credit or next steps, contact AusHomeValue by WeChat QR code or email."
   ]);
 
   addReportSection(lines, "13. Missing checks and next actions", [
@@ -1125,15 +1125,15 @@ function buildDetailedReportLines() {
     "- Review current property condition, renovation quality and visible defects.",
     "- Confirm planning overlays, easements, covenants and council constraints.",
     "- Use recent settled sales within the suburb and same property type to update the comparable anchor.",
-    "- Contact AusHomeValue by QR code or email info@aushomevalue.com.au for a case review."
+    "- Contact AusHomeValue by WeChat QR code or email info@aushomevalue.com.au for a case review."
   ]);
 
   addReportSection(lines, "Conclusion", [
     "Thank you again for using AusHomeValue. We hope this report gives you a clearer starting point, not just a price range, but a map of the evidence behind it.",
     "If you have questions, corrections or extra information, please contact us. Property analysis improves when the public data, professional judgement and client-supplied evidence are brought together carefully.",
     "Contact email: info@aushomevalue.com.au",
-    "WeChat / QR code: please scan the QR code on the AusHomeValue website contact section.",
-    "Website: https://www.aushomevalue.com.au/"
+    "WeChat / QR code: please scan the AusHomeValue WeChat QR code shown in the contact section or marketing material.",
+    "For property, lending, investment finance or private credit questions, please send the address and any supporting material so we can review the case properly."
   ]);
 
   addReportSection(lines, "Important disclaimer", [
