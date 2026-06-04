@@ -237,6 +237,7 @@ let unlocked = false;
 let currentValuation = emptyValuation;
 let selectedLvr = 0.6;
 let language = "en";
+let activeInvestorTheme = null;
 
 const byId = (id) => document.getElementById(id);
 
@@ -332,7 +333,12 @@ const uiText = {
       "#report-guide-modal p:not(.eyebrow)": "On mobile, start with the comparable sales table, then micro-location, suburb fundamentals and planning potential.",
       "#guide-comparables": "View report details",
       "#guide-location": "View location checks",
-      "#guide-close": "Stay here"
+      "#guide-close": "Stay here",
+      "#pdf-requirements-modal .eyebrow": "PDF download requirement",
+      "#pdf-requirements-modal h2": "Phone number and contact consent are required.",
+      "#pdf-requirements-modal p:not(.eyebrow)": "Please add your phone number and tick the contact consent box before downloading the full report PDF.",
+      "#pdf-fill-details": "Fill phone details",
+      "#pdf-close": "Not now"
     }
   },
   zh: {
@@ -426,7 +432,12 @@ const uiText = {
       "#report-guide-modal p:not(.eyebrow)": "手机端建议先看可比成交表，再看微位置、区域基本面和规划潜力。",
       "#guide-comparables": "查看报告详情",
       "#guide-location": "查看位置检查",
-      "#guide-close": "留在这里"
+      "#guide-close": "留在这里",
+      "#pdf-requirements-modal .eyebrow": "PDF 下载要求",
+      "#pdf-requirements-modal h2": "下载 PDF 需要填写电话并勾选联系授权。",
+      "#pdf-requirements-modal p:not(.eyebrow)": "请先补充电话号码，并勾选同意联系，再下载完整报告 PDF。",
+      "#pdf-fill-details": "去填写电话",
+      "#pdf-close": "暂不"
     }
   }
 };
@@ -470,6 +481,61 @@ const labelSets = {
         ["投资目的和偏好策略", "预算 / 计划配置金额", "风险偏好和投资期限", "Wholesale 或 Sophisticated investor 状态"],
         ["注册用户可看投资教育和市场主题", "完成画像后可申请机会摘要", "通过资格审核后可查看 IM / DD 材料"]
       ]
+    }
+  }
+};
+
+const investorThemes = {
+  en: {
+    privateCredit: {
+      title: "Private credit",
+      copy: "Property-backed private credit focuses on short-term lending secured by real estate. The first review usually looks at valuation buffer, LVR, borrower exit strategy and security position.",
+      points: [
+        "Indicative LVR, valuation range and downside buffer",
+        "Security ranking, repayment source and loan term",
+        "Borrower background, project status and documents still required"
+      ],
+      consult: "For a specific case, scan the QR code below or email info@aushomevalue.com.au."
+    },
+    developmentFinance: {
+      title: "Development finance",
+      copy: "Development finance is assessed through land value, planning status, build cost, presales or exit evidence, and the practical timing risk of the project.",
+      points: [
+        "Site value, planning pathway and approval uncertainty",
+        "Build budget, contingency and delivery timeline",
+        "Exit plan through sale, refinance or retained income"
+      ],
+      consult: "For a project review, scan the QR code below or email info@aushomevalue.com.au."
+    },
+    incomeProperty: {
+      title: "Income property",
+      copy: "Income property review connects valuation with rent, occupancy, yield, debt capacity and tenant quality, so the investor can compare return against risk.",
+      points: [
+        "Current rent, likely rent and vacancy risk",
+        "Yield, operating costs and interest-rate sensitivity",
+        "Tenant profile, lease terms and refinance options"
+      ],
+      consult: "For an income-property discussion, scan the QR code below or email info@aushomevalue.com.au."
+    }
+  },
+  zh: {
+    privateCredit: {
+      title: "地产私募债",
+      copy: "地产私募债主要看是否有房产作为抵押、估值安全边际、LVR、借款人的退出方式，以及抵押权顺位是否清楚。",
+      points: ["指示性 LVR、估值区间和下行缓冲", "抵押顺位、还款来源和借款期限", "借款人背景、项目状态和仍需补充的文件"],
+      consult: "具体项目可以扫描下方二维码咨询，或发邮件到 info@aushomevalue.com.au。"
+    },
+    developmentFinance: {
+      title: "开发融资",
+      copy: "开发融资会结合土地价值、规划状态、建筑成本、预售或退出证据，以及项目时间风险一起判断。",
+      points: ["地块价值、规划路径和审批不确定性", "建筑预算、预备金和交付时间", "通过出售、再融资或持有出租退出"],
+      consult: "开发项目可以扫描下方二维码咨询，或发邮件到 info@aushomevalue.com.au。"
+    },
+    incomeProperty: {
+      title: "收益型地产",
+      copy: "收益型地产会把估值和租金、空置率、收益率、贷款能力、租客质量连接起来，帮助投资人比较收益和风险。",
+      points: ["当前租金、潜在租金和空置风险", "收益率、运营成本和利率敏感度", "租客情况、租约条款和再融资选项"],
+      consult: "收益型地产可以扫描下方二维码咨询，或发邮件到 info@aushomevalue.com.au。"
     }
   }
 };
@@ -678,6 +744,7 @@ function applyLanguage() {
   byId("lead-name").placeholder = language === "zh" ? "你的姓名" : "Your name";
   byId("lead-phone").placeholder = language === "zh" ? "下载 PDF 时需要" : "For PDF download";
   renderValuation(currentValuation);
+  if (activeInvestorTheme) renderInvestorTheme(activeInvestorTheme);
 }
 
 function formatMoney(value) {
@@ -717,6 +784,26 @@ function scrollToSection(selector) {
 function showReportGuideModal() {
   const modal = byId("report-guide-modal");
   if (typeof modal.showModal === "function" && !modal.open) modal.showModal();
+}
+
+function showPdfRequirementsModal() {
+  const modal = byId("pdf-requirements-modal");
+  if (typeof modal.showModal === "function" && !modal.open) modal.showModal();
+}
+
+function renderInvestorTheme(themeKey) {
+  const theme = investorThemes[language][themeKey];
+  if (!theme) return;
+  activeInvestorTheme = themeKey;
+  byId("investor-theme-title").textContent = theme.title;
+  byId("investor-theme-copy").textContent = theme.copy;
+  setList("investor-theme-list", [...theme.points, theme.consult]);
+  const listItems = byId("investor-theme-list").querySelectorAll("li");
+  listItems[listItems.length - 1]?.classList.add("consult-line");
+  byId("investor-theme-detail").classList.remove("hidden");
+  document.querySelectorAll(".theme-card").forEach((button) => {
+    button.classList.toggle("active", button.dataset.theme === themeKey);
+  });
 }
 
 async function sendLeadNotification(lead) {
@@ -850,6 +937,17 @@ async function saveLead({ pdfDownload = false } = {}) {
 }
 
 async function downloadDemoReport() {
+  const phone = byId("lead-phone").value.trim();
+  const consent = byId("lead-consent").checked;
+  if (!phone || !consent) {
+    const message = byId("lead-message");
+    message.textContent =
+      language === "zh"
+        ? "下载 PDF 前需要填写电话并勾选联系授权。"
+        : "Phone number and contact consent are required before PDF download.";
+    showPdfRequirementsModal();
+    return;
+  }
   if (!(await saveLead({ pdfDownload: true }))) return;
   const report = [
     `Property report: ${currentValuation.address}`,
@@ -958,7 +1056,28 @@ byId("mobile-report-cta").addEventListener("click", () => {
   byId("lead-email").focus({ preventScroll: true });
 });
 
+byId("upload-evidence").addEventListener("click", () => {
+  byId("evidence-files").click();
+});
+
+byId("evidence-files").addEventListener("change", (event) => {
+  const count = event.target.files.length;
+  byId("upload-message").textContent =
+    count > 0
+      ? language === "zh"
+        ? `已选择 ${count} 个文件。演示版会先记录文件，正式版会上传到安全存储。`
+        : `${count} file${count === 1 ? "" : "s"} selected. Demo mode records the selection; production will upload to secure storage.`
+      : "";
+});
+
 byId("download-pdf").addEventListener("click", downloadDemoReport);
+
+document.querySelectorAll(".theme-card").forEach((button) => {
+  button.addEventListener("click", () => {
+    if (!unlocked) return;
+    renderInvestorTheme(button.dataset.theme);
+  });
+});
 
 document.querySelectorAll(".detail-panel, .detail-trigger").forEach((element) => {
   element.addEventListener("click", () => {
@@ -992,6 +1111,16 @@ byId("guide-location").addEventListener("click", () => {
 
 byId("guide-close").addEventListener("click", () => {
   byId("report-guide-modal").close();
+});
+
+byId("pdf-fill-details").addEventListener("click", () => {
+  byId("pdf-requirements-modal").close();
+  scrollToSection(".lead-panel");
+  byId("lead-phone").focus({ preventScroll: true });
+});
+
+byId("pdf-close").addEventListener("click", () => {
+  byId("pdf-requirements-modal").close();
 });
 
 applyLanguage();

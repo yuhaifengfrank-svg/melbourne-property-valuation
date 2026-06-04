@@ -371,8 +371,16 @@
             </div>
             <div class="report-actions">
               <button id="upload-evidence" type="button">Upload evidence</button>
+              <input
+                class="hidden-file-input"
+                id="evidence-files"
+                type="file"
+                multiple
+                accept=".pdf,.jpg,.jpeg,.png,.heic,.doc,.docx"
+              />
               <button class="ghost" id="download-pdf" type="button">Download PDF</button>
             </div>
+            <p class="upload-message" id="upload-message" aria-live="polite"></p>
           </section>
 
           <section class="panel investor-panel" id="investor">
@@ -389,15 +397,26 @@
               </div>
             </div>
             <div class="theme-grid">
-              <button class="theme-card detail-trigger" data-detail="property-backed private credit" type="button">
+              <button class="theme-card detail-trigger" data-detail="property-backed private credit" data-theme="privateCredit" type="button">
                 Private credit
               </button>
-              <button class="theme-card detail-trigger" data-detail="development finance themes" type="button">
+              <button class="theme-card detail-trigger" data-detail="development finance themes" data-theme="developmentFinance" type="button">
                 Development finance
               </button>
-              <button class="theme-card detail-trigger" data-detail="income property themes" type="button">
+              <button class="theme-card detail-trigger" data-detail="income property themes" data-theme="incomeProperty" type="button">
                 Income property
               </button>
+            </div>
+            <div class="investor-theme-detail hidden" id="investor-theme-detail" aria-live="polite">
+              <h3 id="investor-theme-title">Private credit</h3>
+              <p id="investor-theme-copy">
+                Short-term property-backed lending can be assessed through loan-to-value, exit strategy, borrower strength and security position.
+              </p>
+              <ul id="investor-theme-list">
+                <li>Indicative LVR and valuation buffer</li>
+                <li>Security ranking and repayment source</li>
+                <li>Documentation required before any opportunity review</li>
+              </ul>
             </div>
             <div class="investor-detail hidden" id="investor-detail">
               <article>
@@ -473,6 +492,19 @@
           <button id="guide-comparables" type="button">View report details</button>
           <button class="ghost" id="guide-location" type="button">View location checks</button>
           <button class="ghost" id="guide-close" type="button">Stay here</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog class="unlock-modal" id="pdf-requirements-modal">
+      <div class="modal-content">
+        <p class="eyebrow">PDF download requirement</p>
+        <h2>Phone number and contact consent are required.</h2>
+        <p>
+          Please add your phone number and tick the contact consent box before downloading the full report PDF.
+        </p>
+        <div class="modal-actions">
+          <button id="pdf-fill-details" type="button">Fill phone details</button>
+          <button class="ghost" id="pdf-close" type="button">Not now</button>
         </div>
       </div>
     </dialog>
