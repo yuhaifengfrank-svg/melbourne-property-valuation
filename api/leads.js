@@ -15,6 +15,16 @@ function getIp(request) {
   return clean(request.headers["x-forwarded-for"]?.split(",")[0] || request.socket?.remoteAddress || "", 100);
 }
 
+function cleanHeader(value, max = 150) {
+  const raw = clean(value, max);
+  if (!raw) return "";
+  try {
+    return decodeURIComponent(raw.replace(/\+/g, " "));
+  } catch {
+    return raw;
+  }
+}
+
 function hashIp(ip) {
   if (!ip) return "";
   const salt = process.env.IP_HASH_SALT || "aushomevalue";
@@ -109,6 +119,9 @@ export default async function handler(request, response) {
     const { score, priority } = scoreLead(body);
     const ip = getIp(request);
     const analysis = body.analysis && typeof body.analysis === "object" ? body.analysis : {};
+    const ipCountry = cleanHeader(request.headers["x-vercel-ip-country"], 10) || null;
+    const ipRegion = cleanHeader(request.headers["x-vercel-ip-country-region"], 100) || null;
+    const ipCity = cleanHeader(request.headers["x-vercel-ip-city"], 150) || null;
 
     const rows = await sql`
       INSERT INTO leads (
@@ -133,13 +146,13 @@ export default async function handler(request, response) {
         ${score},
         ${priority},
         ${hashIp(ip) || null},
-        ${clean(request.headers["x-vercel-ip-country"], 10) || null},
-        ${clean(request.headers["x-vercel-ip-country-region"], 100) || null},
-        ${clean(request.headers["x-vercel-ip-city"], 150) || null},
+        ${ipCountry},
+        ${ipRegion},
+        ${ipCity},
         ${clean(request.headers["user-agent"], 500) || null},
         ${JSON.stringify(analysis)}::jsonb
       )
-      RETURNING id, created_at, lead_score, priority
+      RETURNING id, created_at, lead_score, priority, ip_country, ip_region, ip_city
     `;
 
     return json(response, 201, { ok: true, lead: rows[0] });

@@ -1,67 +1,5 @@
 const valuations = [
   {
-    aliases: ["46 bishop st oakleigh", "46 bishop street oakleigh"],
-    address: "46 Bishop Street, Oakleigh VIC 3166",
-    type: "House",
-    value: "$1.90m - $2.09m",
-    midpoint: "$1.995m",
-    midpointValue: 1995000,
-    confidence: "Medium",
-    status: "Medium",
-    reasons: [
-      "Premium Oakleigh family house profile.",
-      "687 sqm land, pending title confirmation.",
-      "Strong access to Oakleigh Station and Eaton Mall.",
-      "Current condition and easements need confirmation."
-    ],
-    reasonsZh: [
-      "Oakleigh 优质家庭型独立屋。",
-      "约 687 平方米土地，仍需产权文件确认。",
-      "靠近 Oakleigh Station 和 Eaton Mall，生活便利性强。",
-      "当前房况和地役权仍需确认。"
-    ],
-    comparables: [
-      ["33 Tamar Grove", "$1.80m", "Apr 2026", "539 sqm", "3 / 2 / 1", "Good"],
-      ["16 Lincoln Avenue", "$1.56m", "Mar 2026", "Unknown", "4 / 2 / 2", "Medium"],
-      ["140 Atherton Road", "$1.571m", "Dec 2025", "628 sqm", "4 / 3 / 2", "Medium"]
-    ],
-    location: {
-      rank: "Top 25%, estimated",
-      type: "Quiet residential street",
-      amenity: "Strong",
-      parking: "To be checked",
-      rankZh: "区内前 25%，估算",
-      typeZh: "安静住宅街",
-      amenityZh: "强",
-      parkingZh: "待检查"
-    },
-    suburb: [
-      "Strong transport and retail access.",
-      "Demand support from Chadstone, Monash University and Monash Medical.",
-      "Comparison set: Hughesdale, Huntingdale, Clayton, Murrumbeena."
-    ],
-    suburbZh: [
-      "交通和零售配套强。",
-      "Chadstone、Monash University 和 Monash Medical 带来需求支撑。",
-      "对比区域包括 Hughesdale、Huntingdale、Clayton、Murrumbeena。"
-    ],
-    planning: {
-      landSource: "Portal, not title-confirmed",
-      granny: "Medium, subject to controls",
-      approval: "Not approved",
-      landSourceZh: "门户网站来源，未由产权文件确认",
-      grannyZh: "中等，受规划限制影响",
-      approvalZh: "未获批准"
-    },
-    map: {
-      target: "46",
-      station: "Oakleigh Station",
-      shops: "Eaton Mall",
-      stationZh: "Oakleigh 火车站",
-      shopsZh: "Eaton Mall 商场"
-    }
-  },
-  {
     aliases: ["9 mcintosh st oakleigh", "9 mcintosh street oakleigh"],
     address: "9 McIntosh Street, Oakleigh VIC 3166",
     type: "House",
@@ -239,6 +177,7 @@ let selectedLvr = 0.6;
 let language = "en";
 let activeInvestorTheme = null;
 let uploadedEvidenceSummary = [];
+const sentLeadNotificationKeys = new Set();
 
 const byId = (id) => document.getElementById(id);
 
@@ -975,6 +914,34 @@ function renderInvestorTheme(themeKey) {
   });
 }
 
+function leadNotificationKey(lead) {
+  return `${lead.email.toLowerCase()}::${lead.address.toLowerCase()}::${lead.eventType}`;
+}
+
+function hasLeadNotificationBeenSent(lead) {
+  const key = leadNotificationKey(lead);
+  if (sentLeadNotificationKeys.has(key)) return true;
+  try {
+    return localStorage.getItem(`aushomevalue-notified::${key}`) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function markLeadNotificationSent(lead) {
+  const key = leadNotificationKey(lead);
+  sentLeadNotificationKeys.add(key);
+  try {
+    localStorage.setItem(`aushomevalue-notified::${key}`, "1");
+  } catch {
+    // Ignore localStorage failures; in-memory tracking still prevents repeats in the same session.
+  }
+}
+
+function formatVisitorRegion(leadRecord = {}) {
+  return [leadRecord.ip_city, leadRecord.ip_region, leadRecord.ip_country].filter(Boolean).join(", ") || "Unavailable";
+}
+
 function sanitizePdfText(value) {
   return String(value ?? "")
     .replace(/[^\x09\x0A\x0D\x20-\x7E]/g, "")
@@ -1257,6 +1224,11 @@ async function sendLeadNotification(lead) {
       phone: lead.phone || "Not supplied",
       property_address: lead.address,
       estimated_value: lead.value,
+      confidence: lead.confidence,
+      activity: lead.eventType === "pdf_download" ? "PDF download" : "Report unlock",
+      visitor_region: lead.visitorRegion || "Unavailable",
+      lead_score: lead.leadScore || "Pending",
+      priority: lead.priority || "Pending",
       contact_consent: lead.consent ? "Yes" : "No",
       pdf_download: lead.pdfDownload ? "Yes" : "No",
       submitted_at: lead.createdAt
@@ -1343,16 +1315,24 @@ async function saveLead({ pdfDownload = false } = {}) {
 
   let stored = false;
   let notified = false;
+  let savedLead = null;
   try {
-    await saveLeadToDatabase(lead);
+    const databaseResult = await saveLeadToDatabase(lead);
+    savedLead = databaseResult.lead || null;
+    lead.visitorRegion = formatVisitorRegion(savedLead);
+    lead.leadScore = savedLead?.lead_score;
+    lead.priority = savedLead?.priority;
     stored = true;
   } catch (error) {
     console.error(error);
   }
 
   try {
-    await sendLeadNotification(lead);
-    notified = true;
+    if (stored && !hasLeadNotificationBeenSent(lead)) {
+      await sendLeadNotification(lead);
+      markLeadNotificationSent(lead);
+      notified = true;
+    }
   } catch (error) {
     console.error(error);
   }
@@ -1369,7 +1349,9 @@ async function saveLead({ pdfDownload = false } = {}) {
       ? "暂时无法保存客户资料，请稍后再试。"
       : "Customer details could not be saved. Please try again later.";
 
-  if (stored && !notified) console.warn("Customer record saved, but lead notification email failed.");
+  if (stored && !notified && !hasLeadNotificationBeenSent(lead)) {
+    console.warn("Customer record saved, but lead notification email failed.");
+  }
   return stored;
 }
 
