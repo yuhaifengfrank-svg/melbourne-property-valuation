@@ -1,5 +1,10 @@
 const endpoint = "https://www.aushomevalue.com.au/api/leads";
-const stamp = new Date().toISOString().slice(0, 10).replaceAll("-", "");
+const stamp = (process.env.TEST_RUN_ID || new Date().toISOString())
+  .replaceAll("-", "")
+  .replaceAll(":", "")
+  .replaceAll(".", "")
+  .replace("T", "-")
+  .replace("Z", "");
 
 const cases = [
   { type: "House", address: "9 McIntosh Street, Oakleigh VIC 3166", suburb: "Oakleigh", state: "VIC", value: "$1.14m - $1.36m", midpoint: 1250000 },
