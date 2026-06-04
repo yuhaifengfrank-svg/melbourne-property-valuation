@@ -66,7 +66,7 @@ export default async function handler(request, response) {
       const leads = await sql`
         SELECT
           id, created_at, name, email, phone, contact_consent, pdf_download,
-          property_address, property_type, estimated_value, midpoint_value,
+          property_address, property_suburb, property_state, property_type, estimated_value, midpoint_value,
           confidence, selected_lvr, language, event_type, lead_score, priority,
           ip_country, ip_region, ip_city, analysis
         FROM leads
@@ -111,6 +111,8 @@ export default async function handler(request, response) {
     const name = clean(body.name, 150);
     const email = clean(body.email, 254).toLowerCase();
     const propertyAddress = clean(body.propertyAddress, 300);
+    const propertySuburb = clean(body.propertySuburb, 120);
+    const propertyState = clean(body.propertyState, 10).toUpperCase();
     const eventType = clean(body.eventType, 80) || "report_unlock";
 
     if (!name || !email || !propertyAddress || !email.includes("@")) {
@@ -136,6 +138,7 @@ export default async function handler(request, response) {
     const rows = await sql`
       INSERT INTO leads (
         name, email, phone, contact_consent, pdf_download, property_address,
+        property_suburb, property_state,
         property_type, estimated_value, midpoint_value, confidence, selected_lvr,
         language, event_type, lead_score, priority, ip_hash, ip_country, ip_region,
         ip_city, user_agent, analysis
@@ -146,6 +149,8 @@ export default async function handler(request, response) {
         ${Boolean(body.contactConsent)},
         ${Boolean(body.pdfDownload)},
         ${propertyAddress},
+        ${propertySuburb || null},
+        ${propertyState || null},
         ${clean(body.propertyType, 80) || null},
         ${clean(body.estimatedValue, 100) || null},
         ${Number.isFinite(Number(body.midpointValue)) ? Math.round(Number(body.midpointValue)) : null},

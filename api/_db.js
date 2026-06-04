@@ -23,6 +23,8 @@ export async function ensureSchema(sql) {
       contact_consent BOOLEAN NOT NULL DEFAULT FALSE,
       pdf_download BOOLEAN NOT NULL DEFAULT FALSE,
       property_address TEXT NOT NULL,
+      property_suburb TEXT,
+      property_state TEXT,
       property_type TEXT,
       estimated_value TEXT,
       midpoint_value BIGINT,
@@ -41,9 +43,12 @@ export async function ensureSchema(sql) {
     )
   `;
 
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS property_suburb TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS property_state TEXT`;
   await sql`CREATE INDEX IF NOT EXISTS leads_score_idx ON leads (lead_score DESC, created_at DESC)`;
   await sql`CREATE INDEX IF NOT EXISTS leads_email_idx ON leads (LOWER(email))`;
   await sql`CREATE INDEX IF NOT EXISTS leads_property_idx ON leads (LOWER(property_address))`;
+  await sql`CREATE INDEX IF NOT EXISTS leads_state_suburb_idx ON leads (property_state, LOWER(property_suburb))`;
   await sql`CREATE INDEX IF NOT EXISTS leads_notification_dedupe_idx ON leads (LOWER(email), LOWER(property_address), event_type)`;
   initialized = true;
 }

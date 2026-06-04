@@ -211,20 +211,38 @@ main {
   margin-bottom: 8px;
 }
 
+.location-row {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(110px, 0.35fr) minmax(0, 1fr);
+  margin-bottom: 12px;
+}
+
+.field-caption {
+  color: rgba(255, 255, 255, 0.8);
+  display: block;
+  font-size: 12px;
+  font-weight: 750;
+  margin-bottom: 6px;
+}
+
 .search-row {
   display: grid;
   gap: 10px;
   grid-template-columns: 1fr auto;
 }
 
-input {
+input,
+select {
   border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: 6px;
   min-width: 0;
   padding: 14px 14px;
 }
 
-.search-row input {
+.search-row input,
+.location-row input,
+.location-row select {
   background: rgba(255, 255, 255, 0.96);
 }
 
@@ -1219,6 +1237,7 @@ th {
     width: 100%;
   }
 
+  .location-row,
   .search-row,
   .facts div,
   .upload-panel,

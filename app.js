@@ -655,11 +655,38 @@ const sentLeadNotificationKeys = new Set();
 
 const byId = (id) => document.getElementById(id);
 
+function getSelectedState() {
+  return byId("property-state")?.value || "VIC";
+}
+
+function getEnteredSuburb() {
+  return byId("suburb")?.value.trim() || "";
+}
+
+function buildEnteredAddress() {
+  const streetAddress = byId("address").value.trim();
+  const suburb = getEnteredSuburb();
+  const state = getSelectedState();
+  return [streetAddress, suburb, state].filter(Boolean).join(", ");
+}
+
+function suburbFromAddress(address) {
+  const cleaned = String(address || "").replace(/\bVIC\b|\bNSW\b|\bQLD\b|\bWA\b|\bSA\b|\bTAS\b|\bACT\b|\bNT\b|\b\d{4}\b/gi, "");
+  const parts = cleaned.split(",").map((part) => part.trim()).filter(Boolean);
+  if (parts.length > 1) return parts[parts.length - 1];
+  const words = cleaned.trim().split(/\s+/);
+  return words.length > 1 ? words.slice(-2).join(" ") : "";
+}
+
+function stateFromAddress(address) {
+  return String(address || "").match(/\b(VIC|NSW|QLD|WA|SA|TAS|ACT|NT)\b/i)?.[1]?.toUpperCase() || getSelectedState();
+}
+
 const uiText = {
   en: {
     toggle: "简体中文",
     selectors: {
-      ".topbar .eyebrow": "Metropolitan Melbourne",
+      ".topbar .eyebrow": "Australia-wide intake",
       ".topbar h1": "AusHomeValue",
       'nav a[href="#valuation"]': "Valuation",
       'nav a[href="#comparables"]': "Comparables",
@@ -670,9 +697,10 @@ const uiText = {
       'nav a[href="#investor"]': "Investor Hub",
       'nav a[href="#contact"]': "Contact",
       ".search-copy .eyebrow": "Free first-layer estimate",
-      ".search-copy h2": "Enter a Melbourne address. Get a quick estimate. Leave details for the full report.",
+      ".search-copy h2": "Select state, suburb and address. Get a quick estimate. Leave details for the full report.",
       ".hero-note": "Preliminary estimate only. Based on public information, sample market evidence and client-supplied material; not a formal valuation or financial advice.",
-      '.search-box label[for="address"]': "Property address",
+      '.search-box label[for="property-state"]': "Property location",
+      '.search-box label[for="address"]': "Street address",
       "#start-valuation": "Get free estimate",
       ".mobile-value-card .eyebrow": "Estimated value",
       ".mobile-value-label": "Estimated value",
@@ -765,7 +793,7 @@ const uiText = {
   zh: {
     toggle: "English",
     selectors: {
-      ".topbar .eyebrow": "墨尔本都会区",
+      ".topbar .eyebrow": "澳洲全国地址入口",
       ".topbar h1": "AusHomeValue",
       'nav a[href="#valuation"]': "估值",
       'nav a[href="#comparables"]': "可比成交",
@@ -776,9 +804,10 @@ const uiText = {
       'nav a[href="#investor"]': "投资中心",
       'nav a[href="#contact"]': "联系",
       ".search-copy .eyebrow": "免费第一层估值",
-      ".search-copy h2": "输入墨尔本地址，先看快速估值；留下资料后查看完整报告。",
+      ".search-copy h2": "先选择州、区域和街道地址，再查看快速估值；留下资料后查看完整报告。",
       ".hero-note": "初步估值仅供参考。结果基于公开资料、样本市场证据和客户补充资料，不构成正式估值、贷款批准或个人金融建议。",
-      '.search-box label[for="address"]': "房产地址",
+      '.search-box label[for="property-state"]': "房产所在地区",
+      '.search-box label[for="address"]': "街道地址",
       "#start-valuation": "获取免费估值",
       ".mobile-value-card .eyebrow": "估值结果",
       ".mobile-value-label": "估值区间",
@@ -1251,7 +1280,12 @@ function renderComparables(rows) {
 }
 
 function renderValuation(data) {
-  currentValuation = data;
+  currentValuation = {
+    ...data,
+    propertyState: data.propertyState || stateFromAddress(data.address),
+    propertySuburb: data.propertySuburb || suburbFromAddress(data.address)
+  };
+  data = currentValuation;
   const planningLabels = getPlanningLabels(data);
   byId("property-address").textContent = language === "zh" && data.addressZh ? data.addressZh : data.address;
   byId("estimated-value").textContent = localizeValue(data.value);
@@ -1334,7 +1368,8 @@ function applyLanguage() {
   setCollectionText(".theme-card", labels.investorButtons);
   setSourcePanel(labels);
   setInvestorDetail(labels.investorDetail);
-  byId("address").placeholder = language === "zh" ? "输入墨尔本房产地址" : "Enter a Melbourne property address";
+  byId("suburb").placeholder = language === "zh" ? "例如 Oakleigh" : "Oakleigh";
+  byId("address").placeholder = language === "zh" ? "例如 Unit 2, 11 McIntosh Street" : "Unit 2, 11 McIntosh Street";
   byId("lead-email").placeholder = language === "zh" ? "you@example.com" : "you@example.com";
   byId("lead-name").placeholder = language === "zh" ? "你的姓名" : "Your name";
   byId("lead-phone").placeholder = language === "zh" ? "下载 PDF 时需要" : "For PDF download";
@@ -1505,6 +1540,8 @@ function buildDetailedReportLines() {
   addReportSection(lines, "1. Executive valuation summary", [
     ["Generated at", `${generatedAt} Melbourne time`],
     ["Property address", currentValuation.address],
+    ["State / territory", currentValuation.propertyState || "Not supplied"],
+    ["Suburb", currentValuation.propertySuburb || "Not supplied"],
     ["Property type", selectedPropertyType],
     ["Estimated value range", currentValuation.value],
     ["Estimated midpoint", currentValuation.midpoint],
@@ -1712,6 +1749,8 @@ async function sendLeadNotification(lead) {
       email: lead.email,
       phone: lead.phone || "Not supplied",
       property_address: lead.address,
+      property_suburb: lead.suburb || "Not supplied",
+      property_state: lead.propertyState || "Not supplied",
       estimated_value: lead.value,
       confidence: lead.confidence,
       activity: lead.eventType === "pdf_download" ? "PDF download" : "Report unlock",
@@ -1741,6 +1780,8 @@ async function saveLeadToDatabase(lead) {
       contactConsent: lead.consent,
       pdfDownload: lead.pdfDownload,
       propertyAddress: lead.address,
+      propertySuburb: lead.suburb,
+      propertyState: lead.propertyState,
       propertyType: lead.propertyType,
       estimatedValue: lead.value,
       midpointValue: lead.midpointValue,
@@ -1784,6 +1825,8 @@ async function saveLead({ pdfDownload = false } = {}) {
     consent,
     pdfDownload,
     address: currentValuation.address,
+    suburb: currentValuation.propertySuburb || getEnteredSuburb(),
+    propertyState: currentValuation.propertyState || getSelectedState(),
     value: currentValuation.value,
     midpointValue: currentValuation.midpointValue,
     confidence: currentValuation.confidence,
@@ -1796,6 +1839,8 @@ async function saveLead({ pdfDownload = false } = {}) {
       comparables: currentValuation.comparables,
       location: currentValuation.location,
       suburb: currentValuation.suburb,
+      propertySuburb: currentValuation.propertySuburb || getEnteredSuburb(),
+      propertyState: currentValuation.propertyState || getSelectedState(),
       planning: currentValuation.planning,
       evidenceSummary: currentValuation.evidenceSummary || uploadedEvidenceSummary
     },
@@ -1869,16 +1914,21 @@ async function downloadDemoReport() {
 
 byId("start-valuation").addEventListener("click", () => {
   const selectedType = document.querySelector(".chip.active")?.dataset.type || "House";
+  const enteredAddress = buildEnteredAddress();
+  const selectedState = getSelectedState();
+  const enteredSuburb = getEnteredSuburb();
   if (selectedType === "Commercial") {
     renderValuation({
       ...commercialPendingValuation,
-      address: byId("address").value || commercialPendingValuation.address,
-      addressZh: byId("address").value || commercialPendingValuation.addressZh
+      address: enteredAddress || commercialPendingValuation.address,
+      addressZh: enteredAddress || commercialPendingValuation.addressZh,
+      propertyState: selectedState,
+      propertySuburb: enteredSuburb
     });
     if (window.matchMedia("(max-width: 680px)").matches) scrollToSection(".mobile-value-card");
     return;
   }
-  const match = findValuation(byId("address").value, selectedType);
+  const match = findValuation(enteredAddress || byId("address").value, selectedType);
   if (match) {
     renderValuation(match);
     if (window.matchMedia("(max-width: 680px)").matches) scrollToSection(".mobile-value-card");
@@ -1886,7 +1936,9 @@ byId("start-valuation").addEventListener("click", () => {
   }
   renderValuation({
     ...valuations[0],
-    address: byId("address").value || "Unknown address",
+    address: enteredAddress || "Unknown address",
+    propertyState: selectedState,
+    propertySuburb: enteredSuburb,
     type: selectedType,
     value: "Sample unavailable",
     midpoint: "Manual review",
@@ -1895,12 +1947,16 @@ byId("start-valuation").addEventListener("click", () => {
     status: "Low",
     reasons: [
       "This demo currently supports selected sample addresses.",
-      "A real deployment would call the valuation API and data sources.",
+      selectedState === "VIC"
+        ? "A real deployment would call the valuation API and data sources."
+        : `${selectedState} intake is ready, but valuation data for this state will be connected in a later release.`,
       "Please try 9 McIntosh Street, 18 Moresby Street, Unit 2/11 McIntosh Street, Unit 1/5 McIntosh Street, 13 Gadd Street or Apartment 12/20 Haughton Road."
     ],
     reasonsZh: [
       "当前演示只支持部分样本地址。",
-      "真实部署时会调用估值 API 和数据源。",
+      selectedState === "VIC"
+        ? "真实部署时会调用估值 API 和数据源。"
+        : `${selectedState} 的地址入口已经准备好，但该州估值数据会在后续版本接入。`,
       "请尝试 9 McIntosh Street、18 Moresby Street、Unit 2/11 McIntosh Street、Unit 1/5 McIntosh Street、13 Gadd Street 或 Apartment 12/20 Haughton Road。"
     ],
     comparables: [],

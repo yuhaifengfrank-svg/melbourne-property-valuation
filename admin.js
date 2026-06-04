@@ -14,6 +14,10 @@ function regionOf(lead) {
   return [lead.ip_city, lead.ip_region, lead.ip_country].filter(Boolean).join(", ") || "Unavailable";
 }
 
+function propertyLocationOf(lead) {
+  return [lead.property_suburb, lead.property_state].filter(Boolean).join(", ") || "Location not supplied";
+}
+
 function activityOf(lead) {
   const items = [];
   if (lead.event_type === "report_unlock") items.push("Unlocked");
@@ -39,7 +43,7 @@ function renderLeads() {
   const query = byId("lead-search").value.trim().toLowerCase();
   const priority = byId("priority-filter").value;
   const filtered = leads.filter((lead) => {
-    const haystack = `${lead.name} ${lead.email} ${lead.phone || ""} ${lead.property_address} ${regionOf(lead)}`.toLowerCase();
+    const haystack = `${lead.name} ${lead.email} ${lead.phone || ""} ${lead.property_address} ${propertyLocationOf(lead)} ${regionOf(lead)}`.toLowerCase();
     return (!query || haystack.includes(query)) && (!priority || lead.priority === priority);
   });
 
@@ -50,7 +54,7 @@ function renderLeads() {
             <tr data-id="${lead.id}">
               <td><span class="priority priority-${lead.priority.toLowerCase()}">${escapeHtml(lead.priority)} ${lead.lead_score}</span></td>
               <td><strong>${escapeHtml(lead.name)}</strong><small>${escapeHtml(lead.email)}<br />${escapeHtml(lead.phone || "No phone")}</small></td>
-              <td><strong>${escapeHtml(lead.property_address)}</strong><small>${escapeHtml(lead.property_type || "Property")}</small></td>
+              <td><strong>${escapeHtml(lead.property_address)}</strong><small>${escapeHtml(propertyLocationOf(lead))}<br />${escapeHtml(lead.property_type || "Property")}</small></td>
               <td>${escapeHtml(lead.estimated_value || "Manual review")}<small>${escapeHtml(lead.confidence || "Unknown confidence")}</small></td>
               <td>${escapeHtml(activityOf(lead))}</td>
               <td>${escapeHtml(regionOf(lead))}</td>
@@ -76,6 +80,7 @@ function renderDetail(lead) {
       <div>
         <p class="eyebrow">Customer analysis report</p>
         <h2>${escapeHtml(lead.name)} · ${escapeHtml(lead.property_address)}</h2>
+        <p>${escapeHtml(propertyLocationOf(lead))}</p>
       </div>
       <span class="priority priority-${lead.priority.toLowerCase()}">${escapeHtml(lead.priority)} ${lead.lead_score}</span>
     </div>
@@ -105,12 +110,12 @@ function csvCell(value) {
 function exportLeads() {
   const headers = [
     "Priority", "Lead Score", "Name", "Email", "Phone", "Contact Consent", "PDF Download",
-    "Property Address", "Property Type", "Estimated Value", "Confidence", "Selected LVR",
+    "Property Address", "Suburb", "State", "Property Type", "Estimated Value", "Confidence", "Selected LVR",
     "Event Type", "Approximate Region", "Submitted At"
   ];
   const rows = leads.map((lead) => [
     lead.priority, lead.lead_score, lead.name, lead.email, lead.phone || "", lead.contact_consent ? "Yes" : "No",
-    lead.pdf_download ? "Yes" : "No", lead.property_address, lead.property_type || "", lead.estimated_value || "",
+    lead.pdf_download ? "Yes" : "No", lead.property_address, lead.property_suburb || "", lead.property_state || "", lead.property_type || "", lead.estimated_value || "",
     lead.confidence || "", lead.selected_lvr || "", lead.event_type, regionOf(lead), lead.created_at
   ]);
   const csv = [headers, ...rows].map((row) => row.map(csvCell).join(",")).join("\n");

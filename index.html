@@ -35,12 +35,32 @@
           </p>
         </div>
         <form class="search-box">
-          <label for="address">Property address</label>
+          <label for="property-state">Property location</label>
+          <div class="location-row">
+            <div>
+              <span class="field-caption">State / territory</span>
+              <select id="property-state" name="property-state">
+                <option value="VIC" selected>VIC</option>
+                <option value="NSW">NSW</option>
+                <option value="QLD">QLD</option>
+                <option value="WA">WA</option>
+                <option value="SA">SA</option>
+                <option value="TAS">TAS</option>
+                <option value="ACT">ACT</option>
+                <option value="NT">NT</option>
+              </select>
+            </div>
+            <div>
+              <span class="field-caption">Suburb</span>
+              <input id="suburb" name="suburb" placeholder="Oakleigh" autocomplete="address-level2" />
+            </div>
+          </div>
+          <label for="address">Street address</label>
           <div class="search-row">
             <input
               id="address"
               name="address"
-              placeholder="Enter a Melbourne property address"
+              placeholder="Unit 2, 11 McIntosh Street"
               autocomplete="street-address"
             />
             <button id="start-valuation" type="button">Get free estimate</button>
