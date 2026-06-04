@@ -282,6 +282,246 @@ const valuations = [
       stationZh: "Oakleigh 火车站",
       shopsZh: "Eaton Mall 商场"
     }
+  },
+  {
+    aliases: [
+      "apartment 12 20 haughton road oakleigh",
+      "apt 12 20 haughton road oakleigh",
+      "12/20 haughton road oakleigh",
+      "12 20 haughton rd oakleigh",
+      "unit 12 20 haughton road oakleigh"
+    ],
+    address: "Apartment 12, 20 Haughton Road, Oakleigh VIC 3166",
+    type: "Apartment",
+    value: "$540k - $610k",
+    midpoint: "$575k",
+    midpointValue: 575000,
+    confidence: "Medium",
+    status: "Medium",
+    reasons: [
+      "Apartment value is primarily benchmarked against same-building and same-project sales.",
+      "Internal area, floor level, aspect, natural light, car space and storage are key price drivers.",
+      "Owners corporation fees, building age, defects, cladding and sinking fund position need confirmation.",
+      "Land component has limited direct weight compared with unit entitlement and building quality."
+    ],
+    reasonsZh: [
+      "公寓估值主要以同楼和同项目成交为基准。",
+      "室内面积、楼层、朝向、采光、车位和储物间是核心价格因素。",
+      "业主委员会费用、楼龄、缺陷、外墙材料和维修基金状况需要确认。",
+      "土地因素的直接权重较低，更看重 unit entitlement 和楼宇质量。"
+    ],
+    comparables: [
+      ["8/20 Haughton Road", "$565k", "Mar 2026", "Apartment", "2 / 1 / 1", "Strong"],
+      ["15/22 Haughton Road", "$598k", "Apr 2026", "Apartment", "2 / 2 / 1", "Good"],
+      ["5/12 Dalgety Street", "$535k", "Feb 2026", "Apartment", "2 / 1 / 1", "Medium"]
+    ],
+    location: {
+      rank: "Apartment pocket, station-oriented",
+      type: "Retail / transport edge",
+      amenity: "Very strong",
+      parking: "Car space confirmation required",
+      rankZh: "车站导向型公寓区段",
+      typeZh: "商圈 / 交通边缘位置",
+      amenityZh: "很强",
+      parkingZh: "需要确认车位"
+    },
+    suburb: [
+      "Oakleigh apartments are supported by station access, retail amenity and rental demand.",
+      "Apartment buyers compare body corporate costs, building condition and floor-plan efficiency.",
+      "Same-building evidence carries higher weight than suburb-wide house or townhouse evidence."
+    ],
+    suburbZh: [
+      "Oakleigh 公寓受车站、零售便利和租赁需求支撑。",
+      "公寓买家会比较 body corporate 成本、楼宇状况和户型效率。",
+      "同楼成交权重高于区域内独立屋或联排成交。"
+    ],
+    planning: {
+      landSource: "Strata plan and unit entitlement required",
+      granny: "Owners corporation fee / sinking fund required",
+      approval: "Cladding, defects and facilities check",
+      landSourceZh: "需要 strata plan 和 unit entitlement",
+      grannyZh: "需要 owners corporation fee / sinking fund",
+      approvalZh: "检查外墙、缺陷和设施"
+    },
+    planningLabels: {
+      en: ["Strata / entitlement", "Owners corporation", "Building risk"],
+      zh: ["Strata / 权益", "业主委员会", "楼宇风险"]
+    },
+    modelNotes: [
+      "Apartment model: same-building and same-project sales 60%-75%, internal area/floor/aspect 10%-15%, car space/storage 5%-10%, owners corporation and building risk 10%-15%.",
+      "Core extra fields: floor level, aspect, internal area, balcony, car space, storage cage, building age, body corporate fees, cladding, defects and sinking fund."
+    ],
+    modelNotesZh: [
+      "Apartment 模型：同楼和同项目成交 60%-75%，室内面积/楼层/朝向 10%-15%，车位/储物间 5%-10%，业主委员会和楼宇风险 10%-15%。",
+      "新增核心字段：楼层、朝向、室内面积、阳台、车位、储物间、楼龄、body corporate fee、外墙、缺陷和维修基金。"
+    ],
+    map: {
+      target: "12/20",
+      station: "Oakleigh Station",
+      shops: "Eaton Mall",
+      stationZh: "Oakleigh 火车站",
+      shopsZh: "Eaton Mall 商场"
+    }
+  },
+  {
+    aliases: [
+      "vacant land 13 gadd st oakleigh",
+      "land 13 gadd st oakleigh",
+      "13 gadd st oakleigh",
+      "13 gadd street oakleigh",
+      "13 gadd street oakleigh land"
+    ],
+    address: "13 Gadd Street, Oakleigh VIC 3166",
+    type: "Vacant land",
+    value: "$1.02m - $1.18m",
+    midpoint: "$1.10m",
+    midpointValue: 1100000,
+    confidence: "Low-Medium",
+    status: "Low-Medium",
+    reasons: [
+      "Vacant land valuation focuses on land size, frontage, slope, services and planning feasibility.",
+      "The demo treats this as a vacant/development-site scenario and requires title/council confirmation.",
+      "Comparable evidence should use land-only sales or knockdown/rebuild sales with building value removed.",
+      "Development feasibility depends on zoning, overlays, easements, covenants and nearby built form."
+    ],
+    reasonsZh: [
+      "空地估值重点是土地面积、临街宽度、坡度、市政服务和规划可行性。",
+      "演示中按空地 / 开发地块情景处理，必须由产权和 council 资料确认。",
+      "可比证据应使用纯土地成交，或剔除建筑价值后的推倒重建成交。",
+      "开发可行性取决于 zoning、overlay、地役权、covenant 和周边建成形态。"
+    ],
+    comparables: [
+      ["7 Gadd Street", "$1.08m", "Mar 2026", "Land", "Vacant / site", "Good"],
+      ["21 Hanover Street", "$1.16m", "Apr 2026", "Land", "Development site", "Medium"],
+      ["34 Burlington Street", "$1.03m", "Feb 2026", "Land", "Knockdown", "Medium"]
+    ],
+    location: {
+      rank: "Middle 50%, development dependent",
+      type: "Residential land pocket",
+      amenity: "Good",
+      parking: "Not applicable, access width required",
+      rankZh: "中间 50%，取决于开发潜力",
+      typeZh: "住宅土地区段",
+      amenityZh: "好",
+      parkingZh: "不适用，需要确认车道宽度"
+    },
+    suburb: [
+      "Oakleigh land demand is supported by scarcity, school/retail access and redevelopment interest.",
+      "End-value feasibility should compare finished townhouse/villa values against land plus build cost.",
+      "Planning constraints can quickly reduce land value if yield or access is limited."
+    ],
+    suburbZh: [
+      "Oakleigh 土地需求受稀缺性、学校/零售便利和再开发兴趣支撑。",
+      "可行性需要比较完工后的联排/Villa 价值与土地加建造成本。",
+      "如果规划限制影响开发数量或进出，土地价值会明显下降。"
+    ],
+    planning: {
+      landSource: "Title search and feature survey required",
+      granny: "Zoning, overlays, easements and covenants",
+      approval: "Feasibility and council pre-check required",
+      landSourceZh: "需要产权查询和测量图",
+      grannyZh: "Zoning、overlays、地役权和 covenants",
+      approvalZh: "需要可行性和 council 预审"
+    },
+    planningLabels: {
+      en: ["Land evidence", "Planning controls", "Development feasibility"],
+      zh: ["土地证据", "规划限制", "开发可行性"]
+    },
+    modelNotes: [
+      "Vacant land model: land-only comparables 55%-65%, planning controls 15%-20%, frontage/slope/services 10%-15%, end-value feasibility 10%-15%.",
+      "Core extra fields: land size, frontage, depth, slope, services, easements, zoning, overlays, covenant, title restrictions and achievable end value."
+    ],
+    modelNotesZh: [
+      "Vacant land 模型：纯土地可比成交 55%-65%，规划限制 15%-20%，临街/坡度/服务 10%-15%，完工价值可行性 10%-15%。",
+      "新增核心字段：土地面积、临街宽度、深度、坡度、市政服务、地役权、zoning、overlays、covenant、产权限制和可实现完工价值。"
+    ],
+    map: {
+      target: "13",
+      station: "Oakleigh Station",
+      shops: "Oakleigh Central",
+      stationZh: "Oakleigh 火车站",
+      shopsZh: "Oakleigh Central"
+    }
+  },
+  {
+    aliases: [
+      "unit1 3 mcintosh st oakleigh",
+      "unit 1 3 mcintosh st oakleigh",
+      "1/3 mcintosh st oakleigh",
+      "1 3 mcintosh street oakleigh",
+      "unit 1 3 mcintosh st oaklrigh"
+    ],
+    address: "Unit 1, 3 McIntosh Street, Oakleigh VIC 3166",
+    type: "Unit",
+    value: "$720k - $810k",
+    midpoint: "$765k",
+    midpointValue: 765000,
+    confidence: "Medium",
+    status: "Medium",
+    reasons: [
+      "Australian 'unit' can mean villa-style, townhouse-style or apartment-style stock, so classification is the first step.",
+      "This sample is treated as a single-level unit/villa-style dwelling rather than an apartment.",
+      "Same-complex, same-street and same-layout unit sales should carry the highest weight.",
+      "Private open space, car space, building age and owners corporation obligations remain key checks."
+    ],
+    reasonsZh: [
+      "澳洲 Unit 可能是 Villa、联排或公寓，所以第一步必须先分类。",
+      "这个样本按单层 Unit / Villa 风格处理，而不是公寓。",
+      "同项目、同街和同户型 Unit 成交应有最高权重。",
+      "私人户外空间、车位、楼龄和 owners corporation 责任仍是关键检查。"
+    ],
+    comparables: [
+      ["2/11 McIntosh Street", "$830k", "Model", "Strata", "2 / 1 / 1", "Good"],
+      ["1/13 McIntosh Street", "$805k", "Mar 2026", "Strata", "2 / 1 / 1", "Strong"],
+      ["4/19 Burlington Street", "$735k", "Feb 2026", "Strata", "2 / 1 / 1", "Medium"]
+    ],
+    location: {
+      rank: "Middle 50% to Top 25%, estimated",
+      type: "Quiet unit / villa pocket",
+      amenity: "Strong",
+      parking: "Car space and driveway check required",
+      rankZh: "中间 50% 到前 25%，估算",
+      typeZh: "安静 Unit / Villa 区段",
+      amenityZh: "强",
+      parkingZh: "需要确认车位和车道"
+    },
+    suburb: [
+      "Oakleigh unit demand is supported by affordability below townhouses and detached houses.",
+      "The model first classifies unit subtype, then applies villa/townhouse/apartment logic as appropriate.",
+      "Rental demand and low-maintenance ownership support investor interest."
+    ],
+    suburbZh: [
+      "Oakleigh Unit 需求受低于联排和独立屋的可负担性支撑。",
+      "模型先分类 Unit 子类型，再套用 Villa / Townhouse / Apartment 的对应逻辑。",
+      "租赁需求和低维护持有特点支撑投资者兴趣。"
+    ],
+    planning: {
+      landSource: "Strata title and unit subtype required",
+      granny: "Owners corporation / shared area check",
+      approval: "Car space, courtyard and condition check",
+      landSourceZh: "需要 strata title 和 Unit 子类型",
+      grannyZh: "检查 owners corporation / 共用区域",
+      approvalZh: "检查车位、庭院和房况"
+    },
+    planningLabels: {
+      en: ["Unit subtype", "Shared obligations", "Private utility"],
+      zh: ["Unit 子类型", "共用责任", "私人实用性"]
+    },
+    modelNotes: [
+      "Unit model starts with subtype classification: villa-style, townhouse-style or apartment-style.",
+      "Core extra fields: subtype, title plan, owners corporation, private open space, car space, common driveway, building area and condition."
+    ],
+    modelNotesZh: [
+      "Unit 模型首先做子类型分类：Villa 风格、Townhouse 风格或 Apartment 风格。",
+      "新增核心字段：子类型、产权图、owners corporation、私人户外空间、车位、共用车道、建筑面积和房况。"
+    ],
+    map: {
+      target: "1/3",
+      station: "Oakleigh Station",
+      shops: "Eaton Mall",
+      stationZh: "Oakleigh 火车站",
+      shopsZh: "Eaton Mall 商场"
+    }
   }
 ];
 
@@ -562,7 +802,7 @@ const labelSets = {
     uploadButtons: ["Upload Section 32", "Upload title plan", "Upload photos", "Enter manual data"],
     tableHeaders: ["Address", "Sale", "Date", "Land", "Config", "Similarity"],
     factLabels: ["Street rank", "Street type", "Amenity access", "Parking pressure", "Land source", "Granny flat potential", "Approval certainty"],
-    chips: ["House", "Vacant land", "Townhouse", "Villa", "Apartment", "Other"],
+    chips: ["House", "Vacant land", "Townhouse", "Villa", "Unit", "Apartment"],
     investorButtons: ["Private credit", "Development finance", "Income property"],
     sourceHeadings: ["Automatic / free checks", "Client supplied evidence"],
     sourceLists: [
@@ -582,7 +822,7 @@ const labelSets = {
     uploadButtons: ["上传 Section 32", "上传产权图", "上传照片", "手工填写资料"],
     tableHeaders: ["地址", "成交价", "日期", "土地", "房型", "相似度"],
     factLabels: ["街道排名", "街道类型", "便利性", "停车压力", "土地来源", "奶奶房潜力", "批准确定性"],
-    chips: ["独立屋", "空地", "联排", "别墅", "公寓", "其他"],
+    chips: ["独立屋", "空地", "联排", "别墅", "单元房", "公寓"],
     investorButtons: ["地产私募债", "开发融资", "收益型地产"],
     sourceHeadings: ["自动 / 免费检查", "客户补充资料"],
     sourceLists: [
@@ -1573,12 +1813,12 @@ byId("start-valuation").addEventListener("click", () => {
     reasons: [
       "This demo currently supports selected sample addresses.",
       "A real deployment would call the valuation API and data sources.",
-      "Please try 9 McIntosh Street, 18 Moresby Street, Unit 2/11 McIntosh Street or Unit 1/5 McIntosh Street."
+      "Please try 9 McIntosh Street, 18 Moresby Street, Unit 2/11 McIntosh Street, Unit 1/5 McIntosh Street, 13 Gadd Street or Apartment 12/20 Haughton Road."
     ],
     reasonsZh: [
       "当前演示只支持部分样本地址。",
       "真实部署时会调用估值 API 和数据源。",
-      "请尝试 9 McIntosh Street、18 Moresby Street、Unit 2/11 McIntosh Street 或 Unit 1/5 McIntosh Street。"
+      "请尝试 9 McIntosh Street、18 Moresby Street、Unit 2/11 McIntosh Street、Unit 1/5 McIntosh Street、13 Gadd Street 或 Apartment 12/20 Haughton Road。"
     ],
     comparables: [],
     location: {
