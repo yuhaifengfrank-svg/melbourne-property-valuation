@@ -122,6 +122,166 @@ const valuations = [
       stationZh: "Huntingdale 火车站",
       shopsZh: "Clayton Road 商圈"
     }
+  },
+  {
+    aliases: [
+      "unit2 11 mcintosh st oakleigh",
+      "unit 2 11 mcintosh st oakleigh",
+      "2/11 mcintosh st oakleigh",
+      "2 11 mcintosh street oakleigh",
+      "unit2 11 mcintosh street oakleigh"
+    ],
+    address: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166",
+    type: "Villa",
+    value: "$790k - $870k",
+    midpoint: "$830k",
+    midpointValue: 830000,
+    confidence: "Medium",
+    status: "Medium",
+    reasons: [
+      "Villa/unit profile requires same-complex and same-street unit evidence, not house-only comparisons.",
+      "Land component is partial and must be checked against title plan and plan of subdivision.",
+      "Rear/front position, driveway access, courtyard usability and car parking materially affect value.",
+      "Owners corporation and shared maintenance obligations need confirmation before PDF-grade confidence."
+    ],
+    reasonsZh: [
+      "Villa / Unit 需要同项目和同街同类型成交作为核心依据，不能只用独立屋比较。",
+      "土地权益为部分土地，需要用产权图和 subdivision plan 复核。",
+      "前后排位置、共用车道、庭院可用性和停车会显著影响价值。",
+      "业主委员会和共用维护责任需要确认后，置信度才能提高。"
+    ],
+    comparables: [
+      ["1/13 McIntosh Street", "$805k", "Mar 2026", "Strata", "2 / 1 / 1", "Strong"],
+      ["2/9 McIntosh Street", "$840k", "Feb 2026", "Strata", "2 / 1 / 1", "Good"],
+      ["3/15 Burlington Street", "$875k", "Apr 2026", "Strata", "2 / 1 / 1", "Good"]
+    ],
+    location: {
+      rank: "Middle 50% to Top 25%, estimated",
+      type: "Quiet mixed villa / house street",
+      amenity: "Strong",
+      parking: "Shared-driveway check required",
+      rankZh: "中间 50% 到前 25%，估算",
+      typeZh: "安静的别墅 / 独立屋混合街道",
+      amenityZh: "强",
+      parkingZh: "需要检查共用车道和停车"
+    },
+    suburb: [
+      "Oakleigh villa demand is supported by downsizers, first-home buyers and investors seeking lower maintenance.",
+      "Same-complex sales and same-street villa/unit sales should carry higher weight than detached house sales.",
+      "Rental demand is supported by Oakleigh Station, Eaton Mall, Chadstone and Monash employment access."
+    ],
+    suburbZh: [
+      "Oakleigh 的 Villa 需求来自 downsizer、首次置业者和偏好低维护的投资者。",
+      "同项目和同街 Villa / Unit 成交权重应高于独立屋成交。",
+      "Oakleigh Station、Eaton Mall、Chadstone 和 Monash 就业通勤支撑租赁需求。"
+    ],
+    planning: {
+      landSource: "Strata / subdivision plan required",
+      granny: "Owners corporation to confirm",
+      approval: "Driveway, courtyard and car space check",
+      landSourceZh: "需要 strata / subdivision plan 确认",
+      grannyZh: "需要确认 Owners corporation",
+      approvalZh: "检查车道、庭院和车位"
+    },
+    planningLabels: {
+      en: ["Title / plan type", "Owners corporation", "Access / parking risk"],
+      zh: ["产权 / 图纸类型", "业主委员会", "进出 / 停车风险"]
+    },
+    modelNotes: [
+      "Townhouse/Villa model: comparable sales 60%-70%, title/strata structure 10%-15%, position/access/parking 10%-15%, condition and courtyard utility 5%-10%.",
+      "Core extra fields: strata title, plan of subdivision, owners corporation fee, common driveway, front/rear position, courtyard, car space and body corporate obligations."
+    ],
+    modelNotesZh: [
+      "Townhouse/Villa 模型：可比成交 60%-70%，产权/strata 结构 10%-15%，位置/进出/停车 10%-15%，房况和庭院实用性 5%-10%。",
+      "新增核心字段：strata title、subdivision plan、owners corporation fee、共用车道、前后排位置、庭院、车位和共用维护责任。"
+    ],
+    map: {
+      target: "2/11",
+      station: "Oakleigh Station",
+      shops: "Eaton Mall",
+      stationZh: "Oakleigh 火车站",
+      shopsZh: "Eaton Mall 商场"
+    }
+  },
+  {
+    aliases: [
+      "unit1 5 mcintosh st oakleigh",
+      "unit 1 5 mcintosh st oakleigh",
+      "1/5 mcintosh st oakleigh",
+      "1 5 mcintosh street oakleigh",
+      "unit1 5 mcintosh street oakleigh"
+    ],
+    address: "Unit 1, 5 McIntosh Street, Oakleigh VIC 3166",
+    type: "Townhouse",
+    value: "$930k - $1.03m",
+    midpoint: "$980k",
+    midpointValue: 980000,
+    confidence: "Medium",
+    status: "Medium",
+    reasons: [
+      "Townhouse profile should be benchmarked against similar attached or semi-detached stock.",
+      "Front position can support value if street frontage, private entry and parking are superior.",
+      "Building area, courtyard size and title boundaries need confirmation.",
+      "Owners corporation fees, defects and shared insurance can affect investor net return."
+    ],
+    reasonsZh: [
+      "联排住宅应主要与类似联排或半独立物业比较。",
+      "如果前排位置、独立入口和停车更好，价格可获得支撑。",
+      "建筑面积、庭院大小和产权边界仍需确认。",
+      "Owners corporation 费用、建筑缺陷和共用保险会影响投资净收益。"
+    ],
+    comparables: [
+      ["2/9 McIntosh Street", "$965k", "Mar 2026", "Strata", "3 / 2 / 1", "Good"],
+      ["1/21 Burlington Street", "$1.01m", "Apr 2026", "Strata", "3 / 2 / 2", "Strong"],
+      ["3/17 Haughton Road", "$920k", "Feb 2026", "Strata", "2 / 2 / 1", "Medium"]
+    ],
+    location: {
+      rank: "Top 25% to Middle 50%, estimated",
+      type: "Quiet townhouse / villa pocket",
+      amenity: "Strong",
+      parking: "Front/rear position dependent",
+      rankZh: "前 25% 到中间 50%，估算",
+      typeZh: "安静的联排 / 别墅小区段",
+      amenityZh: "强",
+      parkingZh: "取决于前后排位置"
+    },
+    suburb: [
+      "Oakleigh townhouses appeal to buyers priced below detached houses but wanting land feel and private entry.",
+      "Same-type evidence should be separated from apartments and detached houses.",
+      "Access to station, shops and employment nodes supports both owner-occupier and rental demand."
+    ],
+    suburbZh: [
+      "Oakleigh 联排吸引买不起独立屋但希望有土地感和独立入口的买家。",
+      "同类型成交应与公寓和独立屋分开。",
+      "车站、商圈和就业节点支撑自住和出租需求。"
+    ],
+    planning: {
+      landSource: "Title plan / lot entitlement required",
+      granny: "Owners corporation fee required",
+      approval: "Frontage, driveway and courtyard check",
+      landSourceZh: "需要产权图 / lot entitlement",
+      grannyZh: "需要 owners corporation fee",
+      approvalZh: "检查临街、车道和庭院"
+    },
+    planningLabels: {
+      en: ["Title / lot entitlement", "Owners corporation fee", "Frontage / courtyard"],
+      zh: ["产权 / lot 权益", "业主委员会费用", "临街 / 庭院"]
+    },
+    modelNotes: [
+      "Townhouse model separates attached dwelling value from detached-house land value.",
+      "Key modifiers: street frontage, front/rear position, internal area, courtyard, garage/car space, body corporate and recent same-type sales."
+    ],
+    modelNotesZh: [
+      "Townhouse 模型会把联排住宅价值和独立屋土地价值分开处理。",
+      "关键修正项：临街面、前后排位置、室内面积、庭院、车库/车位、body corporate 和近期同类型成交。"
+    ],
+    map: {
+      target: "1/5",
+      station: "Oakleigh Station",
+      shops: "Eaton Mall",
+      stationZh: "Oakleigh 火车站",
+      shopsZh: "Eaton Mall 商场"
+    }
   }
 ];
 
@@ -532,16 +692,16 @@ function normalizeAddress(value) {
     .trim();
 }
 
-function findValuation(address) {
+function findValuation(address, selectedType = "") {
   const normalized = normalizeAddress(address);
-  return (
-    valuations.find((item) =>
-      item.aliases.some((alias) => {
-        const normalizedAlias = normalizeAddress(alias);
-        return normalized.includes(normalizedAlias) || normalizedAlias.includes(normalized);
-      })
-    ) || null
+  const matches = valuations.filter((item) =>
+    item.aliases.some((alias) => {
+      const normalizedAlias = normalizeAddress(alias);
+      return normalized.includes(normalizedAlias) || normalizedAlias.includes(normalized);
+    })
   );
+  if (!matches.length) return null;
+  return matches.find((item) => item.type === selectedType) || matches[0];
 }
 
 function setList(id, items) {
@@ -564,6 +724,15 @@ function getLocalizedPlanning(data, key) {
 
 function getLocalizedLocation(data, key) {
   return language === "zh" && data.location[`${key}Zh`] ? data.location[`${key}Zh`] : data.location[key];
+}
+
+function getLocalizedModelNotes(data) {
+  return language === "zh" && data.modelNotesZh ? data.modelNotesZh : data.modelNotes || [];
+}
+
+function getPlanningLabels(data) {
+  if (data.planningLabels?.[language]) return data.planningLabels[language];
+  return labelSets[language].factLabels.slice(4, 7);
 }
 
 const dynamicText = {
@@ -769,6 +938,7 @@ function renderComparables(rows) {
 
 function renderValuation(data) {
   currentValuation = data;
+  const planningLabels = getPlanningLabels(data);
   byId("property-address").textContent = language === "zh" && data.addressZh ? data.addressZh : data.address;
   byId("estimated-value").textContent = localizeValue(data.value);
   byId("midpoint").textContent = localizeValue(data.midpoint);
@@ -782,6 +952,9 @@ function renderValuation(data) {
   byId("street-type").textContent = getLocalizedLocation(data, "type");
   byId("amenity-access").textContent = getLocalizedLocation(data, "amenity");
   byId("parking-pressure").textContent = getLocalizedLocation(data, "parking");
+  document.querySelectorAll(".fundamentals-grid .detail-panel:nth-child(2) dt").forEach((dt, index) => {
+    dt.textContent = planningLabels[index] || dt.textContent;
+  });
   byId("land-source").textContent = getLocalizedPlanning(data, "landSource");
   byId("granny-potential").textContent = getLocalizedPlanning(data, "granny");
   byId("approval-certainty").textContent = getLocalizedPlanning(data, "approval");
@@ -1032,7 +1205,8 @@ function buildDetailedReportLines() {
     "- If recent comparable evidence is limited, the model lowers comparable reliance and asks for more evidence instead of widening the range indefinitely.",
     "- The visible range is capped around +/-10% from the benchmark. Higher uncertainty is expressed through confidence and missing checks, not by making the range too wide.",
     "- Micro-location, street quality, land source, property condition, planning potential and suburb fundamentals adjust the benchmark after comparable sales.",
-    "- Uploaded evidence can improve confidence, narrow the range and slightly revise the midpoint when it confirms title, planning, condition or street factors."
+    "- Uploaded evidence can improve confidence, narrow the range and slightly revise the midpoint when it confirms title, planning, condition or street factors.",
+    ...((currentValuation.modelNotes || []).map((note) => `- ${note}`))
   ]);
 
   addReportSection(lines, "3. Valuation rationale", currentValuation.reasons.map((reason) => `- ${reason}`));
@@ -1065,10 +1239,11 @@ function buildDetailedReportLines() {
     "- Income, employment and relative affordability can be added as structured public-data inputs in a production model."
   ]);
 
-  addReportSection(lines, "8. Planning, land and development potential", [
-    ["Land source", currentValuation.planning.landSource],
-    ["Granny flat potential", currentValuation.planning.granny],
-    ["Approval certainty", currentValuation.planning.approval],
+  const planningLabels = currentValuation.planningLabels?.en || ["Land source", "Granny flat potential", "Approval certainty"];
+  addReportSection(lines, "8. Planning, title and property-specific potential", [
+    [planningLabels[0], currentValuation.planning.landSource],
+    [planningLabels[1], currentValuation.planning.granny],
+    [planningLabels[2], currentValuation.planning.approval],
     ["Council planning check", "A production workflow should cross-check zoning, overlays, covenants, easements, neighbourhood character controls and nearby built form."],
     ["Neighbouring height / built form", "Nearby property height and development pattern can support or constrain planning potential assumptions."],
     ["Manual title requirement", "Title search and title plan remain authoritative where portal land size or property configuration is inconsistent."]
@@ -1379,7 +1554,8 @@ async function downloadDemoReport() {
 }
 
 byId("start-valuation").addEventListener("click", () => {
-  const match = findValuation(byId("address").value);
+  const selectedType = document.querySelector(".chip.active")?.dataset.type || "House";
+  const match = findValuation(byId("address").value, selectedType);
   if (match) {
     renderValuation(match);
     if (window.matchMedia("(max-width: 680px)").matches) scrollToSection(".mobile-value-card");
@@ -1388,6 +1564,7 @@ byId("start-valuation").addEventListener("click", () => {
   renderValuation({
     ...valuations[0],
     address: byId("address").value || "Unknown address",
+    type: selectedType,
     value: "Sample unavailable",
     midpoint: "Manual review",
     midpointValue: NaN,
@@ -1396,12 +1573,12 @@ byId("start-valuation").addEventListener("click", () => {
     reasons: [
       "This demo currently supports selected sample addresses.",
       "A real deployment would call the valuation API and data sources.",
-      "Please try 9 McIntosh Street or 18 Moresby Street."
+      "Please try 9 McIntosh Street, 18 Moresby Street, Unit 2/11 McIntosh Street or Unit 1/5 McIntosh Street."
     ],
     reasonsZh: [
       "当前演示只支持部分样本地址。",
       "真实部署时会调用估值 API 和数据源。",
-      "请尝试 9 McIntosh Street 或 18 Moresby Street。"
+      "请尝试 9 McIntosh Street、18 Moresby Street、Unit 2/11 McIntosh Street 或 Unit 1/5 McIntosh Street。"
     ],
     comparables: [],
     location: {
