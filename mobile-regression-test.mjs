@@ -262,6 +262,19 @@ assert.ok(recorder.focuses.includes("lead-email"), "locked mobile CTA should foc
 
 await elements.get("upload-evidence").click();
 assert.ok(recorder.clicks.includes("evidence-files"), "upload button should trigger hidden file input");
+for (const handler of elements.get("evidence-files").listeners.change || []) {
+  await handler({
+    target: {
+      files: [
+        {
+          name: "current-front-photo.jpg",
+          content: "current photos show renovated kitchen, updated bathroom, good condition and quiet wide street"
+        }
+      ]
+    }
+  });
+}
+assert.match(elements.get("upload-message").textContent, /uploaded evidence|Estimate revised|资料已读取/i);
 
 await elements.get("enter-manual-data").click();
 assert.ok(elements.get("manual-data-modal").open, "manual data button should open notes modal");
