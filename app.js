@@ -965,6 +965,267 @@ function renderInvestorTheme(themeKey) {
   });
 }
 
+function sanitizePdfText(value) {
+  return String(value ?? "")
+    .replace(/[^\x09\x0A\x0D\x20-\x7E]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function escapePdfText(value) {
+  return sanitizePdfText(value).replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+}
+
+function wrapPdfLine(text, maxChars = 88) {
+  const words = sanitizePdfText(text).split(" ").filter(Boolean);
+  const lines = [];
+  let line = "";
+  words.forEach((word) => {
+    const next = line ? `${line} ${word}` : word;
+    if (next.length > maxChars && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = next;
+    }
+  });
+  if (line) lines.push(line);
+  return lines.length ? lines : [""];
+}
+
+function addReportSection(lines, title, items = []) {
+  lines.push({ text: title, size: 14, bold: true, gapBefore: 12, gapAfter: 4 });
+  items.forEach((item) => {
+    if (Array.isArray(item)) {
+      const [label, value] = item;
+      lines.push({ text: `${label}: ${value}`, size: 10.5 });
+    } else {
+      lines.push({ text: item, size: 10.5 });
+    }
+  });
+}
+
+function buildDetailedReportLines() {
+  const evidence = currentValuation.evidenceSummary || uploadedEvidenceSummary;
+  const generatedAt = new Date().toLocaleString("en-AU", { timeZone: "Australia/Melbourne" });
+  const recipientName = byId("lead-name").value.trim() || "Not supplied";
+  const recipientEmail = byId("lead-email").value.trim() || "Not supplied";
+  const recipientPhone = byId("lead-phone").value.trim() || "Not supplied";
+  const selectedPropertyType = document.querySelector(".chip.active")?.dataset.type || currentValuation.type;
+  const loanValue = Number.isFinite(currentValuation.midpointValue)
+    ? formatMoney(currentValuation.midpointValue * selectedLvr)
+    : "Manual review";
+  const equityValue = Number.isFinite(currentValuation.midpointValue)
+    ? formatMoney(currentValuation.midpointValue * (1 - selectedLvr))
+    : "Manual review";
+  const comparableLines = currentValuation.comparables.length
+    ? currentValuation.comparables.map((row) => `${row[0]} | Sale ${row[1]} | ${row[2]} | Land ${row[3]} | ${row[4]} | Similarity ${row[5]}`)
+    : ["No comparable rows available for this demo case."];
+
+  const investorThemeLines = Object.values(investorThemes.en).flatMap((theme) => [
+    `${theme.title}: ${theme.copy}`,
+    ...theme.points.map((point) => `- ${point}`),
+    `- ${theme.consult}`
+  ]);
+  const lines = [
+    { text: "AusHomeValue Property Valuation Report", size: 20, bold: true, gapAfter: 4 },
+    { text: "Detailed demo valuation report generated from the AusHomeValue website prototype", size: 10.5, gapAfter: 12 }
+  ];
+
+  addReportSection(lines, "1. Report record", [
+    ["Generated at", `${generatedAt} Melbourne time`],
+    ["Report recipient", recipientName],
+    ["Email", recipientEmail],
+    ["Phone", recipientPhone],
+    ["Contact consent", byId("lead-consent").checked ? "Yes" : "No"],
+    ["Report status", unlocked ? "Unlocked" : "Basic estimate only"]
+  ]);
+
+  addReportSection(lines, "2. Executive valuation summary", [
+    ["Property address", currentValuation.address],
+    ["Property type", selectedPropertyType],
+    ["Estimated value range", currentValuation.value],
+    ["Estimated midpoint", currentValuation.midpoint],
+    ["Confidence", currentValuation.confidence],
+    ["Selected LVR scenario", `${Math.round(selectedLvr * 100)}%`],
+    ["Indicative maximum loan", loanValue],
+    ["Required equity before costs", equityValue]
+  ]);
+
+  addReportSection(lines, "3. Model framework and weighting logic", [
+    "- Comparable sales are the primary valuation anchor. When there are at least three recent same-type sales within six months, comparable evidence should carry around 60% to 70% influence.",
+    "- If recent comparable evidence is limited, the model lowers comparable reliance and asks for more evidence instead of widening the range indefinitely.",
+    "- The visible range is capped around +/-10% from the benchmark. Higher uncertainty is expressed through confidence and missing checks, not by making the range too wide.",
+    "- Micro-location, street quality, land source, property condition, planning potential and suburb fundamentals adjust the benchmark after comparable sales.",
+    "- Uploaded evidence can improve confidence, narrow the range and slightly revise the midpoint when it confirms title, planning, condition or street factors."
+  ]);
+
+  addReportSection(lines, "4. Valuation rationale", currentValuation.reasons.map((reason) => `- ${reason}`));
+  addReportSection(
+    lines,
+    "5. Uploaded evidence review",
+    evidence.length
+      ? evidence.map((item) => `- ${item}`)
+      : ["- No uploaded evidence has been applied. Title, Section 32, planning notes, current photos and street checks would improve confidence."]
+  );
+
+  addReportSection(lines, "6. Comparable sales and adjustment notes", [
+    ...comparableLines.map((item) => `- ${item}`),
+    "- Adjustment note: recent same-type sales are compared against land size, building profile, condition, street quality, location convenience and settlement recency.",
+    "- If the subject property has stronger evidence than a comparable, the model may support an uplift. If title, planning or condition remains unclear, confidence is held back."
+  ]);
+
+  addReportSection(lines, "7. Micro-location and street checks", [
+    ["Street rank", currentValuation.location.rank],
+    ["Street type", currentValuation.location.type],
+    ["Amenity access", currentValuation.location.amenity],
+    ["Parking pressure", currentValuation.location.parking],
+    ["Street length / access logic", "Review access to connecting roads, turning direction, local traffic flow and whether the street feels like a quiet residential pocket or a through-road."],
+    ["Street trees / presentation", "Tree canopy, frontage rhythm and neighbouring presentation are treated as qualitative micro-location signals."]
+  ]);
+
+  addReportSection(lines, "8. Suburb fundamentals", [
+    ...currentValuation.suburb.map((item) => `- ${item}`),
+    "- Suburb review considers household demand, access to employment, schools, transport, retail, medical and comparison suburbs.",
+    "- Income, employment and relative affordability can be added as structured public-data inputs in a production model."
+  ]);
+
+  addReportSection(lines, "9. Planning, land and development potential", [
+    ["Land source", currentValuation.planning.landSource],
+    ["Granny flat potential", currentValuation.planning.granny],
+    ["Approval certainty", currentValuation.planning.approval],
+    ["Council planning check", "A production workflow should cross-check zoning, overlays, covenants, easements, neighbourhood character controls and nearby built form."],
+    ["Neighbouring height / built form", "Nearby property height and development pattern can support or constrain planning potential assumptions."],
+    ["Manual title requirement", "Title search and title plan remain authoritative where portal land size or property configuration is inconsistent."]
+  ]);
+
+  addReportSection(lines, "10. Data source audit", [
+    "- Automatic / free checks: public sale evidence, address normalisation, property type selection, suburb fundamentals, basic map and street review.",
+    "- Client-supplied evidence: title search, title plan, Section 32, current photos, renovation notes, inspection notes, leases, body corporate records and planning correspondence.",
+    "- Cross-check rule: where portal data conflicts with title or council material, title/council evidence should override portal data.",
+    "- Missing fields should be requested from the client instead of being guessed."
+  ]);
+
+  addReportSection(lines, "11. Loan / LVR scenario", [
+    ["Selected LVR", `${Math.round(selectedLvr * 100)}%`],
+    ["Indicative maximum loan", loanValue],
+    ["Required equity before costs", equityValue],
+    "This is not a loan approval or borrowing capacity assessment. Actual lending depends on lender policy, income, expenses, credit history and full application review."
+  ]);
+
+  addReportSection(lines, "12. Investor Hub themes", investorThemeLines);
+
+  addReportSection(lines, "13. Report download and lead workflow", [
+    "- Basic estimate is available without registration.",
+    "- Detailed comparable adjustments, investor workflow and PDF download require registration.",
+    "- PDF download requires phone number and contact consent so the case can be followed up.",
+    "- Uploaded evidence is captured in the report summary and can be used to reprioritise leads in the dashboard."
+  ]);
+
+  addReportSection(lines, "14. Missing checks and next actions", [
+    "- Confirm title search, title plan and Section 32 with authoritative documents.",
+    "- Review current property condition, renovation quality and visible defects.",
+    "- Confirm planning overlays, easements, covenants and council constraints.",
+    "- Use recent settled sales within the suburb and same property type to update the comparable anchor.",
+    "- Contact AusHomeValue by QR code or email info@aushomevalue.com.au for a case review."
+  ]);
+
+  addReportSection(lines, "15. Important disclaimer", [
+    "This prototype report is for demonstration and lead-capture workflow testing only.",
+    "It is not a formal valuation, credit assessment, financial product advice or legal/planning advice.",
+    "Any investment, lending or acquisition decision should be reviewed with appropriately licensed professionals."
+  ]);
+
+  return lines;
+}
+
+function createPdfDocument(lineItems) {
+  const pageWidth = 595;
+  const pageHeight = 842;
+  const marginX = 48;
+  const marginTop = 58;
+  const marginBottom = 52;
+  const contentWidthChars = 92;
+  const pages = [];
+  let page = [];
+  let y = marginTop;
+
+  function newPage() {
+    if (page.length) pages.push(page);
+    page = [];
+    y = marginTop;
+  }
+
+  lineItems.forEach((item) => {
+    const size = item.size || 10.5;
+    const lineHeight = size + 4;
+    const gapBefore = item.gapBefore || 0;
+    const gapAfter = item.gapAfter || 0;
+    const wrapped = wrapPdfLine(item.text, item.size >= 14 ? 62 : contentWidthChars);
+    const needed = gapBefore + wrapped.length * lineHeight + gapAfter;
+    if (y + needed > pageHeight - marginBottom) newPage();
+    y += gapBefore;
+    wrapped.forEach((text) => {
+      page.push({ text, x: marginX, y, size, bold: item.bold });
+      y += lineHeight;
+    });
+    y += gapAfter;
+  });
+  if (page.length) pages.push(page);
+
+  const objects = [];
+  const addObject = (body) => {
+    objects.push(body);
+    return objects.length;
+  };
+  const fontRegular = addObject("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>");
+  const fontBold = addObject("<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>");
+  const pageRefs = [];
+
+  pages.forEach((items, pageIndex) => {
+    const commands = [
+      "BT",
+      `/F2 9 Tf 48 ${pageHeight - 34} Td (${escapePdfText("AusHomeValue | Property Valuation Report")}) Tj`,
+      `/F1 8 Tf 410 ${pageHeight - 34} Td (${escapePdfText(`Page ${pageIndex + 1} of ${pages.length}`)}) Tj`,
+      "ET"
+    ];
+    items.forEach((item) => {
+      commands.push("BT");
+      commands.push(`/${item.bold ? "F2" : "F1"} ${item.size} Tf`);
+      commands.push(`${item.x} ${pageHeight - item.y} Td`);
+      commands.push(`(${escapePdfText(item.text)}) Tj`);
+      commands.push("ET");
+    });
+    commands.push("BT");
+    commands.push(`/F1 8 Tf 48 28 Td (${escapePdfText("Generated by AusHomeValue demo. Not a formal valuation.")}) Tj`);
+    commands.push("ET");
+    const stream = commands.join("\n");
+    const contentRef = addObject(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);
+    const pageRef = addObject(`<< /Type /Page /Parent __PAGES__ /MediaBox [0 0 ${pageWidth} ${pageHeight}] /Resources << /Font << /F1 ${fontRegular} 0 R /F2 ${fontBold} 0 R >> >> /Contents ${contentRef} 0 R >>`);
+    pageRefs.push(pageRef);
+  });
+
+  const pagesRef = addObject(`<< /Type /Pages /Kids [${pageRefs.map((ref) => `${ref} 0 R`).join(" ")}] /Count ${pageRefs.length} >>`);
+  const catalogRef = addObject(`<< /Type /Catalog /Pages ${pagesRef} 0 R >>`);
+  pageRefs.forEach((ref) => {
+    objects[ref - 1] = objects[ref - 1].replace("__PAGES__", `${pagesRef} 0 R`);
+  });
+
+  let pdf = "%PDF-1.4\n";
+  const offsets = [0];
+  objects.forEach((body, index) => {
+    offsets.push(pdf.length);
+    pdf += `${index + 1} 0 obj\n${body}\nendobj\n`;
+  });
+  const xrefOffset = pdf.length;
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  offsets.slice(1).forEach((offset) => {
+    pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+  });
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root ${catalogRef} 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+  return new Blob([pdf], { type: "application/pdf" });
+}
+
 async function sendLeadNotification(lead) {
   const response = await fetch("https://formsubmit.co/ajax/info@aushomevalue.com.au", {
     method: "POST",
@@ -1109,27 +1370,11 @@ async function downloadDemoReport() {
     return;
   }
   if (!(await saveLead({ pdfDownload: true }))) return;
-  const report = [
-    `Property report: ${currentValuation.address}`,
-    `Estimated value: ${currentValuation.value}`,
-    `Midpoint: ${currentValuation.midpoint}`,
-    `Confidence: ${currentValuation.confidence}`,
-    "",
-    "Main reasons:",
-    ...currentValuation.reasons.map((reason) => `- ${reason}`),
-    "",
-    "Evidence review:",
-    ...((currentValuation.evidenceSummary || uploadedEvidenceSummary).length
-      ? (currentValuation.evidenceSummary || uploadedEvidenceSummary).map((item) => `- ${item}`)
-      : ["- No uploaded evidence applied in this demo run."]),
-    "",
-    "Demo note: this is a prototype text download, not a formal valuation PDF."
-  ].join("\n");
-  const blob = new Blob([report], { type: "text/plain" });
+  const blob = createPdfDocument(buildDetailedReportLines());
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "property-valuation-demo-report.txt";
+  link.download = "aushomevalue-property-valuation-report.pdf";
   link.click();
   URL.revokeObjectURL(url);
 }
