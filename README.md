@@ -6,13 +6,21 @@ The project focuses first on house valuations. A user enters an address, confirm
 
 ## Current Scope
 
-- Metropolitan Melbourne residential property valuation
-- Phase 1 property type: house
+- Australia-wide address intake with current demo samples focused on Victoria
+- Residential property valuation across house, vacant land, townhouse, villa, unit and apartment samples
 - Comparable-sales baseline and dynamic weighting
 - Street ranking and micro-location assessment
 - Land, building, condition, planning, title, and risk adjustments
 - Confidence scoring and missing-check disclosure
 - Lead capture flow for full reports and future gated investor modules
+
+## Data Source Policy
+
+The model uses an authority-first source hierarchy:
+
+- Layer 1: free authoritative public data, including ABS Census / QuickStats / DataPacks / SEIFA, RBA/APRA statistics, state planning records, VicPlan, LANDATA/Land Use Victoria, council planning registers and public maps.
+- Layer 2: commercial or market-published data, including portals, agent sold results, auction results, rental listings and market reports.
+- Layer 3: cross-check and confirmation. Non-authoritative market data should be cross-checked across at least three independent sources, with five or more sources preferred for higher confidence. Title, council, planning and government records override portal conflicts.
 
 ## Prototype
 
@@ -51,6 +59,7 @@ The system is not intended to replace formal bank valuation, legal advice, finan
 ## Planned Work
 
 - Replace curated sample data with structured public-data ingestion
+- Add ABS Census / DataPacks / SEIFA ingestion for suburb fundamentals
 - Add back-testing against historical sales
 - Improve comparable selection and adjustment logic
 - Add title, zoning, overlay, easement, and condition verification flows

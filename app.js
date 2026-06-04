@@ -907,10 +907,10 @@ const labelSets = {
     factLabels: ["Street rank", "Street type", "Amenity access", "Parking pressure", "Land source", "Granny flat potential", "Approval certainty"],
     chips: ["House", "Vacant land", "Townhouse", "Villa", "Unit", "Apartment", "Commercial"],
     investorButtons: ["Private credit", "Development finance", "Income property"],
-    sourceHeadings: ["Automatic / free checks", "Client supplied evidence"],
+    sourceHeadings: ["Layer 1: free authoritative public data", "Layer 2-3: market data cross-check"],
     sourceLists: [
-      ["Public sale evidence and manually curated comparable samples", "Address normalization and property type selection", "Suburb fundamentals from public statistics and market notes", "Basic map, street and access review where public tools allow it"],
-      ["Title search, title plan and Section 32", "Current photos, renovation notes and condition details", "Known easements, overlays, leases or body corporate documents", "Phone and contact consent required before PDF download"]
+      ["ABS Census / QuickStats / DataPacks / SEIFA for suburb fundamentals", "RBA / APRA public statistics for interest-rate and credit context", "State, council and planning sources for title, zoning, overlays and permits", "Public maps, aerial imagery and government property/planning records where available"],
+      ["Commercial portals, agent results and market publications are secondary, not authoritative", "Market source confidence is weighted: 8 sources aligned = 100; missing sources reduce the score by source weight", "Higher-volume / higher-recognition sources carry higher weights, but the weights remain configurable and should be calibrated with usage data", "If fewer than 3 market sources are available, confidence is capped and missing evidence is requested"]
     ],
     investorDetail: {
       headings: ["Investor profile", "Gated access"],
@@ -927,10 +927,10 @@ const labelSets = {
     factLabels: ["街道排名", "街道类型", "便利性", "停车压力", "土地来源", "奶奶房潜力", "批准确定性"],
     chips: ["独立屋", "空地", "联排", "别墅", "单元房", "公寓", "商业地产"],
     investorButtons: ["地产私募债", "开发融资", "收益型地产"],
-    sourceHeadings: ["自动 / 免费检查", "客户补充资料"],
+    sourceHeadings: ["第一层：免费权威公开数据", "第二/三层：市场数据交叉比对"],
     sourceLists: [
-      ["公开成交证据和手工整理的可比样本", "地址标准化和房产类型选择", "公开统计和市场笔记里的区域基本面", "在公开工具允许范围内检查地图、街道和进出便利性"],
-      ["产权查询、产权图和 Section 32", "当前照片、装修记录和房况说明", "已知地役权、规划覆盖层、租约或业主委员会文件", "下载 PDF 前需要电话和联系授权"]
+      ["ABS Census / QuickStats / DataPacks / SEIFA 用于区域基本面", "RBA / APRA 公开统计用于利率和信贷环境", "州政府、Council 和 planning 来源用于产权、zoning、overlays 和 permits", "在公开工具允许范围内使用地图、航拍和政府 property/planning records"],
+      ["商业网站、agent 结果和市场发布是第二层，不是权威来源", "市场来源置信度采用加权模型：8 个来源全部一致 = 100；少一个按该来源权重扣分", "流量/知名度/成交覆盖更高的来源权重更高，但权重应可配置并根据实际数据校准", "如果少于 3 个市场来源，置信度必须封顶，并要求客户补资料"]
     ],
     investorDetail: {
       headings: ["投资人画像", "权限访问"],
@@ -1587,7 +1587,8 @@ function buildDetailedReportLines() {
   addReportSection(lines, "7. Suburb fundamentals", [
     ...currentValuation.suburb.map((item) => `- ${item}`),
     "- Suburb review considers household demand, access to employment, schools, transport, retail, medical and comparison suburbs.",
-    "- Income, employment and relative affordability can be added as structured public-data inputs in a production model."
+    "- ABS Census, QuickStats, DataPacks and SEIFA should be used for structured public suburb research, including income, employment, occupation, household mix, dwelling mix, owner/renter ratio and socio-economic indexes.",
+    "- ABS data explains suburb fundamentals and demand quality; it should support, not replace, recent comparable sales as the price anchor."
   ]);
 
   const planningLabels = currentValuation.planningLabels?.en || ["Land source", "Granny flat potential", "Approval certainty"];
@@ -1601,9 +1602,18 @@ function buildDetailedReportLines() {
   ]);
 
   addReportSection(lines, "9. Data source audit", [
-    "- Automatic / free checks: public sale evidence, address normalisation, property type selection, suburb fundamentals, basic map and street review.",
+    "- Source hierarchy: Layer 1 is free authoritative public data; Layer 2 is commercial/portal/agent market data; Layer 3 is cross-checking and client-supplied confirmation.",
+    "- ABS suburb research sources: Census QuickStats, Census DataPacks, Community Profiles and SEIFA indexes.",
+    "- RBA/APRA public statistics should be used for rate, credit and macro lending context rather than relying on market commentary alone.",
+    "- Victoria authority sources should include Land Use Victoria/LANDATA, VicPlan, Planning Property Report, State Revenue Office / Valuer-General publications where relevant, and council planning registers/maps.",
+    "- Portal, agent and commercial market data must be cross-checked against each other and should not be treated as authoritative when title, council or government data is available.",
+    "- Cross-check rule: at least 3 independent market sources are required before relying on non-authoritative market data; 5+ sources are preferred for higher-confidence outputs.",
+    "- Weighted market-source model: realestate.com.au 24, Domain 22, agent sold/auction results 14, property.com.au 12, PropertyValue/OnTheHouse style AVM profile 8, View/Homely style portal evidence 6, rental portal evidence 6, local market/suburb report 8. Total = 100 when all eight source groups align.",
+    "- Missing-source rule: if a source group is unavailable, subtract its weight. Conflict rule: if a source group materially conflicts with the majority, subtract its weight and apply a conflict penalty before setting confidence.",
+    "- Market-source confidence bands: 90-100 Very High, 75-89 High, 60-74 Medium-High, 45-59 Medium, below 45 Low. This is source confidence, not a formal valuation certainty.",
+    "- If fewer than 3 sources are available, or if the sources conflict, confidence must be capped and the missing evidence must be shown to the user.",
     "- Client-supplied evidence: title search, title plan, Section 32, current photos, renovation notes, inspection notes, leases, body corporate records and planning correspondence.",
-    "- Cross-check rule: where portal data conflicts with title or council material, title/council evidence should override portal data.",
+    "- Conflict rule: where portal data conflicts with title/council/government material, the authoritative source wins and confidence is adjusted.",
     "- Missing fields should be requested from the client instead of being guessed."
   ]);
 

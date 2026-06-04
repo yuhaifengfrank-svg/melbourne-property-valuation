@@ -15,10 +15,88 @@
 原则:
 
 ```text
-先自动查公开可查项。
-再列出付费、授权、合同或用户现场资料。
+先自动查免费权威公开数据。
+再使用商业网站 / portal / agent / market publication 数据。
+商业或 portal 数据至少需要 3 个独立来源交叉比对; 5 个以上来源才支持更高置信度。
+再列出付费、授权、合同或用户现场资料用于确认。
 任何关键字段若只有 portal source, 不得当成 confirmed。
 ```
+
+## 1.1 数据来源层级
+
+```text
+Layer 1: 免费权威公开数据
+- ABS Census / QuickStats / DataPacks / Community Profiles / SEIFA
+- RBA / APRA public statistics for interest-rate, credit and macro context
+- State government records
+- Land Use Victoria / LANDATA
+- VicPlan / Planning Property Report
+- Council planning registers and public maps
+- State Revenue Office / Valuer-General publications where relevant
+
+Layer 2: 商业网站 / 市场发布 / agent 数据
+- realestate.com.au
+- Domain
+- property.com.au
+- View
+- PropertyValue
+- agent sold results / auction results
+- rental listing portals
+- commercial market commentary or suburb reports
+
+Layer 3: 交叉比对和确认
+- 至少 3 个独立市场来源才可作为 secondary market evidence
+- 5 个以上来源, 且无重大冲突, 才可支持更高 confidence
+- 若 portal / commercial data 与 title、council、planning 或 government data 冲突, 权威来源优先
+- 若少于 3 个来源或来源冲突, confidence cap 到 Medium 或以下, 并显示 Missing Checks
+```
+
+## 1.2 商业公开来源加权置信度
+
+商业网站、agent 结果、market publication 数据不应只按数量计算, 应按来源覆盖率、知名度、成交/出租数据相关性给权重。第一版权重是可配置模型参数, 后续应根据实际抓取成功率、覆盖率、回测误差和市场使用情况校准。
+
+### 1.2.1 来源组权重
+
+| 来源组 | 初始权重 | 用途 |
+| --- | ---: | --- |
+| realestate.com.au | 24 | 最大核心门户之一, listing / sold / property profile 权重最高 |
+| Domain | 22 | 最大核心门户之一, listing / sold / property profile 权重最高 |
+| Agent sold / auction results | 14 | 成交结果、auction result、agent campaign evidence |
+| property.com.au | 12 | property profile / sold / attribute cross-check |
+| PropertyValue / OnTheHouse style AVM profile | 8 | AVM/profile 辅助验证 |
+| View / Homely style portal evidence | 6 | portal 辅助验证 |
+| Rental portal evidence | 6 | rent/yield/investor context |
+| Local market / suburb report | 8 | suburb-level market commentary, only as secondary support |
+
+总分 = 100。
+
+### 1.2.2 计算规则
+
+```text
+market_source_confidence_score
+= sum(aligned_source_weights)
+- sum(conflicting_source_weights)
+- conflict_penalty
+```
+
+- 8 个来源组全部抓到且一致: `100`
+- 少一个来源: 扣该来源权重
+- 来源存在但与多数来源显著冲突: 扣该来源权重, 并加 conflict penalty
+- 少于 3 个独立市场来源: source confidence cap 到 Medium 或以下
+- 5 个以上来源一致: 可支持 High source confidence
+- 该分数是 source confidence, 不是最终 valuation confidence
+
+### 1.2.3 Source confidence bands
+
+| Score | Label | 解释 |
+| ---: | --- | --- |
+| 90-100 | Very High | 多数高权重来源一致 |
+| 75-89 | High | 主要来源一致, 少量来源缺失 |
+| 60-74 | Medium-High | 样本可用, 仍需补充或校准 |
+| 45-59 | Medium | 来源不足或部分冲突 |
+| <45 | Low | 不足以支撑可靠市场锚点 |
+
+最终 valuation confidence 还必须结合 recent comparable quality、title/planning、condition、property type fit 和 missing checks。
 
 ## 2. 核心估值链路
 
@@ -65,7 +143,7 @@ Comparable influence:
 | Planning/title | zoning, overlays, easements, covenants, title type | VicPlan, council public maps | title search, Section 32, plan of subdivision | VicPlan/council vs title/Section 32 | 上传 title/Section 32 | 关键项; 风险未查时 cap Medium |
 | Granny flat / secondary dwelling | existing, rear yard, access, services, planning feasibility | aerial, Street View, VicPlan, council permits | title, Section 32, building/planning permits, site inspection | physical fit vs planning controls vs title constraints | 上传 permits/title/photos | 只能 flag potential, 不能当 approved value |
 | Neighbouring built form | height, setbacks, rear structures, dual occupancy pattern | Street View, aerial, council permits | site inspection, planning files | imagery vs permit history | 用户补照片/notes | 影响 planning feasibility 和 micro-location |
-| Suburb fundamentals | income, jobs, owner/renter, price, rent, growth | ABS, suburb profiles, portals, market reports | paid market data | multiple statistical sources | 无则显示 unavailable | 解释性指标, 不盖过 comps |
+| Suburb fundamentals | income, jobs, owner/renter, price, rent, growth | ABS Census, QuickStats, DataPacks, SEIFA, suburb profiles | paid market data | ABS as authority, portals/reports as secondary | 无则显示 unavailable | 解释性指标, 不盖过 comps |
 | Body corporate | fee, OC status, special levies, common area | listing, portals | OC certificate, contract, Section 32 | listing fee vs OC certificate | 上传 OC certificate | townhouse/villa/apartment 关键 |
 
 ## 4. 自动核查清单
@@ -74,7 +152,9 @@ Comparable influence:
 
 - Address normalization
 - Related address detection: `9`, `1/9`, `2/9`, `unit 1`, parent/child titles
+- Layer 1 authority checks: ABS, RBA/APRA, VicPlan, council, LANDATA/Land Use Victoria where accessible
 - Portal cross-check: realestate.com.au, Domain, View, PropertyValue, property.com.au
+- Minimum market-source rule: 3 independent sources required, 5+ preferred for higher confidence
 - Recent sold comparable scan
 - Rental estimate cross-check
 - VicPlan / Planning Property Report
@@ -213,4 +293,3 @@ What would change the valuation
 - Apartment must remain separate from townhouse/villa.
 - Granny flat potential must remain separate from approval certainty.
 - Suburb fundamentals are explanatory and contextual, not the main price anchor.
-
