@@ -1008,10 +1008,54 @@ th {
     box-shadow: var(--shadow);
     display: grid;
     gap: 14px;
-    margin: -8px auto 18px;
-    max-width: 1320px;
+    margin: -8px 0 18px;
+    max-width: calc(100vw - 40px);
+    max-inline-size: calc(100vw - 40px);
     padding: 18px;
-    width: min(calc(100% - 28px), 1320px);
+    overflow: hidden;
+    width: calc(100vw - 40px);
+    inline-size: calc(100vw - 40px);
+  }
+
+  .search-panel {
+    display: block;
+    margin-left: 0;
+    margin-right: 0;
+    max-width: calc(100vw - 40px);
+    max-inline-size: calc(100vw - 40px);
+    overflow: hidden;
+    padding: 18px;
+    width: calc(100vw - 40px);
+    inline-size: calc(100vw - 40px);
+  }
+
+  .search-copy,
+  .search-box,
+  .type-row {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .search-box {
+    margin-top: 22px;
+  }
+
+  .search-copy h2,
+  .hero-note {
+    max-width: 100%;
+    width: 100%;
+    overflow-wrap: anywhere;
+    white-space: normal;
+  }
+
+  .search-copy h2 {
+    font-size: 26px;
+  }
+
+  .chip {
+    min-width: 0;
+    white-space: normal;
   }
 
   .mobile-value-card h2 {
