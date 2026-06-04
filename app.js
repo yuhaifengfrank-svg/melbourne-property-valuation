@@ -1009,8 +1009,6 @@ function buildDetailedReportLines() {
   const evidence = currentValuation.evidenceSummary || uploadedEvidenceSummary;
   const generatedAt = new Date().toLocaleString("en-AU", { timeZone: "Australia/Melbourne" });
   const recipientName = byId("lead-name").value.trim() || "Not supplied";
-  const recipientEmail = byId("lead-email").value.trim() || "Not supplied";
-  const recipientPhone = byId("lead-phone").value.trim() || "Not supplied";
   const selectedPropertyType = document.querySelector(".chip.active")?.dataset.type || currentValuation.type;
   const loanValue = Number.isFinite(currentValuation.midpointValue)
     ? formatMoney(currentValuation.midpointValue * selectedLvr)
@@ -1021,6 +1019,7 @@ function buildDetailedReportLines() {
   const comparableLines = currentValuation.comparables.length
     ? currentValuation.comparables.map((row) => `${row[0]} | Sale ${row[1]} | ${row[2]} | Land ${row[3]} | ${row[4]} | Similarity ${row[5]}`)
     : ["No comparable rows available for this demo case."];
+  const welcomeName = recipientName === "Not supplied" ? "there" : recipientName;
 
   const investorThemeLines = Object.values(investorThemes.en).flatMap((theme) => [
     `${theme.title}: ${theme.copy}`,
@@ -1029,19 +1028,18 @@ function buildDetailedReportLines() {
   ]);
   const lines = [
     { text: "AusHomeValue Property Valuation Report", size: 20, bold: true, gapAfter: 4 },
-    { text: "Detailed demo valuation report generated from the AusHomeValue website prototype", size: 10.5, gapAfter: 12 }
+    { text: "A practical property note prepared from your website search, uploaded evidence and valuation model checks.", size: 10.5, gapAfter: 12 }
   ];
 
-  addReportSection(lines, "1. Report record", [
-    ["Generated at", `${generatedAt} Melbourne time`],
-    ["Report recipient", recipientName],
-    ["Email", recipientEmail],
-    ["Phone", recipientPhone],
-    ["Contact consent", byId("lead-consent").checked ? "Yes" : "No"],
-    ["Report status", unlocked ? "Unlocked" : "Basic estimate only"]
+  addReportSection(lines, "Welcome", [
+    `Dear ${welcomeName},`,
+    "Thank you for visiting AusHomeValue and taking the time to explore this property with us. Our purpose is simple: to make property research feel clearer, more structured and more useful before you make a decision.",
+    "A property is never just one number. It is a combination of recent sales evidence, street quality, land and title details, planning potential, local fundamentals, lending context and the information you can provide from the ground. This report brings those items together in one place so you can see what supports the estimate, what still needs checking and what may change the result.",
+    "If anything in this report looks incomplete, unclear or different from what you know about the property, we welcome your feedback. Extra documents, photos, planning notes, agent feedback or local observations can all help us improve the analysis."
   ]);
 
-  addReportSection(lines, "2. Executive valuation summary", [
+  addReportSection(lines, "1. Executive valuation summary", [
+    ["Generated at", `${generatedAt} Melbourne time`],
     ["Property address", currentValuation.address],
     ["Property type", selectedPropertyType],
     ["Estimated value range", currentValuation.value],
@@ -1052,7 +1050,7 @@ function buildDetailedReportLines() {
     ["Required equity before costs", equityValue]
   ]);
 
-  addReportSection(lines, "3. Model framework and weighting logic", [
+  addReportSection(lines, "2. Model framework and weighting logic", [
     "- Comparable sales are the primary valuation anchor. When there are at least three recent same-type sales within six months, comparable evidence should carry around 60% to 70% influence.",
     "- If recent comparable evidence is limited, the model lowers comparable reliance and asks for more evidence instead of widening the range indefinitely.",
     "- The visible range is capped around +/-10% from the benchmark. Higher uncertainty is expressed through confidence and missing checks, not by making the range too wide.",
@@ -1060,22 +1058,22 @@ function buildDetailedReportLines() {
     "- Uploaded evidence can improve confidence, narrow the range and slightly revise the midpoint when it confirms title, planning, condition or street factors."
   ]);
 
-  addReportSection(lines, "4. Valuation rationale", currentValuation.reasons.map((reason) => `- ${reason}`));
+  addReportSection(lines, "3. Valuation rationale", currentValuation.reasons.map((reason) => `- ${reason}`));
   addReportSection(
     lines,
-    "5. Uploaded evidence review",
+    "4. Uploaded evidence review",
     evidence.length
       ? evidence.map((item) => `- ${item}`)
       : ["- No uploaded evidence has been applied. Title, Section 32, planning notes, current photos and street checks would improve confidence."]
   );
 
-  addReportSection(lines, "6. Comparable sales and adjustment notes", [
+  addReportSection(lines, "5. Comparable sales and adjustment notes", [
     ...comparableLines.map((item) => `- ${item}`),
     "- Adjustment note: recent same-type sales are compared against land size, building profile, condition, street quality, location convenience and settlement recency.",
     "- If the subject property has stronger evidence than a comparable, the model may support an uplift. If title, planning or condition remains unclear, confidence is held back."
   ]);
 
-  addReportSection(lines, "7. Micro-location and street checks", [
+  addReportSection(lines, "6. Micro-location and street checks", [
     ["Street rank", currentValuation.location.rank],
     ["Street type", currentValuation.location.type],
     ["Amenity access", currentValuation.location.amenity],
@@ -1084,13 +1082,13 @@ function buildDetailedReportLines() {
     ["Street trees / presentation", "Tree canopy, frontage rhythm and neighbouring presentation are treated as qualitative micro-location signals."]
   ]);
 
-  addReportSection(lines, "8. Suburb fundamentals", [
+  addReportSection(lines, "7. Suburb fundamentals", [
     ...currentValuation.suburb.map((item) => `- ${item}`),
     "- Suburb review considers household demand, access to employment, schools, transport, retail, medical and comparison suburbs.",
     "- Income, employment and relative affordability can be added as structured public-data inputs in a production model."
   ]);
 
-  addReportSection(lines, "9. Planning, land and development potential", [
+  addReportSection(lines, "8. Planning, land and development potential", [
     ["Land source", currentValuation.planning.landSource],
     ["Granny flat potential", currentValuation.planning.granny],
     ["Approval certainty", currentValuation.planning.approval],
@@ -1099,30 +1097,30 @@ function buildDetailedReportLines() {
     ["Manual title requirement", "Title search and title plan remain authoritative where portal land size or property configuration is inconsistent."]
   ]);
 
-  addReportSection(lines, "10. Data source audit", [
+  addReportSection(lines, "9. Data source audit", [
     "- Automatic / free checks: public sale evidence, address normalisation, property type selection, suburb fundamentals, basic map and street review.",
     "- Client-supplied evidence: title search, title plan, Section 32, current photos, renovation notes, inspection notes, leases, body corporate records and planning correspondence.",
     "- Cross-check rule: where portal data conflicts with title or council material, title/council evidence should override portal data.",
     "- Missing fields should be requested from the client instead of being guessed."
   ]);
 
-  addReportSection(lines, "11. Loan / LVR scenario", [
+  addReportSection(lines, "10. Loan / LVR scenario", [
     ["Selected LVR", `${Math.round(selectedLvr * 100)}%`],
     ["Indicative maximum loan", loanValue],
     ["Required equity before costs", equityValue],
     "This is not a loan approval or borrowing capacity assessment. Actual lending depends on lender policy, income, expenses, credit history and full application review."
   ]);
 
-  addReportSection(lines, "12. Investor Hub themes", investorThemeLines);
+  addReportSection(lines, "11. Investor Hub themes", investorThemeLines);
 
-  addReportSection(lines, "13. Report download and lead workflow", [
+  addReportSection(lines, "12. Report download and lead workflow", [
     "- Basic estimate is available without registration.",
     "- Detailed comparable adjustments, investor workflow and PDF download require registration.",
     "- PDF download requires phone number and contact consent so the case can be followed up.",
     "- Uploaded evidence is captured in the report summary and can be used to reprioritise leads in the dashboard."
   ]);
 
-  addReportSection(lines, "14. Missing checks and next actions", [
+  addReportSection(lines, "13. Missing checks and next actions", [
     "- Confirm title search, title plan and Section 32 with authoritative documents.",
     "- Review current property condition, renovation quality and visible defects.",
     "- Confirm planning overlays, easements, covenants and council constraints.",
@@ -1130,7 +1128,15 @@ function buildDetailedReportLines() {
     "- Contact AusHomeValue by QR code or email info@aushomevalue.com.au for a case review."
   ]);
 
-  addReportSection(lines, "15. Important disclaimer", [
+  addReportSection(lines, "Conclusion", [
+    "Thank you again for using AusHomeValue. We hope this report gives you a clearer starting point, not just a price range, but a map of the evidence behind it.",
+    "If you have questions, corrections or extra information, please contact us. Property analysis improves when the public data, professional judgement and client-supplied evidence are brought together carefully.",
+    "Contact email: info@aushomevalue.com.au",
+    "WeChat / QR code: please scan the QR code on the AusHomeValue website contact section.",
+    "Website: https://www.aushomevalue.com.au/"
+  ]);
+
+  addReportSection(lines, "Important disclaimer", [
     "This prototype report is for demonstration and lead-capture workflow testing only.",
     "It is not a formal valuation, credit assessment, financial product advice or legal/planning advice.",
     "Any investment, lending or acquisition decision should be reviewed with appropriately licensed professionals."
