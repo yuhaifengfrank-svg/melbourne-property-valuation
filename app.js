@@ -653,6 +653,73 @@ let activeInvestorTheme = null;
 let uploadedEvidenceSummary = [];
 const sentLeadNotificationKeys = new Set();
 
+const marketSourceGroups = [
+  {
+    key: "realestate",
+    name: "realestate.com.au",
+    weight: 24,
+    role: "Core sold/listing portal",
+    roleZh: "核心成交 / 挂牌门户",
+    url: ({ suburb, state, type }) => `https://www.realestate.com.au/sold/in-${encodeURIComponent(`${suburb} ${state}`)}/list-1?source=refinement&propertyTypes=${encodeURIComponent(type || "house")}`
+  },
+  {
+    key: "domain",
+    name: "Domain",
+    weight: 22,
+    role: "Core sold/listing portal",
+    roleZh: "核心成交 / 挂牌门户",
+    url: ({ suburb, state }) => `https://www.domain.com.au/sold-listings/${encodeURIComponent(`${suburb} ${state}`)}/`
+  },
+  {
+    key: "agentResults",
+    name: "Agent sold / auction results",
+    weight: 14,
+    role: "Local agency result confirmation",
+    roleZh: "本地中介成交 / 拍卖结果确认",
+    url: ({ address, suburb, state }) => `https://www.google.com/search?q=${encodeURIComponent(`${address} ${suburb} ${state} sold auction result agent`)}`
+  },
+  {
+    key: "propertyComAu",
+    name: "property.com.au",
+    weight: 12,
+    role: "Property profile and sold history",
+    roleZh: "物业档案和成交历史",
+    url: ({ address, suburb, state }) => `https://www.property.com.au/search?query=${encodeURIComponent(`${address} ${suburb} ${state}`)}`
+  },
+  {
+    key: "avmProfile",
+    name: "PropertyValue / OnTheHouse profile",
+    weight: 8,
+    role: "AVM/profile cross-check",
+    roleZh: "AVM / 物业档案交叉比对",
+    url: ({ address, suburb, state }) => `https://www.google.com/search?q=${encodeURIComponent(`${address} ${suburb} ${state} PropertyValue OnTheHouse`)}`,
+  },
+  {
+    key: "viewHomely",
+    name: "View / Homely portal evidence",
+    weight: 6,
+    role: "Secondary portal signal",
+    roleZh: "第二层门户信号",
+    url: ({ address, suburb, state }) => `https://www.google.com/search?q=${encodeURIComponent(`${address} ${suburb} ${state} View Homely sold`)}`,
+  },
+  {
+    key: "rentalEvidence",
+    name: "Rental portal evidence",
+    weight: 6,
+    role: "Rent and yield context",
+    roleZh: "租金和收益率背景",
+    url: ({ suburb, state, type }) => `https://www.realestate.com.au/rent/in-${encodeURIComponent(`${suburb} ${state}`)}/list-1?source=refinement&propertyTypes=${encodeURIComponent(type || "house")}`
+  },
+  {
+    key: "localMarketReport",
+    name: "Local market / suburb report",
+    weight: 8,
+    role: "Suburb trend context",
+    roleZh: "区域走势背景",
+    url: ({ suburb, state }) => `https://www.google.com/search?q=${encodeURIComponent(`${suburb} ${state} suburb property market report sold prices`)}`
+  }
+];
+
 const byId = (id) => document.getElementById(id);
 
 function getSelectedState() {
@@ -680,6 +747,125 @@ function suburbFromAddress(address) {
 
 function stateFromAddress(address) {
   return String(address || "").match(/\b(VIC|NSW|QLD|WA|SA|TAS|ACT|NT)\b/i)?.[1]?.toUpperCase() || getSelectedState();
+}
+
+function normalizePropertyTypeForPortal(type) {
+  const normalized = String(type || "house").toLowerCase();
+  if (normalized.includes("apartment") || normalized.includes("unit")) return "unit-apartment";
+  if (normalized.includes("townhouse")) return "townhouse";
+  if (normalized.includes("villa")) return "villa";
+  if (normalized.includes("land")) return "land";
+  return "house";
+}
+
+function buildMarketCrosscheck(data = currentValuation) {
+  const suburb = data.propertySuburb || suburbFromAddress(data.address) || getEnteredSuburb() || "Australia";
+  const state = data.propertyState || stateFromAddress(data.address) || getSelectedState();
+  const type = normalizePropertyTypeForPortal(data.type);
+  const comparableCount = Array.isArray(data.comparables) ? data.comparables.length : 0;
+  const pending = data.type === "Commercial" || data.confidence === "Pending";
+  const context = { address: data.address, suburb, state, type };
+
+  const sources = marketSourceGroups.map((source, index) => {
+    const coreSource = index < 4;
+    const status = pending
+      ? "pending"
+      : comparableCount >= 3 && coreSource
+        ? "ready-to-verify"
+        : "search-generated";
+    const statusZh = pending
+      ? "待开放"
+      : comparableCount >= 3 && coreSource
+        ? "可核对"
+        : "已生成搜索";
+    return {
+      ...source,
+      status,
+      statusZh,
+      url: source.url(context)
+    };
+  });
+
+  const readyWeight = sources.reduce((sum, source) => {
+    if (source.status === "ready-to-verify") return sum + source.weight;
+    return sum;
+  }, 0);
+  const independentCount = sources.filter((source) => source.status !== "pending").length;
+  const score = pending ? null : Math.min(100, readyWeight);
+  const band = pending
+    ? "Pending"
+    : independentCount < 3
+      ? "Low"
+      : score >= 75
+        ? "High"
+        : score >= 60
+          ? "Medium-High"
+          : score >= 45
+            ? "Medium"
+            : "Low";
+  const bandZh = {
+    Pending: "待开放",
+    Low: "低",
+    Medium: "中",
+    "Medium-High": "中高",
+    High: "高"
+  }[band] || band;
+
+  return {
+    score,
+    band,
+    bandZh,
+    independentCount,
+    sources,
+    summary: pending
+      ? "Commercial cross-check is a later module because income, lease and yield evidence need a separate model."
+      : `Generated ${sources.length} public market checks for ${suburb} ${state}. Core portal evidence is weighted before lower-weight secondary sources.`,
+    summaryZh: pending
+      ? "商业地产 cross-check 会作为后续独立模块，因为收益、租约和 yield 需要单独模型。"
+      : `已为 ${suburb} ${state} 生成 ${sources.length} 个公开市场来源检查。核心门户证据权重高于第二层来源。`
+  };
+}
+
+function renderMarketCrosscheck(data = currentValuation) {
+  const crosscheck = buildMarketCrosscheck(data);
+  currentValuation.marketCrosscheck = crosscheck;
+  byId("market-crosscheck-title").textContent = language === "zh" ? "市场来源交叉比对" : "Market source cross-check";
+  byId("market-crosscheck-summary").textContent = language === "zh" ? crosscheck.summaryZh : crosscheck.summary;
+  byId("market-crosscheck-score").textContent =
+    crosscheck.score === null
+      ? localizeValue(crosscheck.band)
+      : `${crosscheck.score}/100 · ${localizeValue(crosscheck.band)}`;
+  byId("market-crosscheck-note").textContent = language === "zh"
+    ? "公开门户数据属于第二层证据，需要和产权、council、政府规划资料交叉比对，不能直接当成权威来源。"
+    : "Public portal data is secondary evidence and must be cross-checked against title, council and government records where available.";
+
+  const grid = byId("market-source-grid");
+  grid.innerHTML = "";
+  crosscheck.sources.forEach((source) => {
+    const card = document.createElement("article");
+    card.className = "market-source-card";
+
+    const name = document.createElement("strong");
+    name.textContent = source.name;
+    card.appendChild(name);
+
+    const meta = document.createElement("span");
+    meta.textContent = `${language === "zh" ? "权重" : "Weight"} ${source.weight} · ${language === "zh" ? source.roleZh : source.role}`;
+    card.appendChild(meta);
+
+    const status = document.createElement("span");
+    status.textContent = `${language === "zh" ? "状态" : "Status"}: ${language === "zh" ? source.statusZh : source.status}`;
+    card.appendChild(status);
+
+    const link = document.createElement("a");
+    link.href = source.url;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = language === "zh" ? "打开公开检查链接" : "Open public check";
+    card.appendChild(link);
+
+    grid.appendChild(card);
+  });
 }
 
 const uiText = {
@@ -1311,6 +1497,7 @@ function renderValuation(data) {
   renderComparables(data.comparables);
   renderMap(data);
   renderLoanScenario();
+  renderMarketCrosscheck(data);
   renderLockState();
   renderEvidenceReview(language === "zh" && data.evidenceSummaryZh ? data.evidenceSummaryZh : data.evidenceSummary);
   document.querySelectorAll(".chip").forEach((chip) => {
@@ -1506,6 +1693,7 @@ function addReportSection(lines, title, items = []) {
 
 function buildDetailedReportLines() {
   const evidence = currentValuation.evidenceSummary || uploadedEvidenceSummary;
+  const marketCrosscheck = currentValuation.marketCrosscheck || buildMarketCrosscheck(currentValuation);
   const generatedAt = new Date().toLocaleString("en-AU", { timeZone: "Australia/Melbourne" });
   const recipientName = byId("lead-name").value.trim() || "Not supplied";
   const selectedPropertyType = document.querySelector(".chip.active")?.dataset.type || currentValuation.type;
@@ -1615,6 +1803,14 @@ function buildDetailedReportLines() {
     "- Client-supplied evidence: title search, title plan, Section 32, current photos, renovation notes, inspection notes, leases, body corporate records and planning correspondence.",
     "- Conflict rule: where portal data conflicts with title/council/government material, the authoritative source wins and confidence is adjusted.",
     "- Missing fields should be requested from the client instead of being guessed."
+  ]);
+
+  addReportSection(lines, "9A. Public market cross-check queue", [
+    ["Market-source confidence", marketCrosscheck.score === null ? marketCrosscheck.band : `${marketCrosscheck.score}/100 (${marketCrosscheck.band})`],
+    ["Independent source groups generated", marketCrosscheck.independentCount],
+    ...marketCrosscheck.sources.map((source) => `- ${source.name}: weight ${source.weight}; status ${source.status}; role ${source.role}; public check ${source.url}`),
+    "- Compliance note: this report records public check links and source weights. It does not bypass portal controls or treat portal material as authoritative.",
+    "- Production note: live page reading should use official APIs, authorised data feeds, or a server workflow that respects each source's terms and robots policy."
   ]);
 
   addReportSection(lines, "10. Loan / LVR scenario", [

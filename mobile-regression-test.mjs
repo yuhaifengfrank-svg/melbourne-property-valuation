@@ -37,7 +37,7 @@ class MockElement {
     this.value = "";
     this.checked = false;
     this.textContent = "";
-    this.innerHTML = "";
+    this._innerHTML = "";
     this.placeholder = "";
     this.href = "";
     this.download = "";
@@ -52,6 +52,15 @@ class MockElement {
   addEventListener(type, handler) {
     this.listeners[type] = this.listeners[type] || [];
     this.listeners[type].push(handler);
+  }
+
+  get innerHTML() {
+    return this._innerHTML;
+  }
+
+  set innerHTML(value) {
+    this._innerHTML = value;
+    if (value === "") this.children = [];
   }
 
   appendChild(child) {
@@ -106,7 +115,8 @@ function makeDocument() {
     "guide-comparables", "guide-location", "guide-close", "pdf-fill-details", "pdf-close", "open-qr-modal",
     "qr-close", "unlock-title", "unlock-modal", "report-guide-modal", "pdf-requirements-modal", "qr-modal",
     "investor-theme-title", "investor-theme-copy", "investor-theme-list", "investor-theme-detail",
-    "evidence-revision-note"
+    "evidence-revision-note", "market-crosscheck-title", "market-crosscheck-summary", "market-crosscheck-score",
+    "market-source-grid", "market-crosscheck-note"
   ];
 
   ids.forEach((id) => elements.set(id, new MockElement(id, recorder)));
@@ -243,6 +253,8 @@ await elements.get("start-valuation").click();
 assert.equal(elements.get("mobile-property-address").textContent, "9 McIntosh Street, Oakleigh VIC 3166");
 assert.equal(elements.get("mobile-estimated-value").textContent, "$1.14m - $1.36m");
 assert.ok(recorder.scrolls.includes("mobile-value-card"), "mobile valuation should scroll to quick result card");
+assert.equal(elements.get("market-crosscheck-score").textContent, "72/100 · Medium-High");
+assert.equal(elements.get("market-source-grid").children.length, 8, "mobile page should render all market source checks");
 
 await elements.get("mobile-report-cta").click();
 assert.ok(recorder.scrolls.includes("lead-panel"), "locked mobile CTA should take user to registration form");

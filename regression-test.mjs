@@ -36,7 +36,7 @@ class MockElement {
     this.value = "";
     this.checked = false;
     this.textContent = "";
-    this.innerHTML = "";
+    this._innerHTML = "";
     this.placeholder = "";
     this.href = "";
     this.download = "";
@@ -46,6 +46,16 @@ class MockElement {
   }
 
   addEventListener() {}
+
+  get innerHTML() {
+    return this._innerHTML;
+  }
+
+  set innerHTML(value) {
+    this._innerHTML = value;
+    if (value === "") this.children = [];
+  }
+
   appendChild(child) {
     this.children = this.children || [];
     this.children.push(child);
@@ -79,7 +89,8 @@ function makeDocument() {
     "guide-comparables", "guide-location", "guide-close", "pdf-fill-details", "pdf-close", "open-qr-modal",
     "qr-close", "unlock-title", "unlock-modal", "report-guide-modal", "pdf-requirements-modal", "qr-modal",
     "investor-theme-title", "investor-theme-copy", "investor-theme-list", "investor-theme-detail",
-    "evidence-revision-note"
+    "evidence-revision-note", "market-crosscheck-title", "market-crosscheck-summary", "market-crosscheck-score",
+    "market-source-grid", "market-crosscheck-note"
   ];
   ids.forEach((id) => elements.set(id, new MockElement(id)));
   elements.get("property-state").value = "VIC";
@@ -184,6 +195,7 @@ globalThis.__test = {
   findValuation,
   renderValuation,
   applyEvidenceFiles,
+  buildMarketCrosscheck,
   buildDetailedReportLines,
   createPdfDocument,
   buildEnteredAddress,
@@ -248,9 +260,11 @@ for (const testCase of cases) {
     await context.__test.applyEvidenceFiles(evidenceFiles);
   }
   const after = context.__test.currentValuation.midpointValue;
+  const marketCrosscheck = context.__test.buildMarketCrosscheck(context.__test.currentValuation);
   const reportLines = context.__test.buildDetailedReportLines();
   const pdf = context.__test.createPdfDocument(reportLines);
   const header = Buffer.from(await pdf.arrayBuffer()).subarray(0, 8).toString();
+  const reportText = reportLines.map((line) => line.text).join("\n");
 
   results.push({
     type: testCase.type,
@@ -260,6 +274,11 @@ for (const testCase of cases) {
     after,
     changed: testCase.pending ? "pending" : before !== after,
     confidence: context.__test.currentValuation.confidence,
+    marketSources: marketCrosscheck.sources.length,
+    sourceScore: marketCrosscheck.score ?? "pending",
+    hasCorePortals: marketCrosscheck.sources.some((source) => source.name === "realestate.com.au") &&
+      marketCrosscheck.sources.some((source) => source.name === "Domain"),
+    reportHasCrosscheck: reportText.includes("9A. Public market cross-check queue"),
     pdf: header.startsWith("%PDF-1.") ? "ok" : "failed",
     reportLines: reportLines.length
   });
@@ -270,6 +289,9 @@ console.table(results);
 const failures = results.filter((row) => {
   if (row.pdf !== "ok") return true;
   if (row.type !== "Commercial" && !row.changed) return true;
+  if (row.type !== "Commercial" && row.marketSources !== 8) return true;
+  if (row.type !== "Commercial" && !row.hasCorePortals) return true;
+  if (!row.reportHasCrosscheck) return true;
   if (row.type === "Commercial" && row.changed !== "pending") return true;
   return false;
 });

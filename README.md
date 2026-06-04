@@ -22,6 +22,8 @@ The model uses an authority-first source hierarchy:
 - Layer 2: commercial or market-published data, including portals, agent sold results, auction results, rental listings and market reports.
 - Layer 3: cross-check and confirmation. Non-authoritative market data should be cross-checked across at least three independent sources, with five or more sources preferred for higher confidence. Title, council, planning and government records override portal conflicts.
 
+The current market-source cross-check module generates a weighted public evidence queue and direct public check links for sources such as realestate.com.au, Domain, agent results, property.com.au, AVM/profile pages, secondary portals, rental evidence and local market reports. It does not bypass portal controls or scrape restricted data. Live price extraction should use authorised APIs, licensed data feeds or workflows that respect each source's terms and robots policy.
+
 ## Prototype
 
 This repository contains a static client interface plus a Vercel serverless lead-capture API:
