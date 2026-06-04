@@ -460,13 +460,18 @@
               </a>
             </div>
             <div class="qr-card" aria-label="AusHomeValue WeChat contact QR code">
-              <img
-                class="contact-qr"
-                src="assets/aushomevalue-wechat-qr.jpg"
-                alt="AusHomeValue WeChat contact QR code"
-              />
+              <button class="qr-image-button" id="open-qr-modal" type="button" aria-label="Open WeChat QR code larger">
+                <img
+                  class="contact-qr"
+                  src="assets/aushomevalue-wechat-qr.jpg"
+                  alt="AusHomeValue WeChat contact QR code"
+                />
+              </button>
               <strong>WeChat / QR code</strong>
-              <p>Scan to add AusHomeValue on WeChat.</p>
+              <p>Tap to enlarge, then long press the QR code to scan or save.</p>
+              <a class="qr-open-link" href="assets/aushomevalue-wechat-qr.jpg" target="_blank" rel="noopener">
+                Open QR image
+              </a>
             </div>
           </section>
         </section>
@@ -512,6 +517,23 @@
         <div class="modal-actions">
           <button id="pdf-fill-details" type="button">Fill phone details</button>
           <button class="ghost" id="pdf-close" type="button">Not now</button>
+        </div>
+      </div>
+    </dialog>
+    <dialog class="qr-modal" id="qr-modal">
+      <div class="qr-modal-content">
+        <p class="eyebrow">WeChat QR code</p>
+        <h2>Long press the QR code to scan or save.</h2>
+        <img
+          class="qr-modal-image"
+          src="assets/aushomevalue-wechat-qr.jpg"
+          alt="AusHomeValue WeChat contact QR code large view"
+        />
+        <div class="modal-actions">
+          <a class="qr-open-link" href="assets/aushomevalue-wechat-qr.jpg" target="_blank" rel="noopener">
+            Open original image
+          </a>
+          <button class="ghost" id="qr-close" type="button">Close</button>
         </div>
       </div>
     </dialog>

@@ -320,7 +320,12 @@ const uiText = {
       "#contact > div:first-child p:not(.eyebrow)": "Send the address and your question by email, or scan the QR code to connect with us. We can review the case and tell you what evidence is still missing.",
       "#contact .contact-email": "info@aushomevalue.com.au",
       "#contact .qr-card strong": "WeChat / QR code",
-      "#contact .qr-card p": "Scan to add AusHomeValue on WeChat.",
+      "#contact .qr-card p": "Tap to enlarge, then long press the QR code to scan or save.",
+      "#contact .qr-card .qr-open-link": "Open QR image",
+      "#qr-modal .eyebrow": "WeChat QR code",
+      "#qr-modal h2": "Long press the QR code to scan or save.",
+      "#qr-modal .qr-open-link": "Open original image",
+      "#qr-close": "Close",
       ".modal-content .eyebrow": "Full report locked",
       "#modal-register": "Register to unlock",
       "#modal-close": "Not now",
@@ -421,7 +426,12 @@ const uiText = {
       "#contact > div:first-child p:not(.eyebrow)": "把地址和你的问题发到邮箱，或扫描二维码联系我们。我们可以先看这个案例，并告诉你还缺哪些资料。",
       "#contact .contact-email": "info@aushomevalue.com.au",
       "#contact .qr-card strong": "微信 / 二维码",
-      "#contact .qr-card p": "扫码添加 AusHomeValue 微信。",
+      "#contact .qr-card p": "点击放大后，长按二维码识别或保存。",
+      "#contact .qr-card .qr-open-link": "打开二维码原图",
+      "#qr-modal .eyebrow": "微信二维码",
+      "#qr-modal h2": "长按二维码识别或保存。",
+      "#qr-modal .qr-open-link": "打开原图",
+      "#qr-close": "关闭",
       ".modal-content .eyebrow": "完整报告已锁定",
       "#modal-register": "注册解锁",
       "#modal-close": "暂不",
@@ -1531,6 +1541,15 @@ byId("pdf-fill-details").addEventListener("click", () => {
 
 byId("pdf-close").addEventListener("click", () => {
   byId("pdf-requirements-modal").close();
+});
+
+byId("open-qr-modal").addEventListener("click", () => {
+  const modal = byId("qr-modal");
+  if (typeof modal.showModal === "function" && !modal.open) modal.showModal();
+});
+
+byId("qr-close").addEventListener("click", () => {
+  byId("qr-modal").close();
 });
 
 applyLanguage();

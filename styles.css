@@ -984,16 +984,78 @@ th {
   text-align: center;
 }
 
+.qr-image-button {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  display: block;
+  min-width: 0;
+  padding: 0;
+  width: 100%;
+}
+
 .qr-card p {
   color: var(--muted);
   font-size: 13px;
   margin: 8px 0 0;
 }
 
+.qr-open-link {
+  color: var(--accent);
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 800;
+  margin-top: 10px;
+  text-decoration: none;
+}
+
 .contact-qr {
   display: block;
   height: auto;
   margin-bottom: 12px;
+  -webkit-touch-callout: default;
+  user-select: auto;
+  width: 100%;
+}
+
+.qr-modal {
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 28px 80px rgba(23, 33, 29, 0.28);
+  max-width: 520px;
+  padding: 0;
+  width: calc(100% - 28px);
+}
+
+.qr-modal::backdrop {
+  background: rgba(23, 33, 29, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.qr-modal-content {
+  background: white;
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+}
+
+.qr-modal-content h2 {
+  font-size: 24px;
+  line-height: 1.15;
+  margin: 0;
+}
+
+.qr-modal-content .eyebrow {
+  margin: 0;
+}
+
+.qr-modal-image {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: block;
+  height: auto;
+  -webkit-touch-callout: default;
+  user-select: auto;
   width: 100%;
 }
 
