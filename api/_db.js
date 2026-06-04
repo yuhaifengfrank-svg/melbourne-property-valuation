@@ -44,5 +44,6 @@ export async function ensureSchema(sql) {
   await sql`CREATE INDEX IF NOT EXISTS leads_score_idx ON leads (lead_score DESC, created_at DESC)`;
   await sql`CREATE INDEX IF NOT EXISTS leads_email_idx ON leads (LOWER(email))`;
   await sql`CREATE INDEX IF NOT EXISTS leads_property_idx ON leads (LOWER(property_address))`;
+  await sql`CREATE INDEX IF NOT EXISTS leads_notification_dedupe_idx ON leads (LOWER(email), LOWER(property_address), event_type)`;
   initialized = true;
 }

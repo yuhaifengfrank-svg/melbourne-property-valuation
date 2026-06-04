@@ -111,6 +111,7 @@ export default async function handler(request, response) {
     const name = clean(body.name, 150);
     const email = clean(body.email, 254).toLowerCase();
     const propertyAddress = clean(body.propertyAddress, 300);
+    const eventType = clean(body.eventType, 80) || "report_unlock";
 
     if (!name || !email || !propertyAddress || !email.includes("@")) {
       return json(response, 400, { error: "Name, email and property address are required" });
@@ -122,6 +123,15 @@ export default async function handler(request, response) {
     const ipCountry = cleanHeader(request.headers["x-vercel-ip-country"], 10) || null;
     const ipRegion = cleanHeader(request.headers["x-vercel-ip-country-region"], 100) || null;
     const ipCity = cleanHeader(request.headers["x-vercel-ip-city"], 150) || null;
+    const existingNotification = await sql`
+      SELECT id
+      FROM leads
+      WHERE LOWER(email) = LOWER(${email})
+        AND LOWER(property_address) = LOWER(${propertyAddress})
+        AND event_type = ${eventType}
+      ORDER BY created_at ASC
+      LIMIT 1
+    `;
 
     const rows = await sql`
       INSERT INTO leads (
@@ -142,7 +152,7 @@ export default async function handler(request, response) {
         ${clean(body.confidence, 80) || null},
         ${Number.isFinite(Number(body.selectedLvr)) ? Math.round(Number(body.selectedLvr)) : null},
         ${clean(body.language, 10) || null},
-        ${clean(body.eventType, 80) || "report_unlock"},
+        ${eventType},
         ${score},
         ${priority},
         ${hashIp(ip) || null},
@@ -155,7 +165,14 @@ export default async function handler(request, response) {
       RETURNING id, created_at, lead_score, priority, ip_country, ip_region, ip_city
     `;
 
-    return json(response, 201, { ok: true, lead: rows[0] });
+    return json(response, 201, {
+      ok: true,
+      lead: rows[0],
+      notification: {
+        should_send: existingNotification.length === 0,
+        duplicate_of: existingNotification[0]?.id || null
+      }
+    });
   } catch (error) {
     console.error(error);
     return json(response, 500, { error: "Database service is not available" });

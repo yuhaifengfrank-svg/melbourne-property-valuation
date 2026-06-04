@@ -1322,13 +1322,14 @@ async function saveLead({ pdfDownload = false } = {}) {
     lead.visitorRegion = formatVisitorRegion(savedLead);
     lead.leadScore = savedLead?.lead_score;
     lead.priority = savedLead?.priority;
+    lead.shouldSendNotification = databaseResult.notification?.should_send !== false;
     stored = true;
   } catch (error) {
     console.error(error);
   }
 
   try {
-    if (stored && !hasLeadNotificationBeenSent(lead)) {
+    if (stored && lead.shouldSendNotification && !hasLeadNotificationBeenSent(lead)) {
       await sendLeadNotification(lead);
       markLeadNotificationSent(lead);
       notified = true;
@@ -1349,7 +1350,7 @@ async function saveLead({ pdfDownload = false } = {}) {
       ? "暂时无法保存客户资料，请稍后再试。"
       : "Customer details could not be saved. Please try again later.";
 
-  if (stored && !notified && !hasLeadNotificationBeenSent(lead)) {
+  if (stored && lead.shouldSendNotification && !notified && !hasLeadNotificationBeenSent(lead)) {
     console.warn("Customer record saved, but lead notification email failed.");
   }
   return stored;
