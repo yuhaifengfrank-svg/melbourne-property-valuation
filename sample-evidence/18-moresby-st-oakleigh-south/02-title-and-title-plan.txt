@@ -1,0 +1,10 @@
+Sample evidence file for AusHomeValue demo.
+
+Property: 18 Moresby Street, Oakleigh South VIC
+Document type: Certificate of title and title plan
+
+Summary:
+- Lot appears consistent with a 530 sqm site for demo purposes.
+- Title plan suggests ordinary residential allotment shape.
+- No title-confirmed easement has been included in this mock file.
+- This file is for demo testing only and is not a legal document.

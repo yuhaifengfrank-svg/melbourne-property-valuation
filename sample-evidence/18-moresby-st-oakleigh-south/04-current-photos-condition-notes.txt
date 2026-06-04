@@ -1,0 +1,10 @@
+Sample evidence file for AusHomeValue demo.
+
+Property: 18 Moresby Street, Oakleigh South VIC
+Document type: Current photos and condition notes
+
+Summary:
+- Photos indicate well maintained presentation in this mock review.
+- Kitchen and bathroom appear serviceable; no major visible defect included.
+- Facade and outdoor areas appear tidy from the sample photo notes.
+- This file is for demo testing only and is not an inspection report.

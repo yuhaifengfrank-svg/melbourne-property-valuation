@@ -1,0 +1,11 @@
+Sample evidence file for AusHomeValue demo.
+
+Property: 18 Moresby Street, Oakleigh South VIC
+Document type: Street, access and parking review
+
+Summary:
+- Quiet residential street assumed in this mock review.
+- Street parking pressure appears manageable for demo purposes.
+- Access to nearby connecting roads appears practical.
+- Street trees and residential streetscape support buyer appeal.
+- This file is for demo testing only and is not a traffic report.

@@ -567,6 +567,34 @@ button:hover {
   margin: 0;
 }
 
+.evidence-review {
+  background: #f7faf8;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  grid-column: 1 / -1;
+  padding: 16px;
+}
+
+.evidence-review h3,
+.evidence-review p,
+.evidence-review ul {
+  margin: 0;
+}
+
+.evidence-review ul {
+  color: var(--muted);
+  display: grid;
+  gap: 6px;
+  line-height: 1.45;
+}
+
+.evidence-review p {
+  color: var(--accent);
+  font-weight: 750;
+}
+
 .data-source-panel .panel-header {
   align-items: flex-start;
 }

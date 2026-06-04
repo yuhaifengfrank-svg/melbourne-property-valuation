@@ -238,6 +238,7 @@ let currentValuation = emptyValuation;
 let selectedLvr = 0.6;
 let language = "en";
 let activeInvestorTheme = null;
+let uploadedEvidenceSummary = [];
 
 const byId = (id) => document.getElementById(id);
 
@@ -307,6 +308,8 @@ const uiText = {
       ".pdf-note": "PDF download requires phone number and contact consent.",
       "#upload-evidence": "Upload evidence",
       "#download-pdf": "Download PDF",
+      "#evidence-review h3": "Evidence review applied",
+      "#evidence-revision-note": "Estimate revised using uploaded evidence. Download the report to see the evidence summary.",
       "#investor .eyebrow": "Investor Hub",
       "#investor h2": "Explore property-backed investment themes.",
       "#investor p:not(.eyebrow)": "General information only. Specific private opportunities require investor profile, eligibility review and compliance approval.",
@@ -406,6 +409,8 @@ const uiText = {
       ".pdf-note": "下载 PDF 需要填写电话并授权联系。",
       "#upload-evidence": "上传资料",
       "#download-pdf": "下载 PDF",
+      "#evidence-review h3": "已应用资料复核",
+      "#evidence-revision-note": "系统已根据上传资料修正估值。下载报告可查看资料复核摘要。",
       "#investor .eyebrow": "投资中心",
       "#investor h2": "探索地产支持型投资主题。",
       "#investor p:not(.eyebrow)": "仅提供一般信息。具体私募机会需要投资人画像、资格审核和合规批准。",
@@ -540,6 +545,34 @@ const investorThemes = {
   }
 };
 
+const evidenceTypes = {
+  section32: {
+    label: "Section 32 / vendor statement",
+    labelZh: "Section 32 / 售房声明",
+    pattern: /section\s*32|vendor statement|s32|disclosure/i
+  },
+  title: {
+    label: "Title and title plan",
+    labelZh: "产权和产权图",
+    pattern: /title|certificate of title|title plan|lot plan|plan of subdivision/i
+  },
+  planning: {
+    label: "Planning / zoning / overlays",
+    labelZh: "规划 / 分区 / 覆盖层",
+    pattern: /planning|zoning|zone|overlay|council|neighbourhood residential|general residential/i
+  },
+  photos: {
+    label: "Current photos / condition evidence",
+    labelZh: "当前照片 / 房况证据",
+    pattern: /photo|photos|image|facade|kitchen|bathroom|condition|renovated|jpg|jpeg|png|heic/i
+  },
+  street: {
+    label: "Street, access and parking review",
+    labelZh: "街道、进出和停车复核",
+    pattern: /street|road|access|parking|traffic|quiet|wide|narrow|tree/i
+  }
+};
+
 function normalizeAddress(value) {
   return value
     .toLowerCase()
@@ -589,6 +622,8 @@ const dynamicText = {
     "Low": "低",
     "Low-Medium": "低至中等",
     "Medium": "中等",
+    "Medium-High": "中高",
+    "High": "高",
     "Good": "良好",
     "Strong": "强",
     "Unknown": "未知",
@@ -611,6 +646,129 @@ function localizeValue(value) {
   if (/^\d+ bed$/.test(value)) return value.replace(" bed", "房");
   if (value === "Guide") return "指导价";
   return value;
+}
+
+function readFileText(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result || ""));
+    reader.onerror = () => resolve("");
+    reader.readAsText(file);
+  });
+}
+
+function detectEvidenceTypes(fileName, content) {
+  const haystack = `${fileName}\n${content}`.toLowerCase();
+  return Object.entries(evidenceTypes)
+    .filter(([, config]) => config.pattern.test(haystack))
+    .map(([key]) => key);
+}
+
+function getEvidenceLabel(type) {
+  const config = evidenceTypes[type];
+  return language === "zh" ? config.labelZh : config.label;
+}
+
+function formatEvidenceRange(midpointValue, rangePercent) {
+  if (!Number.isFinite(midpointValue)) {
+    return { value: "Manual review", midpoint: "Manual review" };
+  }
+  const low = midpointValue * (1 - rangePercent);
+  const high = midpointValue * (1 + rangePercent);
+  return {
+    value: `${formatMoney(low)} - ${formatMoney(high)}`,
+    midpoint: formatMoney(midpointValue)
+  };
+}
+
+function renderEvidenceReview(summary) {
+  uploadedEvidenceSummary = summary || [];
+  const panel = byId("evidence-review");
+  if (!uploadedEvidenceSummary.length) {
+    panel.classList.add("hidden");
+    byId("evidence-review-list").innerHTML = "";
+    return;
+  }
+  setList("evidence-review-list", uploadedEvidenceSummary);
+  panel.classList.remove("hidden");
+}
+
+function buildEvidenceSummary(files, detectedTypes, adjustedMidpoint, rangePercent, lang = language) {
+  const detectedLabels = detectedTypes.map((type) => {
+    const config = evidenceTypes[type];
+    return lang === "zh" ? config.labelZh : config.label;
+  });
+  const rangeLabel = `${Math.round(rangePercent * 100)}%`;
+  if (lang === "zh") {
+    return [
+      `已读取 ${files.length} 个文件：${files.map((file) => file.name).join("、")}`,
+      `识别资料：${detectedLabels.join("、") || "未识别，需要人工复核"}`,
+      Number.isFinite(adjustedMidpoint)
+        ? `估值中点修正为 ${formatMoney(adjustedMidpoint)}，展示区间收窄到约 ±${rangeLabel}。`
+        : "当前估值需要人工复核，无法自动修正中点。",
+      "这些资料会进入报告的 evidence review 部分。"
+    ];
+  }
+  return [
+    `Read ${files.length} file${files.length === 1 ? "" : "s"}: ${files.map((file) => file.name).join(", ")}`,
+    `Recognised evidence: ${detectedLabels.join(", ") || "unclassified, manual review required"}`,
+    Number.isFinite(adjustedMidpoint)
+      ? `Revised midpoint to ${formatMoney(adjustedMidpoint)} and narrowed the visible range to about ±${rangeLabel}.`
+      : "Current estimate requires manual review, so the midpoint was not automatically revised.",
+    "These items will be included in the evidence review section of the report."
+  ];
+}
+
+async function applyEvidenceFiles(files) {
+  const fileList = Array.from(files);
+  if (!fileList.length) return;
+
+  if (!Number.isFinite(currentValuation.midpointValue)) {
+    byId("upload-message").textContent =
+      language === "zh"
+        ? "请先输入地址并生成估值，再上传资料修正估值。"
+        : "Please enter an address and generate an estimate before uploading evidence.";
+    return;
+  }
+
+  const fileTexts = await Promise.all(fileList.map((file) => readFileText(file)));
+  const detectedTypes = [
+    ...new Set(fileList.flatMap((file, index) => detectEvidenceTypes(file.name, fileTexts[index])))
+  ];
+  const allText = fileTexts.join("\n").toLowerCase();
+  const hasPositiveCondition = /renovated|good condition|well maintained|updated kitchen|updated bathroom|优良|翻新|维护良好/.test(allText);
+  const hasQuietStreet = /quiet|wide street|street trees|low traffic|安静|宽|树|低车流/.test(allText);
+  const hasPlanningConstraint = /heritage|flood|easement|single dwelling covenant|限制|地役权|洪水|heritage overlay/.test(allText);
+  const completeness = detectedTypes.length;
+  const adjustment =
+    (hasPositiveCondition ? 0.008 : 0) +
+    (hasQuietStreet ? 0.004 : 0) -
+    (hasPlanningConstraint ? 0.006 : 0);
+  const adjustedMidpoint = Math.round((currentValuation.midpointValue * (1 + adjustment)) / 1000) * 1000;
+  const rangePercent = Math.max(0.04, 0.1 - completeness * 0.012);
+  const revisedRange = formatEvidenceRange(adjustedMidpoint, rangePercent);
+  const evidenceSummary = buildEvidenceSummary(fileList, detectedTypes, adjustedMidpoint, rangePercent, "en");
+  const evidenceSummaryZh = buildEvidenceSummary(fileList, detectedTypes, adjustedMidpoint, rangePercent, "zh");
+
+  const revisedValuation = {
+    ...currentValuation,
+    value: revisedRange.value,
+    midpoint: revisedRange.midpoint,
+    midpointValue: adjustedMidpoint,
+    confidence: completeness >= 4 ? "High" : completeness >= 2 ? "Medium-High" : currentValuation.confidence,
+    status: completeness >= 4 ? "High" : currentValuation.status,
+    reasons: [...currentValuation.reasons, "Uploaded client evidence has been used to revise the range and confidence."],
+    reasonsZh: [...currentValuation.reasonsZh, "已根据客户上传资料修正估值区间和置信度。"],
+    evidenceSummary,
+    evidenceSummaryZh
+  };
+
+  renderValuation(revisedValuation);
+  renderEvidenceReview(evidenceSummary);
+  byId("upload-message").textContent =
+    language === "zh"
+      ? `${fileList.length} 个文件已读取，估值已根据资料修正。`
+      : `${fileList.length} file${fileList.length === 1 ? "" : "s"} read. Estimate revised using uploaded evidence.`;
 }
 
 function addressSeed(address) {
@@ -684,6 +842,7 @@ function renderValuation(data) {
   renderMap(data);
   renderLoanScenario();
   renderLockState();
+  renderEvidenceReview(language === "zh" && data.evidenceSummaryZh ? data.evidenceSummaryZh : data.evidenceSummary);
   document.querySelectorAll(".chip").forEach((chip) => {
     chip.classList.toggle("active", chip.dataset.type === data.type);
   });
@@ -899,7 +1058,8 @@ async function saveLead({ pdfDownload = false } = {}) {
       comparables: currentValuation.comparables,
       location: currentValuation.location,
       suburb: currentValuation.suburb,
-      planning: currentValuation.planning
+      planning: currentValuation.planning,
+      evidenceSummary: currentValuation.evidenceSummary || uploadedEvidenceSummary
     },
     createdAt: new Date().toISOString()
   };
@@ -957,6 +1117,11 @@ async function downloadDemoReport() {
     "",
     "Main reasons:",
     ...currentValuation.reasons.map((reason) => `- ${reason}`),
+    "",
+    "Evidence review:",
+    ...((currentValuation.evidenceSummary || uploadedEvidenceSummary).length
+      ? (currentValuation.evidenceSummary || uploadedEvidenceSummary).map((item) => `- ${item}`)
+      : ["- No uploaded evidence applied in this demo run."]),
     "",
     "Demo note: this is a prototype text download, not a formal valuation PDF."
   ].join("\n");
@@ -1060,14 +1225,8 @@ byId("upload-evidence").addEventListener("click", () => {
   byId("evidence-files").click();
 });
 
-byId("evidence-files").addEventListener("change", (event) => {
-  const count = event.target.files.length;
-  byId("upload-message").textContent =
-    count > 0
-      ? language === "zh"
-        ? `已选择 ${count} 个文件。演示版会先记录文件，正式版会上传到安全存储。`
-        : `${count} file${count === 1 ? "" : "s"} selected. Demo mode records the selection; production will upload to secure storage.`
-      : "";
+byId("evidence-files").addEventListener("change", async (event) => {
+  await applyEvidenceFiles(event.target.files);
 });
 
 byId("download-pdf").addEventListener("click", downloadDemoReport);

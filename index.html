@@ -376,11 +376,18 @@
                 id="evidence-files"
                 type="file"
                 multiple
-                accept=".pdf,.jpg,.jpeg,.png,.heic,.doc,.docx"
+                accept=".pdf,.txt,.jpg,.jpeg,.png,.heic,.doc,.docx"
               />
               <button class="ghost" id="download-pdf" type="button">Download PDF</button>
             </div>
             <p class="upload-message" id="upload-message" aria-live="polite"></p>
+            <div class="evidence-review hidden" id="evidence-review">
+              <h3>Evidence review applied</h3>
+              <ul id="evidence-review-list"></ul>
+              <p id="evidence-revision-note">
+                Estimate revised using uploaded evidence. Download the report to see the evidence summary.
+              </p>
+            </div>
           </section>
 
           <section class="panel investor-panel" id="investor">
