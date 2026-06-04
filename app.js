@@ -213,6 +213,11 @@ const uiText = {
       ".hero-note": "Built for early-stage lead capture using public data, manually curated samples and client-supplied evidence.",
       '.search-box label[for="address"]': "Property address",
       "#start-valuation": "Get free estimate",
+      ".mobile-value-card .eyebrow": "Estimated value",
+      ".mobile-value-label": "Estimated value",
+      ".mobile-midpoint-label": "Midpoint",
+      ".mobile-confidence-label": "Confidence",
+      "#mobile-report-cta": "Unlock full report details",
       ".lead-panel .eyebrow": "Full report",
       ".lead-panel h2": "Leave details to unlock",
       ".lead-panel > p:not(.eyebrow)": "Basic estimate is free. Register to view comparable adjustments, planning notes and report download options.",
@@ -269,7 +274,19 @@ const uiText = {
       ".modal-content .eyebrow": "Full report locked",
       "#modal-register": "Register to unlock",
       "#modal-close": "Not now",
-      ".modal-content p:not(.eyebrow)": "Register to unlock comparable adjustments, suburb fundamentals, micro-location evidence and planning checks. PDF download requires phone number and contact consent."
+      ".modal-content p:not(.eyebrow)": "Register to unlock comparable adjustments, suburb fundamentals, micro-location evidence and planning checks. PDF download requires phone number and contact consent.",
+      "#report-guide .eyebrow": "Report unlocked",
+      "#report-guide h3": "Your detail report is ready below.",
+      "#report-guide > p:not(.eyebrow)": "Start with comparable sales, then check micro-location, suburb fundamentals and planning potential.",
+      ".report-guide-links a:nth-child(1)": "Comparables",
+      ".report-guide-links a:nth-child(2)": "Location",
+      ".report-guide-links a:nth-child(3)": "PDF / evidence",
+      "#report-guide-modal .eyebrow": "Report unlocked",
+      "#report-guide-modal h2": "Your detailed report sections are ready.",
+      "#report-guide-modal p:not(.eyebrow)": "On mobile, start with the comparable sales table, then micro-location, suburb fundamentals and planning potential.",
+      "#guide-comparables": "View report details",
+      "#guide-location": "View location checks",
+      "#guide-close": "Stay here"
     }
   },
   zh: {
@@ -290,6 +307,11 @@ const uiText = {
       ".hero-note": "第一版用于低成本获客：公开数据、手工样本和客户补充资料结合使用。",
       '.search-box label[for="address"]': "房产地址",
       "#start-valuation": "获取免费估值",
+      ".mobile-value-card .eyebrow": "估值结果",
+      ".mobile-value-label": "估值区间",
+      ".mobile-midpoint-label": "估值中点",
+      ".mobile-confidence-label": "置信度",
+      "#mobile-report-cta": "解锁完整报告详情",
       ".lead-panel .eyebrow": "完整报告",
       ".lead-panel h2": "留下资料解锁",
       ".lead-panel > p:not(.eyebrow)": "基础估值免费。注册后可查看可比成交调整、规划说明和报告下载选项。",
@@ -346,7 +368,19 @@ const uiText = {
       ".modal-content .eyebrow": "完整报告已锁定",
       "#modal-register": "注册解锁",
       "#modal-close": "暂不",
-      ".modal-content p:not(.eyebrow)": "注册后可查看可比成交调整、区域基本面、微位置证据和规划检查。下载 PDF 需要填写电话并授权联系。"
+      ".modal-content p:not(.eyebrow)": "注册后可查看可比成交调整、区域基本面、微位置证据和规划检查。下载 PDF 需要填写电话并授权联系。",
+      "#report-guide .eyebrow": "报告已解锁",
+      "#report-guide h3": "详细报告已经在下面开放。",
+      "#report-guide > p:not(.eyebrow)": "建议先看可比成交，再看微位置、区域基本面和规划潜力。",
+      ".report-guide-links a:nth-child(1)": "可比成交",
+      ".report-guide-links a:nth-child(2)": "位置分析",
+      ".report-guide-links a:nth-child(3)": "PDF / 补充资料",
+      "#report-guide-modal .eyebrow": "报告已解锁",
+      "#report-guide-modal h2": "详细报告板块已经开放。",
+      "#report-guide-modal p:not(.eyebrow)": "手机端建议先看可比成交表，再看微位置、区域基本面和规划潜力。",
+      "#guide-comparables": "查看报告详情",
+      "#guide-location": "查看位置检查",
+      "#guide-close": "留在这里"
     }
   }
 };
@@ -519,6 +553,10 @@ function renderValuation(data) {
   byId("estimated-value").textContent = localizeValue(data.value);
   byId("midpoint").textContent = localizeValue(data.midpoint);
   byId("confidence").textContent = localizeValue(data.confidence);
+  byId("mobile-property-address").textContent = data.address;
+  byId("mobile-estimated-value").textContent = localizeValue(data.value);
+  byId("mobile-midpoint").textContent = localizeValue(data.midpoint);
+  byId("mobile-confidence").textContent = localizeValue(data.confidence);
   byId("check-status").textContent = localizeValue(data.status);
   byId("street-rank").textContent = getLocalizedLocation(data, "rank");
   byId("street-type").textContent = getLocalizedLocation(data, "type");
@@ -617,9 +655,20 @@ function renderLockState() {
   byId("locked-strip").classList.toggle("hidden", !locked);
   byId("investor-lock").classList.toggle("hidden", !locked);
   byId("investor-detail").classList.toggle("hidden", locked);
+  byId("report-guide").classList.toggle("hidden", locked);
   document.querySelectorAll(".detail-panel").forEach((panel) => {
     panel.classList.toggle("unlocked", !locked);
   });
+}
+
+function scrollToSection(selector) {
+  const target = document.querySelector(selector);
+  if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function showReportGuideModal() {
+  const modal = byId("report-guide-modal");
+  if (typeof modal.showModal === "function" && !modal.open) modal.showModal();
 }
 
 async function sendLeadNotification(lead) {
@@ -778,6 +827,7 @@ byId("start-valuation").addEventListener("click", () => {
   const match = findValuation(byId("address").value);
   if (match) {
     renderValuation(match);
+    if (window.matchMedia("(max-width: 680px)").matches) scrollToSection(".mobile-value-card");
     return;
   }
   renderValuation({
@@ -821,6 +871,7 @@ byId("start-valuation").addEventListener("click", () => {
     },
     map: {}
   });
+  if (window.matchMedia("(max-width: 680px)").matches) scrollToSection(".mobile-value-card");
 });
 
 document.querySelectorAll(".chip").forEach((chip) => {
@@ -847,6 +898,16 @@ byId("unlock-report").addEventListener("click", async () => {
   unlocked = true;
   renderLockState();
   renderComparables(currentValuation.comparables);
+  showReportGuideModal();
+});
+
+byId("mobile-report-cta").addEventListener("click", () => {
+  if (unlocked) {
+    scrollToSection("#comparables");
+    return;
+  }
+  scrollToSection(".lead-panel");
+  byId("lead-email").focus({ preventScroll: true });
 });
 
 byId("download-pdf").addEventListener("click", downloadDemoReport);
@@ -869,6 +930,20 @@ byId("modal-register").addEventListener("click", () => {
   byId("unlock-modal").close();
   byId("lead-email").focus();
   document.querySelector(".lead-panel").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+byId("guide-comparables").addEventListener("click", () => {
+  byId("report-guide-modal").close();
+  scrollToSection("#comparables");
+});
+
+byId("guide-location").addEventListener("click", () => {
+  byId("report-guide-modal").close();
+  scrollToSection("#location");
+});
+
+byId("guide-close").addEventListener("click", () => {
+  byId("report-guide-modal").close();
 });
 
 applyLanguage();
