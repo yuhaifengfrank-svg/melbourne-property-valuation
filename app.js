@@ -1033,7 +1033,7 @@ function buildDetailedReportLines() {
 
   addReportSection(lines, "Welcome", [
     `Dear ${welcomeName},`,
-    "Thank you for visiting AusHomeValue and taking the time to explore this property with us. Our purpose is simple: to make property research feel clearer, more structured and more useful before you make a decision.",
+    "Thank you for visiting AusHomeValue and taking the time to explore this property with us. Our purpose is simple: to make property research, investment and finance feel clearer, more structured and more useful before you make a decision.",
     "A property is never just one number. It is a combination of recent sales evidence, street quality, land and title details, planning potential, local fundamentals, lending context and the information you can provide from the ground. This report brings those items together in one place so you can see what supports the estimate, what still needs checking and what may change the result.",
     "If anything in this report looks incomplete, unclear or different from what you know about the property, we welcome your feedback. Extra documents, photos, planning notes, agent feedback or local observations can all help us improve the analysis."
   ]);
