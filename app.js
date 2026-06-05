@@ -63,6 +63,83 @@ const valuations = [
     }
   },
   {
+    aliases: [
+      "22 lancaster st bentleigh east",
+      "22 lancaster street bentleigh east",
+      "22 lancaster st bentleigh east vic",
+      "22 lancaster street bentleigh east vic",
+      "22 lancaster st bentleigh east vic 3165",
+      "22 lancaster street bentleigh east vic 3165"
+    ],
+    address: "22 Lancaster Street, Bentleigh East VIC 3165",
+    type: "House",
+    value: "$1.65m - $2.02m",
+    midpoint: "$1.83m",
+    midpointValue: 1830000,
+    confidence: "Medium-High",
+    status: "Medium-High",
+    reasons: [
+      "4 / 2 / 2 family house profile on approximately 585 sqm land.",
+      "realestate.com.au / PropTrack and Domain estimates are closely aligned around the low-to-mid $1.8m benchmark.",
+      "McKinnon school-zone positioning and family-house demand support the estimate.",
+      "Recent same-suburb 4-bedroom sales, current title and current condition should be checked before upgrading to High confidence."
+    ],
+    reasonsZh: [
+      "4房2卫2车位的家庭型独立屋，土地约 585 平方米。",
+      "realestate.com.au / PropTrack 与 Domain 的估值中位接近，均指向 $1.8m 出头到中段的 benchmark。",
+      "McKinnon 校区位置和家庭型独立屋需求支撑估值。",
+      "升级到高置信度前，仍需复核近期同区4房成交、产权和当前房况。"
+    ],
+    comparables: [
+      ["PropTrack / realestate.com.au", "$1.61m-$2.01m", "Apr 2026", "585 sqm", "4 / 2 / 2", "Strong"],
+      ["Domain Insight", "$1.59m-$2.09m", "May 2026", "585 sqm", "4 / 2 / 5", "Strong"],
+      ["property.com.au / PropTrack", "$1.809m", "Apr 2026", "585 sqm", "4 / 2 / 2", "Strong"]
+    ],
+    location: {
+      rank: "Top 25% to Middle 50%, school-zone supported",
+      type: "Established family-house street",
+      amenity: "Strong",
+      parking: "Low to moderate, on-site parking supported",
+      rankZh: "前 25% 到中间 50%，受校区支撑",
+      typeZh: "成熟家庭型独立屋街道",
+      amenityZh: "强",
+      parkingZh: "低到中等，自带停车支撑"
+    },
+    suburb: [
+      "Bentleigh East has deep family-house demand and school-zone sensitivity.",
+      "The public profile shows ABS-linked suburb fundamentals including owner-occupier and family-house demand.",
+      "The estimate should be anchored to recent 4-bedroom house sales once same-suburb sold evidence is attached."
+    ],
+    suburbZh: [
+      "Bentleigh East 有较深的家庭型独立屋需求，并且对校区敏感。",
+      "公开资料显示该区家庭和自住需求较强，并引用 ABS 相关区域人口信息。",
+      "补齐同区近期4房独立屋成交后，估值应以这些成交作为主要锚点。"
+    ],
+    planning: {
+      landSource: "Portal cross-check, title still required",
+      granny: "Low to Medium",
+      approval: "Council / overlay check required",
+      landSourceZh: "门户交叉比对，仍需产权确认",
+      grannyZh: "低到中等",
+      approvalZh: "需要 council / overlay 检查"
+    },
+    map: {
+      target: "22",
+      station: "Bentleigh / McKinnon access",
+      shops: "Centre Road / local retail",
+      stationZh: "Bentleigh / McKinnon 交通连接",
+      shopsZh: "Centre Road / 本地商圈"
+    },
+    modelNotes: [
+      "This record uses public portal cross-checks as an address-level benchmark until recent same-suburb sold comparables are attached.",
+      "The range follows the internal rule that the customer-facing valuation band should not exceed roughly +/-10% from the benchmark unless evidence justifies it."
+    ],
+    modelNotesZh: [
+      "该记录先用公开门户交叉比对作为地址级 benchmark，后续应补入近期同区成交作为核心依据。",
+      "区间遵守内部规则：客户展示区间原则上不超过 benchmark 上下约 10%，除非证据支持。"
+    ]
+  },
+  {
     aliases: ["18 moresby st oakleigh south", "18 moresby street oakleigh south"],
     address: "18 Moresby Street, Oakleigh South VIC 3167",
     type: "House",
