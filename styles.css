@@ -1025,6 +1025,44 @@ th {
   padding-left: 20px;
 }
 
+.about-panel {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.85fr);
+}
+
+.about-copy h2 {
+  font-size: 30px;
+  line-height: 1.15;
+  max-width: 720px;
+}
+
+.about-copy p:not(.eyebrow) {
+  color: var(--muted);
+  line-height: 1.6;
+  max-width: 760px;
+}
+
+.about-card {
+  background: #f7faf8;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+}
+
+.about-card h3 {
+  margin-top: 0;
+}
+
+.about-card ul {
+  color: var(--muted);
+  display: grid;
+  gap: 10px;
+  line-height: 1.5;
+  margin: 0;
+  padding-left: 20px;
+}
+
 .contact-panel {
   align-items: center;
   background: #15372f;
@@ -1207,6 +1245,7 @@ th {
   .investor-panel,
   .theme-grid,
   .investor-detail,
+  .about-panel,
   .contact-panel {
     grid-template-columns: minmax(0, 1fr);
   }
