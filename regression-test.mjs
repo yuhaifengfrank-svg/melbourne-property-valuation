@@ -672,6 +672,15 @@ const broadCustomerIntakeCases = [
     expectValue: true
   },
   {
+    label: "Melbourne apartment with street and suburb typos",
+    address: "508/220 spencer5 street melnourne VIC",
+    selectedType: "House",
+    suburb: "melnourne",
+    expectedType: "Apartment",
+    expectedStatus: "nearby-type-inferred",
+    expectValue: true
+  },
+  {
     label: "incomplete address needs manual review",
     address: "",
     selectedType: "House",

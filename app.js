@@ -760,6 +760,7 @@ function normalizeSuburbName(value) {
   const compact = String(value || "").toLowerCase().replace(/[^a-z]/g, "");
   if (/^oakl[a-z]*south$/.test(compact) || compact === "oakleysouth") return "Oakleigh South";
   if (/^oakl[a-z]*$/.test(compact) || compact === "oakley") return "Oakleigh";
+  if (compact === "melnourne" || compact === "melbourn" || compact === "melbourne") return "Melbourne";
   return toTitleCase(
     String(value || "")
       .toLowerCase()
@@ -1332,6 +1333,8 @@ function normalizeAddress(value) {
   return String(value || "")
     .toLowerCase()
     .replace(/\boakley\b|\boaklrigh\b/g, "oakleigh")
+    .replace(/\bmelnourne\b|\bmelbourn\b/g, "melbourne")
+    .replace(/\bspencer\d+\b/g, "spencer")
     .replace(/\bapt(\d+)\b/g, "apt $1")
     .replace(/\bapartment(\d+)\b/g, "apartment $1")
     .replace(/\bu\s*(\d+)\b/g, "unit $1")
