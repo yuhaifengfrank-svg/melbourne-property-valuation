@@ -334,6 +334,26 @@ if (inferredUnitMatch.confidence !== "Low-Medium" || inferredUnitMatch.builtForm
   throw new Error("Same-complex inference should lower confidence and flag inferred built form");
 }
 
+elements.get("property-state").value = "VIC";
+elements.get("suburb").value = "Perth";
+elements.get("address").value = "10 Example Street, Perth WA 6000";
+const waFullAddress = context.__test.buildEnteredAddress();
+if (waFullAddress !== "10 Example Street, Perth WA 6000") {
+  throw new Error(`Full address with explicit WA should not be repacked with selected VIC, got ${waFullAddress}`);
+}
+const waValuation = context.__test.runAddressValuation(waFullAddress, "House", "VIC", "Perth");
+if (waValuation.propertyState !== "WA") {
+  throw new Error(`Address-level state should override selected state. Expected WA, got ${waValuation.propertyState}`);
+}
+
+elements.get("property-state").value = "WA";
+elements.get("suburb").value = "Oakleigh";
+elements.get("address").value = "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166";
+const vicFullAddress = context.__test.buildEnteredAddress();
+if (vicFullAddress !== "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166") {
+  throw new Error(`Full address with suburb/state should not be duplicated, got ${vicFullAddress}`);
+}
+
 const wrongStreetInferredUnitMatch = context.__test.createInferredSameComplexValuation(
   "Unit 1, No.11 MacIntosh Street, Oakleigh, VIC",
   "Villa",

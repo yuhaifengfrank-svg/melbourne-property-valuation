@@ -774,11 +774,20 @@ function getEnteredSuburb() {
   return normalizeSuburbName(byId("suburb")?.value.trim() || "");
 }
 
+function explicitStateFromAddress(address) {
+  return String(address || "").match(/\b(VIC|NSW|QLD|WA|SA|TAS|ACT|NT)\b/i)?.[1]?.toUpperCase() || "";
+}
+
 function buildEnteredAddress() {
   const streetAddress = byId("address").value.trim();
-  const suburb = getEnteredSuburb();
-  const state = getSelectedState();
-  return [streetAddress, suburb, state].filter(Boolean).join(", ");
+  const addressSuburb = suburbFromAddress(streetAddress);
+  const enteredSuburb = getEnteredSuburb();
+  const addressState = explicitStateFromAddress(streetAddress);
+  const state = addressState || getSelectedState();
+  const parts = [streetAddress];
+  if (!addressSuburb && enteredSuburb) parts.push(enteredSuburb);
+  if (!addressState && state) parts.push(state);
+  return parts.filter(Boolean).join(", ");
 }
 
 function suburbFromAddress(address) {
@@ -797,7 +806,7 @@ function suburbFromAddress(address) {
 }
 
 function stateFromAddress(address) {
-  return String(address || "").match(/\b(VIC|NSW|QLD|WA|SA|TAS|ACT|NT)\b/i)?.[1]?.toUpperCase() || getSelectedState();
+  return explicitStateFromAddress(address) || getSelectedState();
 }
 
 function isAttachedOrStrataType(type) {
@@ -1900,6 +1909,7 @@ function createUnavailableValuation(address, inferredType = "House", selectedSta
 
 function runAddressValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
   const normalizedSuburb = normalizeSuburbName(enteredSuburb);
+  const resolvedState = explicitStateFromAddress(address) || selectedState;
   const directAddressMatch = findValuation(address);
   const inferredType = inferPropertyTypeFromAddress(address, directAddressMatch, selectedType);
 
@@ -1908,7 +1918,7 @@ function runAddressValuation(address, selectedType = "", selectedState = "", ent
       ...commercialPendingValuation,
       address: address || commercialPendingValuation.address,
       addressZh: address || commercialPendingValuation.addressZh,
-      propertyState: selectedState,
+      propertyState: resolvedState,
       propertySuburb: normalizedSuburb
     };
   }
@@ -1916,11 +1926,11 @@ function runAddressValuation(address, selectedType = "", selectedState = "", ent
   if (directAddressMatch) return applyComparableSalesModel(directAddressMatch, directAddressMatch.confidence);
 
   return (
-    createInferredSameComplexValuation(address, inferredType, selectedState, normalizedSuburb) ||
-    createInferredSameStreetValuation(address, inferredType, selectedState, normalizedSuburb) ||
-    createInferredSuburbValuation(address, inferredType, selectedState, normalizedSuburb) ||
-    createInferredNearbyTypeValuation(address, inferredType, selectedState, normalizedSuburb) ||
-    createUnavailableValuation(address, inferredType, selectedState, normalizedSuburb)
+    createInferredSameComplexValuation(address, inferredType, resolvedState, normalizedSuburb) ||
+    createInferredSameStreetValuation(address, inferredType, resolvedState, normalizedSuburb) ||
+    createInferredSuburbValuation(address, inferredType, resolvedState, normalizedSuburb) ||
+    createInferredNearbyTypeValuation(address, inferredType, resolvedState, normalizedSuburb) ||
+    createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb)
   );
 }
 
