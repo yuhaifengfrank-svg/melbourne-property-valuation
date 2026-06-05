@@ -140,12 +140,14 @@ const valuations = [
     status: "Medium",
     reasons: [
       "Villa/unit profile requires same-complex and same-street unit evidence, not house-only comparisons.",
+      "Some older property records may reflect the original single dwelling; this estimate is based on the current Unit 2 / villa profile.",
       "Land component is partial and must be checked against title plan and plan of subdivision.",
       "Rear/front position, driveway access, courtyard usability and car parking materially affect value.",
       "Owners corporation and shared maintenance obligations need confirmation before PDF-grade confidence."
     ],
     reasonsZh: [
       "Villa / Unit 需要同项目和同街同类型成交作为核心依据，不能只用独立屋比较。",
+      "部分旧物业记录可能仍显示原来的独立屋；本估值按当前 Unit 2 / Villa 形态处理。",
       "土地权益为部分土地，需要用产权图和 subdivision plan 复核。",
       "前后排位置、共用车道、庭院可用性和停车会显著影响价值。",
       "业主委员会和共用维护责任需要确认后，置信度才能提高。"
@@ -182,6 +184,17 @@ const valuations = [
       landSourceZh: "需要 strata / subdivision plan 确认",
       grannyZh: "需要确认 Owners corporation",
       approvalZh: "检查车道、庭院和车位"
+    },
+    builtFormVerification: {
+      status: "current-form-priority",
+      summary: "Address pattern and current use point to Unit 2 / villa stock. Older single-dwelling records should be treated as historical background only.",
+      summaryZh: "地址形态和当前用途指向 Unit 2 / Villa。旧的单一独立屋记录只作为历史背景。",
+      currentForm: "Unit 2 / Villa",
+      currentFormZh: "Unit 2 / Villa",
+      legacyRisk: "Older portal or profile records may still show the original single dwelling.",
+      legacyRiskZh: "部分旧门户或物业档案可能仍显示原来的单一独立屋。",
+      action: "Use same-type villa/unit comparables, plan of subdivision, current photos and title evidence before relying on land or building assumptions.",
+      actionZh: "估值应优先使用同类型 Villa/Unit 成交、subdivision plan、当前照片和产权证据，而不是旧独立屋假设。"
     },
     planningLabels: {
       en: ["Title / plan type", "Owners corporation", "Access / parking risk"],
@@ -747,6 +760,43 @@ function suburbFromAddress(address) {
 
 function stateFromAddress(address) {
   return String(address || "").match(/\b(VIC|NSW|QLD|WA|SA|TAS|ACT|NT)\b/i)?.[1]?.toUpperCase() || getSelectedState();
+}
+
+function isAttachedOrStrataType(type) {
+  return /townhouse|villa|unit|apartment/i.test(String(type || ""));
+}
+
+function hasUnitAddressPattern(address) {
+  return /\bunit\b|\bapt\b|\bapartment\b|^\s*\d+\s*\/|,\s*\d+\s*\//i.test(String(address || ""));
+}
+
+function buildBuiltFormVerification(data = currentValuation) {
+  if (data.builtFormVerification) return data.builtFormVerification;
+  const currentForm = data.type || "Property";
+  if (!isAttachedOrStrataType(currentForm) && !hasUnitAddressPattern(data.address)) {
+    return {
+      status: "standard",
+      summary: "No current built-form conflict is indicated in this sample.",
+      summaryZh: "该样本未显示当前建筑形态冲突。",
+      currentForm,
+      currentFormZh: currentForm,
+      legacyRisk: "No legacy single-dwelling conflict is flagged.",
+      legacyRiskZh: "未标记旧独立屋记录冲突。",
+      action: "Use the selected property type and recent same-type evidence.",
+      actionZh: "按所选物业类型和近期同类型证据处理。"
+    };
+  }
+  return {
+    status: "current-form-priority",
+    summary: `This property is being assessed as ${currentForm}. Older single-dwelling records should not be used as the valuation anchor.`,
+    summaryZh: `该物业按 ${currentForm} 处理。旧的单一独立屋记录不应作为估值锚点。`,
+    currentForm,
+    currentFormZh: currentForm,
+    legacyRisk: "Some public profiles may lag behind subdivision, redevelopment or new townhouse/unit completion.",
+    legacyRiskZh: "部分公开物业档案可能滞后于 subdivision、重建或新建 townhouse/unit 完工状态。",
+    action: "Prioritise current photos, title/plan of subdivision, owners corporation information and same-type comparable sales.",
+    actionZh: "优先使用当前照片、产权/subdivision plan、业主委员会资料和同类型可比成交。"
+  };
 }
 
 function normalizePropertyTypeForPortal(type) {
@@ -1492,6 +1542,7 @@ function renderValuation(data) {
     propertyState: data.propertyState || stateFromAddress(data.address),
     propertySuburb: data.propertySuburb || suburbFromAddress(data.address)
   };
+  currentValuation.builtFormVerification = buildBuiltFormVerification(currentValuation);
   data = currentValuation;
   const planningLabels = getPlanningLabels(data);
   byId("property-address").textContent = language === "zh" && data.addressZh ? data.addressZh : data.address;
@@ -1705,6 +1756,7 @@ function addReportSection(lines, title, items = []) {
 
 function buildDetailedReportLines() {
   const evidence = currentValuation.evidenceSummary || uploadedEvidenceSummary;
+  const builtForm = currentValuation.builtFormVerification || buildBuiltFormVerification(currentValuation);
   const generatedAt = new Date().toLocaleString("en-AU", { timeZone: "Australia/Melbourne" });
   const recipientName = byId("lead-name").value.trim() || "Not supplied";
   const selectedPropertyType = document.querySelector(".chip.active")?.dataset.type || currentValuation.type;
@@ -1772,7 +1824,14 @@ function buildDetailedReportLines() {
     "- If the subject property has stronger evidence than a comparable, the model may support an uplift. If title, planning or condition remains unclear, confidence is held back."
   ]);
 
-  addReportSection(lines, "6. Micro-location and street checks", [
+  addReportSection(lines, "6. Current property form check", [
+    ["Current form used", builtForm.currentForm],
+    ["Important note", builtForm.summary],
+    ["Older record risk", builtForm.legacyRisk],
+    ["Recommended confirmation", builtForm.action]
+  ]);
+
+  addReportSection(lines, "7. Micro-location and street checks", [
     ["Street rank", currentValuation.location.rank],
     ["Street type", currentValuation.location.type],
     ["Amenity access", currentValuation.location.amenity],
@@ -1781,7 +1840,7 @@ function buildDetailedReportLines() {
     ["Street trees / presentation", "Tree canopy, frontage rhythm and neighbouring presentation are treated as qualitative micro-location signals."]
   ]);
 
-  addReportSection(lines, "7. Suburb fundamentals", [
+  addReportSection(lines, "8. Suburb fundamentals", [
     ...currentValuation.suburb.map((item) => `- ${item}`),
     "- Suburb review considers household demand, access to employment, schools, transport, retail, medical and comparison suburbs.",
     "- ABS Census, QuickStats, DataPacks and SEIFA should be used for structured public suburb research, including income, employment, occupation, household mix, dwelling mix, owner/renter ratio and socio-economic indexes.",
@@ -1789,7 +1848,7 @@ function buildDetailedReportLines() {
   ]);
 
   const planningLabels = currentValuation.planningLabels?.en || ["Land source", "Granny flat potential", "Approval certainty"];
-  addReportSection(lines, "8. Planning, title and property-specific potential", [
+  addReportSection(lines, "9. Planning, title and property-specific potential", [
     [planningLabels[0], currentValuation.planning.landSource],
     [planningLabels[1], currentValuation.planning.granny],
     [planningLabels[2], currentValuation.planning.approval],
@@ -1798,23 +1857,23 @@ function buildDetailedReportLines() {
     ["Manual title requirement", "Title search and title plan remain authoritative where portal land size or property configuration is inconsistent."]
   ]);
 
-  addReportSection(lines, "9. Loan / LVR scenario", [
+  addReportSection(lines, "10. Loan / LVR scenario", [
     ["Selected LVR", `${Math.round(selectedLvr * 100)}%`],
     ["Indicative maximum loan", loanValue],
     ["Required equity before costs", equityValue],
     "This is not a loan approval or borrowing capacity assessment. Actual lending depends on lender policy, income, expenses, credit history and full application review."
   ]);
 
-  addReportSection(lines, "10. Investor Hub themes", investorThemeLines);
+  addReportSection(lines, "11. Investor Hub themes", investorThemeLines);
 
-  addReportSection(lines, "11. How to use this report", [
+  addReportSection(lines, "12. How to use this report", [
     "- Start with the executive valuation summary, then read the comparable sales and uploaded evidence review to understand what supports the range.",
-    "- Treat the micro-location, planning and data-source sections as a checklist for what should be confirmed before making a decision.",
+    "- Treat the current property form, micro-location and planning sections as a checklist for what should be confirmed before making a decision.",
     "- If you have additional documents, photos, agent feedback, lease details or planning correspondence, send them through and the case can be reviewed again.",
     "- If you want to discuss lending, investment finance, private credit or next steps, contact AusHomeValue by WeChat QR code or email."
   ]);
 
-  addReportSection(lines, "12. Missing checks and next actions", [
+  addReportSection(lines, "13. Missing checks and next actions", [
     "- Confirm title search, title plan and Section 32 with authoritative documents.",
     "- Review current property condition, renovation quality and visible defects.",
     "- Confirm planning overlays, easements, covenants and council constraints.",
@@ -2033,6 +2092,7 @@ async function saveLead({ pdfDownload = false } = {}) {
       propertySuburb: currentValuation.propertySuburb || getEnteredSuburb(),
       propertyState: currentValuation.propertyState || getSelectedState(),
       planning: currentValuation.planning,
+      builtFormVerification: currentValuation.builtFormVerification || buildBuiltFormVerification(currentValuation),
       evidenceSummary: currentValuation.evidenceSummary || uploadedEvidenceSummary
     },
     createdAt: new Date().toISOString()

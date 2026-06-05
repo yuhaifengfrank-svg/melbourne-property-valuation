@@ -131,6 +131,7 @@ Comparable influence:
 | 指标 | 子因素 | 自动可查来源 | 权威/上传来源 | Cross-check | Missing 处理 | Confidence 影响 |
 | --- | --- | --- | --- | --- | --- | --- |
 | Property type | house, vacant land, townhouse, villa, apartment, special purpose | portals, council public data, address pattern, listing category | contract, Section 32, title plan, OC certificate | portals vs title/contract vs user confirmation | 用户确认 property type | 类型冲突时 cap Low-Medium |
+| Current built form | current dwelling count, unit/townhouse/villa/apartment form, redevelopment completion | address pattern, public maps/aerial, listing category, council/planning evidence | title search, plan of subdivision, occupancy/current photos, floorplan | old house record vs current multi-dwelling evidence | 上传 title/photos/floorplan | 当前形态优先; 旧 house record 只能做历史背景 |
 | Address | full address, unit number, parent/child address | geocoder, portals, VicPlan, council maps | title, contract, council rates | normalized address vs title lot/plan | 用户输入正确地址 / 上传合同 | 地址冲突时估值不可高置信 |
 | Land size | sqm, frontage, depth | portals, VicPlan parcel, council maps | title search, title plan, plan of subdivision, survey, Section 32 | portal vs title/council/VicPlan | 上传 title/plan/survey | 未 title-confirmed 时 cap Medium; 冲突时 cap Low-Medium |
 | Land quality | shape, slope, orientation, corner block, usable area | aerial imagery, maps, Street View | survey, title plan, site inspection | map measurement vs survey/title | 用户补 frontage/depth/照片 | 大地/开发价值依赖时影响高 |

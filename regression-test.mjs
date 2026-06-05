@@ -196,6 +196,7 @@ globalThis.__test = {
   renderValuation,
   applyEvidenceFiles,
   buildMarketCrosscheck,
+  buildBuiltFormVerification,
   buildDetailedReportLines,
   createPdfDocument,
   buildEnteredAddress,
@@ -261,6 +262,7 @@ for (const testCase of cases) {
   }
   const after = context.__test.currentValuation.midpointValue;
   const marketCrosscheck = context.__test.buildMarketCrosscheck(context.__test.currentValuation);
+  const builtFormVerification = context.__test.buildBuiltFormVerification(context.__test.currentValuation);
   const reportLines = context.__test.buildDetailedReportLines();
   const pdf = context.__test.createPdfDocument(reportLines);
   const header = Buffer.from(await pdf.arrayBuffer()).subarray(0, 8).toString();
@@ -278,6 +280,8 @@ for (const testCase of cases) {
     sourceScore: marketCrosscheck.score ?? "pending",
     hasCorePortals: marketCrosscheck.sources.some((source) => source.name === "realestate.com.au") &&
       marketCrosscheck.sources.some((source) => source.name === "Domain"),
+    builtFormStatus: builtFormVerification.status,
+    reportHasBuiltForm: reportText.includes("Current property form check"),
     reportHidesInternalLogic: !/Layer 1|Layer 2|Layer 3|source confidence|Weighted market-source|Public market cross-check queue|realestate\.com\.au 24|Domain 22/i.test(reportText),
     pdf: header.startsWith("%PDF-1.") ? "ok" : "failed",
     reportLines: reportLines.length
@@ -291,6 +295,8 @@ const failures = results.filter((row) => {
   if (row.type !== "Commercial" && !row.changed) return true;
   if (row.type !== "Commercial" && row.marketSources !== 8) return true;
   if (row.type !== "Commercial" && !row.hasCorePortals) return true;
+  if (["Townhouse", "Villa", "Unit", "Apartment"].includes(row.type) && row.builtFormStatus !== "current-form-priority") return true;
+  if (!row.reportHasBuiltForm) return true;
   if (!row.reportHidesInternalLogic) return true;
   if (row.type === "Commercial" && row.changed !== "pending") return true;
   return false;
