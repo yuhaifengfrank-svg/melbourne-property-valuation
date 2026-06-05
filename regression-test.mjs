@@ -473,6 +473,14 @@ if (wrongStreetPipelineMatch.builtFormVerification.status === "same-street-infer
   throw new Error("Address valuation pipeline should not use McIntosh same-street evidence for Macintosh Street");
 }
 
+const mapCrosscheck = context.__test.buildMarketCrosscheck(
+  context.__test.runAddressValuation("Apt1204 88 Station Street Oakleigh VIC", "House", "VIC", "Oakleigh")
+);
+const googleMapsSource = mapCrosscheck.sources.find((source) => source.name === "Google Maps");
+if (!googleMapsSource?.url.includes("google.com/maps/search")) {
+  throw new Error("Market cross-check should include a Google Maps address verification link");
+}
+
 const broadCustomerIntakeCases = [
   {
     label: "same street house",
@@ -522,6 +530,24 @@ const broadCustomerIntakeCases = [
   {
     label: "unlisted Oakleigh apartment",
     address: "Apartment 5, 88 Station Street Oakleigh VIC",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "Apartment",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
+    label: "unlisted Oakleigh apartment shorthand",
+    address: "Apt1204 88 Station Street Oakleigh VIC",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "Apartment",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
+    label: "unlisted Oakleigh apartment slash number",
+    address: "1204/88 Station Street Oakleigh VIC",
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "Apartment",
@@ -719,7 +745,7 @@ console.table(results);
 const failures = results.filter((row) => {
   if (row.pdf !== "ok") return true;
   if (row.type !== "Commercial" && !row.changed) return true;
-  if (row.type !== "Commercial" && row.marketSources !== 8) return true;
+  if (row.type !== "Commercial" && row.marketSources !== 9) return true;
   if (row.type !== "Commercial" && !row.hasCorePortals) return true;
   if (["Townhouse", "Villa", "Unit", "Apartment"].includes(row.type) && row.builtFormStatus !== "current-form-priority") return true;
   if (!row.reportHasBuiltForm) return true;

@@ -669,6 +669,14 @@ const sentLeadNotificationKeys = new Set();
 
 const marketSourceGroups = [
   {
+    key: "googleMaps",
+    name: "Google Maps",
+    weight: 0,
+    role: "Address existence, location and built-form map check",
+    roleZh: "地址存在性、位置和建筑形态地图核验",
+    url: ({ formattedAddress }) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(formattedAddress)}`
+  },
+  {
     key: "realestate",
     name: "realestate.com.au",
     weight: 24,
@@ -837,13 +845,22 @@ function normalizePropertyTypeForPortal(type) {
   return "house";
 }
 
+function formatAddressForMap(address, suburb, state) {
+  const signature = getAddressSignature(address);
+  const street = signature.streetNumber && signature.streetName
+    ? `${signature.streetNumber} ${toTitleCase(signature.streetName)}`
+    : String(address || "").trim();
+  return [street, normalizeSuburbName(suburb), state].filter(Boolean).join(", ");
+}
+
 function buildMarketCrosscheck(data = currentValuation) {
   const suburb = data.propertySuburb || suburbFromAddress(data.address) || getEnteredSuburb() || "Australia";
   const state = data.propertyState || stateFromAddress(data.address) || getSelectedState();
   const type = normalizePropertyTypeForPortal(data.type);
   const comparableCount = Array.isArray(data.comparables) ? data.comparables.length : 0;
   const pending = data.type === "Commercial" || data.confidence === "Pending";
-  const context = { address: data.address, suburb, state, type };
+  const formattedAddress = formatAddressForMap(data.address, suburb, state);
+  const context = { address: data.address, formattedAddress, suburb, state, type };
 
   const sources = marketSourceGroups.map((source, index) => {
     const coreSource = index < 4;
@@ -1315,6 +1332,8 @@ function normalizeAddress(value) {
   return String(value || "")
     .toLowerCase()
     .replace(/\boakley\b|\boaklrigh\b/g, "oakleigh")
+    .replace(/\bapt(\d+)\b/g, "apt $1")
+    .replace(/\bapartment(\d+)\b/g, "apartment $1")
     .replace(/\bu\s*(\d+)\b/g, "unit $1")
     .replace(/\bunit(\d+)\b/g, "unit $1")
     .replace(/\b(\d+)\s*-\s*(\d+)\b/g, "$1/$2")
@@ -1334,12 +1353,14 @@ function getAddressSignature(value) {
   const normalized = normalizeAddress(value);
   const slashMatch = normalized.match(/\b(\d+)\s*\/\s*(\d+)\b/);
   const unitMatch = normalized.match(/\bunit\s+(\d+)\b/);
+  const apartmentMatch = normalized.match(/\b(?:apartment|apt|flat)\s+([a-z]?\d+[a-z]?)\b/);
   const streetMatch = normalized.match(/\b(\d+)\s+([a-z]+(?:\s+[a-z]+)*)\s+(street|avenue|road|grove|drive|court|crescent|parade|place|lane)\b/);
   const streetNumber = slashMatch?.[2] || streetMatch?.[1] || "";
   const streetName = streetMatch ? `${streetMatch[2]} ${streetMatch[3]}` : "";
-  const unitNumber = slashMatch?.[1] || unitMatch?.[1] || "";
+  const unitNumber = slashMatch?.[1] || apartmentMatch?.[1] || unitMatch?.[1] || "";
   const unitWordStartsAddress = Boolean(normalized.match(/^unit\s+\d+\s+[a-z]+/));
   const ambiguousUnitAsStreetNumber = unitWordStartsAddress && unitNumber === streetNumber;
+  const hasApartmentSignal = /\bapartment\b|\bapt\b|\bflat\b|\blevel\s+\d+\b|^\s*\d{3,5}\s*\//.test(normalized);
   const hasUnitSignal = /\bunit\b|\b\d+\s*\/\s*\d+\b|\bapartment\b|\bapt\b|\bflat\b/.test(normalized);
 
   return {
@@ -1348,6 +1369,7 @@ function getAddressSignature(value) {
     streetNumber,
     streetName,
     hasUnitSignal,
+    hasApartmentSignal,
     ambiguousUnitAsStreetNumber
   };
 }
@@ -1464,7 +1486,7 @@ function inferPropertyTypeFromAddress(address, directAddressMatch = null, select
 
   if (/\b(vacant land|development site|land only|land)\b/.test(normalized)) return "Vacant land";
   if (/\b(shop|retail|office|warehouse|commercial|factory)\b/.test(normalized)) return "Commercial";
-  if (/\b(apartment|apt|flat)\b/.test(normalized)) return "Apartment";
+  if (signature.hasApartmentSignal) return "Apartment";
 
   if (signature.hasUnitSignal) {
     const sameComplexType = valuations
