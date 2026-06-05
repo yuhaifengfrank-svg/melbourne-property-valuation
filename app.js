@@ -1261,25 +1261,96 @@ const evidenceTypes = {
 };
 
 function normalizeAddress(value) {
-  return value
+  return String(value || "")
     .toLowerCase()
-    .replace(/,/g, "")
+    .replace(/\boakley\b|\boaklrigh\b/g, "oakleigh")
+    .replace(/\bmacintosh\b|\bmackintosh\b/g, "mcintosh")
+    .replace(/\bunit(\d+)\b/g, "unit $1")
+    .replace(/\b(\d+)\s*-\s*(\d+)\b/g, "$1/$2")
+    .replace(/\b(no|num|number|#)\s*(\d+)\b/g, "$2")
+    .replace(/[,.-]/g, " ")
     .replace(/\bvic\b/g, "")
     .replace(/\b3\d{3}\b/g, "")
+    .replace(/\bst\b/g, "street")
+    .replace(/\bav\b|\bave\b/g, "avenue")
+    .replace(/\brd\b/g, "road")
+    .replace(/\bgr\b/g, "grove")
     .replace(/\s+/g, " ")
     .trim();
 }
 
+function getAddressSignature(value) {
+  const normalized = normalizeAddress(value);
+  const slashMatch = normalized.match(/\b(\d+)\s*\/\s*(\d+)\b/);
+  const unitMatch = normalized.match(/\bunit\s+(\d+)\b/);
+  const streetMatch = normalized.match(/\b(\d+)\s+([a-z]+(?:\s+[a-z]+)*)\s+(street|avenue|road|grove|drive|court|crescent|parade|place|lane)\b/);
+  const streetNumber = slashMatch?.[2] || streetMatch?.[1] || "";
+  const streetName = streetMatch ? `${streetMatch[2]} ${streetMatch[3]}` : "";
+  const unitNumber = slashMatch?.[1] || unitMatch?.[1] || "";
+  const unitWordStartsAddress = Boolean(normalized.match(/^unit\s+\d+\s+[a-z]+/));
+  const ambiguousUnitAsStreetNumber = unitWordStartsAddress && unitNumber === streetNumber;
+  const hasUnitSignal = /\bunit\b|\b\d+\s*\/\s*\d+\b|\bapartment\b|\bapt\b|\bflat\b/.test(normalized);
+
+  return {
+    normalized,
+    unitNumber,
+    streetNumber,
+    streetName,
+    hasUnitSignal,
+    ambiguousUnitAsStreetNumber
+  };
+}
+
+function getValuationMatchScore(item, inputSignature, selectedType = "") {
+  const selectedTypeMatches = selectedType ? item.type === selectedType : true;
+  if (selectedType && !selectedTypeMatches) return -1;
+
+  return item.aliases.reduce((bestScore, alias) => {
+    const aliasSignature = getAddressSignature(alias);
+    let score = -1;
+
+    if (aliasSignature.normalized === inputSignature.normalized) {
+      score = 100;
+    } else if (
+      aliasSignature.streetName &&
+      inputSignature.streetName &&
+      aliasSignature.streetName === inputSignature.streetName &&
+      aliasSignature.streetNumber &&
+      inputSignature.streetNumber &&
+      aliasSignature.streetNumber === inputSignature.streetNumber
+    ) {
+      score = 60;
+
+      if (aliasSignature.unitNumber && inputSignature.unitNumber) {
+        if (aliasSignature.unitNumber === inputSignature.unitNumber) {
+          score += 30;
+        } else if (!inputSignature.ambiguousUnitAsStreetNumber) {
+          score = -1;
+        }
+      } else if (inputSignature.unitNumber && !aliasSignature.unitNumber && !inputSignature.ambiguousUnitAsStreetNumber) {
+        score = -1;
+      } else if (inputSignature.hasUnitSignal && item.type === "House") {
+        score = -1;
+      }
+    }
+
+    if (score >= 0 && selectedTypeMatches) score += 10;
+    return Math.max(bestScore, score);
+  }, -1);
+}
+
 function findValuation(address, selectedType = "") {
-  const normalized = normalizeAddress(address);
-  const matches = valuations.filter((item) =>
-    item.aliases.some((alias) => {
-      const normalizedAlias = normalizeAddress(alias);
-      return normalized.includes(normalizedAlias) || normalizedAlias.includes(normalized);
-    })
-  );
+  const inputSignature = getAddressSignature(address);
+  const matches = valuations
+    .map((item) => ({
+      item,
+      score: getValuationMatchScore(item, inputSignature, selectedType)
+    }))
+    .filter((match) => match.score >= 0)
+    .sort((a, b) => b.score - a.score);
+
   if (!matches.length) return null;
-  return matches.find((item) => item.type === selectedType) || matches[0];
+  return matches[0].item;
 }
 
 function setList(id, items) {

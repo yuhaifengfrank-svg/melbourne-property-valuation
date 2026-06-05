@@ -232,6 +232,67 @@ const cases = [
   { type: "Commercial", state: "VIC", suburb: "Oakleigh", address: "Commercial Shop 1, Test Street", expected: "Commercial Shop 1, Test Street, Oakleigh, VIC", pending: true }
 ];
 
+const addressMatchingCases = [
+  {
+    type: "Villa",
+    address: "Unit 2, number 11 McIntosh Street Oakleigh",
+    expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166"
+  },
+  {
+    type: "Villa",
+    address: "unit2 11 Macintosh Street Oakley",
+    expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166"
+  },
+  {
+    type: "Villa",
+    address: "2/11 McIntosh Street Oakleigh",
+    expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166"
+  },
+  {
+    type: "Villa",
+    address: "2-11 McIntosh Street Oakleigh",
+    expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166"
+  },
+  {
+    type: "Villa",
+    address: "unit2 number 11 McIntosh Street Oakleigh",
+    expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166"
+  },
+  {
+    type: "Villa",
+    address: "1/11 McIntosh Street Oakleigh",
+    expected: null
+  },
+  {
+    type: "Villa",
+    address: "1-11 McIntosh Street Oakleigh",
+    expected: null
+  },
+  {
+    type: "House",
+    address: "2/11 McIntosh Street Oakleigh",
+    expected: null
+  },
+  {
+    type: "House",
+    address: "11 McIntosh Street Oakleigh",
+    expected: null
+  },
+  {
+    type: "House",
+    address: "9 McIntosh Street Oakleigh",
+    expected: "9 McIntosh Street, Oakleigh VIC 3166"
+  }
+];
+
+for (const testCase of addressMatchingCases) {
+  const match = context.__test.findValuation(testCase.address, testCase.type);
+  const resolvedAddress = match?.address || null;
+  if (resolvedAddress !== testCase.expected) {
+    throw new Error(`Address matcher resolved ${testCase.address} as ${resolvedAddress}, expected ${testCase.expected}`);
+  }
+}
+
 const results = [];
 
 for (const testCase of cases) {
