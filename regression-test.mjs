@@ -193,6 +193,7 @@ globalThis.__test = {
   valuations,
   commercialPendingValuation,
   findValuation,
+  createInferredSameComplexValuation,
   renderValuation,
   applyEvidenceFiles,
   buildMarketCrosscheck,
@@ -291,6 +292,22 @@ for (const testCase of addressMatchingCases) {
   if (resolvedAddress !== testCase.expected) {
     throw new Error(`Address matcher resolved ${testCase.address} as ${resolvedAddress}, expected ${testCase.expected}`);
   }
+}
+
+const inferredUnitMatch = context.__test.createInferredSameComplexValuation(
+  "Unit 1, No.11 MacIntosh Street, Oakleigh, VIC",
+  "Villa",
+  "VIC",
+  "Oakleigh"
+);
+if (!inferredUnitMatch) {
+  throw new Error("Same-complex inference should return a valuation for Unit 1, No.11 MacIntosh Street");
+}
+if (inferredUnitMatch.address !== "Unit 1, No.11 MacIntosh Street, Oakleigh, VIC") {
+  throw new Error(`Same-complex inference should preserve entered address, got ${inferredUnitMatch.address}`);
+}
+if (inferredUnitMatch.confidence !== "Low-Medium" || inferredUnitMatch.builtFormVerification.status !== "same-complex-inferred") {
+  throw new Error("Same-complex inference should lower confidence and flag inferred built form");
 }
 
 const results = [];

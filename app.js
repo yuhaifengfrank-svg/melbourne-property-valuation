@@ -1353,6 +1353,76 @@ function findValuation(address, selectedType = "") {
   return matches[0].item;
 }
 
+function createInferredSameComplexValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
+  const inputSignature = getAddressSignature(address);
+  if (!inputSignature.hasUnitSignal || !inputSignature.streetName || !inputSignature.streetNumber) return null;
+
+  const candidates = valuations
+    .map((item) => {
+      if (!isAttachedOrStrataType(item.type)) return null;
+      const hasSameComplexAlias = item.aliases.some((alias) => {
+        const aliasSignature = getAddressSignature(alias);
+        return (
+          aliasSignature.streetName === inputSignature.streetName &&
+          aliasSignature.streetNumber === inputSignature.streetNumber
+        );
+      });
+      if (!hasSameComplexAlias) return null;
+      return {
+        item,
+        score: item.type === selectedType ? 2 : 1
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.score - a.score);
+
+  if (!candidates.length) return null;
+
+  const base = candidates[0].item;
+  const propertyType = selectedType || base.type;
+  const unitLabel = inputSignature.unitNumber ? `Unit ${inputSignature.unitNumber}` : propertyType;
+  const streetLabel = `${inputSignature.streetNumber} ${inputSignature.streetName.replace(/\b\w/g, (letter) => letter.toUpperCase())}`;
+  const inferredAddress = address || `${unitLabel}, ${streetLabel}`;
+
+  return {
+    ...base,
+    address: inferredAddress,
+    addressZh: inferredAddress,
+    propertyState: selectedState || stateFromAddress(inferredAddress),
+    propertySuburb: enteredSuburb || suburbFromAddress(inferredAddress),
+    type: propertyType,
+    confidence: "Low-Medium",
+    status: "Low-Medium",
+    reasons: [
+      `${unitLabel} at ${streetLabel} was recognised as an attached/strata address, but the exact unit record is not in the demo sample set.`,
+      `The estimate uses same-complex or same-street ${base.type.toLowerCase()} evidence as an initial guide, not as an exact unit match.`,
+      "Title plan, plan of subdivision, unit entitlement, current photos and car space position should be checked before relying on the final number.",
+      ...base.reasons.slice(0, 2)
+    ],
+    reasonsZh: [
+      `系统已识别 ${streetLabel} 的 ${unitLabel} 为 attached / strata 地址，但演示样本中没有这个 exact unit 记录。`,
+      `本估值使用同项目或同街 ${base.type} 资料作为初步参考，不把它当成 exact unit 匹配。`,
+      "最终使用前应复核产权图、subdivision plan、unit entitlement、当前照片和车位位置。",
+      ...base.reasonsZh.slice(0, 2)
+    ],
+    builtFormVerification: {
+      status: "same-complex-inferred",
+      summary: `${unitLabel} is treated as a same-complex inferred record. Exact unit evidence is required before upgrading confidence.`,
+      summaryZh: `${unitLabel} 按同项目推断记录处理。需要 exact unit 文件后才能提高置信度。`,
+      currentForm: `${unitLabel} / ${propertyType}`,
+      currentFormZh: `${unitLabel} / ${propertyType}`,
+      legacyRisk: "Portal records can mix the original dwelling, another unit in the same complex, or the parent street address.",
+      legacyRiskZh: "公开网站记录可能混合原始独立屋、同项目其他 unit 或母门牌地址。",
+      action: "Use the current unit title, plan of subdivision, owner corporation details, photos and same-unit sales if available.",
+      actionZh: "优先使用当前 unit 的 title、subdivision plan、业主委员会资料、照片和同 unit 成交。"
+    },
+    map: {
+      ...base.map,
+      target: inputSignature.unitNumber ? `${inputSignature.unitNumber}/${inputSignature.streetNumber}` : inputSignature.streetNumber
+    }
+  };
+}
+
 function setList(id, items) {
   const element = byId(id);
   element.innerHTML = "";
@@ -2253,6 +2323,12 @@ byId("start-valuation").addEventListener("click", () => {
   const match = findValuation(enteredAddress || byId("address").value, selectedType);
   if (match) {
     renderValuation(match);
+    if (window.matchMedia("(max-width: 680px)").matches) scrollToSection(".mobile-value-card");
+    return;
+  }
+  const inferredValuation = createInferredSameComplexValuation(enteredAddress || byId("address").value, selectedType, selectedState, enteredSuburb);
+  if (inferredValuation) {
+    renderValuation(inferredValuation);
     if (window.matchMedia("(max-width: 680px)").matches) scrollToSection(".mobile-value-card");
     return;
   }
