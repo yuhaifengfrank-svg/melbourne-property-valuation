@@ -565,6 +565,33 @@ const broadCustomerIntakeCases = [
     expectValue: true
   },
   {
+    label: "same street with misspelled suburb field",
+    address: "16 moresby st",
+    selectedType: "House",
+    suburb: "Oakley South",
+    expectedType: "House",
+    expectedStatus: "same-street-inferred",
+    expectValue: true
+  },
+  {
+    label: "same street with lowercase suburb field",
+    address: "16 moresby st",
+    selectedType: "House",
+    suburb: "oakleigh south",
+    expectedType: "House",
+    expectedStatus: "same-street-inferred",
+    expectValue: true
+  },
+  {
+    label: "same street with compact typo suburb field",
+    address: "16 moresby st",
+    selectedType: "House",
+    suburb: "OAKLBIghsOUTH",
+    expectedType: "House",
+    expectedStatus: "same-street-inferred",
+    expectValue: true
+  },
+  {
     label: "single-field same street and same suburb",
     address: "16 Moresby St Oakleigh South VIC",
     selectedType: "House",

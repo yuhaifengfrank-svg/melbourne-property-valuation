@@ -740,8 +740,29 @@ function getSelectedState() {
   return byId("property-state")?.value || "VIC";
 }
 
+function toTitleCase(value) {
+  return String(value || "")
+    .split(" ")
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+function normalizeSuburbName(value) {
+  const compact = String(value || "").toLowerCase().replace(/[^a-z]/g, "");
+  if (/^oakl[a-z]*south$/.test(compact) || compact === "oakleysouth") return "Oakleigh South";
+  if (/^oakl[a-z]*$/.test(compact) || compact === "oakley") return "Oakleigh";
+  return toTitleCase(
+    String(value || "")
+      .toLowerCase()
+      .replace(/\boakley\b|\boaklrigh\b/g, "oakleigh")
+      .replace(/\s+/g, " ")
+      .trim()
+  );
+}
+
 function getEnteredSuburb() {
-  return byId("suburb")?.value.trim() || "";
+  return normalizeSuburbName(byId("suburb")?.value.trim() || "");
 }
 
 function buildEnteredAddress() {
@@ -760,11 +781,7 @@ function suburbFromAddress(address) {
     /^(?:unit\s+\d+\s+)?(?:\d+\s*\/\s*)?\d+\s+.+?\s+(?:street|avenue|road|grove|drive|court|crescent|parade|place|lane)\s+(.+)$/
   );
   if (inlineSuburbMatch?.[1]) {
-    return inlineSuburbMatch[1]
-      .split(" ")
-      .filter(Boolean)
-      .map((word) => word[0].toUpperCase() + word.slice(1))
-      .join(" ");
+    return toTitleCase(inlineSuburbMatch[1]);
   }
   const words = cleaned.trim().split(/\s+/);
   return words.length > 1 ? words.slice(-2).join(" ") : "";
@@ -1793,6 +1810,7 @@ function createUnavailableValuation(address, inferredType = "House", selectedSta
 }
 
 function runAddressValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
+  const normalizedSuburb = normalizeSuburbName(enteredSuburb);
   const directAddressMatch = findValuation(address);
   const inferredType = inferPropertyTypeFromAddress(address, directAddressMatch, selectedType);
 
@@ -1802,17 +1820,17 @@ function runAddressValuation(address, selectedType = "", selectedState = "", ent
       address: address || commercialPendingValuation.address,
       addressZh: address || commercialPendingValuation.addressZh,
       propertyState: selectedState,
-      propertySuburb: enteredSuburb
+      propertySuburb: normalizedSuburb
     };
   }
 
   if (directAddressMatch) return applyComparableSalesModel(directAddressMatch, directAddressMatch.confidence);
 
   return (
-    createInferredSameComplexValuation(address, inferredType, selectedState, enteredSuburb) ||
-    createInferredSameStreetValuation(address, inferredType, selectedState, enteredSuburb) ||
-    createInferredSuburbValuation(address, inferredType, selectedState, enteredSuburb) ||
-    createUnavailableValuation(address, inferredType, selectedState, enteredSuburb)
+    createInferredSameComplexValuation(address, inferredType, selectedState, normalizedSuburb) ||
+    createInferredSameStreetValuation(address, inferredType, selectedState, normalizedSuburb) ||
+    createInferredSuburbValuation(address, inferredType, selectedState, normalizedSuburb) ||
+    createUnavailableValuation(address, inferredType, selectedState, normalizedSuburb)
   );
 }
 
