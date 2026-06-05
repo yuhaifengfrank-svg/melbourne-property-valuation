@@ -2,7 +2,7 @@
 
 Purpose: use current public listing addresses as real subject-property inputs, then run the valuation model from comparable sold evidence, uploaded evidence, unlock, PDF, lead email and database capture.
 
-This is an internal QA file. It must not be shown on the customer-facing page as "sample data". The customer sees a valuation workflow. The system internally keeps source, confidence and evidence records.
+This is an operational QA file. It must not be shown on the customer-facing page as address examples. The customer sees a valuation workflow. The system keeps only source, confidence and evidence records needed to explain the estimate.
 
 ## Core Flow
 
@@ -10,7 +10,7 @@ This is an internal QA file. It must not be shown on the customer-facing page as
    - Parse unit / room / lot label where present.
    - Parse street number, street name, suburb, state and postcode if pasted.
    - If pasted address has suburb or state, prefer the pasted address over the dropdown.
-   - If dropdown conflicts with pasted state, the pasted address wins and the internal record flags the conflict.
+   - If dropdown conflicts with pasted state, the pasted address wins and the valuation record flags the conflict.
 
 2. System determines property type.
    - Explicit customer type is used first.

@@ -132,11 +132,11 @@ const valuations = [
     },
     modelNotes: [
       "This record uses public portal cross-checks as an address-level benchmark until recent same-suburb sold comparables are attached.",
-      "The range follows the internal rule that the customer-facing valuation band should not exceed roughly +/-10% from the benchmark unless evidence justifies it."
+      "The range follows the valuation rule that the customer-facing band should not exceed roughly +/-10% from the benchmark unless address-level evidence justifies it."
     ],
     modelNotesZh: [
       "该记录先用公开门户交叉比对作为地址级 benchmark，后续应补入近期同区成交作为核心依据。",
-      "区间遵守内部规则：客户展示区间原则上不超过 benchmark 上下约 10%，除非证据支持。"
+      "区间遵守估值规则：客户展示区间原则上不超过 benchmark 上下约 10%，除非地址级证据支持。"
     ]
   },
   {
@@ -471,7 +471,7 @@ const valuations = [
     status: "Low-Medium",
     reasons: [
       "Vacant land valuation focuses on land size, frontage, slope, services and planning feasibility.",
-      "The demo treats this as a vacant/development-site scenario and requires title/council confirmation.",
+      "This intake treats the address as a vacant/development-site scenario and requires title/council confirmation.",
       "Comparable evidence should use land-only sales or knockdown/rebuild sales with building value removed.",
       "Development feasibility depends on zoning, overlays, easements, covenants and nearby built form."
     ],
@@ -1840,21 +1840,21 @@ function createInferredSuburbValuation(address, selectedType = "", selectedState
     confidence: "Low",
     status: "Low",
     reasons: [
-      `${inferredAddress} does not yet have same-address or same-street evidence, so this is a suburb-level intake estimate.`,
-      `The estimate uses ${suburbLabel} ${base.type.toLowerCase()} evidence as a broad first pass, not as an address-level match.`,
+      `${inferredAddress} does not yet have same-address or same-street evidence, so this is a suburb-level preliminary estimate.`,
+      `The estimate uses collected ${suburbLabel} ${base.type.toLowerCase()} evidence as a preliminary price anchor, not as an address-level match.`,
       "Current title, land size, dwelling form, condition, photos, planning controls and recent same-type sales are required before relying on the final number.",
       ...base.reasons.slice(0, 2)
     ],
     reasonsZh: [
-      `${inferredAddress} 目前没有同地址或同街直接证据，因此这是区域级别的入口粗估。`,
-      `本估值使用 ${suburbLabel} 的 ${base.type} 资料作为宽口径初步参考，不把它当成地址级匹配。`,
+      `${inferredAddress} 目前没有同地址或同街直接证据，因此这是区域级别的初步估值。`,
+      `本估值使用已收集的 ${suburbLabel} ${base.type} 证据作为初步价格锚点，不把它当成地址级匹配。`,
       "最终使用前必须复核当前 title、土地面积、建筑形态、房况、照片、规划限制和近期同类型成交。",
       ...base.reasonsZh.slice(0, 2)
     ],
     builtFormVerification: {
       status: "suburb-inferred",
-      summary: `${inferredAddress} is treated as a suburb-level intake record. Address-level evidence is required before upgrading confidence.`,
-      summaryZh: `${inferredAddress} 按区域级入口记录处理。需要地址级证据后才能提高置信度。`,
+      summary: `${inferredAddress} is treated as a suburb-level preliminary valuation. Address-level evidence is required before upgrading confidence.`,
+      summaryZh: `${inferredAddress} 按区域级初步估值处理。需要地址级证据后才能提高置信度。`,
       currentForm: propertyType,
       currentFormZh: propertyType,
       legacyRisk: "Suburb-level evidence can differ materially from the subject address by street quality, land size, title, building form and condition.",
@@ -1904,27 +1904,27 @@ function createInferredNearbyTypeValuation(address, selectedType = "", selectedS
     confidence: "Low",
     status: "Low",
     reasons: [
-      `${inferredAddress} does not yet have same-suburb comparable evidence in the current dataset, so this is a nearby same-type intake estimate.`,
-      `The estimate is calculated from available ${propertyType.toLowerCase()} comparable prices as a broad first pass while Carnegie-specific evidence is collected.`,
+      `${inferredAddress} does not yet have same-suburb comparable evidence from collected public sources, so an automated price should not be displayed yet.`,
+      `Nearby ${propertyType.toLowerCase()} evidence can guide research priority, but it is not enough for a customer-facing estimate.`,
       "Google Maps, current title, building form, photos and recent same-suburb same-type sales must be checked before relying on the final number.",
       ...base.reasons.slice(0, 2)
     ],
     reasonsZh: [
-      `${inferredAddress} 当前数据集中还没有同 suburb 可比成交证据，因此这是附近同类型入口粗估。`,
-      `本估值先根据已有 ${propertyType} 可比成交价格计算宽口径初步区间，同时需要补充 Carnegie 同区证据。`,
+      `${inferredAddress} 还没有从公开渠道收集到同 suburb 可比成交证据，因此暂时不应展示自动价格。`,
+      `附近 ${propertyType} 证据只能指导研究优先级，不足以作为客户展示估值。`,
       "最终使用前必须核对 Google Maps、当前 title、建筑形态、照片和近期同 suburb 同类型成交。",
       ...base.reasonsZh.slice(0, 2)
     ],
     builtFormVerification: {
       status: "nearby-type-inferred",
-      summary: `${inferredAddress} is treated as a nearby same-type market intake record. Same-suburb comparable evidence is required before upgrading confidence.`,
-      summaryZh: `${inferredAddress} 按附近同类型市场入口记录处理。需要同 suburb 可比成交证据后才能提高置信度。`,
+      summary: `${inferredAddress} needs same-suburb comparable evidence before an automated estimate is shown.`,
+      summaryZh: `${inferredAddress} 需要同 suburb 可比成交证据后才展示自动估值。`,
       currentForm: propertyType,
       currentFormZh: propertyType,
       legacyRisk: "Nearby same-type evidence can differ materially from the subject address by suburb, school zone, street quality, building age, strata plan and condition.",
       legacyRiskZh: "附近同类型证据可能因 suburb、校区、街道质量、楼龄、strata plan 和房况与目标地址明显不同。",
-      action: "Verify the address on Google Maps, then replace this broad intake with same-suburb same-type sales.",
-      actionZh: "先用 Google Maps 核验地址，再用同 suburb 同类型成交替换这个宽口径入口。"
+      action: "Verify the address on Google Maps, then collect same-suburb same-type sales before calculating the estimate.",
+      actionZh: "先用 Google Maps 核验地址，再收集同 suburb 同类型成交后计算估值。"
     },
     map: {
       ...base.map,
@@ -2006,7 +2006,6 @@ function runAddressValuation(address, selectedType = "", selectedState = "", ent
     createInferredSameComplexValuation(address, inferredType, resolvedState, normalizedSuburb) ||
     createInferredSameStreetValuation(address, inferredType, resolvedState, normalizedSuburb) ||
     createInferredSuburbValuation(address, inferredType, resolvedState, normalizedSuburb) ||
-    createInferredNearbyTypeValuation(address, inferredType, resolvedState, normalizedSuburb) ||
     createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb)
   );
 }
@@ -2497,7 +2496,7 @@ function buildDetailedReportLines() {
     : "Manual review";
   const comparableLines = currentValuation.comparables.length
     ? currentValuation.comparables.map((row) => `${row[0]} | Sale ${row[1]} | ${row[2]} | Land ${row[3]} | ${row[4]} | Similarity ${row[5]}`)
-    : ["No comparable rows available for this demo case."];
+    : ["No relevant comparable evidence has been attached yet. The estimate should wait for public-data collection or manual review."];
   const welcomeName = recipientName === "Not supplied" ? "there" : recipientName;
 
   const investorThemeLines = Object.values(investorThemes.en).flatMap((theme) => [
@@ -2619,7 +2618,7 @@ function buildDetailedReportLines() {
   ]);
 
   addReportSection(lines, "Important disclaimer", [
-    "This prototype report is for demonstration and lead-capture workflow testing only.",
+    "This preliminary report is based on public information, available comparable evidence and client-supplied material where provided.",
     "It is not a formal valuation, credit assessment, financial product advice or legal/planning advice.",
     "Any investment, lending or acquisition decision should be reviewed with appropriately licensed professionals."
   ]);
@@ -2685,7 +2684,7 @@ function createPdfDocument(lineItems) {
       commands.push("ET");
     });
     commands.push("BT");
-    commands.push(`/F1 8 Tf 48 28 Td (${escapePdfText("Generated by AusHomeValue demo. Not a formal valuation.")}) Tj`);
+    commands.push(`/F1 8 Tf 48 28 Td (${escapePdfText("Generated by AusHomeValue. Not a formal valuation.")}) Tj`);
     commands.push("ET");
     const stream = commands.join("\n");
     const contentRef = addObject(`<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`);

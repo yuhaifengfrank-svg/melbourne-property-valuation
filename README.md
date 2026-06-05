@@ -6,8 +6,8 @@ The project focuses first on house valuations. A user enters an address, confirm
 
 ## Current Scope
 
-- Australia-wide address intake with current demo samples focused on Victoria
-- Residential property valuation across house, vacant land, townhouse, villa, unit and apartment samples
+- Australia-wide address intake with curated public-evidence records for static workflow testing
+- Residential property valuation across house, vacant land, townhouse, villa, unit and apartment workflows
 - Comparable-sales baseline and dynamic weighting
 - Street ranking and micro-location assessment
 - Land, building, condition, planning, title, and risk adjustments
@@ -30,7 +30,7 @@ This repository contains a static client interface plus a Vercel serverless lead
 
 - `index.html`: client UI
 - `styles.css`: visual styling
-- `app.js`: sample valuation data and interactive behavior
+- `app.js`: curated public-evidence records and interactive behavior
 - `api/leads.js`: PostgreSQL-backed lead capture and admin API
 - `admin.html`: private lead analysis dashboard
 
@@ -60,7 +60,7 @@ The system is not intended to replace formal bank valuation, legal advice, finan
 
 ## Planned Work
 
-- Replace curated sample data with structured public-data ingestion
+- Replace static public-evidence records with structured public-data ingestion
 - Add ABS Census / DataPacks / SEIFA ingestion for suburb fundamentals
 - Add back-testing against historical sales
 - Improve comparable selection and adjustment logic

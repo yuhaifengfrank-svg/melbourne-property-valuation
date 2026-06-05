@@ -683,22 +683,22 @@ const broadCustomerIntakeCases = [
     expectValue: true
   },
   {
-    label: "Carnegie unit with nearby same-type fallback",
+    label: "Carnegie unit without same-suburb evidence waits for public data",
     address: "3/150 Grange Road Carnegie VIC",
     selectedType: "House",
     suburb: "Carnegie",
     expectedType: "Unit",
-    expectedStatus: "nearby-type-inferred",
-    expectValue: true
+    expectedStatus: "current-form-priority",
+    expectManualReview: true
   },
   {
-    label: "Melbourne apartment with street and suburb typos",
+    label: "Melbourne apartment with street and suburb typos waits for public data",
     address: "508/220 spencer5 street melnourne VIC",
     selectedType: "House",
     suburb: "melnourne",
     expectedType: "Apartment",
-    expectedStatus: "nearby-type-inferred",
-    expectValue: true
+    expectedStatus: "current-form-priority",
+    expectManualReview: true
   },
   {
     label: "incomplete address needs manual review",
