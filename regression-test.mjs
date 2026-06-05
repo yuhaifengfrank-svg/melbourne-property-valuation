@@ -193,7 +193,11 @@ globalThis.__test = {
   valuations,
   commercialPendingValuation,
   findValuation,
+  inferPropertyTypeFromAddress,
   createInferredSameComplexValuation,
+  createInferredSameStreetValuation,
+  createInferredSuburbValuation,
+  runAddressValuation,
   renderValuation,
   applyEvidenceFiles,
   buildMarketCrosscheck,
@@ -242,7 +246,7 @@ const addressMatchingCases = [
   {
     type: "Villa",
     address: "unit2 11 Macintosh Street Oakley",
-    expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166"
+    expected: null
   },
   {
     type: "Villa",
@@ -283,6 +287,26 @@ const addressMatchingCases = [
     type: "House",
     address: "9 McIntosh Street Oakleigh",
     expected: "9 McIntosh Street, Oakleigh VIC 3166"
+  },
+  {
+    type: "Unit",
+    address: "Unit 1, 3 Macintosh Street Oakleigh",
+    expected: null
+  },
+  {
+    type: "Unit",
+    address: "3 Macintosh Street Oakleigh",
+    expected: null
+  },
+  {
+    type: "Townhouse",
+    address: "5 Macintosh Street Oakleigh",
+    expected: null
+  },
+  {
+    type: "Villa",
+    address: "7 Macintosh Street Oakleigh",
+    expected: null
   }
 ];
 
@@ -295,19 +319,158 @@ for (const testCase of addressMatchingCases) {
 }
 
 const inferredUnitMatch = context.__test.createInferredSameComplexValuation(
-  "Unit 1, No.11 MacIntosh Street, Oakleigh, VIC",
+  "Unit 1, No.11 McIntosh Street, Oakleigh, VIC",
   "Villa",
   "VIC",
   "Oakleigh"
 );
 if (!inferredUnitMatch) {
-  throw new Error("Same-complex inference should return a valuation for Unit 1, No.11 MacIntosh Street");
+  throw new Error("Same-complex inference should return a valuation for Unit 1, No.11 McIntosh Street");
 }
-if (inferredUnitMatch.address !== "Unit 1, No.11 MacIntosh Street, Oakleigh, VIC") {
+if (inferredUnitMatch.address !== "Unit 1, No.11 McIntosh Street, Oakleigh, VIC") {
   throw new Error(`Same-complex inference should preserve entered address, got ${inferredUnitMatch.address}`);
 }
 if (inferredUnitMatch.confidence !== "Low-Medium" || inferredUnitMatch.builtFormVerification.status !== "same-complex-inferred") {
   throw new Error("Same-complex inference should lower confidence and flag inferred built form");
+}
+
+const wrongStreetInferredUnitMatch = context.__test.createInferredSameComplexValuation(
+  "Unit 1, No.11 MacIntosh Street, Oakleigh, VIC",
+  "Villa",
+  "VIC",
+  "Oakleigh"
+);
+if (wrongStreetInferredUnitMatch) {
+  throw new Error("Same-complex inference should not treat MacIntosh Street as McIntosh Street");
+}
+
+const relatedParentUnitCases = [
+  "Unit 1, 9 McIntosh Street, Oakleigh, VIC",
+  "unit1 9 McIntosh Street Oakleigh VIC",
+  "unit 1 9 McIntosh Street Oakleigh VIC",
+  "Unit 1/9 McIntosh Street Oakleigh VIC",
+  "1/9 McIntosh Street Oakleigh VIC",
+  "1-9 McIntosh Street Oakleigh VIC",
+  "U1/9 McIntosh Street Oakleigh VIC",
+  "U 1, 9 McIntosh Street Oakleigh VIC",
+  "Unit 2 No.9 McIntosh Street Oakleigh VIC",
+  "unit2 number 9 McIntosh Street Oakleigh VIC"
+];
+
+for (const address of relatedParentUnitCases) {
+  const relatedParentUnitMatch = context.__test.createInferredSameComplexValuation(
+    address,
+    "Unit",
+    "VIC",
+    "Oakleigh"
+  );
+  if (!relatedParentUnitMatch) {
+    throw new Error(`Related parent-address inference should return a valuation for ${address}`);
+  }
+  if (relatedParentUnitMatch.address !== address) {
+    throw new Error(`Related parent-address inference should preserve entered address, got ${relatedParentUnitMatch.address}`);
+  }
+if (relatedParentUnitMatch.confidence !== "Low") {
+    throw new Error("Related parent-address inference should keep confidence low until same-unit evidence is provided");
+  }
+}
+
+const unrelatedParentUnitMatch = context.__test.createInferredSameComplexValuation(
+  "Unit 3, 9 McIntosh Street, Oakleigh, VIC",
+  "Unit",
+  "VIC",
+  "Oakleigh"
+);
+if (unrelatedParentUnitMatch) {
+  throw new Error("Related parent-address inference should only support explicitly related unit numbers");
+}
+
+const sameStreetMatch = context.__test.createInferredSameStreetValuation(
+  "7 McIntosh St Oakleigh",
+  "House",
+  "VIC",
+  "Oakleigh"
+);
+if (!sameStreetMatch) {
+  throw new Error("Same-street inference should return a valuation for 7 McIntosh St Oakleigh");
+}
+if (sameStreetMatch.address !== "7 McIntosh St Oakleigh" || sameStreetMatch.confidence !== "Low") {
+  throw new Error("Same-street inference should preserve entered address and keep confidence low");
+}
+if (sameStreetMatch.builtFormVerification.status !== "same-street-inferred") {
+  throw new Error("Same-street inference should flag the valuation as same-street inferred");
+}
+
+const wrongStreetSameStreetMatch = context.__test.createInferredSameStreetValuation(
+  "7 Macintosh St Oakleigh",
+  "House",
+  "VIC",
+  "Oakleigh"
+);
+if (wrongStreetSameStreetMatch) {
+  throw new Error("Same-street inference should not treat Macintosh Street as McIntosh Street");
+}
+
+const suburbLevelMatch = context.__test.createInferredSuburbValuation(
+  "99 Example Road, Oakleigh, VIC",
+  "House",
+  "VIC",
+  "Oakleigh"
+);
+if (!suburbLevelMatch) {
+  throw new Error("Suburb-level inference should return a low-confidence valuation for a residential Oakleigh address");
+}
+if (suburbLevelMatch.address !== "99 Example Road, Oakleigh, VIC" || suburbLevelMatch.confidence !== "Low") {
+  throw new Error("Suburb-level inference should preserve entered address and keep confidence low");
+}
+if (suburbLevelMatch.builtFormVerification.status !== "suburb-inferred") {
+  throw new Error("Suburb-level inference should flag the valuation as suburb inferred");
+}
+
+const directUnitPipelineMatch = context.__test.runAddressValuation(
+  "Unit 2, 11 McIntosh Street, Oakleigh, VIC",
+  "House",
+  "VIC",
+  "Oakleigh"
+);
+if (directUnitPipelineMatch.type !== "Villa" || directUnitPipelineMatch.address !== "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166") {
+  throw new Error("Address valuation pipeline should infer direct-address unit/villa type before using the default House chip");
+}
+if (directUnitPipelineMatch.midpointValue !== 840000) {
+  throw new Error("Address valuation pipeline should calculate direct-address value from comparable prices, not stored static values");
+}
+
+const relatedUnitPipelineMatch = context.__test.runAddressValuation(
+  "unit1 9 McIntosh Street Oakleigh VIC",
+  "House",
+  "VIC",
+  "Oakleigh"
+);
+if (relatedUnitPipelineMatch.type !== "Unit" || relatedUnitPipelineMatch.confidence !== "Low") {
+  throw new Error("Address valuation pipeline should classify related parent-address unit intake as Unit with low confidence");
+}
+if (!relatedUnitPipelineMatch.comparables.some((row) => row[0].includes("McIntosh Street"))) {
+  throw new Error("Related unit intake should use nearby comparable price evidence");
+}
+
+const sameStreetPipelineMatch = context.__test.runAddressValuation(
+  "7 McIntosh St Oakleigh",
+  "House",
+  "VIC",
+  "Oakleigh"
+);
+if (sameStreetPipelineMatch.type !== "House" || sameStreetPipelineMatch.builtFormVerification.status !== "same-street-inferred") {
+  throw new Error("Address valuation pipeline should classify 7 McIntosh St as a same-street house intake");
+}
+
+const wrongStreetPipelineMatch = context.__test.runAddressValuation(
+  "7 Macintosh St Oakleigh",
+  "House",
+  "VIC",
+  "Oakleigh"
+);
+if (wrongStreetPipelineMatch.builtFormVerification.status === "same-street-inferred") {
+  throw new Error("Address valuation pipeline should not use McIntosh same-street evidence for Macintosh Street");
 }
 
 const results = [];
@@ -323,16 +486,7 @@ for (const testCase of cases) {
   elements.get("lead-consent").checked = true;
 
   const fullAddress = context.__test.buildEnteredAddress();
-  const match = testCase.pending ? null : context.__test.findValuation(fullAddress, testCase.type);
-  if (testCase.pending) {
-    context.__test.renderValuation({
-      ...context.__test.commercialPendingValuation,
-      address: fullAddress
-    });
-  } else {
-    if (!match) throw new Error(`No valuation matched for ${testCase.type}: ${fullAddress}`);
-    context.__test.renderValuation(match);
-  }
+  context.__test.renderValuation(context.__test.runAddressValuation(fullAddress, testCase.type, testCase.state, testCase.suburb));
 
   const before = context.__test.currentValuation.midpointValue;
   if (!testCase.pending) {
