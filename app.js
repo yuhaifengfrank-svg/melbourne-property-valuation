@@ -1904,27 +1904,27 @@ function createInferredNearbyTypeValuation(address, selectedType = "", selectedS
     confidence: "Low",
     status: "Low",
     reasons: [
-      `${inferredAddress} does not yet have same-suburb comparable evidence from collected public sources, so an automated price should not be displayed yet.`,
-      `Nearby ${propertyType.toLowerCase()} evidence can guide research priority, but it is not enough for a customer-facing estimate.`,
-      "Google Maps, current title, building form, photos and recent same-suburb same-type sales must be checked before relying on the final number.",
+      `${inferredAddress} does not yet have direct same-address or same-suburb evidence attached, so the model expands to the nearest available same-type comparable pool.`,
+      `The estimate is calculated from nearby ${propertyType.toLowerCase()} evidence as a preliminary valuation, with lower confidence until closer sales are collected.`,
+      "Google Maps, current title, building form, photos and recent same-type sales inside the closest practical radius should be checked to tighten the result.",
       ...base.reasons.slice(0, 2)
     ],
     reasonsZh: [
-      `${inferredAddress} 还没有从公开渠道收集到同 suburb 可比成交证据，因此暂时不应展示自动价格。`,
-      `附近 ${propertyType} 证据只能指导研究优先级，不足以作为客户展示估值。`,
-      "最终使用前必须核对 Google Maps、当前 title、建筑形态、照片和近期同 suburb 同类型成交。",
+      `${inferredAddress} 目前还没有同地址或同 suburb 的直接证据，因此模型会扩大到最近可用的同类型 comparable 池。`,
+      `本估值根据附近 ${propertyType} 证据计算初步估值；在收集到更近成交前，置信度会降低。`,
+      "应继续核对 Google Maps、当前 title、建筑形态、照片，以及最近可行半径内的同类型成交，以收窄结果。",
       ...base.reasonsZh.slice(0, 2)
     ],
     builtFormVerification: {
       status: "nearby-type-inferred",
-      summary: `${inferredAddress} needs same-suburb comparable evidence before an automated estimate is shown.`,
-      summaryZh: `${inferredAddress} 需要同 suburb 可比成交证据后才展示自动估值。`,
+      summary: `${inferredAddress} is valued from the nearest available same-type comparable pool until closer evidence is collected.`,
+      summaryZh: `${inferredAddress} 在收集到更近证据前，先用最近可用的同类型 comparable 池估值。`,
       currentForm: propertyType,
       currentFormZh: propertyType,
       legacyRisk: "Nearby same-type evidence can differ materially from the subject address by suburb, school zone, street quality, building age, strata plan and condition.",
       legacyRiskZh: "附近同类型证据可能因 suburb、校区、街道质量、楼龄、strata plan 和房况与目标地址明显不同。",
-      action: "Verify the address on Google Maps, then collect same-suburb same-type sales before calculating the estimate.",
-      actionZh: "先用 Google Maps 核验地址，再收集同 suburb 同类型成交后计算估值。"
+      action: "Verify the address on Google Maps, then keep expanding or tightening the comparable radius until enough same-type sales support the estimate.",
+      actionZh: "先用 Google Maps 核验地址，再按半径扩大或收紧 comparable 搜索，直到有足够同类型成交支撑估值。"
     },
     map: {
       ...base.map,
@@ -2006,6 +2006,7 @@ function runAddressValuation(address, selectedType = "", selectedState = "", ent
     createInferredSameComplexValuation(address, inferredType, resolvedState, normalizedSuburb) ||
     createInferredSameStreetValuation(address, inferredType, resolvedState, normalizedSuburb) ||
     createInferredSuburbValuation(address, inferredType, resolvedState, normalizedSuburb) ||
+    createInferredNearbyTypeValuation(address, inferredType, resolvedState, normalizedSuburb) ||
     createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb)
   );
 }

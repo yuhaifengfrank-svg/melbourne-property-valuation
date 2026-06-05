@@ -32,14 +32,16 @@ Every customer-entered address should be treated as a new subject property. The 
    - Comparable sales remain the primary price anchor when enough recent evidence exists.
    - Public portal automated estimates can be used as cross-checks, not as the only basis.
    - If fewer than three relevant comparables are found, confidence must drop.
-   - If no relevant same-suburb evidence is found, the system should not display a precise automated value.
+   - If same-address, same-street or same-suburb evidence is not available, expand the comparable radius progressively, for example to nearby streets, 1 km, 2 km and 3 km.
+   - The customer should still receive a preliminary automated estimate, but confidence and range must reflect the weaker comparable fit.
 
-5. Apply uploaded evidence.
+5. Apply client-supplied evidence.
    - Title / title plan.
    - Section 32 or vendor statement.
    - Planning notes.
    - Current photos.
    - Inspection, street, rental and condition notes.
+   - This is the "manual adjustment" stage: the customer supplies documents or observations, and the system uses that evidence to automatically revise the estimate.
 
 6. Produce the customer report.
    - Show the estimate, reason, evidence and missing checks.
@@ -49,7 +51,7 @@ Every customer-entered address should be treated as a new subject property. The 
 ## What Is Not Allowed
 
 - Do not use an unrelated address as a fallback estimate.
-- Do not use another suburb's stored values to create a customer-facing estimate.
+- Do not use another suburb's stored values as a blind fallback. Nearby suburb evidence can only be used when it is part of a radius-based comparable search and the lower confidence is disclosed.
 - Do not show "sample", "demo case", "internal dataset" or similar language in the customer report.
 - Do not allow old historical sales to pull down a current estimate unless the history is explicitly part of a trend model.
 
