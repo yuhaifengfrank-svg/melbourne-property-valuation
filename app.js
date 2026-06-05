@@ -755,6 +755,17 @@ function suburbFromAddress(address) {
   const cleaned = String(address || "").replace(/\bVIC\b|\bNSW\b|\bQLD\b|\bWA\b|\bSA\b|\bTAS\b|\bACT\b|\bNT\b|\b\d{4}\b/gi, "");
   const parts = cleaned.split(",").map((part) => part.trim()).filter(Boolean);
   if (parts.length > 1) return parts[parts.length - 1];
+  const normalized = normalizeAddress(cleaned);
+  const inlineSuburbMatch = normalized.match(
+    /^(?:unit\s+\d+\s+)?(?:\d+\s*\/\s*)?\d+\s+.+?\s+(?:street|avenue|road|grove|drive|court|crescent|parade|place|lane)\s+(.+)$/
+  );
+  if (inlineSuburbMatch?.[1]) {
+    return inlineSuburbMatch[1]
+      .split(" ")
+      .filter(Boolean)
+      .map((word) => word[0].toUpperCase() + word.slice(1))
+      .join(" ");
+  }
   const words = cleaned.trim().split(/\s+/);
   return words.length > 1 ? words.slice(-2).join(" ") : "";
 }

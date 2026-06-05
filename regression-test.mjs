@@ -484,6 +484,15 @@ const broadCustomerIntakeCases = [
     expectValue: true
   },
   {
+    label: "single-field same street house",
+    address: "7 McIntosh St Oakleigh",
+    selectedType: "House",
+    suburb: "",
+    expectedType: "House",
+    expectedStatus: "same-street-inferred",
+    expectValue: true
+  },
+  {
     label: "different Oakleigh house street",
     address: "22 Atherton Road Oakleigh VIC",
     selectedType: "House",
@@ -538,10 +547,28 @@ const broadCustomerIntakeCases = [
     expectValue: true
   },
   {
+    label: "single-field same street name but different suburb",
+    address: "16 Moresby St Oakleigh VIC",
+    selectedType: "House",
+    suburb: "",
+    expectedType: "House",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
     label: "same street and same suburb",
     address: "16 Moresby St Oakleigh South VIC",
     selectedType: "House",
     suburb: "Oakleigh South",
+    expectedType: "House",
+    expectedStatus: "same-street-inferred",
+    expectValue: true
+  },
+  {
+    label: "single-field same street and same suburb",
+    address: "16 Moresby St Oakleigh South VIC",
+    selectedType: "House",
+    suburb: "",
     expectedType: "House",
     expectedStatus: "same-street-inferred",
     expectValue: true
