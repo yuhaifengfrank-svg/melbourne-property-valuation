@@ -473,6 +473,146 @@ if (wrongStreetPipelineMatch.builtFormVerification.status === "same-street-infer
   throw new Error("Address valuation pipeline should not use McIntosh same-street evidence for Macintosh Street");
 }
 
+const broadCustomerIntakeCases = [
+  {
+    label: "same street house",
+    address: "7 McIntosh St Oakleigh",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "House",
+    expectedStatus: "same-street-inferred",
+    expectValue: true
+  },
+  {
+    label: "different Oakleigh house street",
+    address: "22 Atherton Road Oakleigh VIC",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "House",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
+    label: "unlisted Oakleigh unit",
+    address: "Unit 4, 25 Example Road Oakleigh VIC",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "Unit",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
+    label: "unlisted Oakleigh unit slash format",
+    address: "4/25 Example Road Oakleigh VIC",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "Unit",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
+    label: "unlisted Oakleigh apartment",
+    address: "Apartment 5, 88 Station Street Oakleigh VIC",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "Apartment",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
+    label: "Oakleigh South house",
+    address: "12 Random Street Oakleigh South VIC",
+    selectedType: "House",
+    suburb: "Oakleigh South",
+    expectedType: "House",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
+    label: "same street name but different suburb",
+    address: "16 Moresby St Oakleigh VIC",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "House",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
+    label: "same street and same suburb",
+    address: "16 Moresby St Oakleigh South VIC",
+    selectedType: "House",
+    suburb: "Oakleigh South",
+    expectedType: "House",
+    expectedStatus: "same-street-inferred",
+    expectValue: true
+  },
+  {
+    label: "land wording",
+    address: "Land 40 Random Road Oakleigh VIC",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "Vacant land",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
+    label: "direct vacant land",
+    address: "13 Gadd Street Oakleigh VIC",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "Vacant land",
+    expectedStatus: "standard",
+    expectValue: true
+  },
+  {
+    label: "commercial wording",
+    address: "Commercial Shop 8 Random Road Oakleigh VIC",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "Commercial",
+    expectedStatus: "standard",
+    expectPending: true
+  },
+  {
+    label: "wrong street spelling still gets suburb-level only",
+    address: "7 Macintosh St Oakleigh",
+    selectedType: "House",
+    suburb: "Oakleigh",
+    expectedType: "House",
+    expectedStatus: "suburb-inferred",
+    expectValue: true
+  },
+  {
+    label: "incomplete address needs manual review",
+    address: "",
+    selectedType: "House",
+    suburb: "",
+    expectedType: "House",
+    expectedStatus: "standard",
+    expectManualReview: true
+  }
+];
+
+for (const testCase of broadCustomerIntakeCases) {
+  const valuation = context.__test.runAddressValuation(testCase.address, testCase.selectedType, "VIC", testCase.suburb);
+  const builtFormVerification = context.__test.buildBuiltFormVerification(valuation);
+  if (valuation.type !== testCase.expectedType) {
+    throw new Error(`${testCase.label}: expected type ${testCase.expectedType}, got ${valuation.type}`);
+  }
+  if (builtFormVerification.status !== testCase.expectedStatus) {
+    throw new Error(`${testCase.label}: expected status ${testCase.expectedStatus}, got ${builtFormVerification.status}`);
+  }
+  if (testCase.expectValue && (!Number.isFinite(valuation.midpointValue) || /Manual review/i.test(valuation.value))) {
+    throw new Error(`${testCase.label}: expected model-calculated value, got ${valuation.value}`);
+  }
+  if (testCase.expectPending && valuation.value !== "Coming soon") {
+    throw new Error(`${testCase.label}: expected commercial pending state, got ${valuation.value}`);
+  }
+  if (testCase.expectManualReview && valuation.value !== "Manual review required") {
+    throw new Error(`${testCase.label}: expected manual review for incomplete address, got ${valuation.value}`);
+  }
+}
+
 const results = [];
 
 for (const testCase of cases) {

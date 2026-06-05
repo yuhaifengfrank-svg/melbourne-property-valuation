@@ -1475,6 +1475,7 @@ function inferPropertyTypeFromAddress(address, directAddressMatch = null, select
 function createInferredSameComplexValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
   const inputSignature = getAddressSignature(address);
   if (!inputSignature.hasUnitSignal || !inputSignature.streetName || !inputSignature.streetNumber) return null;
+  const targetSuburb = (enteredSuburb || suburbFromAddress(address)).toLowerCase();
 
   const hasRelatedParentRecord = valuations.some((item) => {
     if (!item.relatedUnitNumbers?.includes(inputSignature.unitNumber)) return false;
@@ -1511,6 +1512,8 @@ function createInferredSameComplexValuation(address, selectedType = "", selected
     candidates = valuations
       .map((item) => {
         if (!isAttachedOrStrataType(item.type)) return null;
+        const itemSuburb = suburbFromAddress(item.address).toLowerCase();
+        if (targetSuburb && itemSuburb !== targetSuburb) return null;
         const hasSameStreetAlias = item.aliases.some((alias) => {
           const aliasSignature = getAddressSignature(alias);
           return aliasSignature.streetName === inputSignature.streetName;
@@ -1598,9 +1601,12 @@ function createInferredSameComplexValuation(address, selectedType = "", selected
 function createInferredSameStreetValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
   const inputSignature = getAddressSignature(address);
   if (inputSignature.hasUnitSignal || !inputSignature.streetName || !inputSignature.streetNumber) return null;
+  const targetSuburb = (enteredSuburb || suburbFromAddress(address)).toLowerCase();
 
   const candidates = valuations
     .map((item) => {
+      const itemSuburb = suburbFromAddress(item.address).toLowerCase();
+      if (targetSuburb && itemSuburb !== targetSuburb) return null;
       const hasSameStreetAlias = item.aliases.some((alias) => {
         const aliasSignature = getAddressSignature(alias);
         return aliasSignature.streetName === inputSignature.streetName;
