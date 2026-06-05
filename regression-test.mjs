@@ -663,6 +663,15 @@ const broadCustomerIntakeCases = [
     expectValue: true
   },
   {
+    label: "Carnegie unit with nearby same-type fallback",
+    address: "3/150 Grange Road Carnegie VIC",
+    selectedType: "House",
+    suburb: "Carnegie",
+    expectedType: "Unit",
+    expectedStatus: "nearby-type-inferred",
+    expectValue: true
+  },
+  {
     label: "incomplete address needs manual review",
     address: "",
     selectedType: "House",

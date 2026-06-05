@@ -1780,6 +1780,70 @@ function createInferredSuburbValuation(address, selectedType = "", selectedState
   };
 }
 
+function createInferredNearbyTypeValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
+  const inferredAddress = String(address || "").trim();
+  const suburbLabel = enteredSuburb || suburbFromAddress(inferredAddress);
+  if (!inferredAddress || selectedType === "Commercial") return null;
+
+  const candidates = valuations
+    .map((item) => {
+      if (selectedType === "Vacant land" && item.type !== "Vacant land") return null;
+      if (selectedType !== "Vacant land" && item.type === "Vacant land") return null;
+      const compatibleBuiltForm = isAttachedOrStrataType(item.type) === isAttachedOrStrataType(selectedType);
+      if (item.type !== selectedType && !compatibleBuiltForm) return null;
+      return {
+        item,
+        score: item.type === selectedType ? 3 : 1
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.score - a.score);
+
+  if (!candidates.length) return null;
+
+  const base = candidates[0].item;
+  const propertyType = selectedType || base.type;
+
+  return {
+    ...base,
+    ...buildComparableDrivenEstimate(base.comparables, "Low"),
+    address: inferredAddress,
+    addressZh: inferredAddress,
+    propertyState: selectedState || stateFromAddress(inferredAddress),
+    propertySuburb: suburbLabel,
+    type: propertyType,
+    confidence: "Low",
+    status: "Low",
+    reasons: [
+      `${inferredAddress} does not yet have same-suburb comparable evidence in the current dataset, so this is a nearby same-type intake estimate.`,
+      `The estimate is calculated from available ${propertyType.toLowerCase()} comparable prices as a broad first pass while Carnegie-specific evidence is collected.`,
+      "Google Maps, current title, building form, photos and recent same-suburb same-type sales must be checked before relying on the final number.",
+      ...base.reasons.slice(0, 2)
+    ],
+    reasonsZh: [
+      `${inferredAddress} 当前数据集中还没有同 suburb 可比成交证据，因此这是附近同类型入口粗估。`,
+      `本估值先根据已有 ${propertyType} 可比成交价格计算宽口径初步区间，同时需要补充 Carnegie 同区证据。`,
+      "最终使用前必须核对 Google Maps、当前 title、建筑形态、照片和近期同 suburb 同类型成交。",
+      ...base.reasonsZh.slice(0, 2)
+    ],
+    builtFormVerification: {
+      status: "nearby-type-inferred",
+      summary: `${inferredAddress} is treated as a nearby same-type market intake record. Same-suburb comparable evidence is required before upgrading confidence.`,
+      summaryZh: `${inferredAddress} 按附近同类型市场入口记录处理。需要同 suburb 可比成交证据后才能提高置信度。`,
+      currentForm: propertyType,
+      currentFormZh: propertyType,
+      legacyRisk: "Nearby same-type evidence can differ materially from the subject address by suburb, school zone, street quality, building age, strata plan and condition.",
+      legacyRiskZh: "附近同类型证据可能因 suburb、校区、街道质量、楼龄、strata plan 和房况与目标地址明显不同。",
+      action: "Verify the address on Google Maps, then replace this broad intake with same-suburb same-type sales.",
+      actionZh: "先用 Google Maps 核验地址，再用同 suburb 同类型成交替换这个宽口径入口。"
+    },
+    map: {
+      ...base.map,
+      target: getAddressSignature(inferredAddress).streetNumber || "Subject"
+    }
+  };
+}
+
 function createUnavailableValuation(address, inferredType = "House", selectedState = "", enteredSuburb = "") {
   return {
     ...valuations[0],
@@ -1852,6 +1916,7 @@ function runAddressValuation(address, selectedType = "", selectedState = "", ent
     createInferredSameComplexValuation(address, inferredType, selectedState, normalizedSuburb) ||
     createInferredSameStreetValuation(address, inferredType, selectedState, normalizedSuburb) ||
     createInferredSuburbValuation(address, inferredType, selectedState, normalizedSuburb) ||
+    createInferredNearbyTypeValuation(address, inferredType, selectedState, normalizedSuburb) ||
     createUnavailableValuation(address, inferredType, selectedState, normalizedSuburb)
   );
 }
