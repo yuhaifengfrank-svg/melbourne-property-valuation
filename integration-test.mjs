@@ -106,6 +106,31 @@ describe("P1: 数据可信度", () => {
   });
 });
 
+describe("P1: 数据库 source", () => {
+  it("DatabaseComparableSource 可实例化", async () => {
+    const mod = await import("./lib/db-comparable-source.js");
+    const src = new mod.DatabaseComparableSource();
+    assert.ok(src instanceof Object);
+    assert.equal(src.isAvailable(), false);
+  });
+
+  it("无 DATABASE_URL 时 checkConnection 返回 false", async () => {
+    const { DatabaseComparableSource } = await import("./lib/db-comparable-source.js");
+    const src = new DatabaseComparableSource();
+    const ok = await src.checkConnection();
+    assert.equal(ok, false);
+    assert.equal(src.isAvailable(), false);
+  });
+
+  it("无 DB 时 fetch 返回空数组", async () => {
+    const mod = await import("./lib/db-comparable-source.js");
+    const src = new mod.DatabaseComparableSource();
+    const result = await src.fetch({ suburb: "South Melbourne", state: "VIC" });
+    assert.ok(Array.isArray(result));
+    assert.equal(result.length, 0);
+  });
+});
+
 describe("P1: 物业类型覆盖", () => {
   const types = ["House", "Unit", "Apartment", "Townhouse", "Villa", "Vacant land"];
   for (const type of types) {

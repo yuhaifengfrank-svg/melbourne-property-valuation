@@ -2425,6 +2425,7 @@ function renderValuation(data) {
       const labels = {
         live_verified: language === "zh" ? "✓ 实时数据验证" : "✓ Live data verified",
         research_only: language === "zh" ? "📊 研究数据，来源有限" : "📊 Limited data, research only",
+        database_verified: language === "zh" ? "✓ 数据库已验证成交" : "✓ Database-verified sales",
         unavailable: language === "zh" ? "✗ 暂无可比数据" : "✗ No comparable data available"
       };
       evidenceBadge.textContent = labels[evidenceMode] || evidenceMode;

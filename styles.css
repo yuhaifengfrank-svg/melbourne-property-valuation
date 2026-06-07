@@ -657,6 +657,7 @@ button:hover {
 .evidence-badge.research_only { background: #fff3e0; color: #e65100; }
 .evidence-badge.unavailable { background: #fce4ec; color: #b71c1c; }
 .evidence-badge.curated_fixture { background: #fff3e0; color: #bf360c; }
+.evidence-badge.database_verified { background: #e3f2fd; color: #0d47a1; }
 
 .evidence-review {
   background: #f7faf8;
