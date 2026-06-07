@@ -11,7 +11,7 @@
 |------|-----|
 | **分支** | `codex-review`（**未合并** `main`） |
 | **HEAD** | `3ecf7c6` — `fix: address verification — partial on missing fields, effectiveAddress truth` |
-| **Ahead of main** | 7 commits |
+| **Ahead of main** | 8 commits（含本文档） |
 | **未提交文件** | 无（working tree clean） |
 | **已推送 remote** | ✅ `origin/codex-review` |
 | **目录** | `/Users/FrankAI/Documents/澳洲房地产评估系统` |
