@@ -152,20 +152,40 @@ describe("P1: 数据库 source", () => {
     assert.ok("status" in result);
   });
 
-  it("mock source: useDatabaseFallback 时 DB 被调用检查", async () => {
+  it("无 CDP comps 时 DB 被调用", async () => {
     let dbCalledCount = 0;
     const countingDbSource = {
       checkConnection: async () => { dbCalledCount++; return true; },
       isAvailable: () => true,
       fetch: async () => { dbCalledCount++; return []; }
     };
-    // 无 CDP comps → 应调用 DB
     const result = await runValuation({
       address: "18 NoCdp St", suburb: "Nowhere", state: "VIC", propertyType: "House"
     }, { fetch: false, useDatabaseFallback: true, dbSource: countingDbSource });
-    // CDP 没结果时 DB 被调
-    assert.ok(dbCalledCount > 0, `expected DB calls, got ${dbCalledCount}`);
+    // CDP 没结果 → DB 被调用
+    assert.ok(dbCalledCount > 0, `expected DB calls when no CDP comps, got ${dbCalledCount}`);
     assert.ok("evidenceMode" in result);
+  });
+
+  it("CDP ≥3 collector comps 时 DB 不被调用", async () => {
+    let dbCalledCount = 0;
+    const countingDbSource = {
+      checkConnection: async () => { dbCalledCount++; return true; },
+      isAvailable: () => true,
+      fetch: async () => { dbCalledCount++; return []; }
+    };
+    // 构造三条 mock collector comparable（模拟 CDP 抓取成功）
+    const mockComps = [
+      { address: "1 Test St, Testville VIC 3000", price: 800000, type: "House", bedrooms: 3, bathrooms: 2, carSpaces: 2, landSize: 600, source: "realestate.com.au", saleDate: "2025-06-01", _sourceMode: "live_collected" },
+      { address: "2 Test St, Testville VIC 3000", price: 850000, type: "House", bedrooms: 3, bathrooms: 2, carSpaces: 2, landSize: 550, source: "Domain", saleDate: "2025-05-15", _sourceMode: "live_collected" },
+      { address: "3 Test St, Testville VIC 3000", price: 820000, type: "House", bedrooms: 4, bathrooms: 2, carSpaces: 2, landSize: 650, source: "realestate.com.au", saleDate: "2025-04-20", _sourceMode: "live_collected" }
+    ];
+    const result = await runValuation({
+      address: "18 CDP St", suburb: "Testville", state: "VIC", propertyType: "House"
+    }, { fetch: false, useDatabaseFallback: true, dbSource: countingDbSource, mockCollectorComparables: mockComps });
+    // CDP 已有 ≥3 comps → DB 不应被调用
+    assert.strictEqual(dbCalledCount, 0, `expected 0 DB calls when CDP has 3+ comps, got ${dbCalledCount}`);
+    assert.ok(result.ok !== false);
   });
 
   it("证据标签仅检查 accepted 中确实来自 DB 的记录", async () => {

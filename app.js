@@ -891,31 +891,72 @@ function getValuationMatchScore(item, inputSignature, selectedType = "") {
   }, -1);
 }
 
-function findValuation(address, selectedType = "") {
-  const inputSignature = getAddressSignature(address);
-  const matches = valuations
-    .map((item) => ({
-      item,
-      score: getValuationMatchScore(item, inputSignature, selectedType)
-    }))
-    .filter((match) => match.score >= 0)
+// findValuation removed — API-only, no static data
+// createInferredSameComplexValuation removed — API-only
+// createInferredSameStreetValuation removed — API-only
+// createInferredSuburbValuation removed — API-only
+function createInferredNearbyTypeValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
+  const inferredAddress = String(address || "").trim();
+  const suburbLabel = enteredSuburb || suburbFromAddress(inferredAddress);
+  if (!inferredAddress || selectedType === "Commercial") return null;
+
+  const candidates = valuations
+    .map((item) => {
+      if (selectedType === "Vacant land" && item.type !== "Vacant land") return null;
+      if (selectedType !== "Vacant land" && item.type === "Vacant land") return null;
+      const compatibleBuiltForm = isAttachedOrStrataType(item.type) === isAttachedOrStrataType(selectedType);
+      if (item.type !== selectedType && !compatibleBuiltForm) return null;
+      return {
+        item,
+        score: item.type === selectedType ? 3 : 1
+      };
+    })
+    .filter(Boolean)
     .sort((a, b) => b.score - a.score);
 
-  if (!matches.length) return null;
-  return matches[0].item;
-}
+  if (!candidates.length) return null;
 
-function parseComparablePrice(value) {
-  const matches = String(value || "").matchAll(/\$?\s*(\d+(?:\.\d+)?)\s*(m|k)?/gi);
-  const amounts = [...matches].map((match) => {
-    const number = Number(match[1]);
-    const unit = match[2]?.toLowerCase();
-    if (unit === "m") return number * 1000000;
-    if (unit === "k") return number * 1000;
-    return number;
-  }).filter((amount) => Number.isFinite(amount) && amount > 0);
-  if (!amounts.length) return null;
-  return amounts.reduce((sum, amount) => sum + amount, 0) / amounts.length;
+  const base = candidates[0].item;
+  const propertyType = selectedType || base.type;
+
+  return {
+    ...base,
+    ...buildComparableDrivenEstimate(base.comparables, "Low"),
+    address: inferredAddress,
+    addressZh: inferredAddress,
+    propertyState: selectedState || stateFromAddress(inferredAddress),
+    propertySuburb: suburbLabel,
+    type: propertyType,
+    confidence: "Low",
+    status: "Low",
+    reasons: [
+      `${inferredAddress} does not yet have direct same-address or same-suburb evidence attached, so the model expands to the nearest available same-type comparable pool.`,
+      `The estimate is calculated from nearby ${propertyType.toLowerCase()} evidence as a preliminary valuation, with lower confidence until closer sales are collected.`,
+      "Google Maps, current title, building form, photos and recent same-type sales inside the closest practical radius should be checked to tighten the result.",
+      ...base.reasons.slice(0, 2)
+    ],
+    reasonsZh: [
+      `${inferredAddress} 目前还没有同地址或同 suburb 的直接证据，因此模型会扩大到最近可用的同类型 comparable 池。`,
+      `本估值根据附近 ${propertyType} 证据计算初步估值；在收集到更近成交前，置信度会降低。`,
+      "应继续核对 Google Maps、当前 title、建筑形态、照片，以及最近可行半径内的同类型成交，以收窄结果。",
+      ...base.reasonsZh.slice(0, 2)
+    ],
+    builtFormVerification: {
+      status: "nearby-type-inferred",
+      summary: `${inferredAddress} is valued from the nearest available same-type comparable pool until closer evidence is collected.`,
+      summaryZh: `${inferredAddress} 在收集到更近证据前，先用最近可用的同类型 comparable 池估值。`,
+      currentForm: propertyType,
+      currentFormZh: propertyType,
+      legacyRisk: "Nearby same-type evidence can differ materially from the subject address by suburb, school zone, street quality, building age, strata plan and condition.",
+      legacyRiskZh: "附近同类型证据可能因 suburb、校区、街道质量、楼龄、strata plan 和房况与目标地址明显不同。",
+      action: "Verify the address on Google Maps, then keep expanding or tightening the comparable radius until enough same-type sales support the estimate.",
+      actionZh: "先用 Google Maps 核验地址，再按半径扩大或收紧 comparable 搜索，直到有足够同类型成交支撑估值。"
+    },
+    map: {
+      ...base.map,
+      target: getAddressSignature(inferredAddress).streetNumber || "Subject"
+    }
+  };
 }
 
 function formatMoney(amount) {
@@ -998,322 +1039,6 @@ function inferPropertyTypeFromAddress(address, directAddressMatch = null, select
   if (selectedType && selectedType !== "House") return selectedType;
   return "House";
 }
-
-function createInferredSameComplexValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
-  const inputSignature = getAddressSignature(address);
-  if (!inputSignature.hasUnitSignal || !inputSignature.streetName || !inputSignature.streetNumber) return null;
-  const targetSuburb = (enteredSuburb || suburbFromAddress(address)).toLowerCase();
-
-  // valuations 已清空（Codex: non-real-time fallback removed）
-  // 所有估值仅来自 API /api/valuation
-  const hasRelatedParentRecord = false;
-
-  let candidates = valuations
-    .map((item) => {
-      if (!isAttachedOrStrataType(item.type)) return null;
-      const hasSameComplexAlias = item.aliases.some((alias) => {
-        const aliasSignature = getAddressSignature(alias);
-        return (
-          aliasSignature.streetName === inputSignature.streetName &&
-          aliasSignature.streetNumber === inputSignature.streetNumber
-        );
-      });
-      if (!hasSameComplexAlias) return null;
-      return {
-        item,
-        score: item.type === selectedType ? 2 : 1,
-        inferenceKind: "same-complex"
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => b.score - a.score);
-
-  if (!candidates.length && hasRelatedParentRecord) {
-    candidates = valuations
-      .map((item) => {
-        if (!isAttachedOrStrataType(item.type)) return null;
-        const itemSuburb = suburbFromAddress(item.address).toLowerCase();
-        if (targetSuburb && itemSuburb !== targetSuburb) return null;
-        const hasSameStreetAlias = item.aliases.some((alias) => {
-          const aliasSignature = getAddressSignature(alias);
-          return aliasSignature.streetName === inputSignature.streetName;
-        });
-        if (!hasSameStreetAlias) return null;
-        return {
-          item,
-          score: item.type === selectedType ? 2 : 1,
-          inferenceKind: "related-parent-same-street"
-        };
-      })
-      .filter(Boolean)
-      .sort((a, b) => b.score - a.score);
-  }
-
-  if (!candidates.length) return null;
-
-  const selectedCandidate = candidates[0];
-  const base = selectedCandidate.item;
-  const usesRelatedParentSameStreet = selectedCandidate.inferenceKind === "related-parent-same-street";
-  const propertyType = selectedType || base.type;
-  const confidence = usesRelatedParentSameStreet ? "Low" : "Low-Medium";
-  const unitLabel = inputSignature.unitNumber ? `Unit ${inputSignature.unitNumber}` : propertyType;
-  const streetLabel = `${inputSignature.streetNumber} ${inputSignature.streetName.replace(/\b\w/g, (letter) => letter.toUpperCase())}`;
-  const inferredAddress = address || `${unitLabel}, ${streetLabel}`;
-
-  return {
-    ...base,
-    ...buildComparableDrivenEstimate(base.comparables, confidence),
-    address: inferredAddress,
-    addressZh: inferredAddress,
-    propertyState: selectedState || stateFromAddress(inferredAddress),
-    propertySuburb: enteredSuburb || suburbFromAddress(inferredAddress),
-    type: propertyType,
-    confidence,
-    status: confidence,
-    reasons: usesRelatedParentSameStreet
-      ? [
-          `${unitLabel} at ${streetLabel} was recognised from a related parent-address note, but same-unit evidence has not been provided yet.`,
-          `The estimate is calculated from same-street ${base.type.toLowerCase()} comparable prices as a rough intake guide, not as a same-complex or same-unit result.`,
-          "Title, plan of subdivision, unit entitlement, current photos, owners corporation details and same-unit sales must be checked before relying on the final number.",
-          ...base.reasons.slice(0, 2)
-        ]
-      : [
-          `${unitLabel} at ${streetLabel} was recognised as an attached/strata address, but same-unit evidence has not been provided yet.`,
-          `The estimate is calculated from same-complex or same-street ${base.type.toLowerCase()} comparable prices as an initial guide, not as a same-unit result.`,
-          "Title plan, plan of subdivision, unit entitlement, current photos and car space position should be checked before relying on the final number.",
-          ...base.reasons.slice(0, 2)
-        ],
-    reasonsZh: usesRelatedParentSameStreet
-      ? [
-          `系统从母门牌关联备注中识别出 ${streetLabel} 的 ${unitLabel}，但目前还没有同一 unit 的直接证据。`,
-          `本估值根据同街 ${base.type} 可比成交价格计算粗略入口区间，不把它当成同项目或同 unit 结果。`,
-          "最终使用前必须复核 title、subdivision plan、unit entitlement、当前照片、业主委员会资料和同 unit 成交。",
-          ...base.reasonsZh.slice(0, 2)
-        ]
-      : [
-          `系统已识别 ${streetLabel} 的 ${unitLabel} 为 attached / strata 地址，但目前还没有同一 unit 的直接证据。`,
-          `本估值根据同项目或同街 ${base.type} 可比成交价格计算初步区间，不把它当成同 unit 结果。`,
-          "最终使用前应复核产权图、subdivision plan、unit entitlement、当前照片和车位位置。",
-          ...base.reasonsZh.slice(0, 2)
-        ],
-    builtFormVerification: {
-      status: "same-complex-inferred",
-      summary: usesRelatedParentSameStreet
-        ? `${unitLabel} is treated as a related parent-address intake record. Same-unit evidence is required before upgrading confidence.`
-        : `${unitLabel} is treated as a same-complex inferred record. Same-unit evidence is required before upgrading confidence.`,
-      summaryZh: usesRelatedParentSameStreet
-        ? `${unitLabel} 按母门牌关联入口记录处理。需要同 unit 证据后才能提高置信度。`
-        : `${unitLabel} 按同项目推断记录处理。需要同 unit 证据后才能提高置信度。`,
-      currentForm: `${unitLabel} / ${propertyType}`,
-      currentFormZh: `${unitLabel} / ${propertyType}`,
-      legacyRisk: "Portal records can mix the original dwelling, another unit in the same complex, or the parent street address.",
-      legacyRiskZh: "公开网站记录可能混合原始独立屋、同项目其他 unit 或母门牌地址。",
-      action: "Use the current unit title, plan of subdivision, owner corporation details, photos and same-unit sales if available.",
-      actionZh: "优先使用当前 unit 的 title、subdivision plan、业主委员会资料、照片和同 unit 成交。"
-    },
-    map: {
-      ...base.map,
-      target: inputSignature.unitNumber ? `${inputSignature.unitNumber}/${inputSignature.streetNumber}` : inputSignature.streetNumber
-    }
-  };
-}
-
-function createInferredSameStreetValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
-  const inputSignature = getAddressSignature(address);
-  if (inputSignature.hasUnitSignal || !inputSignature.streetName || !inputSignature.streetNumber) return null;
-  const targetSuburb = (enteredSuburb || suburbFromAddress(address)).toLowerCase();
-
-  const candidates = valuations
-    .map((item) => {
-      const itemSuburb = suburbFromAddress(item.address).toLowerCase();
-      if (targetSuburb && itemSuburb !== targetSuburb) return null;
-      const hasSameStreetAlias = item.aliases.some((alias) => {
-        const aliasSignature = getAddressSignature(alias);
-        return aliasSignature.streetName === inputSignature.streetName;
-      });
-      if (!hasSameStreetAlias) return null;
-      return {
-        item,
-        score: item.type === selectedType ? 3 : isAttachedOrStrataType(item.type) === isAttachedOrStrataType(selectedType) ? 2 : 1
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => b.score - a.score);
-
-  if (!candidates.length) return null;
-
-  const base = candidates[0].item;
-  const propertyType = selectedType || base.type;
-  const streetLabel = `${inputSignature.streetNumber} ${inputSignature.streetName.replace(/\b\w/g, (letter) => letter.toUpperCase())}`;
-  const inferredAddress = address || streetLabel;
-
-  return {
-    ...base,
-    ...buildComparableDrivenEstimate(base.comparables, "Low"),
-    address: inferredAddress,
-    addressZh: inferredAddress,
-    propertyState: selectedState || stateFromAddress(inferredAddress),
-    propertySuburb: enteredSuburb || suburbFromAddress(inferredAddress),
-    type: propertyType,
-    confidence: "Low",
-    status: "Low",
-    reasons: [
-      `${streetLabel} is on a recognised street, but same-address evidence has not been provided yet.`,
-      `The estimate is calculated from same-street ${base.type.toLowerCase()} comparable prices as a rough intake guide, not as a same-address result.`,
-      "Title, land size, building form, current condition, photos and recent same-address or same-type sales must be checked before relying on the final number.",
-      ...base.reasons.slice(0, 2)
-    ],
-    reasonsZh: [
-      `${streetLabel} 位于已识别街道，但目前还没有同地址直接证据。`,
-      `本估值根据同街 ${base.type} 可比成交价格计算粗略入口区间，不把它当成同地址结果。`,
-      "最终使用前必须复核 title、土地面积、建筑形态、当前房况、照片和近期同地址或同类型成交。",
-      ...base.reasonsZh.slice(0, 2)
-    ],
-    builtFormVerification: {
-      status: "same-street-inferred",
-      summary: `${streetLabel} is treated as a same-street intake record. Same-address evidence is required before upgrading confidence.`,
-      summaryZh: `${streetLabel} 按同街入口记录处理。需要同地址证据后才能提高置信度。`,
-      currentForm: propertyType,
-      currentFormZh: propertyType,
-      legacyRisk: "Same-street evidence can differ materially by land size, dwelling form, condition and title structure.",
-      legacyRiskZh: "同街证据会因土地面积、建筑形态、房况和产权结构不同而明显变化。",
-      action: "Use current title, land details, photos, planning information and same-type sales for the final review.",
-      actionZh: "最终复核应使用当前 title、土地资料、照片、规划信息和同类型成交。"
-    },
-    map: {
-      ...base.map,
-      target: inputSignature.streetNumber
-    }
-  };
-}
-
-function createInferredSuburbValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
-  const inferredAddress = String(address || "").trim();
-  const targetSuburb = (enteredSuburb || suburbFromAddress(inferredAddress)).toLowerCase();
-  if (!inferredAddress || !targetSuburb || selectedType === "Commercial") return null;
-
-  const candidates = valuations
-    .map((item) => {
-      const itemSuburb = suburbFromAddress(item.address).toLowerCase();
-      if (itemSuburb !== targetSuburb) return null;
-      return {
-        item,
-        score: item.type === selectedType ? 3 : isAttachedOrStrataType(item.type) === isAttachedOrStrataType(selectedType) ? 2 : 1
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => b.score - a.score);
-
-  if (!candidates.length) return null;
-
-  const base = candidates[0].item;
-  const propertyType = selectedType || base.type;
-  const suburbLabel = enteredSuburb || suburbFromAddress(inferredAddress);
-
-  return {
-    ...base,
-    ...buildComparableDrivenEstimate(base.comparables, "Low"),
-    address: inferredAddress,
-    addressZh: inferredAddress,
-    propertyState: selectedState || stateFromAddress(inferredAddress),
-    propertySuburb: suburbLabel,
-    type: propertyType,
-    confidence: "Low",
-    status: "Low",
-    reasons: [
-      `${inferredAddress} does not yet have same-address or same-street evidence, so this is a suburb-level preliminary estimate.`,
-      `The estimate uses collected ${suburbLabel} ${base.type.toLowerCase()} evidence as a preliminary price anchor, not as an address-level match.`,
-      "Current title, land size, dwelling form, condition, photos, planning controls and recent same-type sales are required before relying on the final number.",
-      ...base.reasons.slice(0, 2)
-    ],
-    reasonsZh: [
-      `${inferredAddress} 目前没有同地址或同街直接证据，因此这是区域级别的初步估值。`,
-      `本估值使用已收集的 ${suburbLabel} ${base.type} 证据作为初步价格锚点，不把它当成地址级匹配。`,
-      "最终使用前必须复核当前 title、土地面积、建筑形态、房况、照片、规划限制和近期同类型成交。",
-      ...base.reasonsZh.slice(0, 2)
-    ],
-    builtFormVerification: {
-      status: "suburb-inferred",
-      summary: `${inferredAddress} is treated as a suburb-level preliminary valuation. Address-level evidence is required before upgrading confidence.`,
-      summaryZh: `${inferredAddress} 按区域级初步估值处理。需要地址级证据后才能提高置信度。`,
-      currentForm: propertyType,
-      currentFormZh: propertyType,
-      legacyRisk: "Suburb-level evidence can differ materially from the subject address by street quality, land size, title, building form and condition.",
-      legacyRiskZh: "区域级证据可能因街道质量、土地面积、产权、建筑形态和房况与目标地址明显不同。",
-      action: "Use current title, property details, photos, planning information and recent same-type sales for the final review.",
-      actionZh: "最终复核应使用当前 title、物业资料、照片、规划信息和近期同类型成交。"
-    },
-    map: {
-      ...base.map,
-      target: getAddressSignature(inferredAddress).streetNumber || "Subject"
-    }
-  };
-}
-
-function createInferredNearbyTypeValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
-  const inferredAddress = String(address || "").trim();
-  const suburbLabel = enteredSuburb || suburbFromAddress(inferredAddress);
-  if (!inferredAddress || selectedType === "Commercial") return null;
-
-  const candidates = valuations
-    .map((item) => {
-      if (selectedType === "Vacant land" && item.type !== "Vacant land") return null;
-      if (selectedType !== "Vacant land" && item.type === "Vacant land") return null;
-      const compatibleBuiltForm = isAttachedOrStrataType(item.type) === isAttachedOrStrataType(selectedType);
-      if (item.type !== selectedType && !compatibleBuiltForm) return null;
-      return {
-        item,
-        score: item.type === selectedType ? 3 : 1
-      };
-    })
-    .filter(Boolean)
-    .sort((a, b) => b.score - a.score);
-
-  if (!candidates.length) return null;
-
-  const base = candidates[0].item;
-  const propertyType = selectedType || base.type;
-
-  return {
-    ...base,
-    ...buildComparableDrivenEstimate(base.comparables, "Low"),
-    address: inferredAddress,
-    addressZh: inferredAddress,
-    propertyState: selectedState || stateFromAddress(inferredAddress),
-    propertySuburb: suburbLabel,
-    type: propertyType,
-    confidence: "Low",
-    status: "Low",
-    reasons: [
-      `${inferredAddress} does not yet have direct same-address or same-suburb evidence attached, so the model expands to the nearest available same-type comparable pool.`,
-      `The estimate is calculated from nearby ${propertyType.toLowerCase()} evidence as a preliminary valuation, with lower confidence until closer sales are collected.`,
-      "Google Maps, current title, building form, photos and recent same-type sales inside the closest practical radius should be checked to tighten the result.",
-      ...base.reasons.slice(0, 2)
-    ],
-    reasonsZh: [
-      `${inferredAddress} 目前还没有同地址或同 suburb 的直接证据，因此模型会扩大到最近可用的同类型 comparable 池。`,
-      `本估值根据附近 ${propertyType} 证据计算初步估值；在收集到更近成交前，置信度会降低。`,
-      "应继续核对 Google Maps、当前 title、建筑形态、照片，以及最近可行半径内的同类型成交，以收窄结果。",
-      ...base.reasonsZh.slice(0, 2)
-    ],
-    builtFormVerification: {
-      status: "nearby-type-inferred",
-      summary: `${inferredAddress} is valued from the nearest available same-type comparable pool until closer evidence is collected.`,
-      summaryZh: `${inferredAddress} 在收集到更近证据前，先用最近可用的同类型 comparable 池估值。`,
-      currentForm: propertyType,
-      currentFormZh: propertyType,
-      legacyRisk: "Nearby same-type evidence can differ materially from the subject address by suburb, school zone, street quality, building age, strata plan and condition.",
-      legacyRiskZh: "附近同类型证据可能因 suburb、校区、街道质量、楼龄、strata plan 和房况与目标地址明显不同。",
-      action: "Verify the address on Google Maps, then keep expanding or tightening the comparable radius until enough same-type sales support the estimate.",
-      actionZh: "先用 Google Maps 核验地址，再按半径扩大或收紧 comparable 搜索，直到有足够同类型成交支撑估值。"
-    },
-    map: {
-      ...base.map,
-      target: getAddressSignature(inferredAddress).streetNumber || "Subject"
-    }
-  };
-}
-
 function createUnavailableValuation(address, inferredType = "House", selectedState = "", enteredSuburb = "") {
   return {
     ...valuations[0],
@@ -1450,23 +1175,8 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
     };
   } catch (error) {
     console.warn("Live valuation unavailable:", error.message);
-    // ── 降级回退时标记 curated_fixture ──
-    const tagFallback = (v) => {
-      if (v && typeof v === "object") {
-        v.evidenceMode = "curated_fixture";
-        v.isFallback = true;
-      }
-      return v;
-    };
-    const directMatch = findValuation(address);
-    if (directMatch) return tagFallback(applyComparableSalesModel(directMatch, directMatch.confidence));
-    return tagFallback(
-      createInferredSameComplexValuation(address, inferredType, resolvedState, normalizedSuburb) ||
-      createInferredSameStreetValuation(address, inferredType, resolvedState, normalizedSuburb) ||
-      createInferredSuburbValuation(address, inferredType, resolvedState, normalizedSuburb) ||
-      createInferredNearbyTypeValuation(address, inferredType, resolvedState, normalizedSuburb) ||
-      createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb)
-    );
+    // ── 回退链已移除 — 只返回 unavailable ──
+    return createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb);
   }
 }
 
