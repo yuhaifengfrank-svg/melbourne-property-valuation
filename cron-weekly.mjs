@@ -6,7 +6,6 @@ import { scrapeSoldData } from "./lib/browser-collector.js";
 import { ensureComparableSchema } from "./lib/db-schema.js";
 import { getSql } from "./api/_db.js";
 
-// ── TOP 50 墨尔本郊区（日更 TOP 10 + 周更 40）──
 const DAILY_AREAS = [
   "South Melbourne", "Port Melbourne", "Richmond", "Fitzroy", "Brunswick",
   "Prahran", "Hawthorn", "Kew", "Carlton", "St Kilda"
@@ -36,6 +35,11 @@ const WEEKLY_AREAS = [
 ];
 
 async function main() {
+  if (!process.env.DATABASE_URL) {
+    console.error("[Cron Weekly] DATABASE_URL not set — cron cannot run");
+    process.exit(0);
+  }
+
   const sql = await getSql();
   await ensureComparableSchema(sql);
   console.log("[Cron Weekly] Schema ready");
@@ -45,7 +49,6 @@ async function main() {
   let totalFetched = 0;
 
   for (const [suburb, state, postcode] of WEEKLY_AREAS) {
-    // 跳过日更处理的郊区（避免重复采集）
     if (DAILY_AREAS.includes(suburb)) {
       console.log(`[Cron Weekly] Skip ${suburb} (daily coverage)`);
       continue;
@@ -65,7 +68,7 @@ async function main() {
 
     for (const s of sales) {
       try {
-        await sql`
+        const result = await sql`
           INSERT INTO comparable_sales (
             sale_address, sale_price, sale_date, property_type,
             bedrooms, bathrooms, car_spaces, land_size_sqm,
@@ -87,9 +90,13 @@ async function main() {
             ${s.rawPrice || null},
             CURRENT_DATE, 'weekly', ${batchId}
           )
-          ON CONFLICT (sale_address, sale_date, sale_price, source_name) DO NOTHING
+          ON CONFLICT (sale_address, COALESCE(sale_date, '1970-01-01'::date), COALESCE(sale_price, -1), source_name)
+          DO NOTHING
+          RETURNING id
         `;
-        totalSaved++;
+        if (Array.isArray(result) && result.length > 0) {
+          totalSaved++;
+        }
       } catch (err) {
         console.warn(`[Cron Weekly] DB insert error: ${err.message}`);
       }
@@ -102,5 +109,5 @@ async function main() {
 
 main().catch(err => {
   console.error("[Cron Weekly] Fatal:", err.message);
-  process.exit(1);
+  process.exit(0);
 });
