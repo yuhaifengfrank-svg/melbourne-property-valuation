@@ -161,14 +161,18 @@ describe("P1: 地址州冲突", () => {
 
 describe("P1: Cron 隔离", () => {
   it("cron-daily: 无 DB 时干净退出码 0", async () => {
-    const { execSync } = await import("node:child_process");
-    const output = execSync("node cron-daily.mjs 2>&1 || true", { encoding: "utf8" }).trim();
-    assert.ok(output.includes("DATABASE_URL not set") || output.includes("Cannot find module"), `cron output: ${output}`);
+    const { spawnSync } = await import("node:child_process");
+    const result = spawnSync("node", ["cron-daily.mjs"], { encoding: "utf8" });
+    assert.equal(result.status, 0, `expected exit 0, got ${result.status}`);
+    const output = (result.stdout || "") + "\n" + (result.stderr || "");
+    assert.ok(output.includes("DATABASE_URL not set"), `output: ${output.slice(0, 200)}`);
   });
 
   it("cron-weekly: 无 DB 时干净退出码 0", async () => {
-    const { execSync } = await import("node:child_process");
-    const output = execSync("node cron-weekly.mjs 2>&1 || true", { encoding: "utf8" }).trim();
-    assert.ok(output.includes("DATABASE_URL not set") || output.includes("Cannot find module"), `cron output: ${output}`);
+    const { spawnSync } = await import("node:child_process");
+    const result = spawnSync("node", ["cron-weekly.mjs"], { encoding: "utf8" });
+    assert.equal(result.status, 0, `expected exit 0, got ${result.status}`);
+    const output = (result.stdout || "") + "\n" + (result.stderr || "");
+    assert.ok(output.includes("DATABASE_URL not set"), `output: ${output.slice(0, 200)}`);
   });
 });

@@ -104,5 +104,5 @@ async function main() {
 
 main().catch(err => {
   console.error("[Cron Daily] Fatal:", err.message);
-  process.exit(0); // 脚本问题而非测试失败，不报非零
+  process.exit(1); // 真实错误必须报非零
 });
