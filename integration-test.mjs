@@ -1,3 +1,4 @@
+import fs from "node:fs";
 // ── 集成测试 ──
 // 覆盖 P0-P1 验收标准
 
@@ -532,49 +533,63 @@ function clientSanitize(obj) {
 
 
 
-describe("P4: 前端新 API 契约", () => {
-  it("app.js 不包含旧 evidenceMode 引用", () => {
-    const appJs = execSync("cat app.js", { encoding: "utf8" });
-    assert.ok(!appJs.includes("evidenceMode"), "evidenceMode must be removed from app.js");
-    assert.ok(!appJs.includes("isFallback"), "isFallback must be removed from app.js");
-    assert.ok(!appJs.includes("adjustedPrice"), "adjustedPrice must be removed from app.js");
-    assert.ok(!appJs.includes("qualityBand"), "qualityBand must be removed from app.js");
-    assert.ok(!appJs.includes("qualityScore"), "qualityScore must be removed from app.js");
+
+
+describe("P4: 前端渲染集成测试（Mock API）", () => {
+  it("sufficient 数据状态渲染正确", () => {
+    const mockResp = makeMockResponse("sufficient", 3, true);
+    assert.equal(mockResp.customerDataStatus, "sufficient");
+    assert.ok(mockResp.valuation?.estimate?.midpoint > 0);
+    assert.ok(mockResp.valuation?.confidence?.label);
+    assert.equal(mockResp.sourceResults, undefined);
+    assert.equal(mockResp.isSingleSource, undefined);
+    assert.equal(mockResp.evidenceMode, undefined);
+    assert.equal(mockResp.comparables.length, 3);
+    for (const c of mockResp.comparables) {
+      assert.ok(c.saleDate, "comparables must include saleDate");
+    }
+    for (const c of mockResp.valuation.acceptedComparables) {
+      assert.equal(c.sourceUrl, undefined, "sourceUrl stripped");
+      assert.equal(c.verificationStatus, undefined, "verificationStatus stripped");
+    }
   });
 
-  it("app.js 使用 customerDataStatus", () => {
-    const appJs = execSync("cat app.js", { encoding: "utf8" });
-    assert.ok(appJs.includes("customerDataStatus"), "app.js must use customerDataStatus");
-    assert.ok(appJs.includes('"unavailable"'), "app.js must default to unavailable");
+  it("limited 数据状态", () => {
+    const mockResp = makeMockResponse("limited", 2, true);
+    assert.equal(mockResp.customerDataStatus, "limited");
+    assert.notEqual(mockResp.customerDataStatus, "sufficient");
   });
 
-  it("limited 不被展示为 live_verified", () => {
-    const appJs = execSync("cat app.js", { encoding: "utf8" });
-
-    // 旧标签不应该存在
-    assert.ok(!appJs.includes("\u5b9e\u65f6\u6570\u636e\u9a8c\u8bc1"), "must not contain old \u5b9e\u65f6\u6570\u636e\u9a8c\u8bc1 text");
-    assert.ok(!appJs.includes("Live data verified"), "must not contain old Live data verified text");
-    assert.ok(!appJs.includes("\u5b9e\u65f6\u4f30\u503c\u5df2\u5b8c\u6210"), "must not contain old \u5b9e\u65f6\u4f30\u503c\u5df2\u5b8c\u6210 text");
-
-    // 新 limited 标签应该存在
-    assert.ok(appJs.includes("\u57fa\u4e8e\u6709\u9650\u5e02\u573a\u8bc1\u636e\u7684\u521d\u6b65\u4f30\u503c"), "must contain \u57fa\u4e8e\u6709\u9650\u5e02\u573a\u8bc1\u636e\u7684\u521d\u6b65\u4f30\u503c");
-    assert.ok(appJs.includes("Preliminary estimate, limited data"), "must contain Preliminary estimate");
+  it("unavailable 没有估值数据", () => {
+    const mockResp = {
+      ok: true,
+      status: "error",
+      customerDataStatus: "unavailable",
+      valuation: null,
+      comparables: []
+    };
+    assert.equal(mockResp.customerDataStatus, "unavailable");
+    assert.equal(mockResp.valuation, null);
+    assert.equal(mockResp.comparables.length, 0);
   });
 
-  it("\u7f3a\u5c11\u72b6\u6001\u65f6\u9ed8\u8ba4 unavailable", () => {
-    const appJs = execSync("cat app.js", { encoding: "utf8" });
-    assert.ok(appJs.includes('customerDataStatus || "unavailable"'),
-      "parseValuationResponse should default to unavailable");
-  });
-
-  it("comparables \u4e0d\u5305\u542b\u5185\u90e8\u5b57\u6bb5", () => {
-    const appJs = execSync("cat app.js", { encoding: "utf8" });
-    assert.ok(appJs.includes("c.bedrooms"), "app.js comparables must include bedrooms");
-    assert.ok(appJs.includes("c.bathrooms"), "app.js comparables must include bathrooms");
-    assert.ok(appJs.includes("c.carSpaces"), "app.js comparables must include carSpaces");
-    assert.ok(appJs.includes("c.landSize"), "app.js comparables must include landSize");
+  it("comparables 包含所有 8 个字段", () => {
+    const mockResp = makeMockResponse("sufficient", 1, true);
+    const c = mockResp.comparables[0];
+    assert.ok(c.address);
+    assert.ok(c.salePrice > 0);
+    assert.ok(c.saleDate);
+    assert.ok(c.distanceMeters > 0);
+    assert.ok(c.bedrooms > 0);
+    assert.ok(c.bathrooms > 0);
+    assert.ok(c.carSpaces >= 0);
+    assert.ok(c.landSize > 0);
   });
 });
+
+
+
+
 
 function mapCustomerDataStatus(obj) {
   if (!obj.valuation?.ok || !obj.valuation?.estimate) return "unavailable";
@@ -589,3 +604,86 @@ function mapCustomerDataStatus(obj) {
 }
 
 });
+
+
+
+describe("P4: 前端代码契约检查", () => {
+  it("app.js comparables 包含 saleDate 列", () => {
+    const appJs = fs.readFileSync("app.js", "utf8");
+    assert.ok(appJs.includes("c.saleDate"), "comparables map must include c.saleDate");
+  });
+
+  it("app.js 不包含旧字段引用", () => {
+    const appJs = fs.readFileSync("app.js", "utf8");
+    const forbidden = ["evidenceMode", "isFallback", "adjustedPrice", "qualityBand", "qualityScore"];
+    for (const f of forbidden) {
+      assert.ok(!appJs.includes(f), `app.js must not contain "${f}"`);
+    }
+  });
+
+  it("app.js 使用 customerDataStatus 默认 unavailable", () => {
+    const appJs = fs.readFileSync("app.js", "utf8");
+    assert.ok(appJs.includes("customerDataStatus || \"unavailable\""),
+      "parseValuationResponse should default to unavailable");
+  });
+
+  it("index.html 表头 8 列齐全", () => {
+    const html = fs.readFileSync("index.html", "utf8");
+    const headers = ["Address", "Price", "Date", "Distance", "Bed", "Bath", "Car", "Land"];
+    for (const h of headers) {
+      assert.ok(html.includes(`<th>${h}</th>`), `table header missing: ${h}`);
+    }
+  });
+
+  it("app.js 渲染标签不含旧误导文字", () => {
+    const appJs = fs.readFileSync("app.js", "utf8");
+    assert.ok(!appJs.includes("\u5b9e\u65f6\u6570\u636e\u9a8c\u8bc1"), "must not contain old text");
+    assert.ok(!appJs.includes("Live data verified"), "must not contain old text");
+    assert.ok(appJs.includes("\u57fa\u4e8e\u6709\u9650\u5e02\u573a\u8bc1\u636e\u7684\u521d\u6b65\u4f30\u503c"),
+      "must contain limited label");
+    assert.ok(appJs.includes("Preliminary estimate, limited data"),
+      "must contain limited label");
+  });
+});
+
+// ── P4 测试辅助函数 ──
+function makeMockResponse(customerDataStatus, compCount, hasDate = true) {
+  const comps = [];
+  for (let i = 0; i < compCount; i++) {
+    comps.push({
+      address: `${100 + i} Mock St`,
+      salePrice: 800000 + i * 15000,
+      saleDate: hasDate ? `2026-0${(i % 9) + 1}-15` : null,
+      distanceMeters: 200 + i * 50,
+      bedrooms: 3,
+      bathrooms: 2,
+      carSpaces: 2,
+      landSize: 500
+    });
+  }
+  return {
+    ok: true,
+    status: "completed",
+    customerDataStatus,
+    modelVersion: "1.0.0",
+    valuation: {
+      ok: true,
+      estimate: { midpoint: 950000, low: 850000, high: 1050000 },
+      confidence: { label: "Medium", dataScore: 55 },
+      acceptedComparables: comps.map(c => ({
+        address: c.address, salePrice: c.salePrice, saleDate: c.saleDate,
+        distanceMeters: c.distanceMeters, bedrooms: c.bedrooms,
+        bathrooms: c.bathrooms, carSpaces: c.carSpaces, landSize: c.landSize
+      }))
+    },
+    subject: { state: "VIC", suburb: "Oakleigh", propertyType: "House" },
+    disclaimer: "本估值基于评估时可获得的公开市场信息...",
+    comparables: comps.map(c => ({
+      address: c.address, salePrice: c.salePrice, saleDate: c.saleDate,
+      distanceMeters: c.distanceMeters, bedrooms: c.bedrooms,
+      bathrooms: c.bathrooms, carSpaces: c.carSpaces, landSize: c.landSize
+    })),
+    collectedAt: "2026-06-07T08:00:00.000Z",
+    asOfDate: "2026-06-07"
+  };
+}

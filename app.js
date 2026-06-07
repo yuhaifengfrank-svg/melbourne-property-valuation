@@ -1148,6 +1148,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
       comparables: acc.map(c => [
         c.address || "",
         c.salePrice ? `$${c.salePrice.toLocaleString()}` : "",
+        c.saleDate || "",
         c.distanceMeters ? `${c.distanceMeters}m` : "",
         c.bedrooms != null ? `${c.bedrooms} 房` : "",
         c.bathrooms != null ? `${c.bathrooms} 卫` : "",
@@ -1166,46 +1167,6 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
       evidenceSummaryZh: ""
     };
 
-    // 映射失败的情况分配默认原因
-    if (!conf.reasons || conf.reasons.length === 0) {
-      data.reasons = [language === "zh" ? "估值已生成" : "Valuation generated"];
-      data.reasonsZh = [language === "zh" ? "估值已生成" : "Valuation generated"];
-    }
-    return {
-      address,
-      addressZh: address,
-      propertyState: result.subject?.state || resolvedState,
-      propertySuburb: result.subject?.suburb || normalizedSuburb,
-      type: result.subject?.propertyType || inferredType,
-      value: `$$${(est.low / 1000000).toFixed(3)}m - $$${(est.high / 1000000).toFixed(3)}m`,
-      midpoint: `$$${(est.midpoint / 1000000).toFixed(3)}m`,
-      midpointValue: est.midpoint,
-      confidence: conf.label || "Low",
-      confidenceZh: conf.label || "低",
-      status: conf.label || "Low",
-      statusZh: conf.label || "低",
-      customerDataStatus: customerDataStatus,
-      modelVersion: result.modelVersion || "",
-      comparables: acc.map(c => [
-        c.address || "",
-        c.salePrice ? `$$${c.salePrice.toLocaleString()}` : "",
-        c.distanceMeters ? `${c.distanceMeters}m` : "",
-        c.bedrooms != null ? `${c.bedrooms} 房` : "",
-        c.bathrooms != null ? `${c.bathrooms} 卫` : "",
-        c.carSpaces != null ? `${c.carSpaces} 车位` : "",
-        c.landSize ? `${c.landSize}m²` : ""
-      ]),
-      reasons: [language === "zh" ? "估值已生成" : "Valuation generated"],
-      reasonsZh: [language === "zh" ? "估值已生成" : "Valuation generated"],
-      location: emptyValuation.location,
-      planning: emptyValuation.planning,
-      suburb: [],
-      modelNotes: [],
-      map: {},
-      mapZh: {},
-      evidenceSummary: "",
-      evidenceSummaryZh: ""
-    };
   } catch (error) {
     console.warn("Live valuation unavailable:", error.message);
     return createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb);
@@ -1459,7 +1420,7 @@ function renderComparables(rows) {
     const tr = document.createElement("tr");
     row.forEach((cell, index) => {
       const td = document.createElement("td");
-      if (index === 2) {
+      if (index === 3) {
         // 距离列 — pill 样式
         const pill = document.createElement("span");
         pill.className = "pill";
