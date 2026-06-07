@@ -245,12 +245,12 @@ function explicitStateFromAddress(address) {
 
 function buildEnteredAddress() {
   const streetAddress = byId("address").value.trim();
-  const addressSuburb = suburbFromAddress(streetAddress);
   const enteredSuburb = getEnteredSuburb();
   const addressState = explicitStateFromAddress(streetAddress);
   const state = addressState || getSelectedState();
   const parts = [streetAddress];
-  if (!addressSuburb && enteredSuburb) parts.push(enteredSuburb);
+  // 只要用户选择了 suburb，就补上（即使 inline 解析出来了也补，防缩写不匹配）
+  if (enteredSuburb) parts.push(enteredSuburb);
   if (!addressState && state) parts.push(state);
   return parts.filter(Boolean).join(", ");
 }
@@ -261,7 +261,7 @@ function suburbFromAddress(address) {
   if (parts.length > 1) return parts[parts.length - 1];
   const normalized = normalizeAddress(cleaned);
   const inlineSuburbMatch = normalized.match(
-    /^(?:unit\s+\d+\s+)?(?:\d+\s*\/\s*)?\d+\s+.+?\s+(?:street|avenue|road|grove|drive|court|crescent|parade|place|lane)\s+(.+)$/
+    /^(?:unit\s+\d+\s+)?(?:\d+\s*\/\s*)?\d+\s+.+?\s+(?:street|avenue|road|grove|drive|court|crescent|parade|place|lane|pde|rd|st|dr|crt|hwy|tce|wy|bvd|cl|ct|gdn|grn|gr|pkwy|pl|pt|sq|trc)\s+(.+)$/
   );
   if (inlineSuburbMatch?.[1]) {
     return toTitleCase(inlineSuburbMatch[1]);
