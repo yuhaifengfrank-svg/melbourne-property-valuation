@@ -10,8 +10,9 @@
 | 项目 | 值 |
 |------|-----|
 | **分支** | `codex-review`（**未合并** `main`） |
-| **HEAD** | `3ecf7c6` — `fix: address verification — partial on missing fields, effectiveAddress truth` |
-| **Ahead of main** | 8 commits（含本文档） |
+| **HEAD** | `068bbed` — `fixup: ahead-of-main count 7→8 (incl handoff doc itself)` |
+| **Ahead of main** | 9 commits |
+| **Behind main** | 5 commits（main 有更多修复和合并，未同步到 codex-review） |
 | **未提交文件** | 无（working tree clean） |
 | **已推送 remote** | ✅ `origin/codex-review` |
 | **目录** | `/Users/FrankAI/Documents/澳洲房地产评估系统` |
@@ -26,6 +27,8 @@ abed12f fix(ui): address-suburb dedup rules; tests for 5 real scenarios
 351eacf feat: Nominatim 地址核验作为唯一 canonical address 流程
 600d814 fix: P1 address verification fixes
 3ecf7c6 fix: address verification — partial on missing fields, effectiveAddress truth
+9f7828f docs: handoff — OPENCLAW_HANDOFF.md for next agent session
+068bbed fixup: ahead-of-main count 7→8 (incl handoff doc itself)
 ```
 
 ---
@@ -129,7 +132,7 @@ subject.address （= effectiveAddress，单一真理）
 - house number regex 两阶段清洗（处理 unit 3/18, unit 3 / 18, unit 3 18, 3/18） ✅
 - unitPrefix 从 enteredAddress 而非 cleanStreet 提取 ✅
 - `test-address-verification.mjs`（15 场景）+ `test-address-lookup.mjs` 已加入 npm test ✅
-- 21/21 测试全绿 ✅
+- 21/21 测试全绿（address-verification 15 ✅ + address-lookup 5 ✅ + regression ✅） ✅
 
 ---
 
