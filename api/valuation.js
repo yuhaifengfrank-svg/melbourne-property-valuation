@@ -11,6 +11,7 @@ function sanitizeForClient(obj) {
   // 删除内部字段（顶层）
   delete safe.sourceResults;
   delete safe.isSingleSource;
+  delete safe.isFallback;
   delete safe.evidenceMode;
 
   // 替换为客户友好的数据状态
