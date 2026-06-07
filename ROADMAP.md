@@ -50,7 +50,7 @@ dataScore = (countScore + coreBonus + recencyBonus + crossBonus
 - No midpoint/range/confidence adjustment from uploads
 
 ### Tests
-- **28 tests** all green: integration (P0+P1 coverage) + regression (6 property types)
+- **36 tests** all green: integration (P0+P1 coverage) + regression (6 property types)
 
 ---
 
