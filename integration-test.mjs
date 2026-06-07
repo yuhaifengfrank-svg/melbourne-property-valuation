@@ -3,6 +3,7 @@
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
+import { execSync } from "node:child_process";
 import { runValuation } from "./lib/valuation-service.js";
 
 // 模拟 fetch 不可用（Vercel 环境）
@@ -314,7 +315,6 @@ describe("P1: Cron 隔离", () => {
 
 
 
-import { execSync } from "node:child_process";
 
 describe("P2: 核验规则", () => {
   it("两来源日期差≤90天，可 cross_source_verified", () => {
@@ -529,6 +529,52 @@ function clientSanitize(obj) {
   }
   return safe;
 }
+
+
+
+describe("P4: 前端新 API 契约", () => {
+  it("app.js 不包含旧 evidenceMode 引用", () => {
+    const appJs = execSync("cat app.js", { encoding: "utf8" });
+    assert.ok(!appJs.includes("evidenceMode"), "evidenceMode must be removed from app.js");
+    assert.ok(!appJs.includes("isFallback"), "isFallback must be removed from app.js");
+    assert.ok(!appJs.includes("adjustedPrice"), "adjustedPrice must be removed from app.js");
+    assert.ok(!appJs.includes("qualityBand"), "qualityBand must be removed from app.js");
+    assert.ok(!appJs.includes("qualityScore"), "qualityScore must be removed from app.js");
+  });
+
+  it("app.js 使用 customerDataStatus", () => {
+    const appJs = execSync("cat app.js", { encoding: "utf8" });
+    assert.ok(appJs.includes("customerDataStatus"), "app.js must use customerDataStatus");
+    assert.ok(appJs.includes('"unavailable"'), "app.js must default to unavailable");
+  });
+
+  it("limited 不被展示为 live_verified", () => {
+    const appJs = execSync("cat app.js", { encoding: "utf8" });
+
+    // 旧标签不应该存在
+    assert.ok(!appJs.includes("\u5b9e\u65f6\u6570\u636e\u9a8c\u8bc1"), "must not contain old \u5b9e\u65f6\u6570\u636e\u9a8c\u8bc1 text");
+    assert.ok(!appJs.includes("Live data verified"), "must not contain old Live data verified text");
+    assert.ok(!appJs.includes("\u5b9e\u65f6\u4f30\u503c\u5df2\u5b8c\u6210"), "must not contain old \u5b9e\u65f6\u4f30\u503c\u5df2\u5b8c\u6210 text");
+
+    // 新 limited 标签应该存在
+    assert.ok(appJs.includes("\u57fa\u4e8e\u6709\u9650\u5e02\u573a\u8bc1\u636e\u7684\u521d\u6b65\u4f30\u503c"), "must contain \u57fa\u4e8e\u6709\u9650\u5e02\u573a\u8bc1\u636e\u7684\u521d\u6b65\u4f30\u503c");
+    assert.ok(appJs.includes("Preliminary estimate, limited data"), "must contain Preliminary estimate");
+  });
+
+  it("\u7f3a\u5c11\u72b6\u6001\u65f6\u9ed8\u8ba4 unavailable", () => {
+    const appJs = execSync("cat app.js", { encoding: "utf8" });
+    assert.ok(appJs.includes('customerDataStatus || "unavailable"'),
+      "parseValuationResponse should default to unavailable");
+  });
+
+  it("comparables \u4e0d\u5305\u542b\u5185\u90e8\u5b57\u6bb5", () => {
+    const appJs = execSync("cat app.js", { encoding: "utf8" });
+    assert.ok(appJs.includes("c.bedrooms"), "app.js comparables must include bedrooms");
+    assert.ok(appJs.includes("c.bathrooms"), "app.js comparables must include bathrooms");
+    assert.ok(appJs.includes("c.carSpaces"), "app.js comparables must include carSpaces");
+    assert.ok(appJs.includes("c.landSize"), "app.js comparables must include landSize");
+  });
+});
 
 function mapCustomerDataStatus(obj) {
   if (!obj.valuation?.ok || !obj.valuation?.estimate) return "unavailable";

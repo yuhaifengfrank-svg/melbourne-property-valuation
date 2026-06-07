@@ -1128,13 +1128,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
     const conf = result.valuation.confidence || {};
 
     // 确定证据模式展示文案
-    const evidenceMode = result.evidenceMode || "live_verified";
-    const reasonsLabel = {
-      live_verified: language === "zh" ? "实时估值已完成（公开数据验证）" : "Live valuation completed (public evidence)",
-      database_verified: language === "zh" ? "数据库已验证估值" : "Database-verified valuation",
-      curated_fixture: language === "zh" ? "演示估值（非实时数据）" : "Demo valuation (not live)",
-      unavailable: language === "zh" ? "暂无法获取可比数据，回退到估算" : "Comparable data unavailable, using estimates"
-    };
+    const customerDataStatus = result.customerDataStatus || "unavailable";
 
     return {
       address,
@@ -1142,28 +1136,67 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
       propertyState: result.subject?.state || resolvedState,
       propertySuburb: result.subject?.suburb || normalizedSuburb,
       type: result.subject?.propertyType || inferredType,
-      value: `\$${(est.low / 1000000).toFixed(3)}m - \$${(est.high / 1000000).toFixed(3)}m`,
-      midpoint: `\$${(est.midpoint / 1000000).toFixed(3)}m`,
+      value: `$${(est.low / 1000000).toFixed(3)}m - $${(est.high / 1000000).toFixed(3)}m`,
+      midpoint: `$${(est.midpoint / 1000000).toFixed(3)}m`,
       midpointValue: est.midpoint,
       confidence: conf.label || "Low",
       confidenceZh: conf.label || "低",
       status: conf.label || "Low",
       statusZh: conf.label || "低",
-      evidenceMode: evidenceMode,
-      isFallback: !!result.isFallback,
+      customerDataStatus: customerDataStatus,
       modelVersion: result.modelVersion || "",
-      lat: result.subject?.coordinates?.lat || result.subject?.verification?.lat || null,
-      lon: result.subject?.coordinates?.lon || result.subject?.verification?.lon || null,
       comparables: acc.map(c => [
         c.address || "",
-        c.salePrice ? `\$${c.salePrice.toLocaleString()}` : "",
-        c.adjustedPrice ? `\$${c.adjustedPrice.toLocaleString()}` : "",
-        c.qualityBand || "",
-        c.qualityScore ? `${c.qualityScore}/100` : "",
-        c.distanceMeters ? `${c.distanceMeters}m` : ""
+        c.salePrice ? `$${c.salePrice.toLocaleString()}` : "",
+        c.distanceMeters ? `${c.distanceMeters}m` : "",
+        c.bedrooms != null ? `${c.bedrooms} 房` : "",
+        c.bathrooms != null ? `${c.bathrooms} 卫` : "",
+        c.carSpaces != null ? `${c.carSpaces} 车位` : "",
+        c.landSize ? `${c.landSize}m²` : ""
       ]),
-      reasons: conf.reasons || [reasonsLabel[evidenceMode] || ["Live valuation completed."]],
-      reasonsZh: conf.reasonsZh || [reasonsLabel[evidenceMode] || ["实时估值已完成。"]],
+      reasons: [language === "zh" ? "估值已生成" : "Valuation generated"],
+      reasonsZh: [language === "zh" ? "估值已生成" : "Valuation generated"],
+      location: emptyValuation.location,
+      planning: emptyValuation.planning,
+      suburb: [],
+      modelNotes: [],
+      map: {},
+      mapZh: {},
+      evidenceSummary: "",
+      evidenceSummaryZh: ""
+    };
+
+    // 映射失败的情况分配默认原因
+    if (!conf.reasons || conf.reasons.length === 0) {
+      data.reasons = [language === "zh" ? "估值已生成" : "Valuation generated"];
+      data.reasonsZh = [language === "zh" ? "估值已生成" : "Valuation generated"];
+    }
+    return {
+      address,
+      addressZh: address,
+      propertyState: result.subject?.state || resolvedState,
+      propertySuburb: result.subject?.suburb || normalizedSuburb,
+      type: result.subject?.propertyType || inferredType,
+      value: `$$${(est.low / 1000000).toFixed(3)}m - $$${(est.high / 1000000).toFixed(3)}m`,
+      midpoint: `$$${(est.midpoint / 1000000).toFixed(3)}m`,
+      midpointValue: est.midpoint,
+      confidence: conf.label || "Low",
+      confidenceZh: conf.label || "低",
+      status: conf.label || "Low",
+      statusZh: conf.label || "低",
+      customerDataStatus: customerDataStatus,
+      modelVersion: result.modelVersion || "",
+      comparables: acc.map(c => [
+        c.address || "",
+        c.salePrice ? `$$${c.salePrice.toLocaleString()}` : "",
+        c.distanceMeters ? `${c.distanceMeters}m` : "",
+        c.bedrooms != null ? `${c.bedrooms} 房` : "",
+        c.bathrooms != null ? `${c.bathrooms} 卫` : "",
+        c.carSpaces != null ? `${c.carSpaces} 车位` : "",
+        c.landSize ? `${c.landSize}m²` : ""
+      ]),
+      reasons: [language === "zh" ? "估值已生成" : "Valuation generated"],
+      reasonsZh: [language === "zh" ? "估值已生成" : "Valuation generated"],
       location: emptyValuation.location,
       planning: emptyValuation.planning,
       suburb: [],
@@ -1175,11 +1208,9 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
     };
   } catch (error) {
     console.warn("Live valuation unavailable:", error.message);
-    // ── 回退链已移除 — 只返回 unavailable ──
     return createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb);
   }
 }
-
 function setList(id, items) {
   const element = byId(id);
   element.innerHTML = "";
@@ -1428,7 +1459,8 @@ function renderComparables(rows) {
     const tr = document.createElement("tr");
     row.forEach((cell, index) => {
       const td = document.createElement("td");
-      if (index === 5) {
+      if (index === 2) {
+        // 距离列 — pill 样式
         const pill = document.createElement("span");
         pill.className = "pill";
         pill.textContent = localizeValue(cell);
@@ -1477,25 +1509,17 @@ function renderValuation(data) {
   // 显式展示证据来源标记
   const evidenceBadge = byId("evidence-badge-val");
   if (evidenceBadge) {
-    const evidenceMode = data.evidenceMode || "unavailable";
-    const isFallback = data.isFallback;
+    const dataStatus = data.customerDataStatus || "unavailable";
     evidenceBadge.className = "evidence-badge";
     evidenceBadge.style.display = "flex";
-    if (isFallback || evidenceMode === "curated_fixture") {
-      evidenceBadge.textContent = language === "zh" ? "⚠ 演示数据，非实时估值" : "⚠ Demo data, not a live valuation";
-    } else {
-      const labels = {
-        live_verified: language === "zh" ? "✓ 实时数据验证" : "✓ Live data verified",
-        research_only: language === "zh" ? "📊 研究数据，来源有限" : "📊 Limited data, research only",
-        database_verified: language === "zh" ? "✓ 基于成交记录" : "✓ Based on recent sales",
-        database_single_source: language === "zh" ? "📊 基于公开成交信息" : "📊 Based on public sales data",
-        unavailable: language === "zh" ? "✗ 暂无可比数据" : "✗ No comparable data available"
-      };
-      // 客户前端不暴露具体数据来源等级，统一显示为"基于公开市场数据"
-    evidenceBadge.textContent = labels[evidenceMode] || "基于公开市场数据";
-    }
+    const labels = {
+      sufficient: language === "zh" ? "✓ 基于近期市场证据" : "✓ Based on recent market evidence",
+      limited: language === "zh" ? "📊 基于有限市场证据的初步估值" : "📊 Preliminary estimate, limited data",
+      unavailable: language === "zh" ? "✗ 暂时无法生成估值" : "✗ Unable to generate valuation"
+    };
+    evidenceBadge.textContent = labels[dataStatus] || (language === "zh" ? "✗ 暂时无法生成估值" : "✗ Unable to generate valuation");
   }
-  renderLoanScenario();
+    renderLoanScenario();
   renderMarketCrosscheck(data);
   renderLockState();
   renderEvidenceReview(language === "zh" && data.evidenceSummaryZh ? data.evidenceSummaryZh : data.evidenceSummary);
