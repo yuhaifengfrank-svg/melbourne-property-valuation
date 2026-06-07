@@ -126,6 +126,7 @@ function makeDocument() {
       if (selector === ".chip.active") return chips.find((chip) => chip.classList.contains("active")) || chips[0];
       return new MockElement(selector);
     },
+    addEventListener: () => {},
     querySelectorAll: (selector) => {
       if (selector === ".chip") return chips;
       if (selector === ".lvr") return lvrs;
@@ -337,10 +338,12 @@ elements.get("property-state").value = "VIC";
 elements.get("suburb").value = "Perth";
 elements.get("address").value = "10 Example Street, Perth WA 6000";
 const waFullAddress = context.__test.buildEnteredAddress();
-if (waFullAddress !== "10 Example Street, Perth WA 6000") {
-  throw new Error(`Full address with explicit WA should not be repacked with selected VIC, got ${waFullAddress}`);
+const waCanonical = typeof waFullAddress === "string" ? waFullAddress : waFullAddress.canonicalAddress;
+if (waCanonical !== "10 Example Street, Perth WA 6000") {
+  throw new Error(`Full address with explicit WA should not be repacked with selected VIC, got ${waCanonical}`);
 }
-const waValuation = await context.__test.runAddressValuation(waFullAddress, "House", "VIC", "Perth");
+const waEffectiveSuburb = typeof waFullAddress === "string" ? "Perth" : waFullAddress.effectiveSuburb;
+const waValuation = await context.__test.runAddressValuation(waCanonical, "House", "VIC", waEffectiveSuburb);
 if (waValuation.propertyState !== "WA") {
   throw new Error(`Address-level state should override selected state. Expected WA, got ${waValuation.propertyState}`);
 }
@@ -349,8 +352,9 @@ elements.get("property-state").value = "WA";
 elements.get("suburb").value = "Oakleigh";
 elements.get("address").value = "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166";
 const vicFullAddress = context.__test.buildEnteredAddress();
-if (vicFullAddress !== "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166") {
-  throw new Error(`Full address with suburb/state should not be duplicated, got ${vicFullAddress}`);
+const vicCanonical = typeof vicFullAddress === "string" ? vicFullAddress : vicFullAddress.canonicalAddress;
+if (vicCanonical !== "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166") {
+  throw new Error(`Full address with suburb/state should not be duplicated, got ${vicCanonical}`);
 }
 
 // Inference 函数已移除（API-only）— 用 runAddressValuation 作为替代验证
@@ -662,7 +666,9 @@ for (const testCase of cases) {
   elements.get("lead-consent").checked = true;
 
   const fullAddress = context.__test.buildEnteredAddress();
-  context.__test.renderValuation(await context.__test.runAddressValuation(fullAddress, testCase.type, testCase.state, testCase.suburb));
+  const addrCanonical = typeof fullAddress === "string" ? fullAddress : fullAddress.canonicalAddress;
+  const addrSuburb = typeof fullAddress === "string" ? testCase.suburb : fullAddress.effectiveSuburb;
+  context.__test.renderValuation(await context.__test.runAddressValuation(addrCanonical, testCase.type, testCase.state, addrSuburb));
 
   const before = context.__test.currentValuation.midpointValue;
   if (!testCase.pending) {

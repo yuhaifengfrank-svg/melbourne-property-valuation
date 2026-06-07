@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import vm from "node:vm";
 // ── 集成测试 ──
 // 覆盖 P0-P1 验收标准
 
@@ -646,37 +647,63 @@ describe("P4: 前端代码契约检查", () => {
   });
 
   
-  it("场景1: 只输入街道 18 Moresby St + Suburb=Oakleigh South -> canonical 包含 suburb", () => {
-    const appJs = fs.readFileSync("app.js", "utf8");
-    assert.ok(appJs.includes("if (!inlineSuburb)"), "Rule 1: no inline -> use enteredSuburb");
-    assert.ok(appJs.includes("if (enteredSuburb) parts.push(enteredSuburb)"), "must push enteredSuburb when no inline");
+  it("场景1: 只输入街道 + Suburb=Oakleigh South → canonical='18 Moresby St, Oakleigh South, VIC'", () => {
+    const sb = addressSandbox({
+      address: "18 Moresby St",
+      suburb: "Oakleigh South"
+    });
+    const result = sb.buildEnteredAddress();
+    assert.strictEqual(result.canonicalAddress, "18 Moresby St, Oakleigh South, VIC");
+    assert.strictEqual(result.effectiveSuburb, "Oakleigh South");
   });
 
-  it("场景2: 18 Moresby St, Oakleigh South + Suburb 相同 -> 不重复", () => {
-    const appJs = fs.readFileSync("app.js", "utf8");
-    assert.ok(appJs.includes("normInline === normEntered"), "Rule 2: same suburb -> no duplicate");
-    assert.ok(appJs.includes("parts.push(inlineSuburb)"), "Rule 2: use inline suburb");
+  it("场景2: 地址含 suburb + 相同 dropdown → 不重复", () => {
+    const sb = addressSandbox({
+      address: "18 Moresby St, Oakleigh South",
+      suburb: "Oakleigh South"
+    });
+    const result = sb.buildEnteredAddress();
+    assert.strictEqual(result.canonicalAddress, "18 Moresby St, Oakleigh South, VIC");
+    assert.strictEqual(result.effectiveSuburb, "Oakleigh South");
   });
 
-  it("场景3: 地址含 suburb + Suburb 框不同 -> 以地址为准", () => {
-    const appJs = fs.readFileSync("app.js", "utf8");
-    assert.ok(appJs.includes("normInline !== normEntered"), "Rule 3: conflict -> use inline suburb");
+  it("场景3: 地址含 Oakleigh South + Suburb=Oakleigh → 以地址为准, 三者一致", () => {
+    const sb = addressSandbox({
+      address: "18 Moresby St, Oakleigh South",
+      suburb: "Oakleigh"
+    });
+    const result = sb.buildEnteredAddress();
+    assert.strictEqual(result.canonicalAddress, "18 Moresby St, Oakleigh South, VIC",
+      "address suburb wins");
+    assert.strictEqual(result.effectiveSuburb, "Oakleigh South",
+      "effectiveSuburb = inline suburb");
+    // 三者一致: canonical, payload suburb, subject suburb
+    const norm = sb.normalizeSuburbName(result.effectiveSuburb).toLowerCase();
+    assert.strictEqual(norm, "oakleigh south",
+      "API payload and subject would both use oakleigh south");
   });
 
-  
-  it("场景5: API payload 含 suburb 和 state 单独字段", () => {
+  it("suburbFromAddress: 街道后缀不被误判为 suburb", () => {
+    const sb = addressSandbox({ address: "18 Moresby St" });
+    assert.strictEqual(sb.suburbFromAddress("18 Moresby St"), "");
+    assert.strictEqual(sb.suburbFromAddress("11 McIntosh Road"), "");
+    assert.strictEqual(sb.suburbFromAddress("18 Moresby St, Oakleigh South").toLowerCase(), "oakleigh south");
+    assert.strictEqual(sb.suburbFromAddress("Unit 2, 11 McIntosh St, Oakleigh").toLowerCase(), "oakleigh");
+  });
+
+  it("API payload: suburb 和 state 单独传参", () => {
     const appJs = fs.readFileSync("app.js", "utf8");
     assert.ok(appJs.includes("suburb: normalizedSuburb"), "API payload must have suburb");
     assert.ok(appJs.includes("state: resolvedState"), "API payload must have state");
   });
 
-  it("页面最终地址: renderValuation 用 data.address 显示完整地址", () => {
+  it("页面最终地址: renderValuation 用 data.address 显示", () => {
     const appJs = fs.readFileSync("app.js", "utf8");
     assert.ok(appJs.includes("property-address") && appJs.includes("data.address"),
       "page title uses full data.address with suburb");
   });
 
-  it("地址输入框初始为空（无默认值）", () => {
+it("地址输入框初始为空（无默认值）", () => {
     const html = fs.readFileSync("index.html", "utf8");
     assert.ok(!html.match(/<input[^>]*id="address"[^>]*value=/), "input#address must not have value attribute");
     const appJs = fs.readFileSync("app.js", "utf8");
@@ -686,6 +713,45 @@ describe("P4: 前端代码契约检查", () => {
 });
 
 // ── P4 测试辅助函数 ──
+/** 为 buildEnteredAddress 测试创建 VM 沙箱 */
+function addressSandbox({ address = "", suburb = "", state = "VIC" } = {}) {
+  const appCode = fs.readFileSync("app.js", "utf8");
+
+  // Extract all needed functions
+  const fns = ["buildEnteredAddress", "suburbFromAddress", "looksLikeStreetOnly",
+               "normalizeSuburbName", "normalizeAddress", "toTitleCase"];
+  const extracted = {};
+  const ctx = vm.createContext({
+    byId: (id) => {
+      if (id === "address") return { value: address };
+      if (id === "suburb") return { value: suburb };
+      return { value: "" };
+    },
+    getEnteredSuburb: () => suburb,
+    getSelectedState: () => state,
+    explicitStateFromAddress: () => null,
+    toTitleCase: (s) => String(s).replace(/\b\w/g, c => c.toUpperCase()),
+    String, Number, Boolean, Array, Object, RegExp, Math, JSON,
+    parseInt, parseFloat, isNaN, isFinite, console: { log() {}, warn() {}, error() {} },
+    window: { matchMedia: () => ({matches: false}), scrollTo() {}, scrollToSection() {} },
+    document: { addEventListener() {}, querySelector() { return null; }, querySelectorAll() { return []; } },
+    fetch: () => Promise.resolve({ ok: true, json: () => Promise.resolve({}) }),
+    language: "zh",
+    localStorage: { getItem: () => null, setItem: () => {} },
+  });
+
+  for (const fn of fns) {
+    const re = new RegExp(`function ${fn}\\([\\s\\S]*?\\n}\\n`, "m");
+    const m = appCode.match(re);
+    if (m) {
+      const script = new vm.Script(m[0]);
+      script.runInContext(ctx);
+      extracted[fn] = ctx[fn];
+    }
+  }
+  return extracted;
+}
+
 function makeMockResponse(customerDataStatus, compCount, hasDate = true) {
   const comps = [];
   for (let i = 0; i < compCount; i++) {

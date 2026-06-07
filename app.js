@@ -249,26 +249,31 @@ function buildEnteredAddress() {
   const inlineSuburb = suburbFromAddress(streetAddress);
   const addressState = explicitStateFromAddress(streetAddress);
   const state = addressState || getSelectedState();
-  const parts = [streetAddress];
 
-  // 规则 1：地址只含街道（无 inline suburb）→ 用 Suburb 框
-  if (!inlineSuburb) {
-    if (enteredSuburb) parts.push(enteredSuburb);
-  } else {
-    // 地址中已有 suburb
-    const normInline = normalizeSuburbName(inlineSuburb);
-    const normEntered = normalizeSuburbName(enteredSuburb);
-    if (!enteredSuburb || normInline === normEntered) {
-      // 规则 2：相同或 Suburb 框为空 → 地址中的 suburb，不重复
-      parts.push(inlineSuburb);
-    } else if (normInline !== normEntered) {
-      // 规则 3：冲突 → 以地址中明确的 suburb 为准
-      // 优先地址中已核验的在线数据
-      parts.push(inlineSuburb);
-    }
+  // 确定有效 suburb：地址中已有 inline suburb 优先，否则用下拉框
+  let effectiveSuburb = "";
+  if (inlineSuburb) {
+    effectiveSuburb = inlineSuburb;
+  } else if (enteredSuburb) {
+    effectiveSuburb = enteredSuburb;
+  }
+
+  // 构建 canonical address
+  const parts = [streetAddress];
+  // 如果 effectiveSuburb 已经包含在 streetAddress 中（case-insensitive），不追加
+  // 检查：streetAddress 是否以 suburb 结尾，或者包含 ", suburb" 或 " suburb,"
+  const suburbInAddress = effectiveSuburb &&
+    (streetAddress.toLowerCase().includes(", " + effectiveSuburb.toLowerCase()) ||
+     streetAddress.toLowerCase().includes(" " + effectiveSuburb.toLowerCase() + ",") ||
+     streetAddress.toLowerCase().endsWith(" " + effectiveSuburb.toLowerCase()));
+  if (effectiveSuburb && !suburbInAddress) {
+    parts.push(effectiveSuburb);
   }
   if (!addressState && state) parts.push(state);
-  return parts.filter(Boolean).join(", ");
+  return {
+    canonicalAddress: parts.filter(Boolean).join(", "),
+    effectiveSuburb: effectiveSuburb
+  };
 }
 function looksLikeStreetOnly(text) {
   const streetSuffixes = /\b(street|avenue|road|grove|drive|court|crescent|parade|place|lane|pde|rd|st|dr|crt|hwy|tce|wy|bvd|cl|ct|gdn|grn|gr|pkwy|pl|pt|sq|trc|close|circuit|gate|way|rise|view|vale|ridge)\b$/i;
@@ -1119,8 +1124,8 @@ function createUnavailableValuation(address, inferredType = "House", selectedSta
   };
 }
 
-async function runAddressValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
-  const normalizedSuburb = normalizeSuburbName(enteredSuburb);
+async function runAddressValuation(address, selectedType = "", selectedState = "", effectiveSuburb = "") {
+  const normalizedSuburb = normalizeSuburbName(effectiveSuburb);
   const resolvedState = explicitStateFromAddress(address) || selectedState;
   const inferredType = inferPropertyTypeFromAddress(address, null, selectedType);
 
@@ -1130,7 +1135,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
       address: address || commercialPendingValuation.address,
       addressZh: address || commercialPendingValuation.addressZh,
       propertyState: resolvedState,
-      propertySuburb: normalizedSuburb
+      propertySuburb: normalizedSuburb || effectiveSuburb
     };
   }
 
@@ -2105,15 +2110,14 @@ byId("start-valuation").addEventListener("click", async () => {
   button.textContent = language === "zh" ? "正在核验公开数据…" : "Checking public evidence…";
 
   const selectedType = document.querySelector(".chip.active")?.dataset.type || "House";
-  const enteredAddress = buildEnteredAddress();
+  const { canonicalAddress, effectiveSuburb } = buildEnteredAddress();
   const selectedState = getSelectedState();
-  const enteredSuburb = getEnteredSuburb();
 
   const valuation = await runAddressValuation(
-    enteredAddress || byId("address").value,
+    canonicalAddress || byId("address").value,
     selectedType,
     selectedState,
-    enteredSuburb
+    effectiveSuburb
   );
   renderValuation(valuation);
 
