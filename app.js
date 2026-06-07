@@ -1478,6 +1478,16 @@ function renderValuation(data) {
   currentValuation.builtFormVerification = buildBuiltFormVerification(currentValuation);
   data = currentValuation;
   const planningLabels = getPlanningLabels(data);
+  // 地址核验冲突：显示警告消息而非地址
+  if (data.addressMismatch) {
+    const warnMsg = data.mismatchMessage || (language === "zh" ? "地址核验不一致，请确认" : "Address verification failed");
+    byId("property-address").textContent = "⚠ " + warnMsg;
+    byId("estimated-value").textContent = "—";
+    byId("midpoint").textContent = "—";
+    byId("confidence").textContent = "—";
+    byId("mobile-property-address").textContent = "⚠ " + warnMsg;
+    return;
+  }
   byId("property-address").textContent = language === "zh" && data.addressZh ? data.addressZh : data.address;
   byId("estimated-value").textContent = localizeValue(data.value);
   byId("midpoint").textContent = localizeValue(data.midpoint);
