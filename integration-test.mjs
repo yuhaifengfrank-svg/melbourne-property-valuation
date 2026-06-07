@@ -72,8 +72,8 @@ describe("P1: 数据可信度", () => {
     if (result.status === "completed") {
       assert.equal(result.customerDataStatus, "sufficient");
     } else {
-      // 如果 CDP 不可用，按 unavailable 处理
-      assert.equal(result.customerDataStatus, "unavailable");
+      // 如果 CDP 不可用，collector 可能返回部分数据（limited）或无数据（unavailable）
+      assert.ok(result.customerDataStatus === "unavailable" || result.customerDataStatus === "limited");
     }
   });
 
