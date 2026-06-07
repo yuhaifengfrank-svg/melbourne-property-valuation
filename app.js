@@ -247,29 +247,45 @@ function buildEnteredAddress() {
   const streetAddress = byId("address").value.trim();
   const enteredSuburb = getEnteredSuburb();
   const addressState = explicitStateFromAddress(streetAddress);
+  const inlineSuburb = suburbFromAddress(streetAddress);
   const state = addressState || getSelectedState();
   const parts = [streetAddress];
-  // 只要用户选择了 suburb，就补上（即使 inline 解析出来了也补，防缩写不匹配）
-  if (enteredSuburb) parts.push(enteredSuburb);
+
+  // suburb：下拉框有值优先，否则 inline 解析
+  const effectiveSuburb = (enteredSuburb || inlineSuburb || "");
+  if (effectiveSuburb) parts.push(effectiveSuburb);
   if (!addressState && state) parts.push(state);
   return parts.filter(Boolean).join(", ");
+}
+function looksLikeStreetOnly(text) {
+  const streetSuffixes = /\b(street|avenue|road|grove|drive|court|crescent|parade|place|lane|pde|rd|st|dr|crt|hwy|tce|wy|bvd|cl|ct|gdn|grn|gr|pkwy|pl|pt|sq|trc|close|circuit|gate|way|rise|view|vale|ridge)\b$/i;
+  if (/^\d+$/.test(text.trim())) return true;
+  if (streetSuffixes.test(text.trim())) return true;
+  return false;
 }
 
 function suburbFromAddress(address) {
   const cleaned = String(address || "").replace(/\bVIC\b|\bNSW\b|\bQLD\b|\bWA\b|\bSA\b|\bTAS\b|\bACT\b|\bNT\b|\b\d{4}\b/gi, "");
   const parts = cleaned.split(",").map((part) => part.trim()).filter(Boolean);
-  if (parts.length > 1) return parts[parts.length - 1];
+  if (parts.length > 1) {
+    const lastPart = parts[parts.length - 1];
+    if (looksLikeStreetOnly(lastPart)) return "";
+    return toTitleCase(lastPart);
+  }
   const normalized = normalizeAddress(cleaned);
   const inlineSuburbMatch = normalized.match(
-    /^(?:unit\s+\d+\s+)?(?:\d+\s*\/\s*)?\d+\s+.+?\s+(?:street|avenue|road|grove|drive|court|crescent|parade|place|lane|pde|rd|st|dr|crt|hwy|tce|wy|bvd|cl|ct|gdn|grn|gr|pkwy|pl|pt|sq|trc)\s+(.+)$/
+    /^(?:unit\s+\d+\s+)?(?:\d+\s*\/\s*)?\d+\s+.+?\s+(?:street|avenue|road|grove|drive|court|crescent|parade|place|lane|pde|rd|st|dr|crt|hwy|tce|wy|bvd|cl|ct|gdn|grn|gr|pkwy|pl|pt|sq|trc)\s+(.+)$/i
   );
   if (inlineSuburbMatch?.[1]) {
-    return toTitleCase(inlineSuburbMatch[1]);
+    const extracted = inlineSuburbMatch[1].trim();
+    if (looksLikeStreetOnly(extracted)) return "";
+    return toTitleCase(extracted);
   }
   const words = cleaned.trim().split(/\s+/);
-  return words.length > 1 ? words.slice(-2).join(" ") : "";
+  const candidate = words.length > 1 ? words.slice(-2).join(" ") : (words[0] || "");
+  if (looksLikeStreetOnly(candidate)) return "";
+  return toTitleCase(candidate);
 }
-
 function stateFromAddress(address) {
   return explicitStateFromAddress(address) || getSelectedState();
 }

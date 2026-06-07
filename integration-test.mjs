@@ -645,6 +645,30 @@ describe("P4: 前端代码契约检查", () => {
       "must contain limited label");
   });
 
+  it("地址解析：单独输入门牌+街道时返回空（不误判为 suburb）", () => {
+    const appJs = fs.readFileSync("app.js", "utf8");
+    assert.ok(appJs.includes("looksLikeStreetOnly"), "looksLikeStreetOnly helper must exist");
+    assert.ok(appJs.includes("st"), "suffix detection present");
+  });
+
+  it("地址解析：18 Moresby St, Oakleigh South, VIC → suburb=Oakleigh South", () => {
+    const appJs = fs.readFileSync("app.js", "utf8");
+    assert.ok(appJs.includes("lastPart"), "suburbFromAddress must use comma-split last part");
+    assert.ok(appJs.match(/\\bst\\b/i), "looksLikeStreetOnly must handle 'st' abbreviation");
+  });
+
+  it("API payload: suburb 和 state 单独传参", () => {
+    const appJs = fs.readFileSync("app.js", "utf8");
+    assert.ok(appJs.includes('suburb: normalizedSuburb'), "API payload must contain suburb field");
+    assert.ok(appJs.includes('state: resolvedState'), "API payload must contain state field");
+  });
+
+  it("地址合并：canonical address 包含 suburb", () => {
+    const appJs = fs.readFileSync("app.js", "utf8");
+    assert.ok(appJs.includes("effectiveSuburb"), "buildEnteredAddress must use effectiveSuburb");
+    assert.ok(appJs.includes("parts.push(effectiveSuburb)"), "buildEnteredAddress must push suburb to parts");
+  });
+
   it("地址输入框初始为空（无默认值）", () => {
     const html = fs.readFileSync("index.html", "utf8");
     assert.ok(!html.match(/<input[^>]*id="address"[^>]*value=/), "input#address must not have value attribute");
