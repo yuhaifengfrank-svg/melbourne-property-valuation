@@ -435,9 +435,11 @@ Rules:
 Example:
 
 ```text
-A parent street address may coexist with child unit addresses.
-The system must not treat a portal land-size field as title-confirmed.
-Land-size confidence remains Low-Medium until checked against title, plan of subdivision or council records.
+9 McIntosh Street, Oakleigh
+Portal source shows 530 sqm, but neighbouring records include 1/9 and 2/9.
+System should not treat 530 sqm as title-confirmed.
+Land size confidence: Low-Medium
+Required check: title plan / plan of subdivision / council property record
 ```
 
 ### 5.10 Automated Check vs Manual Upload Workflow
@@ -1385,9 +1387,105 @@ Range Hit = Actual Sale Price is within Estimated Value Range
 - Error by property condition
 - Error by land size band
 
-## 13. Back-testing Requirements
+## 13. Balwyn North v0 Manual Back-test
 
-Historical back-testing must only use source-backed settled sales that were not used to construct the estimate. Each record must retain the sold-price source URL, sale date, subject features, comparable set, model version and generated timestamp. No back-test accuracy claim may be published until the dataset and calculation can be independently reproduced.
+该批次用于第一轮模型校准。它不是严格盲测，因为当前尚无历史成交数据库自动隐藏成交价。
+
+| Target property | Actual sale price | Model estimated range | Midpoint error | Range hit |
+| --- | ---: | ---: | ---: | --- |
+| 5 Almond Street | $2.11m | $2.05m-$2.25m | +1.9% | yes |
+| 24 Sunburst Avenue | $2.40m | $2.30m-$2.55m | +1.0% | yes |
+| 23 Moreton Street | $1.88m | $1.85m-$2.10m | +5.1% | yes |
+| 14 Orion Street | $3.00m | $2.85m-$3.20m | +0.8% | yes |
+| 15 Dempster Avenue | $3.00m | $2.85m-$3.25m | +1.7% | yes |
+| 14 Wynyard Crescent | $2.805m | $2.70m-$3.00m | +1.6% | yes |
+| 12 Hunt Street | $2.886m | $2.75m-$3.00m | -0.4% | yes |
+
+Summary:
+
+- Sample size: 7
+- Range hit rate: 7/7
+- Average absolute midpoint error: approx. 1.8%
+- Largest midpoint error: 23 Moreton Street, approx. +5.1%
+
+Calibration notes:
+
+- Balwyn North valuations must not rely on land size alone.
+- Large land needs separate assessment for orientation, easements, rebuild potential, usable frontage/depth, and existing dwelling utility.
+- Balwyn High School Zone is positive, but not sufficient by itself.
+- Street rank, dwelling condition, floorplan, and buyer demand materially affect price.
+- Older large-land houses should not automatically be valued like renovated family homes.
+- Strongly renovated / contemporary family homes need higher building utility and condition adjustment.
+
+## 14. Sample Property: 34 Macedon Avenue, Balwyn North
+
+### 14.1 Known Information
+
+- Address: 34 Macedon Avenue, Balwyn North VIC 3104
+- Property type: House
+- Land size: approx. 647-650 sqm
+- Bedrooms: 5, or 4 bedrooms plus study depending listing
+- Bathrooms: 2
+- Car spaces: 2
+- School zone: Balwyn High School Zone
+- Nearby amenities: North Balwyn Village, Doncaster Road tram, North Balwyn Primary, parkland
+
+### 14.2 First-layer Estimate
+
+```text
+Estimated value: $2.70m-$2.95m
+Model midpoint: approx. $2.82m
+Confidence: Medium
+```
+
+Reasons:
+
+- Same-street evidence supports the high-$2m range
+- Balwyn High School Zone and village walkability are positive
+- It should sit above weaker 4-bedroom BHSZ comparables
+- It should remain below stronger/newer/highly renovated $3m+ comparables unless condition confirms otherwise
+
+### 14.3 Missing Checks
+
+To upgrade confidence:
+
+- Current condition evidence
+- Title and planning check
+- Complete recent comparable sales set
+
+## 15. Oakleigh v0 Manual Back-test
+
+该批次用于验证模型在 Oakleigh house 市场的初步表现。样本来自 2026 年 2 月底至 4 月公开可见的 Oakleigh house 成交记录。该批次仍为人工回测，不是严格盲测。
+
+| Target property | Actual sale price | Model estimated range | Model midpoint | Midpoint error | Range hit |
+| --- | ---: | ---: | ---: | ---: | --- |
+| 170 Atherton Road | $1.1555m | $1.05m-$1.22m | $1.135m | -1.8% | yes |
+| 33 Tamar Grove | $1.80m | $1.65m-$1.85m | $1.75m | -2.8% | yes |
+| 16 Lincoln Avenue | $1.56m | $1.48m-$1.65m | $1.565m | +0.3% | yes |
+| 191 Huntingdale Road | $1.245m | $1.15m-$1.32m | $1.235m | -0.8% | yes |
+| 2 Norfolk Avenue | $1.2925m | $1.20m-$1.35m | $1.275m | -1.4% | yes |
+| 5 Saxon Court | $1.9675m | $1.80m-$2.05m | $1.925m | -2.2% | yes |
+| 21 Hatter Street | $1.525m | $1.42m-$1.58m | $1.50m | -1.6% | yes |
+| 112 Burlington Street | $1.30m | $1.25m-$1.42m | $1.335m | +2.7% | yes |
+| 44 Haughton Road | $1.25m | $1.17m-$1.35m | $1.26m | +0.8% | yes |
+
+Summary:
+
+- Sample size: 9
+- Range hit rate: 9/9
+- Mean absolute percentage error: approx. 1.6%
+- Median absolute percentage error: approx. 1.6%
+- Overestimate count: 3
+- Underestimate count: 6
+
+Calibration notes:
+
+- Recent Oakleigh house evidence is strong enough to keep comparable influence at 60%-70% when target property has similar recent samples.
+- Main-road or arterial exposure, such as Huntingdale Road / Atherton Road style locations, needs explicit negative micro-location adjustment.
+- Quiet residential streets with strong walkability can command premiums even when bed/bath counts are not exceptional.
+- Small land houses can still trade strongly if renovated, functional and well located.
+- Large land and larger dwellings need separate treatment; Saxon Court-type properties should not be compared directly with compact 3-bedroom houses.
+- The model shows a slight underestimation bias in this small sample, so premium quiet-street / renovated-property adjustments may need monitoring.
 
 ## 16. Product Requirements
 

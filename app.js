@@ -2015,46 +2015,60 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
     if (!response.ok) throw new Error(`Valuation API returned ${response.status}`);
     const result = await response.json();
 
-    if (result.valuation?.ok && result.valuation.estimate) {
-      const acc = result.valuation.acceptedComparables || [];
-      const est = result.valuation.estimate;
-      const conf = result.valuation.confidence || {};
-      return {
-        address,
-        addressZh: address,
-        propertyState: result.subject?.state || resolvedState,
-        propertySuburb: result.subject?.suburb || normalizedSuburb,
-        type: result.subject?.propertyType || inferredType,
-        value: `\$${(est.low / 1000000).toFixed(3)}m - \$${(est.high / 1000000).toFixed(3)}m`,
-        midpoint: `\$${(est.midpoint / 1000000).toFixed(3)}m`,
-        midpointValue: est.midpoint,
-        confidence: conf.label || "Low",
-        confidenceZh: conf.label || "低",
-        status: conf.label || "Low",
-        statusZh: conf.label || "低",
-        lat: result.subject?.coordinates?.lat || result.subject?.verification?.lat || null,
-        lon: result.subject?.coordinates?.lon || result.subject?.verification?.lon || null,
-        comparables: acc.map(c => [
-          c.address || "",
-          c.salePrice ? `\$${c.salePrice.toLocaleString()}` : "",
-          c.adjustedPrice ? `\$${c.adjustedPrice.toLocaleString()}` : "",
-          c.qualityBand || "",
-          c.qualityScore ? `${c.qualityScore}/100` : "",
-          c.distanceMeters ? `${c.distanceMeters}m` : ""
-        ]),
-        reasons: conf.reasons || ["Live valuation completed."],
-        reasonsZh: conf.reasons || ["实时估值已完成。"],
-        location: emptyValuation.location,
-        planning: emptyValuation.planning,
-        suburb: [],
-        modelNotes: [],
-        map: {},
-        mapZh: {},
-        evidenceSummary: "",
-        evidenceSummaryZh: ""
-      };
+    if (!result.valuation?.ok || !result.valuation.estimate) {
+      // API 返回了明确但无法估值的结果
+      throw new Error(result.message || "Valuation engine returned no estimate");
     }
-    throw new Error("Valuation engine returned no estimate");
+    const acc = result.valuation.acceptedComparables || [];
+    const est = result.valuation.estimate;
+    const conf = result.valuation.confidence || {};
+
+    // 确定证据模式展示文案
+    const evidenceMode = result.evidenceMode || "live_verified";
+    const reasonsLabel = {
+      live_verified: language === "zh" ? "实时估值已完成（公开数据验证）" : "Live valuation completed (public evidence)",
+      database_verified: language === "zh" ? "数据库已验证估值" : "Database-verified valuation",
+      curated_fixture: language === "zh" ? "演示估值（非实时数据）" : "Demo valuation (not live)",
+      unavailable: language === "zh" ? "暂无法获取可比数据，回退到估算" : "Comparable data unavailable, using estimates"
+    };
+
+    return {
+      address,
+      addressZh: address,
+      propertyState: result.subject?.state || resolvedState,
+      propertySuburb: result.subject?.suburb || normalizedSuburb,
+      type: result.subject?.propertyType || inferredType,
+      value: `\$${(est.low / 1000000).toFixed(3)}m - \$${(est.high / 1000000).toFixed(3)}m`,
+      midpoint: `\$${(est.midpoint / 1000000).toFixed(3)}m`,
+      midpointValue: est.midpoint,
+      confidence: conf.label || "Low",
+      confidenceZh: conf.label || "低",
+      status: conf.label || "Low",
+      statusZh: conf.label || "低",
+      evidenceMode: evidenceMode,
+      isFallback: !!result.isFallback,
+      modelVersion: result.modelVersion || "",
+      lat: result.subject?.coordinates?.lat || result.subject?.verification?.lat || null,
+      lon: result.subject?.coordinates?.lon || result.subject?.verification?.lon || null,
+      comparables: acc.map(c => [
+        c.address || "",
+        c.salePrice ? `\$${c.salePrice.toLocaleString()}` : "",
+        c.adjustedPrice ? `\$${c.adjustedPrice.toLocaleString()}` : "",
+        c.qualityBand || "",
+        c.qualityScore ? `${c.qualityScore}/100` : "",
+        c.distanceMeters ? `${c.distanceMeters}m` : ""
+      ]),
+      reasons: conf.reasons || [reasonsLabel[evidenceMode] || ["Live valuation completed."]],
+      reasonsZh: conf.reasonsZh || [reasonsLabel[evidenceMode] || ["实时估值已完成。"]],
+      location: emptyValuation.location,
+      planning: emptyValuation.planning,
+      suburb: [],
+      modelNotes: [],
+      map: {},
+      mapZh: {},
+      evidenceSummary: "",
+      evidenceSummaryZh: ""
+    };
   } catch (error) {
     console.warn("Live valuation unavailable:", error.message);
     const directMatch = findValuation(address);
@@ -2450,12 +2464,6 @@ function applyLanguage() {
       : "Example: title confirms land size, renovated kitchen, quiet wide street, no visible easement.";
   renderValuation(currentValuation);
   if (activeInvestorTheme) renderInvestorTheme(activeInvestorTheme);
-}
-
-function formatMoney(value) {
-  if (!Number.isFinite(value)) return localizeValue("Manual review");
-  if (value >= 1000000) return `$${(value / 1000000).toFixed(3).replace(/0+$/, "").replace(/\.$/, "")}m`;
-  return `$${Math.round(value / 1000)}k`;
 }
 
 function renderLoanScenario() {

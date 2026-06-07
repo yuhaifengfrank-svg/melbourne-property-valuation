@@ -1,0 +1,10 @@
+Sample evidence file for AusHomeValue demo.
+
+Property: 18 Moresby Street, Oakleigh South VIC
+Document type: Planning, zoning and overlay review
+
+Summary:
+- General residential style planning context assumed for demo.
+- No heritage overlay included in this mock evidence.
+- Granny flat / secondary dwelling potential still requires council confirmation.
+- This file is for demo testing only and is not planning advice.

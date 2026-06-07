@@ -82,22 +82,23 @@ Land/title structure needs confirmation.
 示例:
 
 ```text
-Confirmed property address
+46 Bishop Street, Oakleigh VIC 3166
 
 Estimated Value
-Only shown after verified settled comparables pass the valuation rules
+$1.90m - $2.09m
 
 Midpoint
-Calculated by the independent valuation engine
+$1.995m
 
 Confidence
-Based on comparable quality, source coverage and dispersion
+Medium
 
 Main reasons
-- Each accepted comparable includes a source URL and settled sale date
-- Property type, distance, recency and physical attributes are scored
-- Difference adjustments are itemised and capped
-- Missing title, planning or condition facts remain disclosed
+- Recent comparable sales support this range
+- 687 sqm land, subject to title confirmation
+- Strong Oakleigh location near station and Eaton Mall
+- Large family-home utility
+- Title, easements and current condition are not fully verified
 ```
 
 模块:

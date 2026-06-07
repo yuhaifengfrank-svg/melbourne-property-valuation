@@ -1,55 +1,33 @@
-import { collectComparableResearch } from "../lib/comparable-research-collector.js";
-import { valueProperty } from "../lib/valuation-engine.js";
+// ── AusHomeValue Vercel Serverless API ──
+// 与 dev-server.mjs 共享 lib/valuation-service.js
 
-function json(response, status, body) {
-  response.status(status).setHeader("Content-Type", "application/json");
-  response.setHeader("Cache-Control", "no-store");
-  response.send(JSON.stringify(body));
-}
+import { runValuation } from "../lib/valuation-service.js";
 
 export default async function handler(request, response) {
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
-    return json(response, 405, { error: "Method not allowed" });
+    return response.status(405).setHeader("Content-Type", "application/json")
+      .send(JSON.stringify({ error: "Method not allowed" }));
   }
 
   try {
     const body = typeof request.body === "string" ? JSON.parse(request.body) : request.body || {};
-    const result = await collectComparableResearch(
-      {
-        address: body.address,
-        suburb: body.suburb,
-        state: body.state,
-        propertyType: body.propertyType
-      },
-      {
-        fetch: body.fetch !== false
-      }
-    );
-    const valuation = Array.isArray(body.comparables)
-      ? valueProperty({
-          subject: {
-            ...(body.subject || {}),
-            address: result.subject?.address || body.address,
-            propertyType: result.subject?.propertyType || body.propertyType
-          },
-          comparables: body.comparables,
-          asOfDate: body.asOfDate,
-          annualMarketGrowthRate: body.annualMarketGrowthRate,
-          // ── 注入公共数据作为隐式调整因子 ──
-          publicData: {
-            absProfile: result.absProfile || null,
-            rbaRates: result.rbaRates || null,
-            vicplan: result.vicplan || null
-          }
-        })
-      : null;
-    return json(response, result.ok ? 200 : 400, {
-      ...result,
-      valuation
-    });
+    const result = await runValuation(body, { fetch: false });
+    return response.status(result.ok ? 200 : 400)
+      .setHeader("Content-Type", "application/json")
+      .setHeader("Cache-Control", "no-store")
+      .send(JSON.stringify(result));
   } catch (error) {
     console.error(error);
-    return json(response, 500, { error: "Live comparable research service failed" });
+    return response.status(500)
+      .setHeader("Content-Type", "application/json")
+      .send(JSON.stringify({
+        ok: false,
+        status: "error",
+        error: error.message,
+        valuation: null,
+        evidenceMode: "unavailable",
+        isFallback: false
+      }));
   }
 }
