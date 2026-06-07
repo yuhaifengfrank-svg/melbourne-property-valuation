@@ -1147,7 +1147,8 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         address,
         suburb: normalizedSuburb,
         state: resolvedState,
-        propertyType: inferredType
+        propertyType: inferredType,
+        useDatabaseFallback: true
       })
     });
     var result = await response.json();
