@@ -242,20 +242,20 @@ const evidenceFiles = [
 ];
 
 const cases = [
-  { type: "House", state: "VIC", suburb: "Oakleigh", address: "9 McIntosh Street", expected: null },
-  { type: "Vacant land", state: "VIC", suburb: "Oakleigh", address: "13 Gadd Street", expected: null },
-  { type: "Townhouse", state: "VIC", suburb: "Oakleigh", address: "Unit 1, 5 McIntosh Street", expected: null },
-  { type: "Villa", state: "VIC", suburb: "Oakleigh", address: "Unit 2, 11 McIntosh Street", expected: null },
-  { type: "Unit", state: "VIC", suburb: "Oakleigh", address: "Unit 1, 3 McIntosh Street", expected: null },
-  { type: "Apartment", state: "VIC", suburb: "Oakleigh", address: "Apartment 12, 20 Haughton Road", expected: null },
-  { type: "Commercial", state: "VIC", suburb: "Oakleigh", address: "Commercial Shop 1, Test Street", expected: null, pending: true }
+  { type: "House", state: "VIC", suburb: "Oakleigh", address: "9 McIntosh Street", expected: "9 McIntosh Street, Oakleigh VIC 3166" },
+  { type: "Vacant land", state: "VIC", suburb: "Oakleigh", address: "13 Gadd Street", expected: "13 Gadd Street, Oakleigh VIC 3166" },
+  { type: "Townhouse", state: "VIC", suburb: "Oakleigh", address: "Unit 1, 5 McIntosh Street", expected: "Unit 1, 5 McIntosh Street, Oakleigh VIC 3166" },
+  { type: "Villa", state: "VIC", suburb: "Oakleigh", address: "Unit 2, 11 McIntosh Street", expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166" },
+  { type: "Unit", state: "VIC", suburb: "Oakleigh", address: "Unit 1, 3 McIntosh Street", expected: "Unit 1, 3 McIntosh Street, Oakleigh VIC 3166" },
+  { type: "Apartment", state: "VIC", suburb: "Oakleigh", address: "Apartment 12, 20 Haughton Road", expected: "Apartment 12, 20 Haughton Road, Oakleigh VIC 3166" },
+  { type: "Commercial", state: "VIC", suburb: "Oakleigh", address: "Commercial Shop 1, Test Street", expected: "Commercial Shop 1, Test Street, Oakleigh, VIC", pending: true }
 ];
 
 const addressMatchingCases = [
   {
     type: "Villa",
     address: "Unit 2, number 11 McIntosh Street Oakleigh",
-    expected: null
+    expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166"
   },
   {
     type: "Villa",
@@ -265,17 +265,17 @@ const addressMatchingCases = [
   {
     type: "Villa",
     address: "2/11 McIntosh Street Oakleigh",
-    expected: null
+    expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166"
   },
   {
     type: "Villa",
     address: "2-11 McIntosh Street Oakleigh",
-    expected: null
+    expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166"
   },
   {
     type: "Villa",
     address: "unit2 number 11 McIntosh Street Oakleigh",
-    expected: null
+    expected: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166"
   },
   {
     type: "Villa",
@@ -300,7 +300,7 @@ const addressMatchingCases = [
   {
     type: "House",
     address: "9 McIntosh Street Oakleigh",
-    expected: null
+    expected: "9 McIntosh Street, Oakleigh VIC 3166"
   },
   {
     type: "Unit",
@@ -333,12 +333,25 @@ for (const testCase of addressMatchingCases) {
   const match = context.__test.findValuation(testCase.address, testCase.type);
   const resolvedAddress = match?.address || null;
   if (resolvedAddress !== testCase.expected) {
-    console.log(`  ↪ address: ${resolvedAddress} (skip match, valuations cleared)`);
+    throw new Error(`Address matcher resolved ${testCase.address} as ${resolvedAddress}, expected ${testCase.expected}`);
   }
 }
 
-// valuations cleared — same-complex not applicable (Codex)
-const inferredUnitMatch = null;
+const inferredUnitMatch = context.__test.createInferredSameComplexValuation(
+  "Unit 1, No.11 McIntosh Street, Oakleigh, VIC",
+  "Villa",
+  "VIC",
+  "Oakleigh"
+);
+if (!inferredUnitMatch) {
+  throw new Error("Same-complex inference should return a valuation for Unit 1, No.11 McIntosh Street");
+}
+if (inferredUnitMatch.address !== "Unit 1, No.11 McIntosh Street, Oakleigh, VIC") {
+  throw new Error(`Same-complex inference should preserve entered address, got ${inferredUnitMatch.address}`);
+}
+if (inferredUnitMatch.confidence !== "Low-Medium" || inferredUnitMatch.builtFormVerification.status !== "same-complex-inferred") {
+  throw new Error("Same-complex inference should lower confidence and flag inferred built form");
+}
 
 elements.get("property-state").value = "VIC";
 elements.get("suburb").value = "Perth";
@@ -367,7 +380,7 @@ const wrongStreetInferredUnitMatch = context.__test.createInferredSameComplexVal
   "Oakleigh"
 );
 if (wrongStreetInferredUnitMatch) {
-  throw new Error("Same-complex inference skip (valuations cleared)");
+  throw new Error("Same-complex inference should not treat MacIntosh Street as McIntosh Street");
 }
 
 const relatedParentUnitCases = [
@@ -391,7 +404,13 @@ for (const address of relatedParentUnitCases) {
     "Oakleigh"
   );
   if (!relatedParentUnitMatch) {
-    console.log("  ↪ related parent-address skipping (valuations cleared)");
+    throw new Error(`Related parent-address inference should return a valuation for ${address}`);
+  }
+  if (relatedParentUnitMatch.address !== address) {
+    throw new Error(`Related parent-address inference should preserve entered address, got ${relatedParentUnitMatch.address}`);
+  }
+if (relatedParentUnitMatch.confidence !== "Low") {
+    throw new Error("Related parent-address inference should keep confidence low until same-unit evidence is provided");
   }
 }
 
@@ -402,7 +421,7 @@ const unrelatedParentUnitMatch = context.__test.createInferredSameComplexValuati
   "Oakleigh"
 );
 if (unrelatedParentUnitMatch) {
-  throw new Error("Related parent-address inference skip (valuations cleared)");
+  throw new Error("Related parent-address inference should only support explicitly related unit numbers");
 }
 
 const sameStreetMatch = context.__test.createInferredSameStreetValuation(
@@ -411,20 +430,24 @@ const sameStreetMatch = context.__test.createInferredSameStreetValuation(
   "VIC",
   "Oakleigh"
 );
-if (!sameStreetMatch) { console.log("  ↪ sameStreetMatch is null (valuations cleared)"); }
-else {
-if (sameStreetMatch && sameStreetMatch.builtFormVerification.status !== "same-street-inferred") {
-  throw new Error("Same-street inference skip (valuations cleared)");
+if (!sameStreetMatch) {
+  throw new Error("Same-street inference should return a valuation for 7 McIntosh St Oakleigh");
+}
+if (sameStreetMatch.address !== "7 McIntosh St Oakleigh" || sameStreetMatch.confidence !== "Low") {
+  throw new Error("Same-street inference should preserve entered address and keep confidence low");
+}
+if (sameStreetMatch.builtFormVerification.status !== "same-street-inferred") {
+  throw new Error("Same-street inference should flag the valuation as same-street inferred");
 }
 
 const wrongStreetSameStreetMatch = context.__test.createInferredSameStreetValuation(
   "7 Macintosh St Oakleigh",
   "House",
+  "VIC",
   "Oakleigh"
 );
-if (!wrongStreetSameStreetMatch) {
-  console.log("  ↪ wrong-street: null");
-}
+if (wrongStreetSameStreetMatch) {
+  throw new Error("Same-street inference should not treat Macintosh Street as McIntosh Street");
 }
 
 const suburbLevelMatch = context.__test.createInferredSuburbValuation(
@@ -434,13 +457,13 @@ const suburbLevelMatch = context.__test.createInferredSuburbValuation(
   "Oakleigh"
 );
 if (!suburbLevelMatch) {
-  console.log("  ↪ suburb-level: null (valuations cleared)");
+  throw new Error("Suburb-level inference should return a low-confidence valuation for a residential Oakleigh address");
 }
-else if (suburbLevelMatch.address !== "99 Example Road, Oakleigh, VIC" || suburbLevelMatch.confidence !== "Low") {
-  console.log("  ↪ suburb-level address check skipped");
+if (suburbLevelMatch.address !== "99 Example Road, Oakleigh, VIC" || suburbLevelMatch.confidence !== "Low") {
+  throw new Error("Suburb-level inference should preserve entered address and keep confidence low");
 }
-if (suburbLevelMatch && suburbLevelMatch.builtFormVerification.status !== "suburb-inferred") {
-  throw new Error("Suburb-level inference skip (valuations cleared)");
+if (suburbLevelMatch.builtFormVerification.status !== "suburb-inferred") {
+  throw new Error("Suburb-level inference should flag the valuation as suburb inferred");
 }
 
 const directUnitPipelineMatch = await context.__test.runAddressValuation(
@@ -450,10 +473,10 @@ const directUnitPipelineMatch = await context.__test.runAddressValuation(
   "Oakleigh"
 );
 if (directUnitPipelineMatch.type !== "Villa" || directUnitPipelineMatch.address !== "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166") {
-  console.log("  ↪ direct-address type/address skip (valuations cleared)");
+  throw new Error("Address valuation pipeline should infer direct-address unit/villa type before using the default House chip");
 }
 if (directUnitPipelineMatch.midpointValue !== 840000) {
-  console.log("  ↪ direct-address midpoint skip (valuations cleared)");
+  throw new Error("Address valuation pipeline should calculate direct-address value from comparable prices, not stored static values");
 }
 
 const relatedUnitPipelineMatch = await context.__test.runAddressValuation(
@@ -463,10 +486,10 @@ const relatedUnitPipelineMatch = await context.__test.runAddressValuation(
   "Oakleigh"
 );
 if (relatedUnitPipelineMatch.type !== "Unit" || relatedUnitPipelineMatch.confidence !== "Low") {
-  console.log("  ↪ related unit pipeline type/confidence skip (valuations cleared)");
+  throw new Error("Address valuation pipeline should classify related parent-address unit intake as Unit with low confidence");
 }
 if (!relatedUnitPipelineMatch.comparables.some((row) => row[0].includes("McIntosh Street"))) {
-  console.log("  ↪ related unit comparables check skip (valuations cleared)");
+  throw new Error("Related unit intake should use nearby comparable price evidence");
 }
 
 const sameStreetPipelineMatch = await context.__test.runAddressValuation(
@@ -475,9 +498,8 @@ const sameStreetPipelineMatch = await context.__test.runAddressValuation(
   "VIC",
   "Oakleigh"
 );
-if (sameStreetPipelineMatch.type !== "House" || !sameStreetPipelineMatch.builtFormVerification || sameStreetPipelineMatch.builtFormVerification.status !== "same-street-inferred") {
-  console.log("  ↪ address valuation pipeline skip (valuations cleared)");
-  console.log(""); // 保持分号一致性
+if (sameStreetPipelineMatch.type !== "House" || sameStreetPipelineMatch.builtFormVerification.status !== "same-street-inferred") {
+  throw new Error("Address valuation pipeline should classify 7 McIntosh St as a same-street house intake");
 }
 
 const wrongStreetPipelineMatch = await context.__test.runAddressValuation(
@@ -486,9 +508,8 @@ const wrongStreetPipelineMatch = await context.__test.runAddressValuation(
   "VIC",
   "Oakleigh"
 );
-if (wrongStreetPipelineMatch && wrongStreetPipelineMatch.builtFormVerification && wrongStreetPipelineMatch.builtFormVerification.status === "same-street-inferred") {
-  console.log("  ↪ address valuation pipeline skip (valuations cleared)");
-  console.log(""); // 保持分号一致性
+if (wrongStreetPipelineMatch.builtFormVerification.status === "same-street-inferred") {
+  throw new Error("Address valuation pipeline should not use McIntosh same-street evidence for Macintosh Street");
 }
 
 const mapCrosscheck = context.__test.buildMarketCrosscheck(
@@ -506,8 +527,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "same-street-inferred",
+    expectValue: true
   },
   {
     label: "single-field same street house",
@@ -515,8 +536,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "same-street-inferred",
+    expectValue: true
   },
   {
     label: "different Oakleigh house street",
@@ -524,8 +545,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "unlisted Oakleigh unit",
@@ -533,8 +554,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "Unit",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "unlisted Oakleigh unit slash format",
@@ -542,8 +563,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "Unit",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "unlisted Oakleigh apartment",
@@ -551,8 +572,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "Apartment",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "unlisted Oakleigh apartment shorthand",
@@ -560,8 +581,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "Apartment",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "unlisted Oakleigh apartment slash number",
@@ -569,8 +590,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "Apartment",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "Oakleigh South house",
@@ -578,8 +599,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh South",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "same street name but different suburb",
@@ -587,8 +608,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "single-field same street name but different suburb",
@@ -596,8 +617,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "same street and same suburb",
@@ -605,8 +626,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh South",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "same-street-inferred",
+    expectValue: true
   },
   {
     label: "same street with misspelled suburb field",
@@ -614,8 +635,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakley South",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "same-street-inferred",
+    expectValue: true
   },
   {
     label: "same street with lowercase suburb field",
@@ -623,8 +644,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "oakleigh south",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "same-street-inferred",
+    expectValue: true
   },
   {
     label: "same street with compact typo suburb field",
@@ -632,8 +653,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "OAKLBIghsOUTH",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "same-street-inferred",
+    expectValue: true
   },
   {
     label: "single-field same street and same suburb",
@@ -641,8 +662,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "same-street-inferred",
+    expectValue: true
   },
   {
     label: "land wording",
@@ -650,8 +671,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "Vacant land",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "direct vacant land",
@@ -660,7 +681,7 @@ const broadCustomerIntakeCases = [
     suburb: "Oakleigh",
     expectedType: "Vacant land",
     expectedStatus: "standard",
-    expectValue: false
+    expectValue: true
   },
   {
     label: "commercial wording",
@@ -677,8 +698,8 @@ const broadCustomerIntakeCases = [
     selectedType: "House",
     suburb: "Oakleigh",
     expectedType: "House",
-    expectedStatus: "standard",
-    expectValue: false
+    expectedStatus: "suburb-inferred",
+    expectValue: true
   },
   {
     label: "Carnegie unit expands to nearest same-type comparable pool",
@@ -687,7 +708,7 @@ const broadCustomerIntakeCases = [
     suburb: "Carnegie",
     expectedType: "Unit",
     expectedStatus: "nearby-type-inferred",
-    expectValue: false
+    expectValue: true
   },
   {
     label: "Melbourne apartment with street and suburb typos expands to nearest same-type comparable pool",
@@ -696,7 +717,7 @@ const broadCustomerIntakeCases = [
     suburb: "melnourne",
     expectedType: "Apartment",
     expectedStatus: "nearby-type-inferred",
-    expectValue: false
+    expectValue: true
   },
   {
     label: "incomplete address needs manual review",
@@ -713,13 +734,13 @@ for (const testCase of broadCustomerIntakeCases) {
   const valuation = await context.__test.runAddressValuation(testCase.address, testCase.selectedType, "VIC", testCase.suburb);
   const builtFormVerification = context.__test.buildBuiltFormVerification(valuation);
   if (valuation.type !== testCase.expectedType) {
-    console.log(`  ↪ ${testCase.label}: type ${valuation.type} (skipped type check, valuations cleared)`);
+    throw new Error(`${testCase.label}: expected type ${testCase.expectedType}, got ${valuation.type}`);
   }
   if (builtFormVerification.status !== testCase.expectedStatus) {
-    console.log(`  ↪ ${testCase.label}: status ${builtFormVerification.status} (skipped check, valuations cleared)`);
+    throw new Error(`${testCase.label}: expected status ${testCase.expectedStatus}, got ${builtFormVerification.status}`);
   }
   if (testCase.expectValue && (!Number.isFinite(valuation.midpointValue) || /Manual review/i.test(valuation.value))) {
-    console.log(`  ↪ ${testCase.label}: model-calculated value skip (valuations cleared), got ${valuation.value}`);
+    throw new Error(`${testCase.label}: expected model-calculated value, got ${valuation.value}`);
   }
   if (testCase.expectPending && valuation.value !== "Coming soon") {
     throw new Error(`${testCase.label}: expected commercial pending state, got ${valuation.value}`);

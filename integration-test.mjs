@@ -131,14 +131,14 @@ describe("P1: 数据库 source", () => {
   });
 
   it("useDatabaseFallback:true 带 mock DB 返回 database_verified", async () => {
-    // 注入 mock DB source（返回 2 条未验证记录 → 不足 3 → research_only）
+    // 注入 mock DB source（1 条 verified 记录 → database_verified）
     const mockDbSource = {
       checkConnection: () => Promise.resolve(true),
       isAvailable: () => true,
       fetch: () => Promise.resolve([
         { address: "10 Mock St, Test", salePrice: 900000, saleDate: "2026-01-15",
           sourceUrl: "http://mock.com/1", sourceName: "mock", propertyType: "House",
-          verificationStatus: "unverified", _sourceMode: "database_verified",
+          verificationStatus: "verified", _sourceMode: "database_verified",
           bedrooms: 3, bathrooms: 2, carSpaces: 2, landSize: 500,
           qualityBand: null, batchId: "test_batch", verifiedAt: null }
       ])
@@ -146,36 +146,30 @@ describe("P1: 数据库 source", () => {
     const result = await runValuation({
       address: "10 Mock St", suburb: "Test", state: "VIC", propertyType: "House"
     }, { fetch: false, useDatabaseFallback: true, dbSource: mockDbSource });
-    // 1 条 DB 记录 + _sourceMode 标记 → database_verified
+    // 1 条 DB verified 记录 → database_verified
     assert.equal(result.evidenceMode, "database_verified",
       `expected database_verified, got ${result.evidenceMode}`);
     assert.ok("status" in result);
   });
 
-  it("CDP 有 >=3 comps 时 useDatabaseFallback 不触发 DB", async () => {
-    // 注：此测试需要真实 CDP。无 CDP 时跳过断言
-    const { spawnSync } = await import("node:child_process");
-    const curl = spawnSync("bash", ["-c", "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18800/json/version 2>/dev/null || echo '0'"], { encoding: "utf8" });
-    const cdpAvailable = curl.stdout.trim() !== "0";
-    if (!cdpAvailable) {
-      console.log("  ↪ SKIP (no CDP)");
-      return;
-    }
-    // CDP 在线时，349 Moray Street 应有 >=3 comps，不触发 DB
-    const mockDbSource = {
-      checkConnection: () => { throw new Error("DB should not be called"); },
-      isAvailable: () => false,
-      fetch: () => { throw new Error("DB should not be called"); }
+  it("mock source: useDatabaseFallback 时 DB 被调用检查", async () => {
+    let dbCalledCount = 0;
+    const countingDbSource = {
+      checkConnection: async () => { dbCalledCount++; return true; },
+      isAvailable: () => true,
+      fetch: async () => { dbCalledCount++; return []; }
     };
-    const result = await localValuation({
-      address: "349 Moray Street", suburb: "South Melbourne", state: "VIC", propertyType: "House"
-    });
+    // 无 CDP comps → 应调用 DB
+    const result = await runValuation({
+      address: "18 NoCdp St", suburb: "Nowhere", state: "VIC", propertyType: "House"
+    }, { fetch: false, useDatabaseFallback: true, dbSource: countingDbSource });
+    // CDP 没结果时 DB 被调
+    assert.ok(dbCalledCount > 0, `expected DB calls, got ${dbCalledCount}`);
     assert.ok("evidenceMode" in result);
-    // 即使 CDP 没抓到 ≥3，因 mock DB 不会崩溃
   });
 
   it("证据标签仅检查 accepted 中确实来自 DB 的记录", async () => {
-    // 注入 mock DB source：1 条 verified 记录 + 2 条 unverified（合并后 3 条）
+    // 注入 mock DB source：1 条 verified + 2 unverified
     const mockDbSource = {
       checkConnection: () => Promise.resolve(true),
       isAvailable: () => true,
@@ -197,11 +191,30 @@ describe("P1: 数据库 source", () => {
     const result = await runValuation({
       address: "11 Verified St", suburb: "Test", state: "VIC", propertyType: "House"
     }, { fetch: false, useDatabaseFallback: true, dbSource: mockDbSource });
-    // 至少 1 条 accepted 来自 DB → database_verified
+    // 有 verified 记录 → database_verified
     if (result.status === "completed") {
       assert.equal(result.evidenceMode, "database_verified",
         `expected database_verified when DB comps accepted, got ${result.evidenceMode}`);
     }
+  });
+
+  it("仅 unverified DB 记录不触发 database_verified", async () => {
+    const mockDbSource = {
+      checkConnection: () => Promise.resolve(true),
+      isAvailable: () => true,
+      fetch: () => Promise.resolve([
+        { address: "20 Unverified Only", salePrice: 890000, saleDate: "2026-03-01",
+          sourceUrl: "http://dbv.com/u1", sourceName: "dbv", propertyType: "House",
+          verificationStatus: "unverified", _sourceMode: "database_verified",
+          bedrooms: 3, bathrooms: 1, carSpaces: 1, landSize: 400 }
+      ])
+    };
+    const result = await runValuation({
+      address: "20 Unverified Only", suburb: "Test", state: "VIC", propertyType: "House"
+    }, { fetch: false, useDatabaseFallback: true, dbSource: mockDbSource });
+    // unverified 记录不应标 database_verified
+    assert.notEqual(result.evidenceMode, "database_verified",
+      `should not be database_verified for unverified records, got ${result.evidenceMode}`);
   });
 
   it("无 DB 时 evidenceMode 为 unavailable", async () => {
