@@ -1527,7 +1527,7 @@ function applyLanguage() {
   setCollectionText(".theme-card", labels.investorButtons);
   setInvestorDetail(labels.investorDetail);
   byId("suburb").placeholder = language === "zh" ? "例如 Oakleigh" : "Oakleigh";
-  byId("address").placeholder = language === "zh" ? "例如 Unit 2, 11 McIntosh Street" : "Unit 2, 11 McIntosh Street";
+  byId("address").placeholder = language === "zh" ? "例如 1 Main Street, Oakleigh" : "e.g. 1 Main Street, Oakleigh";
   byId("lead-email").placeholder = language === "zh" ? "you@example.com" : "you@example.com";
   byId("lead-name").placeholder = language === "zh" ? "你的姓名" : "Your name";
   byId("lead-phone").placeholder = language === "zh" ? "下载 PDF 时需要" : "For PDF download";
@@ -2209,6 +2209,11 @@ byId("open-qr-modal").addEventListener("click", () => {
 
 byId("qr-close").addEventListener("click", () => {
   byId("qr-modal").close();
+});
+
+// 确保初始地址输入栏为空（防止浏览器 autofill/storage 污染）
+document.addEventListener("DOMContentLoaded", () => {
+  byId("address").value = "";
 });
 
 applyLanguage();

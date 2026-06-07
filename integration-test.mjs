@@ -644,6 +644,14 @@ describe("P4: 前端代码契约检查", () => {
     assert.ok(appJs.includes("Preliminary estimate, limited data"),
       "must contain limited label");
   });
+
+  it("地址输入框初始为空（无默认值）", () => {
+    const html = fs.readFileSync("index.html", "utf8");
+    assert.ok(!html.match(/<input[^>]*id="address"[^>]*value=/), "input#address must not have value attribute");
+    const appJs = fs.readFileSync("app.js", "utf8");
+    assert.ok(appJs.includes("byId(\"address\").value = \"\""), "app.js must clear address.value on DOMContentLoaded");
+    assert.ok(!html.includes("McIntosh"), "placeholder must not contain McIntosh");
+  });
 });
 
 // ── P4 测试辅助函数 ──
