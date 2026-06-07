@@ -2413,7 +2413,7 @@ function renderValuation(data) {
   renderComparables(data.comparables);
   renderMap(data);
   // 显式展示证据来源标记
-  const evidenceBadge = byId("evidence-badge");
+  const evidenceBadge = byId("evidence-badge-val");
   if (evidenceBadge) {
     const evidenceMode = data.evidenceMode || "unavailable";
     const isFallback = data.isFallback;

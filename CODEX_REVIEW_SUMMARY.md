@@ -1,113 +1,88 @@
 # Codex Review: Phase 1 Integration
 
-**Branch:** `codex-review`  
-**HEAD commit:** `d984410` (on top of `5d52d3d`)  
-**Repo:** `github.com/yuhaifengfrank-sfrank/melbourne-property-valuation`
+**Branch:** `codex-review` → `main`  
+**HEAD commit:** `97cb2c9`  
+**Repo:** `github.com/yuhaifengfrank-svg/melbourne-property-valuation`
 
 ---
 
-## What This Is
+## Project Status
 
-This branch integrates the locally-developed live valuation API architecture into the HEAD version that runs `aushomevalue.com.au`. The HEAD version works entirely from 14 hardcoded valuations; this branch adds a real backend pipeline while preserving full backward compatibility.
+This branch adds a live valuation API pipeline while keeping full backward compatibility with the static fallback. The `main` branch (HEAD `5d52d3d`) powers `aushomevalue.com.au` with 14 hardcoded valuations.
 
----
+## Codex Review History
 
-## Architecture Overview
+| Round | Outcome | Key Fixes |
+|-------|---------|-----------|
+| 1 | Not merge — P0 crash, P1 data fabrication | Fixed Leaflet DOM crash, extracted shared service, removed fake field defaults |
+| 2 | Not merge — P1 labels/visibility | Tightened `live_verified` criteria, added `evidence-badge` UI, removed marketing-video-demo |
+| 3 (current) | Not merge — P1 contract + badge position | Cross-source verification, `isFallback` in success path, badge next to midpoint |
+
+## Current Architecture
 
 ```
-Browser Form ──POST──> /api/valuation ──> collectComparableResearch()
+Browser Form ──POST──> /api/valuation ──> runValuation()
                               │                    │
-                              │              Nominatim geocode
-                              │                    │
-                              │              Browser collector (CDP)
-                              │                    │
-                              │              realestate.com.au + Domain
-                              │                    │
-                              │              ComparableResearchCollector
-                              │                    │
-                              └──> valueProperty(heuristics + comparables)
-                                        │
-                                    JSON response with coordinates,
-                                    comparables, estimates, confidence
+                              │  ┌──────────────────┘
+                              │  │ Vercel (fetch:false)   │ Local Dev (fetch:true)
+                              │  │ No CDP                 │ CDP Chrome :18800
+                              │  │ research_only badge    │ live_verified / research_only
+                              │  │ Static fallback with   │ badge
+                              │  │ curated_fixture badge  │
+                              │  └────────────────────────┘
+                              │
+                              └──> Static fallback (original app.js)
+                                   evidence: curated_fixture
+                                   isFallback: true
 ```
 
----
-
-## Changes from HEAD (`5d52d3d`)
-
-### New Files (Core Pipeline)
+## Key New Files
 
 | File | Role |
 |------|------|
-| `lib/comparable-research-collector.js` | Orchestrates address resolution, comparable collection, public data gathering |
-| `lib/browser-collector.js` | CDP WebSocket scraper (no Puppeteer — uses OpenClaw Chrome on port 18800) |
-| `lib/valuation-engine.js` | Heuristic + comparable-based valuation with adjustment bands |
-| `lib/abs-client.js` | ABS SEIFA profile fetcher |
+| `lib/valuation-service.js` | Shared orchestration — used by both `dev-server.mjs` and `api/valuation.js` |
+| `lib/comparable-research-collector.js` | Collects comparables, ABS, VicPlan, Nominatim |
+| `lib/browser-collector.js` | CDP WebSocket scraper (local only) |
+| `lib/valuation-engine.js` | Heuristic + comparable-based valuation |
+| `lib/comparable-source.js` | Abstract source interface (not yet wired) |
+| `lib/local-cdp-source.js` | CDP ComparableSource implementation (not yet wired) |
+| `lib/abs-client.js` | ABS SEIFA fetcher |
 | `lib/vicplan-client.js` | VicPlan zoning overlay fetcher |
-| `lib/rba-client.js` | RBA cash rate fetcher (currently returns empty — data source issue) |
-| `lib/db-schema.js` | Database schema for future lead storage |
-| `dev-server.mjs` | Express dev server (localhost:3000) — serves static + POST /api/valuation |
-| `api/valuation.js` | Vercel serverless handler (imports lib modules) |
-| `collect-comparables.mjs` | CLI comparable collector script |
-| `cron-daily.mjs` / `cron-weekly.mjs` | Scheduled data refresh scripts |
-| Various test files | `valuation-api-test.mjs`, `valuation-engine-test.mjs`, `test-browser-pipeline.mjs`, etc. |
+| `lib/rba-client.js` | RBA cash rate (currently returns empty) |
+| `lib/db-schema.js` | Database schema for periodic comparable storage |
+| `dev-server.mjs` | Express dev server |
+| `api/valuation.js` | Vercel serverless handler |
+| `integration-test.mjs` | 17-test suite (P0-P1 coverage) |
+| `regression-test.mjs` | Legacy VM-sandbox regression (6 property types) |
 
-### Modified Files (Frontend Integration)
+## Key Modified Files
 
-**`app.js`** (~200 lines changed of 3133 total)
+- **`app.js`** — Leaflet map, async API with fallback chain, evidence badge, `evidenceMode`/`isFallback` passthrough
+- **`index.html`** — Leaflet CDN, `evidence-badge-val` DOM element
+- **`styles.css`** — evidence-badge colours, map-container
+- **`package.json`** — `npm test` and `npm run check` configured
 
-1. **`renderMap` rewritten** — Replaced CSS grid pseudo-map with real Leaflet map (OpenStreetMap tiles)
-   - Property marker + comparable circle markers
-   - Falls back to Nominatim suburb lookup if lat/lon not provided by API
-   - Destroys/recreates map instance on each valuation
-2. **`runAddressValuation` → async** — Now calls `POST /api/valuation` first
-   - On success: parses API JSON into the same structure `renderValuation` expects
-   - On failure: falls through to original hardcoded valuation chain (`findValuation` → `createInferredSameComplex` → etc.)
-3. **`start-valuation` click → async** — Button shows "Checking public evidence..." while API in flight
+## Evidence Mode Labels
 
-**`index.html`** — Added Leaflet CSS/JS CDN, replaced map-grid with real map-container div
+| Label | Meaning | When |
+|-------|---------|------|
+| `live_verified` | ≥3 cross-verified comps from ≥2 domains | Local dev with CDP |
+| `research_only` | Some comps found but insufficient evidence | Local with low data, Vercel after DB |
+| `unavailable` | No comparable data at all | Vercel without DB |
+| `curated_fixture` | Static fallback, not live | Vercel (current default) |
 
-**`styles.css`** — Replaced .map-grid/.road/.pin styles with .map-container
+## Unresolved (Next Phase)
 
-**`dev-server.mjs`** — Response now includes `subject.coordinates` and `subject.verification` for Leaflet map rendering
+- **Vercel production source** — No database-backed ComparableSource yet. All Vercel requests fall back to `curated_fixture`. Need `DatabaseComparableSource` + periodic CDP cron before Vercel can return real valuations.
+- **app.js decomposition** — ~3100 lines, could split into modules. Low-priority.
+- **RBA data** — `rba-client.js` returns empty; data source issue.
+- **Feature flag** — `RUN_VALUATION_API` env var to skip live API on production until DB source ready.
 
----
-
-## End-to-End Validation
-
-Tested with `349 Moray Street, South Melbourne VIC`:
+## Testing
 
 ```
-Nominatim:      verified → South Melbourne VIC 3205
-Coordinates:    -37.8370718, 144.9655525
-Comparables:    2 Core (191 Nelson Rd $1,381,000, 163 Nelson Rd $1,530,000)
-Estimate:       $1,403,356 midpoint ($1,292,902 – $1,513,810)
-Confidence:     Low-Medium
-Map:            Leaflet with property pin + comparable circles
+npm run check   # node --check app.js + npm test
+npm test         # 17/17 tests pass (integration + regression)
 ```
 
----
-
-## What Needs Codex Review
-
-1. **Architecture** — The `comparable-research-collector.js` → `valuation-engine.js` pipeline. Does the data flow make sense for production?
-2. **Error handling** — API failure fallback to hardcoded valuations: reasonable or leaky abstraction?
-3. **Frontend-backend coupling** — Is the JSON format from `/api/valuation` suitable for Vercel deployment?
-4. **Browser collector** — CDP WebSocket approach vs future Puppeteer serverless: acceptable for MVP or blocker?
-5. **Missing pieces** — RBA rates returning empty, ABS data quality, VicPlan response parsing
-
----
-
-## To Review
-
-- `git diff 5d52d3d..HEAD -- app.js` (frontend changes)
-- `dev-server.mjs` (API endpoint)
-- `lib/comparable-research-collector.js` (orchestration)
-- `lib/valuation-engine.js` (core math)
-- `lib/browser-collector.js` (data collection)
-
-Or view the full diff:
-```
-git fetch origin codex-review
-git diff 5d52d3d..origin/codex-review
-```
+Note: `regression-test.mjs` uses VM sandbox with partial DOM mock. Output includes `res.json is not a function` warnings — these are harmless (the mock `fetch` doesn't implement `.json()`).
