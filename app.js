@@ -505,13 +505,13 @@ const uiText = {
       ".fundamentals-grid .detail-panel:nth-child(1) h2": "Suburb Fundamentals",
       ".fundamentals-grid .detail-panel:nth-child(2) h2": "Planning & Potential",
       "#uploads .eyebrow": "Improve accuracy",
-      "#uploads h2": "Upload missing evidence to revise the estimate.",
-      "#uploads p:not(.eyebrow):not(.pdf-note)": "Title, Section 32, current photos and inspection notes can upgrade confidence and narrow the valuation range.",
+      "#uploads h2": "Upload evidence to strengthen the report.",
+      "#uploads p:not(.eyebrow):not(.pdf-note)": "Title, Section 32, current photos and inspection notes will be reviewed as part of the evidence assessment.",
       ".pdf-note": "PDF download requires phone number and contact consent.",
       "#upload-evidence": "Upload evidence",
       "#download-pdf": "Download PDF",
       "#evidence-review h3": "Evidence review applied",
-      "#evidence-revision-note": "Estimate revised using uploaded evidence. Download the report to see the evidence summary.",
+      "#evidence-revision-note": "Evidence received and logged for review. Download the report to see the evidence summary.",
       "#investor .eyebrow": "Investor Hub",
       "#investor h2": "Explore property-backed investment themes.",
       "#investor p:not(.eyebrow)": "General information only. Specific private opportunities require investor profile, eligibility review and compliance approval.",
@@ -626,8 +626,8 @@ const uiText = {
       ".fundamentals-grid .detail-panel:nth-child(1) h2": "区域基本面",
       ".fundamentals-grid .detail-panel:nth-child(2) h2": "规划与潜力",
       "#uploads .eyebrow": "提高准确度",
-      "#uploads h2": "上传缺失资料以修正估值。",
-      "#uploads p:not(.eyebrow):not(.pdf-note)": "产权文件、Section 32、当前照片和检查记录可以提升置信度并收窄估值区间。",
+      "#uploads h2": "上传资料以增强报告完整性。",
+      "#uploads p:not(.eyebrow):not(.pdf-note)": "产权文件、Section 32、当前照片和检查记录会进入报告的证据审查部分。",
       ".pdf-note": "下载 PDF 需要填写电话并授权联系。",
       "#upload-evidence": "上传资料",
       "#download-pdf": "下载 PDF",
@@ -1287,81 +1287,54 @@ function renderEvidenceReview(summary) {
   panel.classList.remove("hidden");
 }
 
-function buildEvidenceSummary(files, detectedTypes, adjustedMidpoint, rangePercent, lang = language) {
+function buildEvidenceSummary(files, detectedTypes, _adjustedMidpoint, _rangePercent, lang = language) {
   const detectedLabels = detectedTypes.map((type) => {
     const config = evidenceTypes[type];
     return lang === "zh" ? config.labelZh : config.label;
   });
-  const rangeLabel = `${Math.round(rangePercent * 100)}%`;
   if (lang === "zh") {
     return [
-      `已读取 ${files.length} 个文件：${files.map((file) => file.name).join("、")}`,
-      `识别资料：${detectedLabels.join("、") || "未识别，需要人工复核"}`,
-      Number.isFinite(adjustedMidpoint)
-        ? `估值中点修正为 ${formatMoney(adjustedMidpoint)}，展示区间收窄到约 ±${rangeLabel}。`
-        : "当前估值需要人工复核，无法自动修正中点。",
+      "已读取 " + files.length + " 个文件：" + files.map((f) => f.name).join("、"),
+      "识别资料：" + (detectedLabels.join("、") || "未识别，需要人工复核"),
+      "资料已收到，待进一步复核。当前估值未因此调整。",
       "这些资料会进入报告的 evidence review 部分。"
     ];
   }
   return [
-    `Read ${files.length} file${files.length === 1 ? "" : "s"}: ${files.map((file) => file.name).join(", ")}`,
-    `Recognised evidence: ${detectedLabels.join(", ") || "unclassified, manual review required"}`,
-    Number.isFinite(adjustedMidpoint)
-      ? `Revised midpoint to ${formatMoney(adjustedMidpoint)} and narrowed the visible range to about ±${rangeLabel}.`
-      : "Current estimate requires manual review, so the midpoint was not automatically revised.",
+    "Read " + files.length + " file" + (files.length === 1 ? "" : "s") + ": " + files.map((f) => f.name).join(", "),
+    "Recognised evidence: " + (detectedLabels.join(", ") || "unclassified, manual review required"),
+    "Evidence received and logged for review. The current estimate has not been adjusted.",
     "These items will be included in the evidence review section of the report."
   ];
 }
 
-function applyEvidenceSources(sources, sourceLabel = "uploaded evidence") {
+function applyEvidenceSources(sources, sourceLabel) {
   if (!Number.isFinite(currentValuation.midpointValue)) {
     byId("upload-message").textContent =
       language === "zh"
-        ? "请先输入地址并生成估值，再上传资料修正估值。"
+        ? "请先输入地址并生成估值，再上传资料。"
         : "Please enter an address and generate an estimate before uploading evidence.";
     return;
   }
-
   if (!sources.length) return;
   const fileList = sources.map((source) => ({ name: source.name }));
   const fileTexts = sources.map((source) => source.text || "");
   const detectedTypes = [
     ...new Set(sources.flatMap((source) => detectEvidenceTypes(source.name, source.text)))
   ];
-  const allText = fileTexts.join("\n").toLowerCase();
-  const hasPositiveCondition = /renovated|good condition|well maintained|updated kitchen|updated bathroom|优良|翻新|维护良好/.test(allText);
-  const hasQuietStreet = /quiet|wide street|street trees|low traffic|安静|宽|树|低车流/.test(allText);
-  const hasPlanningConstraint = /heritage|flood|easement|single dwelling covenant|限制|地役权|洪水|heritage overlay/.test(allText);
-  const completeness = detectedTypes.length;
-  const adjustment =
-    (hasPositiveCondition ? 0.008 : 0) +
-    (hasQuietStreet ? 0.004 : 0) -
-    (hasPlanningConstraint ? 0.006 : 0);
-  const adjustedMidpoint = Math.round((currentValuation.midpointValue * (1 + adjustment)) / 1000) * 1000;
-  const rangePercent = Math.max(0.04, 0.1 - completeness * 0.012);
-  const revisedRange = formatEvidenceRange(adjustedMidpoint, rangePercent);
-  const evidenceSummary = buildEvidenceSummary(fileList, detectedTypes, adjustedMidpoint, rangePercent, "en");
-  const evidenceSummaryZh = buildEvidenceSummary(fileList, detectedTypes, adjustedMidpoint, rangePercent, "zh");
-
+  const evidenceSummary = buildEvidenceSummary(fileList, detectedTypes, null, null, "en");
+  const evidenceSummaryZh = buildEvidenceSummary(fileList, detectedTypes, null, null, "zh");
   const revisedValuation = {
     ...currentValuation,
-    value: revisedRange.value,
-    midpoint: revisedRange.midpoint,
-    midpointValue: adjustedMidpoint,
-    confidence: completeness >= 4 ? "High" : completeness >= 2 ? "Medium-High" : currentValuation.confidence,
-    status: completeness >= 4 ? "High" : currentValuation.status,
-    reasons: [...currentValuation.reasons, "Uploaded client evidence has been used to revise the range and confidence."],
-    reasonsZh: [...currentValuation.reasonsZh, "已根据客户上传资料修正估值区间和置信度。"],
     evidenceSummary,
     evidenceSummaryZh
   };
-
   renderValuation(revisedValuation);
   renderEvidenceReview(evidenceSummary);
   byId("upload-message").textContent =
     language === "zh"
-      ? `${fileList.length} 项资料已读取，估值已根据资料修正。`
-      : `${fileList.length} ${sourceLabel} item${fileList.length === 1 ? "" : "s"} read. Estimate revised using evidence.`;
+      ? fileList.length + " 项资料已收到，待进一步复核。"
+      : fileList.length + " " + (sourceLabel || "uploaded") + " item" + (fileList.length === 1 ? "" : "s") + " received and logged for review.";
 }
 
 async function applyEvidenceFiles(files) {

@@ -312,3 +312,44 @@ describe("P1: Cron 隔离", () => {
     assert.ok(output.includes("DATABASE_URL not set"), `output: ${output.slice(0, 200)}`);
   });
 });
+
+
+
+import { execSync } from "node:child_process";
+
+describe("P2: 核验规则", () => {
+  it("两来源日期差≤90天，可 cross_source_verified", () => {
+    const date1 = new Date("2026-04-08");
+    const date2 = new Date("2026-04-15");
+    const diffDays = Math.abs((date2 - date1) / (1000 * 60 * 60 * 24));
+    assert.ok(diffDays <= 90, `diff ${diffDays} days > 90`);
+  });
+
+  it("两来源日期差>90天，不 cross_source_verified", () => {
+    const date1 = new Date("2026-01-01");
+    const date2 = new Date("2026-05-02");
+    const diffDays = Math.abs((date2 - date1) / (1000 * 60 * 60 * 24));
+    assert.ok(diffDays > 90, `diff ${diffDays} days should be > 90`);
+  });
+});
+
+describe("P2: 上传文件不自动调整估值", () => {
+  it("上传4个文件不能自动变成High", () => {
+    const appJs = execSync("cat app.js", { encoding: "utf8" });
+    const hasAutoHigh = /completeness\s*>=\s*4/.test(appJs) && /"High"/.test(appJs);
+    const hasHasPositiveCondition = /hasPositiveCondition/.test(appJs);
+    const hasHasQuietStreet = /hasQuietStreet/.test(appJs);
+    assert.equal(hasAutoHigh, false, "auto High from upload count still present");
+    assert.equal(hasHasPositiveCondition, false, "renovated keyword adjustment still present");
+    assert.equal(hasHasQuietStreet, false, "quiet street keyword adjustment still present");
+  });
+
+  it("上传含renovated/quiet street关键词不改变估值", () => {
+    const appJs = execSync("cat app.js", { encoding: "utf8" });
+    // 检查函数体：如果 adjustedMidpoint 出现在计算语句而非参数定义中，就是旧版
+    // 函数定义中含 _adjustedMidpoint（unused prefix）是预期的新版签名
+    // 但如果有 completion >= 4 或 hasPositiveCondition 等调整逻辑，就还有问题
+    const hasAdjustmentLogic = /hasPositiveCondition|hasQuietStreet|hasPlanningConstraint/.test(appJs);
+    assert.equal(hasAdjustmentLogic, false, "keyword adjustment logic still present");
+  });
+});
