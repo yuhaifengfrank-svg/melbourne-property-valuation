@@ -130,25 +130,27 @@ describe("P1: 数据库 source", () => {
     assert.equal(result.length, 0);
   });
 
-  it("useDatabaseFallback:true 带 mock DB 返回 database_verified", async () => {
-    // 注入 mock DB source（1 条 verified 记录 → database_verified）
+  it("useDatabaseFallback:true 带 mock DB 返回 database_single_source", async () => {
+    // 注入 mock DB source（5 条 single_source_observed → database_single_source）
+    function makeSingleObs(i) {
+      return { address: "10 Mock St #" + i + ", Test", salePrice: 900000 + i * 1000,
+        saleDate: "2026-01-" + String(15 + i).padStart(2,"0"),
+        sourceUrl: "http://mock.com/" + i, sourceName: "rea", propertyType: "House",
+        verificationStatus: "single_source_observed", _sourceMode: "database_verified",
+        bedrooms: 3, bathrooms: 2, carSpaces: 2, landSize: 500,
+        qualityBand: null, batchId: "test_batch", verifiedAt: null };
+    }
     const mockDbSource = {
       checkConnection: () => Promise.resolve(true),
       isAvailable: () => true,
-      fetch: () => Promise.resolve([
-        { address: "10 Mock St, Test", salePrice: 900000, saleDate: "2026-01-15",
-          sourceUrl: "http://mock.com/1", sourceName: "mock", propertyType: "House",
-          verificationStatus: "verified", _sourceMode: "database_verified",
-          bedrooms: 3, bathrooms: 2, carSpaces: 2, landSize: 500,
-          qualityBand: null, batchId: "test_batch", verifiedAt: null }
-      ])
+      fetch: () => Promise.resolve(Array.from({length:5}, (_,i) => makeSingleObs(i)))
     };
     const result = await runValuation({
       address: "10 Mock St", suburb: "Test", state: "VIC", propertyType: "House"
     }, { fetch: false, useDatabaseFallback: true, dbSource: mockDbSource });
-    // 1 条 DB verified 记录 → database_verified
-    assert.equal(result.evidenceMode, "database_verified",
-      `expected database_verified, got ${result.evidenceMode}`);
+    // 5 条 single_source_observed 记录 → database_single_source
+    assert.equal(result.evidenceMode, "database_single_source",
+      `expected database_single_source, got ${result.evidenceMode}`);
     assert.ok("status" in result);
   });
 
@@ -196,7 +198,7 @@ describe("P1: 数据库 source", () => {
       fetch: () => Promise.resolve([
         { address: "11 Verified St", salePrice: 950000, saleDate: "2026-02-01",
           sourceUrl: "http://dbv.com/1", sourceName: "dbv", propertyType: "House",
-          verificationStatus: "verified", _sourceMode: "database_verified",
+          verificationStatus: "cross_source_verified", _sourceMode: "database_verified",
           bedrooms: 3, bathrooms: 2, carSpaces: 2, landSize: 500 },
         { address: "12 Unverified St", salePrice: 930000, saleDate: "2026-01-20",
           sourceUrl: "http://dbv.com/2", sourceName: "dbv", propertyType: "House",
