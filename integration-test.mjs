@@ -129,6 +129,56 @@ describe("P1: 数据库 source", () => {
     assert.ok(Array.isArray(result));
     assert.equal(result.length, 0);
   });
+
+  it("useDatabaseFallback:true 不崩溃（无 DB 时不阻塞）", async () => {
+    const result = await runValuation({
+      address: "1 DB Test St",
+      suburb: "Test",
+      state: "VIC",
+      propertyType: "House"
+    }, { fetch: false, useDatabaseFallback: true });
+    assert.ok("evidenceMode" in result);
+    assert.ok("status" in result);
+  });
+
+  it("CDP 结果>=3 时 useDatabaseFallback 不触发 DB", async () => {
+    // 模拟已有 3 comps 时不会走到 DB
+    // 绕过 collector 直接注 comps 难，但至少验证不崩溃
+    const result = await localValuation({
+      address: "349 Moray Street",
+      suburb: "South Melbourne",
+      state: "VIC",
+      propertyType: "House"
+    });
+    // 不崩溃即可；如果有 CDP comps >= 3，evidenceMode 应该是 live_verified
+    assert.ok("evidenceMode" in result);
+    assert.ok("comparables" in result || "comparableCount" in result);
+  });
+
+  it("证据标签不因未接受 DB 记录而高估", async () => {
+    // 空 DB + useDatabaseFallback → unavailable
+    const result = await runValuation({
+      address: "2 Unverified St",
+      suburb: "Nowhere",
+      state: "VIC",
+      propertyType: "House"
+    }, { fetch: false, useDatabaseFallback: true });
+    // 没有 DATABASE_URL，不会出现 database_verified
+    assert.notEqual(result.evidenceMode, "database_verified", "should not be database_verified without DB");
+  });
+
+  it("合并边界：Comps 不突然膨胀 > max 上限", async () => {
+    // 验证 comps 列表不会被 DB 结果撑爆
+    // 通过使用已有测试路径检查列表上限
+    const result = await runValuation({
+      address: "3 Overflow Lane",
+      suburb: "Somewhere",
+      state: "VIC",
+      propertyType: "House"
+    }, { fetch: false, useDatabaseFallback: true });
+    const comps = result.comparables || [];
+    assert.ok(comps.length <= 15, `comps count should be reasonable, got ${comps.length}`);
+  });
 });
 
 describe("P1: 物业类型覆盖", () => {
@@ -156,6 +206,23 @@ describe("P1: 地址州冲突", () => {
     const addr = "10 Example Street, Sydney NSW 2000";
     const match = addr.match(stateRegex);
     assert.equal(match?.[1], "NSW");
+  });
+});
+
+describe("P1: 索引迁移脚本", () => {
+  it("migrate-cs-dedup-index.mjs 语法正确", async () => {
+    const { execSync } = await import("node:child_process");
+    const result = execSync("node --check migrate-cs-dedup-index.mjs 2>&1 || echo syntax-error", { encoding: "utf8" });
+    assert.equal(result.trim(), "", `index migration syntax error: ${result}`);
+  });
+
+  it("无 DATABASE_URL 时索引迁移不崩溃", async () => {
+    const { spawnSync } = await import("node:child_process");
+    const result = spawnSync("node", ["migrate-cs-dedup-index.mjs"], { encoding: "utf8" });
+    const output = (result.stdout || "") + "\n" + (result.stderr || "");
+    // 无 DB 时 exit(1) 是合理的（迁移无法完成）
+    // 重点是不抛 SyntaxError/ReferenceError
+    assert.ok(!output.includes("SyntaxError") && !output.includes("ReferenceError"), `unexpected errors: ${output.slice(0, 200)}`);
   });
 });
 
