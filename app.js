@@ -2412,6 +2412,24 @@ function renderValuation(data) {
   setList("suburb-list", getLocalizedArray(data, "suburb"));
   renderComparables(data.comparables);
   renderMap(data);
+  // 显式展示证据来源标记
+  const evidenceBadge = byId("evidence-badge");
+  if (evidenceBadge) {
+    const evidenceMode = data.evidenceMode || "unavailable";
+    const isFallback = data.isFallback;
+    evidenceBadge.className = "evidence-badge " + evidenceMode;
+    evidenceBadge.style.display = "flex";
+    if (isFallback || evidenceMode === "curated_fixture") {
+      evidenceBadge.textContent = language === "zh" ? "⚠ 演示数据，非实时估值" : "⚠ Demo data, not a live valuation";
+    } else {
+      const labels = {
+        live_verified: language === "zh" ? "✓ 实时数据验证" : "✓ Live data verified",
+        research_only: language === "zh" ? "📊 研究数据，来源有限" : "📊 Limited data, research only",
+        unavailable: language === "zh" ? "✗ 暂无可比数据" : "✗ No comparable data available"
+      };
+      evidenceBadge.textContent = labels[evidenceMode] || evidenceMode;
+    }
+  }
   renderLoanScenario();
   renderMarketCrosscheck(data);
   renderLockState();

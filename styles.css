@@ -652,6 +652,12 @@ button:hover {
   margin: 0;
 }
 
+.evidence-badge { display: flex; }
+.evidence-badge.live_verified { background: #e3fce8; color: #1b5e20; }
+.evidence-badge.research_only { background: #fff3e0; color: #e65100; }
+.evidence-badge.unavailable { background: #fce4ec; color: #b71c1c; }
+.evidence-badge.curated_fixture { background: #fff3e0; color: #bf360c; }
+
 .evidence-review {
   background: #f7faf8;
   border: 1px solid var(--line);
