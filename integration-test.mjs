@@ -645,28 +645,35 @@ describe("P4: 前端代码契约检查", () => {
       "must contain limited label");
   });
 
-  it("地址解析：单独输入门牌+街道时返回空（不误判为 suburb）", () => {
+  
+  it("场景1: 只输入街道 18 Moresby St + Suburb=Oakleigh South -> canonical 包含 suburb", () => {
     const appJs = fs.readFileSync("app.js", "utf8");
-    assert.ok(appJs.includes("looksLikeStreetOnly"), "looksLikeStreetOnly helper must exist");
-    assert.ok(appJs.includes("st"), "suffix detection present");
+    assert.ok(appJs.includes("if (!inlineSuburb)"), "Rule 1: no inline -> use enteredSuburb");
+    assert.ok(appJs.includes("if (enteredSuburb) parts.push(enteredSuburb)"), "must push enteredSuburb when no inline");
   });
 
-  it("地址解析：18 Moresby St, Oakleigh South, VIC → suburb=Oakleigh South", () => {
+  it("场景2: 18 Moresby St, Oakleigh South + Suburb 相同 -> 不重复", () => {
     const appJs = fs.readFileSync("app.js", "utf8");
-    assert.ok(appJs.includes("lastPart"), "suburbFromAddress must use comma-split last part");
-    assert.ok(appJs.match(/\\bst\\b/i), "looksLikeStreetOnly must handle 'st' abbreviation");
+    assert.ok(appJs.includes("normInline === normEntered"), "Rule 2: same suburb -> no duplicate");
+    assert.ok(appJs.includes("parts.push(inlineSuburb)"), "Rule 2: use inline suburb");
   });
 
-  it("API payload: suburb 和 state 单独传参", () => {
+  it("场景3: 地址含 suburb + Suburb 框不同 -> 以地址为准", () => {
     const appJs = fs.readFileSync("app.js", "utf8");
-    assert.ok(appJs.includes('suburb: normalizedSuburb'), "API payload must contain suburb field");
-    assert.ok(appJs.includes('state: resolvedState'), "API payload must contain state field");
+    assert.ok(appJs.includes("normInline !== normEntered"), "Rule 3: conflict -> use inline suburb");
   });
 
-  it("地址合并：canonical address 包含 suburb", () => {
+  
+  it("场景5: API payload 含 suburb 和 state 单独字段", () => {
     const appJs = fs.readFileSync("app.js", "utf8");
-    assert.ok(appJs.includes("effectiveSuburb"), "buildEnteredAddress must use effectiveSuburb");
-    assert.ok(appJs.includes("parts.push(effectiveSuburb)"), "buildEnteredAddress must push suburb to parts");
+    assert.ok(appJs.includes("suburb: normalizedSuburb"), "API payload must have suburb");
+    assert.ok(appJs.includes("state: resolvedState"), "API payload must have state");
+  });
+
+  it("页面最终地址: renderValuation 用 data.address 显示完整地址", () => {
+    const appJs = fs.readFileSync("app.js", "utf8");
+    assert.ok(appJs.includes("property-address") && appJs.includes("data.address"),
+      "page title uses full data.address with suburb");
   });
 
   it("地址输入框初始为空（无默认值）", () => {

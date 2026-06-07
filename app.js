@@ -246,14 +246,27 @@ function explicitStateFromAddress(address) {
 function buildEnteredAddress() {
   const streetAddress = byId("address").value.trim();
   const enteredSuburb = getEnteredSuburb();
-  const addressState = explicitStateFromAddress(streetAddress);
   const inlineSuburb = suburbFromAddress(streetAddress);
+  const addressState = explicitStateFromAddress(streetAddress);
   const state = addressState || getSelectedState();
   const parts = [streetAddress];
 
-  // suburb：下拉框有值优先，否则 inline 解析
-  const effectiveSuburb = (enteredSuburb || inlineSuburb || "");
-  if (effectiveSuburb) parts.push(effectiveSuburb);
+  // 规则 1：地址只含街道（无 inline suburb）→ 用 Suburb 框
+  if (!inlineSuburb) {
+    if (enteredSuburb) parts.push(enteredSuburb);
+  } else {
+    // 地址中已有 suburb
+    const normInline = normalizeSuburbName(inlineSuburb);
+    const normEntered = normalizeSuburbName(enteredSuburb);
+    if (!enteredSuburb || normInline === normEntered) {
+      // 规则 2：相同或 Suburb 框为空 → 地址中的 suburb，不重复
+      parts.push(inlineSuburb);
+    } else if (normInline !== normEntered) {
+      // 规则 3：冲突 → 以地址中明确的 suburb 为准
+      // 优先地址中已核验的在线数据
+      parts.push(inlineSuburb);
+    }
+  }
   if (!addressState && state) parts.push(state);
   return parts.filter(Boolean).join(", ");
 }
