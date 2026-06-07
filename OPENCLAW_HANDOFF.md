@@ -1,57 +1,48 @@
 # OPENCLAW_HANDOFF.md — Codex Review 状态
 
-## 分支状态
+## 分支与生产状态
 
 | 项 | 值 |
 |---|---|
 | **当前分支** | `codex-review` |
-| **HEAD** | `0d6bd64` — `fix: suburb prefix fallback in db-comparable-source` |
-| **Ahead of main** | 13 commits（clean history，force-pushed） |
+| **HEAD** | `976b583` — `docs: update OPENCLAW_HANDOFF.md for production deployment fix` |
+| **Ahead of main** | 14 commits（clean history，已 force-push 到 origin） |
 | **Behind main** | 0 commits（已 rebase 到最新 main） |
+| **Working tree** | ✅ clean |
 | **GitHub 远程** | `origin/codex-review`（force-pushed） |
-| **Vercel Production** | `aushomevalue-db0hv3sue-frankyhf.vercel.app` → `aushomevalue.vercel.app` |
-| **GitHub 远程关联** | 项目 GitHub Vercel 集成未开启；vercel deploy --prod 通过 CLI 部署 |
+| **Vercel Production** | https://aushomevalue.vercel.app |
 
 ## Production 实测结果
 
-**验证 URL：** https://aushomevalue.vercel.app
-
-场景：`18 Moresby St, Oakleigh South, VIC, PropertyType: House`
+**场景：** `18 Moresby St, Oakleigh South, VIC, propertyType: House`
 
 | 字段 | 值 |
 |---|---|
-| `(subject.)address` | `18 Moresby Street, Oakleigh South, VIC, 3167` |
+| `subject.address` | `18 Moresby Street, Oakleigh South, VIC, 3167` |
 | `suburb` | `Oakleigh South`（不重复 canonical） |
 | `verification.status` | `verified` |
 | `suburbExact` / `stateMatch` | `true` / `true` |
 | `customerDataStatus` | `sufficient` |
-| `valuation.estimate.midpoint` | `1,291,948` |
+| `valuation.estimate.midpoint` | `$1,291,948` |
 | `valuation.confidence.label` | `Medium` |
-| `comparables` 条数 | 5 |
-| 表头 | address, salePrice, saleDate, distanceMeters |
+| `comparables` | 5 条（Oakleigh 后缀匹配） |
+| comparable 表头 | address, salePrice, saleDate, distanceMeters |
 
-## 本轮修复总结
+## 本轮修复清单
 
 | # | 修复 | 文件 | 描述 |
 |---|------|------|------|
-| 1 | Nominatim 查询去除 unit prefix | `collector.js` | 查询前 strip `Unit X/`，否则 `Unit 3/18` Nominatim 无法解析 |
-| 2 | 前端发送 useDatabaseFallback | `app.js` | 前端 POST body 加 `useDatabaseFallback: true` |
-| 3 | API 固定 useDatabaseFallback | `api/valuation.js` | serverless API 始终 `{ fetch: false, useDatabaseFallback: true }` |
-| 4 | DB suburb 前缀 fallback | `db-comparable-source.js` | `matchSuburb`: exact → prefix → first-word prefix fallback |
-| 5 | 前端 key 正确 | `app.js` | POST body 用 `propertyType`（不是 `type`） |
+| 1 | 前端 `propertyType` | `app.js` | POST body 包含 `propertyType: inferredType`（不是 `type`） |
+| 2 | API 硬编码 fallback | `api/valuation.js` | 始终 `{ fetch: false, useDatabaseFallback: true }` |
+| 3 | DB suburb prefix fallback | `db-comparable-source.js` | `matchSuburb`: exact → prefix(`Oakleigh%`) → first-word prefix |
+| 4 | DB source 依赖 `propertyType` | `db-comparable-source.js` | `matchSuburb` 和 `matchSuburbType` 都需要 `subject.propertyType` |
+| 5 | 清理 debug logs | `api/valuation.js` + `lib/` | 移除所有 console.log debug 语句 + 删除 `api/health.js` `api/db-debug.js` |
 
-## DB 数据注意事项
+## Production 排查教训
 
-- **只有 `Oakleigh` (postcode 3166) 数据**，无 `Oakleigh South` (3167)
-- suburb 前缀匹配：`"Oakleigh South"` → `"Oakleigh%"` → 匹配到 `"Oakleigh"` 的 5 条记录
-- **如需 direct DB test**：`api/health.js` 已删除；用 `node --input-type=module` + `getSql()` 测试
-
-## 已知问题
-
-1. **DB 数据不足**——只有 5 条 Oakleigh 记录，来自单个采集批次。需要 cron 采集更多 suburbs 数据
-2. **Unit 地址 valuation**——`Unit 3/18 Moresby` 地址核验通过但查 DB comparable 无匹配，返回 `valuation-failed`
-3. **Wrong state 错误消息**——Nominatim 查到了 NSW 同街名，消息显示 suburb mismatch（技术上正确但可优化）
-4. **Deploy force-push**——`codex-review` 分支在 remote 已被 force-push 覆盖
+- **核心矛盾**：`integration-test.mjs` 用 `type: "House"` curl API → `body.propertyType: undefined` → `dbSource.fetch()` 收到 `propertyType: undefined` → `matchSuburbType` 跳过（`if (!type) return []`）→ `matchSuburb` 需要 `propertyType` truthy 才执行 3-tier fallback → DB 返回 0 条
+- **修复**：前端 `app.js` 发送 `propertyType: inferredType`（已存在），API 侧硬编码 `useDatabaseFallback: true`
+- **DB 数据**: `comparable_sales` 表只有 `Oakleigh`(3166) 数据，无 `Oakleigh South`(3167)
 
 ## 代码框架
 
@@ -59,54 +50,52 @@
 
 | 文件 | 职责 |
 |------|------|
-| `api/valuation.js` | Vercel serverless handler。`{ fetch: false, useDatabaseFallback: true }` |
-| `lib/valuation-service.js` | 估值流程编排。collector → DB fallback → valuation engine |
-| `lib/comparable-research-collector.js` | 地址核验（Nominatim） + browser collector（Vercel 环境跳过） |
-| `lib/db-comparable-source.js` | DB 查询。`matchSuburb` 3-tier fallback |
+| `api/valuation.js` | Vercel serverless handler |
+| `lib/valuation-service.js` | 估值编排入口 |
+| `lib/comparable-research-collector.js` | 地址核验（Nominatim） |
+| `lib/db-comparable-source.js` | DB 查询，含 `matchSuburb` 3-tier |
 | `lib/valuation-engine.js` | 估值引擎（未修改） |
-| `app.js` | 前端逻辑。`useDatabaseFallback: true` 硬编码 |
+| `app.js` | 前端逻辑 |
 
-### 关键函数位置
-
-- **`verifyAddress()`**: `collector.js:308-341` — Nominatim 查询
-- **`buildSubject()`**: `collector.js:354-580` — 地址核验 + canonicalAddress 构建
-- **`matchSuburb()`**: `db-comparable-source.js:118-156` — **3-tier suburb 匹配**
-- **`matchSuburbType()`**: `db-comparable-source.js:104-115` — 精确 suburb + type
-- **DB fallback 入口**: `valuation-service.js:108-138` — `comps.length < 3` 时触发
-
-### 执行流程（Production Vercel）
+### Production 执行流程
 
 ```
 app.js POST → api/valuation.js handler
   → runValuation(body, { fetch:false, useDatabaseFallback:true })
-    → collectComparableResearch()          // 只做 Nominatim 验证，跳过浏览器
-    → if (comps.length < 3) → dbSource.fetch()
-      → matchSuburbType(Oakleigh South)    // 0 hits
-      → matchSuburb(Oakleigh South)        // prefix fallback → 5 hits
-    → valueProperty()                      // 估值引擎
-    → sanitizeForClient()                  // 删除内部字段
+    → collectComparableResearch()       // 仅 Nominatim 验证，跳过浏览器
+    → if comps < 3 → dbSource.fetch()
+      → matchSuburbType(Oakleigh South) // 0 hits（无 exact 数据）
+      → matchSuburb(Oakleigh South)     // prefix fallback → 5 hits
+    → valueProperty()                   // 估值引擎
+    → sanitizeForClient()               // 删除内部字段
 ```
 
-## 测试
+### 测试
 
 ```bash
-# 完整本地测试（21/21）
+# 21 个 fast tests
+cd /Users/FrankAI/Documents/澳洲房地产评估系统
 node --test test-address-verification.mjs test-address-lookup.mjs regression-test.mjs
 
-# Production API 测试
-curl -X POST "https://aushomevalue.vercel.app/api/valuation" \
+# Production API
+curl -s -X POST "https://aushomevalue.vercel.app/api/valuation" \
   -H "Content-Type: application/json" \
   -d '{"address":"18 Moresby St","suburb":"Oakleigh South","state":"VIC","propertyType":"House"}'
 
-# Vercel 日志
+# Vercel logs
 npx vercel logs aushomevalue.vercel.app --limit 20 --expand
 ```
 
-## 下一代理主要工作
+## 未完成任务
 
-1. 确认 `codex-review` merge 到 `main`（需用户确认）
-2. 继续 DBComparableSource CDP pipeline 集成
-3. 导入更多 Oakleigh South / Clayton area comparable 数据
-4. 完善 Unit 地址 comparable 匹配（DB 不含 unit prefix 记录）
-5. 清理 workspace 中的 `fix-*.mjs` 残留文件
-6. 考虑 Unit 地址在 comparable 表中的存储格式
+1. **`codex-review` → `main` 合并** — 等待 DBComparableSource 完善 + cron 采集足够数据
+2. **DB 数据补充** — 需 Oakleigh South / Clayton 等 suburb 的 comparable_sales 数据
+3. **SEO/GEO 任务** — 未开始
+4. **cleanup** — `fix-*.mjs` 残留文件
+
+## 下一代理启动流程
+
+1. 读取 `cat OPENCLAW_HANDOFF.md ROADMAP.md CODEX_REVIEW_SUMMARY.md`
+2. `cd /Users/FrankAI/Documents/澳洲房地产评估系统 && git status && git log --oneline -5` 确认 HEAD
+3. `npm run check` 确认测试
+4. 确认 working tree clean 后开始新任务
