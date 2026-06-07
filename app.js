@@ -1,3 +1,5 @@
+let mapInstance = null;
+
 const valuations = [
   {
     aliases: ["9 mcintosh st oakleigh", "9 mcintosh street oakleigh"],
@@ -1984,11 +1986,10 @@ function createUnavailableValuation(address, inferredType = "House", selectedSta
   };
 }
 
-function runAddressValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
+async function runAddressValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
   const normalizedSuburb = normalizeSuburbName(enteredSuburb);
   const resolvedState = explicitStateFromAddress(address) || selectedState;
-  const directAddressMatch = findValuation(address);
-  const inferredType = inferPropertyTypeFromAddress(address, directAddressMatch, selectedType);
+  const inferredType = inferPropertyTypeFromAddress(address, null, selectedType);
 
   if (inferredType === "Commercial") {
     return {
@@ -2000,15 +2001,72 @@ function runAddressValuation(address, selectedType = "", selectedState = "", ent
     };
   }
 
-  if (directAddressMatch) return applyComparableSalesModel(directAddressMatch, directAddressMatch.confidence);
+  try {
+    const response = await fetch("/api/valuation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        address,
+        suburb: normalizedSuburb,
+        state: resolvedState,
+        propertyType: inferredType
+      })
+    });
+    if (!response.ok) throw new Error(`Valuation API returned ${response.status}`);
+    const result = await response.json();
 
-  return (
-    createInferredSameComplexValuation(address, inferredType, resolvedState, normalizedSuburb) ||
-    createInferredSameStreetValuation(address, inferredType, resolvedState, normalizedSuburb) ||
-    createInferredSuburbValuation(address, inferredType, resolvedState, normalizedSuburb) ||
-    createInferredNearbyTypeValuation(address, inferredType, resolvedState, normalizedSuburb) ||
-    createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb)
-  );
+    if (result.valuation?.ok && result.valuation.estimate) {
+      const acc = result.valuation.acceptedComparables || [];
+      const est = result.valuation.estimate;
+      const conf = result.valuation.confidence || {};
+      return {
+        address,
+        addressZh: address,
+        propertyState: result.subject?.state || resolvedState,
+        propertySuburb: result.subject?.suburb || normalizedSuburb,
+        type: result.subject?.propertyType || inferredType,
+        value: `\$${(est.low / 1000000).toFixed(3)}m - \$${(est.high / 1000000).toFixed(3)}m`,
+        midpoint: `\$${(est.midpoint / 1000000).toFixed(3)}m`,
+        midpointValue: est.midpoint,
+        confidence: conf.label || "Low",
+        confidenceZh: conf.label || "低",
+        status: conf.label || "Low",
+        statusZh: conf.label || "低",
+        lat: result.subject?.coordinates?.lat || result.subject?.verification?.lat || null,
+        lon: result.subject?.coordinates?.lon || result.subject?.verification?.lon || null,
+        comparables: acc.map(c => [
+          c.address || "",
+          c.salePrice ? `\$${c.salePrice.toLocaleString()}` : "",
+          c.adjustedPrice ? `\$${c.adjustedPrice.toLocaleString()}` : "",
+          c.qualityBand || "",
+          c.qualityScore ? `${c.qualityScore}/100` : "",
+          c.distanceMeters ? `${c.distanceMeters}m` : ""
+        ]),
+        reasons: conf.reasons || ["Live valuation completed."],
+        reasonsZh: conf.reasons || ["实时估值已完成。"],
+        location: emptyValuation.location,
+        planning: emptyValuation.planning,
+        suburb: [],
+        modelNotes: [],
+        map: {},
+        mapZh: {},
+        evidenceSummary: "",
+        evidenceSummaryZh: ""
+      };
+    }
+    throw new Error("Valuation engine returned no estimate");
+  } catch (error) {
+    console.warn("Live valuation unavailable:", error.message);
+    const directMatch = findValuation(address);
+    if (directMatch) return applyComparableSalesModel(directMatch, directMatch.confidence);
+    return (
+      createInferredSameComplexValuation(address, inferredType, resolvedState, normalizedSuburb) ||
+      createInferredSameStreetValuation(address, inferredType, resolvedState, normalizedSuburb) ||
+      createInferredSuburbValuation(address, inferredType, resolvedState, normalizedSuburb) ||
+      createInferredNearbyTypeValuation(address, inferredType, resolvedState, normalizedSuburb) ||
+      createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb)
+    );
+  }
 }
 
 function setList(id, items) {
@@ -2235,12 +2293,50 @@ function renderMap(data) {
     (language === "zh" ? map.stationZh : map.station) || (language === "zh" ? "附近车站" : "Nearby station");
   shops.textContent = (language === "zh" ? map.shopsZh : map.shops) || (language === "zh" ? "附近商圈" : "Nearby shops");
 
-  target.style.left = `${30 + (seed % 35)}%`;
-  target.style.top = `${28 + (seed % 30)}%`;
-  station.style.right = `${8 + (seed % 18)}%`;
-  station.style.bottom = `${10 + (seed % 20)}%`;
-  shops.style.left = `${8 + (seed % 20)}%`;
-  shops.style.top = `${8 + (seed % 18)}%`;
+  if (mapInstance) {
+    mapInstance.remove();
+    mapInstance = null;
+  }
+  const lat = data.lat || (data.coordinates?.lat);
+  const lon = data.lon || (data.coordinates?.lon);
+  if (!lat || !lon) {
+    const suburb = data.propertySuburb || "";
+    const state = data.propertyState || "VIC";
+    if (suburb) fetchNominatimSuburb(suburb, state, data);
+    return;
+  }
+  renderLeafletMap(lat, lon, data);
+}
+
+async function fetchNominatimSuburb(suburb, state, data) {
+  try {
+    const q = encodeURIComponent(`${suburb} ${state}, Australia`);
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?q=${q}&format=json&limit=1`);
+    if (!res.ok) throw new Error("Nominatim fetch failed");
+    const json = await res.json();
+    if (json?.length) renderLeafletMap(parseFloat(json[0].lat), parseFloat(json[0].lon), data);
+  } catch (err) {
+    console.warn("Nominatim lookup:", err.message);
+  }
+}
+
+function renderLeafletMap(lat, lon, data) {
+  if (typeof L === "undefined") return;
+  const container = byId("map-container");
+  if (!container) return;
+  const zoom = data.zoom || 16;
+  mapInstance = L.map(container, { center: [lat, lon], zoom, zoomControl: true, attributionControl: false });
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(mapInstance);
+  L.marker([lat, lon]).addTo(mapInstance).bindPopup(data.address || "Property");
+  if (data.comparables?.length) {
+    data.comparables.slice(0, 5).forEach(comp => {
+      if (comp.lat && comp.lon) {
+        L.circleMarker([comp.lat, comp.lon], { radius: 6, color: "#c0392b", fillColor: "#e74c3c", fillOpacity: 0.7 })
+          .addTo(mapInstance).bindPopup(`$${comp.salePrice?.toLocaleString() || ""}: ${comp.address}`);
+      }
+    });
+  }
+  setTimeout(() => mapInstance.invalidateSize(), 300);
 }
 
 function renderComparables(rows) {
@@ -2892,12 +2988,27 @@ async function downloadDemoReport() {
   URL.revokeObjectURL(url);
 }
 
-byId("start-valuation").addEventListener("click", () => {
+byId("start-valuation").addEventListener("click", async () => {
+  const button = byId("start-valuation");
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = language === "zh" ? "正在核验公开数据…" : "Checking public evidence…";
+
   const selectedType = document.querySelector(".chip.active")?.dataset.type || "House";
   const enteredAddress = buildEnteredAddress();
   const selectedState = getSelectedState();
   const enteredSuburb = getEnteredSuburb();
-  renderValuation(runAddressValuation(enteredAddress || byId("address").value, selectedType, selectedState, enteredSuburb));
+
+  const valuation = await runAddressValuation(
+    enteredAddress || byId("address").value,
+    selectedType,
+    selectedState,
+    enteredSuburb
+  );
+  renderValuation(valuation);
+
+  button.disabled = false;
+  button.textContent = originalText;
   if (window.matchMedia("(max-width: 680px)").matches) scrollToSection(".mobile-value-card");
 });
 

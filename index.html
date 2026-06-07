@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AusHomeValue | Melbourne Property Estimate</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   </head>
   <body>
     <header class="topbar">
@@ -246,32 +247,7 @@
                     <th>Similarity</th>
                   </tr>
                 </thead>
-                <tbody id="comparables-body">
-                  <tr>
-                    <td>33 Tamar Grove</td>
-                    <td>$1.80m</td>
-                    <td>Apr 2026</td>
-                    <td>539 sqm</td>
-                    <td>3 / 2 / 1</td>
-                    <td><span class="pill">Good</span></td>
-                  </tr>
-                  <tr>
-                    <td>16 Lincoln Avenue</td>
-                    <td>$1.56m</td>
-                    <td>Mar 2026</td>
-                    <td>Unknown</td>
-                    <td>4 / 2 / 2</td>
-                    <td><span class="pill">Medium</span></td>
-                  </tr>
-                  <tr>
-                    <td>140 Atherton Road</td>
-                    <td>$1.571m</td>
-                    <td>Dec 2025</td>
-                    <td>628 sqm</td>
-                    <td>4 / 3 / 2</td>
-                    <td><span class="pill">Medium</span></td>
-                  </tr>
-                </tbody>
+                <tbody id="comparables-body"></tbody>
               </table>
             </div>
           </section>
@@ -300,13 +276,8 @@
             </article>
 
             <article class="panel map-card" aria-label="Location map preview">
-              <div class="map-grid">
-                <span class="pin target" id="map-target">?</span>
-                <span class="pin station" id="map-station">Nearby station</span>
-                <span class="pin shops" id="map-shops">Nearby shops</span>
-                <span class="road horizontal"></span>
-                <span class="road vertical"></span>
-              </div>
+              <p class="map-status" id="map-status">Loading map&hellip;</p>
+              <div id="map-container" class="map-container"></div>
             </article>
           </section>
 
@@ -566,6 +537,7 @@
         </div>
       </div>
     </dialog>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="app.js"></script>
   </body>
 </html>

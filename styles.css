@@ -863,50 +863,15 @@ th {
   padding: 0;
 }
 
-.map-grid {
-  background:
-    linear-gradient(90deg, rgba(13, 107, 87, 0.08) 1px, transparent 1px),
-    linear-gradient(rgba(13, 107, 87, 0.08) 1px, transparent 1px), #eaf1ed;
-  background-size: 42px 42px;
-  height: 100%;
-  min-height: 300px;
-  position: relative;
+.map-container {
+  height: 300px;
+  width: 100%;
+  border-radius: 0;
 }
 
-.road {
-  background: rgba(31, 44, 39, 0.18);
-  position: absolute;
+.map-status {
+  display: none;
 }
-
-.road.horizontal {
-  height: 18px;
-  left: 0;
-  right: 0;
-  top: 52%;
-}
-
-.road.vertical {
-  bottom: 0;
-  left: 38%;
-  top: 0;
-  width: 18px;
-}
-
-.pin {
-  background: white;
-  border: 2px solid var(--accent);
-  border-radius: 999px;
-  box-shadow: var(--shadow);
-  color: var(--accent);
-  font-size: 12px;
-  font-weight: 800;
-  padding: 8px 10px;
-  position: absolute;
-  z-index: 2;
-}
-
-.target {
-  left: 45%;
   top: 42%;
 }
 

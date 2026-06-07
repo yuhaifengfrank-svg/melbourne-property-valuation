@@ -67,12 +67,12 @@ ModelVersion
 {
   "property_id": "prop_001",
   "address": {
-    "full_address": "34 Macedon Avenue, Balwyn North VIC 3104",
-    "street_number": "34",
-    "street_name": "Macedon Avenue",
-    "suburb": "Balwyn North",
+    "full_address": "SUBJECT_PROPERTY_ADDRESS",
+    "street_number": null,
+    "street_name": null,
+    "suburb": null,
     "state": "VIC",
-    "postcode": "3104",
+    "postcode": null,
     "country": "AU",
     "latitude": null,
     "longitude": null
@@ -117,12 +117,12 @@ ModelVersion
   "phone_required_completed": false,
   "purpose": "buy",
   "lead_status": "registered",
-  "searched_address": "46 Bishop Street, Oakleigh VIC 3166",
+  "searched_address": "SUBJECT_PROPERTY_ADDRESS",
   "property_type": "house",
   "valuation_run_id": "val_001",
-  "estimated_value_low": 1900000,
-  "estimated_value_high": 2090000,
-  "confidence_label": "medium",
+  "estimated_value_low": null,
+  "estimated_value_high": null,
+  "confidence_label": "pending_verified_comparables",
   "pdf_requested": false,
   "pdf_downloaded": false,
   "uploaded_document_count": 0,
@@ -926,23 +926,23 @@ Townhouse、Villa 和 Apartment 可能存在 owners corporation / body corporate
 {
   "comparable_sale_id": "comp_001",
   "address": {
-    "full_address": "9 Macedon Avenue, Balwyn North VIC 3104",
-    "suburb": "Balwyn North",
-    "postcode": "3104",
+    "full_address": "VERIFIED_COMPARABLE_ADDRESS",
+    "suburb": null,
+    "postcode": null,
     "latitude": null,
     "longitude": null
   },
   "property_type": "house",
-  "sale_date": "2025-07-26",
-  "sale_price": 2975000,
-  "land_size_sqm": 650,
-  "bedrooms": 4,
-  "bathrooms": 3,
-  "car_spaces": 4,
-  "condition_summary": "stronger_configuration",
-  "micro_location_summary": "same_street",
-  "source_refs": [],
-  "data_reliability": "medium"
+  "sale_date": null,
+  "sale_price": null,
+  "land_size_sqm": null,
+  "bedrooms": null,
+  "bathrooms": null,
+  "car_spaces": null,
+  "condition_summary": null,
+  "micro_location_summary": null,
+  "source_refs": ["https://source.example/required"],
+  "data_reliability": "pending"
 }
 ```
 
@@ -963,8 +963,8 @@ Townhouse、Villa 和 Apartment 可能存在 owners corporation / body corporate
   "condition_similarity": 0.8,
   "data_reliability": 0.8,
   "final_comparable_weight": 0.216,
-  "raw_sale_price": 2975000,
-  "adjusted_sale_price": 2880000,
+  "raw_sale_price": null,
+  "adjusted_sale_price": null,
   "adjustment_notes": [
     "Comparable has stronger bathrooms and car spaces than target."
   ]
@@ -1003,17 +1003,15 @@ Townhouse、Villa 和 Apartment 可能存在 owners corporation / body corporate
 ```json
 {
   "valuation_run_id": "val_001",
-  "estimated_value_low": 2700000,
-  "estimated_value_high": 2950000,
-  "model_midpoint": 2820000,
-  "confidence_label": "medium",
-  "confidence_score": 64,
-  "comparable_baseline": 2770000,
-  "comparable_influence_pct": 0.62,
+  "estimated_value_low": null,
+  "estimated_value_high": null,
+  "model_midpoint": null,
+  "confidence_label": "pending_verified_comparables",
+  "confidence_score": null,
+  "comparable_baseline": null,
+  "comparable_influence_pct": null,
   "summary_reasons": [
-    "Same-street evidence supports high-$2m range.",
-    "Balwyn High School Zone and village walkability are positive.",
-    "Current condition and planning/title details are not fully verified."
+    "No valuation is stored until verified comparable evidence passes validation."
   ],
   "missing_checks": [
     "current_condition",
@@ -1102,17 +1100,17 @@ Townhouse、Villa 和 Apartment 可能存在 owners corporation / body corporate
   "backtest_sample_id": "bt_sample_001",
   "backtest_run_id": "bt_001",
   "target_property_id": "prop_bt_001",
-  "target_sale_date": "2025-10-18",
-  "actual_sale_price": 2886000,
+  "target_sale_date": null,
+  "actual_sale_price": null,
   "valuation_run_id": "val_bt_001",
-  "model_estimated_low": 2750000,
-  "model_estimated_high": 3000000,
-  "model_midpoint": 2875000,
-  "error_amount": -11000,
-  "error_pct": -0.0038,
-  "absolute_error_pct": 0.0038,
-  "range_hit": true,
-  "direction": "within_range",
+  "model_estimated_low": null,
+  "model_estimated_high": null,
+  "model_midpoint": null,
+  "error_amount": null,
+  "error_pct": null,
+  "absolute_error_pct": null,
+  "range_hit": null,
+  "direction": null,
   "main_error_cause": null
 }
 ```
@@ -1206,7 +1204,7 @@ Request:
 
 ```json
 {
-  "address": "34 Macedon Avenue, Balwyn North VIC 3104",
+  "address": "SUBJECT_PROPERTY_ADDRESS",
   "property_type_hint": "house",
   "input_mode": "address_only"
 }
@@ -1217,10 +1215,10 @@ Response:
 ```json
 {
   "valuation_run_id": "val_001",
-  "estimated_value_low": 2700000,
-  "estimated_value_high": 2950000,
-  "model_midpoint": 2820000,
-  "confidence_label": "medium",
+  "estimated_value_low": null,
+  "estimated_value_high": null,
+  "model_midpoint": null,
+  "confidence_label": "pending_verified_comparables",
   "micro_location": {
     "street_rank_in_suburb": "top_25",
     "quiet_vs_busy": "quiet",
@@ -1228,9 +1226,10 @@ Response:
   },
   "key_comparables": [
     {
-      "address": "9 Macedon Avenue, Balwyn North VIC 3104",
-      "sale_price": 2975000,
-      "sale_date": "2025-07-26"
+      "address": "VERIFIED_COMPARABLE_ADDRESS",
+      "sale_price": null,
+      "sale_date": null,
+      "source_url": "https://source.example/required"
     }
   ],
   "missing_checks": [
