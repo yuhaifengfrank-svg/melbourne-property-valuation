@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>AusHomeValue | Melbourne Property Estimate</title>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
   </head>
   <body>
     <header class="topbar">
@@ -31,7 +32,7 @@
           <p class="eyebrow">Free first-layer estimate</p>
           <h2>Enter a Melbourne address. Get a quick estimate. Leave details for the full report.</h2>
           <p class="hero-note">
-            Preliminary estimate only. Based on public information, comparable market evidence and client-supplied material; not a formal valuation or financial advice.
+            本估值基于评估时可获得的公开市场信息、房产特征及统计分析生成，仅供一般信息和研究参考。本报告并非正式估价、信贷决定、法律、税务或财务建议。
           </p>
         </div>
         <form class="search-box">
@@ -169,6 +170,7 @@
                   <strong id="confidence">Pending</strong>
                 </div>
               </div>
+              <div id="evidence-badge-val" style="display:none;padding:0.35rem 0.75rem;border-radius:6px;margin-top:0.5rem;font-size:0.8rem;font-weight:600;"></div>
             </div>
             <div class="summary-card">
               <h3>Why this estimate?</h3>
@@ -239,39 +241,16 @@
                 <thead>
                   <tr>
                     <th>Address</th>
-                    <th>Sale</th>
+                    <th>Price</th>
                     <th>Date</th>
+                    <th>Distance</th>
+                    <th>Bed</th>
+                    <th>Bath</th>
+                    <th>Car</th>
                     <th>Land</th>
-                    <th>Config</th>
-                    <th>Similarity</th>
                   </tr>
                 </thead>
-                <tbody id="comparables-body">
-                  <tr>
-                    <td>33 Tamar Grove</td>
-                    <td>$1.80m</td>
-                    <td>Apr 2026</td>
-                    <td>539 sqm</td>
-                    <td>3 / 2 / 1</td>
-                    <td><span class="pill">Good</span></td>
-                  </tr>
-                  <tr>
-                    <td>16 Lincoln Avenue</td>
-                    <td>$1.56m</td>
-                    <td>Mar 2026</td>
-                    <td>Unknown</td>
-                    <td>4 / 2 / 2</td>
-                    <td><span class="pill">Medium</span></td>
-                  </tr>
-                  <tr>
-                    <td>140 Atherton Road</td>
-                    <td>$1.571m</td>
-                    <td>Dec 2025</td>
-                    <td>628 sqm</td>
-                    <td>4 / 3 / 2</td>
-                    <td><span class="pill">Medium</span></td>
-                  </tr>
-                </tbody>
+                <tbody id="comparables-body"></tbody>
               </table>
             </div>
           </section>
@@ -300,13 +279,8 @@
             </article>
 
             <article class="panel map-card" aria-label="Location map preview">
-              <div class="map-grid">
-                <span class="pin target" id="map-target">?</span>
-                <span class="pin station" id="map-station">Nearby station</span>
-                <span class="pin shops" id="map-shops">Nearby shops</span>
-                <span class="road horizontal"></span>
-                <span class="road vertical"></span>
-              </div>
+              <p class="map-status" id="map-status">Loading map&hellip;</p>
+              <div id="map-container" class="map-container"></div>
             </article>
           </section>
 
@@ -566,6 +540,7 @@
         </div>
       </div>
     </dialog>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="app.js"></script>
   </body>
 </html>

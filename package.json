@@ -5,9 +5,36 @@
   "type": "module",
   "scripts": {
     "build": "echo 'Static site with Vercel serverless API'",
-    "vercel-build": "echo 'Static site with Vercel serverless API'"
+    "vercel-build": "echo 'Static site with Vercel serverless API'",
+    "test:collector": "node comparable-collector-test.mjs",
+    "test:valuation": "node valuation-engine-test.mjs",
+    "test:valuation-api": "node valuation-api-test.mjs",
+    "collect:comparables": "node collect-comparables.mjs",
+    "test": "node --test integration-test.mjs regression-test.mjs",
+    "check": "node --check app.js && npm test"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.1"
-  }
+    "@neondatabase/serverless": "^1.0.1",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "puppeteer": "^25.1.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "description": "An open-source prototype for explainable residential property valuation in Metropolitan Melbourne.",
+  "main": "admin.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yuhaifengfrank-svg/melbourne-property-valuation.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yuhaifengfrank-svg/melbourne-property-valuation/issues"
+  },
+  "homepage": "https://github.com/yuhaifengfrank-svg/melbourne-property-valuation#readme"
 }

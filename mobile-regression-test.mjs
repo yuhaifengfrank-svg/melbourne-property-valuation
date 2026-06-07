@@ -122,8 +122,8 @@ function makeDocument() {
 
   ids.forEach((id) => elements.set(id, new MockElement(id, recorder)));
   elements.get("property-state").value = "VIC";
-  elements.get("suburb").value = "Oakleigh";
-  elements.get("address").value = "9 McIntosh Street";
+  elements.get("suburb").value = "Melbourne";
+  elements.get("address").value = "1 Test Mobile Street";
 
   const chips = ["House", "Vacant land", "Townhouse", "Villa", "Unit", "Apartment", "Commercial"].map((type) => {
     const element = new MockElement("", recorder);
@@ -252,8 +252,8 @@ vm.createContext(context);
 vm.runInContext(app, context, { filename: "app.js" });
 
 await elements.get("start-valuation").click();
-assert.equal(elements.get("mobile-property-address").textContent, "9 McIntosh Street, Oakleigh VIC 3166");
-assert.match(elements.get("mobile-estimated-value").textContent, /^\$\d+(?:\.\d+)?m - \$\d+(?:\.\d+)?m$/);
+assert.equal(elements.get("mobile-property-address").textContent, "1 Test Mobile Street, VIC");
+assert.equal(elements.get("mobile-estimated-value").textContent, "Live comparable check required");
 assert.ok(recorder.scrolls.includes("mobile-value-card"), "mobile valuation should scroll to quick result card");
 
 await elements.get("mobile-report-cta").click();
@@ -274,7 +274,8 @@ for (const handler of elements.get("evidence-files").listeners.change || []) {
     }
   });
 }
-assert.match(elements.get("upload-message").textContent, /uploaded evidence|Estimate revised|资料已读取/i);
+assert.match(elements.get("upload-message").textContent, /recorded for structured review|estimate was not changed automatically|等待结构化核验/i);
+assert.equal(elements.get("mobile-estimated-value").textContent, "Live comparable check required");
 
 await elements.get("enter-manual-data").click();
 assert.ok(elements.get("manual-data-modal").open, "manual data button should open notes modal");

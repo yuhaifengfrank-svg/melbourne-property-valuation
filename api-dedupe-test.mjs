@@ -7,13 +7,13 @@ const stamp = (process.env.TEST_RUN_ID || new Date().toISOString())
   .replace("Z", "");
 
 const cases = [
-  { type: "House", address: "9 McIntosh Street, Oakleigh VIC 3166", suburb: "Oakleigh", state: "VIC", value: "$1.14m - $1.36m", midpoint: 1250000 },
-  { type: "Vacant land", address: "13 Gadd Street, Oakleigh VIC 3166", suburb: "Oakleigh", state: "VIC", value: "$1.02m - $1.18m", midpoint: 1100000 },
-  { type: "Townhouse", address: "Unit 1, 5 McIntosh Street, Oakleigh VIC 3166", suburb: "Oakleigh", state: "VIC", value: "$930k - $1.03m", midpoint: 980000 },
-  { type: "Villa", address: "Unit 2, 11 McIntosh Street, Oakleigh VIC 3166", suburb: "Oakleigh", state: "VIC", value: "$790k - $870k", midpoint: 830000 },
-  { type: "Unit", address: "Unit 1, 3 McIntosh Street, Oakleigh VIC 3166", suburb: "Oakleigh", state: "VIC", value: "$720k - $810k", midpoint: 765000 },
-  { type: "Apartment", address: "Apartment 12, 20 Haughton Road, Oakleigh VIC 3166", suburb: "Oakleigh", state: "VIC", value: "$540k - $610k", midpoint: 575000 },
-  { type: "Commercial", address: "Commercial Shop 1, Test Street, Oakleigh VIC 3166", suburb: "Oakleigh", state: "VIC", value: "Coming soon", midpoint: null }
+  { type: "House", address: "1 Test House Street, Melbourne VIC", suburb: "Melbourne", state: "VIC" },
+  { type: "Vacant land", address: "2 Test Land Road, Melbourne VIC", suburb: "Melbourne", state: "VIC" },
+  { type: "Townhouse", address: "3/10 Test Townhouse Lane, Melbourne VIC", suburb: "Melbourne", state: "VIC" },
+  { type: "Villa", address: "4/10 Test Villa Lane, Melbourne VIC", suburb: "Melbourne", state: "VIC" },
+  { type: "Unit", address: "5/10 Test Unit Lane, Melbourne VIC", suburb: "Melbourne", state: "VIC" },
+  { type: "Apartment", address: "Apartment 6, 10 Test Apartment Lane, Melbourne VIC", suburb: "Melbourne", state: "VIC" },
+  { type: "Commercial", address: "Shop 7, 10 Test Commercial Lane, Melbourne VIC", suburb: "Melbourne", state: "VIC" }
 ];
 
 async function postLead(testCase, attempt) {
@@ -36,9 +36,9 @@ async function postLead(testCase, attempt) {
       propertySuburb: testCase.suburb,
       propertyState: testCase.state,
       propertyType: testCase.type,
-      estimatedValue: testCase.value,
-      midpointValue: testCase.midpoint,
-      confidence: testCase.type === "Commercial" ? "Pending" : "High",
+      estimatedValue: "Not provided in lead dedupe test",
+      midpointValue: null,
+      confidence: "Pending",
       selectedLvr: 60,
       language: "en",
       eventType: "pdf_download",
