@@ -1150,8 +1150,24 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         propertyType: inferredType
       })
     });
-    if (!response.ok) throw new Error(`Valuation API returned ${response.status}`);
-    const result = await response.json();
+    var result = await response.json();
+
+    // ── 地址核验冲突：先读 JSON 再判断状态码 ──
+    if (result.status === "address-mismatch") {
+      var mm = result.mismatch || {};
+      return {
+        ...createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb),
+        addressMismatch: true,
+        mismatchType: mm.type || "suburb",
+        mismatchInput: mm.inputSuburb || "",
+        mismatchVerified: mm.verifiedSuburb || "",
+        mismatchFailures: mm.failures || [],
+        mismatchMessage: mm.message || result.error || "地址信息核验不一致",
+        addressZh: mm.message || result.error || "地址信息核验不一致"
+      };
+    }
+
+    if (!response.ok) throw new Error(result.error || `Valuation API returned ${response.status}`);
 
     if (!result.valuation?.ok || !result.valuation.estimate) {
       // API 返回了明确但无法估值的结果
