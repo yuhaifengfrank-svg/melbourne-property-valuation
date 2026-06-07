@@ -2071,9 +2071,17 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
     };
   } catch (error) {
     console.warn("Live valuation unavailable:", error.message);
+    // ── 降级回退时标记 curated_fixture ──
+    const tagFallback = (v) => {
+      if (v && typeof v === "object") {
+        v.evidenceMode = "curated_fixture";
+        v.isFallback = true;
+      }
+      return v;
+    };
     const directMatch = findValuation(address);
-    if (directMatch) return applyComparableSalesModel(directMatch, directMatch.confidence);
-    return (
+    if (directMatch) return tagFallback(applyComparableSalesModel(directMatch, directMatch.confidence));
+    return tagFallback(
       createInferredSameComplexValuation(address, inferredType, resolvedState, normalizedSuburb) ||
       createInferredSameStreetValuation(address, inferredType, resolvedState, normalizedSuburb) ||
       createInferredSuburbValuation(address, inferredType, resolvedState, normalizedSuburb) ||
@@ -2295,17 +2303,14 @@ function addressSeed(address) {
 }
 
 function renderMap(data) {
-  const seed = addressSeed(data.address);
   const map = data.map || {};
-  const target = byId("map-target");
-  const station = byId("map-station");
-  const shops = byId("map-shops");
-  const houseNumber = data.address.match(/^\d+/)?.[0] || "?";
-
-  target.textContent = map.target || houseNumber;
-  station.textContent =
-    (language === "zh" ? map.stationZh : map.station) || (language === "zh" ? "附近车站" : "Nearby station");
-  shops.textContent = (language === "zh" ? map.shopsZh : map.shops) || (language === "zh" ? "附近商圈" : "Nearby shops");
+  // 旧版 DOM 元素（map-target/map-station/map-shops）已被移除；见 UI 升级
+  const mapContainer = document.getElementById("map-container");
+  if (mapContainer) {
+    // 容器保留，后续 Leaflet 使用
+    mapContainer.innerHTML = "<p style='color:#888;padding:1rem;text-align:center'>" +
+      (language === "zh" ? "地图加载中…" : "Map loading…") + "</p>";
+  }
 
   if (mapInstance) {
     mapInstance.remove();

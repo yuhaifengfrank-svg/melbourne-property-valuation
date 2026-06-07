@@ -9,7 +9,9 @@
     "test:collector": "node comparable-collector-test.mjs",
     "test:valuation": "node valuation-engine-test.mjs",
     "test:valuation-api": "node valuation-api-test.mjs",
-    "collect:comparables": "node collect-comparables.mjs"
+    "collect:comparables": "node collect-comparables.mjs",
+    "test": "node --test integration-test.mjs regression-test.mjs",
+    "check": "node --check app.js && npm test"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",

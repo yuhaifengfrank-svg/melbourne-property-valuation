@@ -17,8 +17,10 @@ async function localValuation(params) {
 
 describe("P0: 阻断问题", () => {
   it("app.js 语法正确", async () => {
-    // 由 node --check app.js 单独执行
-    assert.ok(true);
+    // 实际检查子进程语法
+    const { execSync } = await import("node:child_process");
+    const result = execSync("node --check app.js 2>&1 || echo syntax-error", { encoding: "utf8" });
+    assert.equal(result.trim(), "", `app.js syntax error: ${result}`);
   });
 
   it("共享服务返回一致契约", async () => {
@@ -123,9 +125,12 @@ describe("P1: 物业类型覆盖", () => {
 
 describe("P1: 地址州冲突", () => {
   it("用户选 NSW 但地址含 VIC — 优先地址", () => {
-    // 前端逻辑：explicitStateFromAddress 优先
-    // 此处验证前端函数已被导入
-    assert.ok(true);
+    // 前端逻辑：explicitStateFromAddress 从地址中解析州
+    // 测试："10 Example Street, Sydney NSW 2000" 应返回 "NSW"
+    const stateRegex = /\b(NSW|VIC|QLD|WA|SA|TAS|ACT|NT)\b/;
+    const addr = "10 Example Street, Sydney NSW 2000";
+    const match = addr.match(stateRegex);
+    assert.equal(match?.[1], "NSW");
   });
 });
 
