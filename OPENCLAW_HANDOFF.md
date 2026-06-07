@@ -1,253 +1,112 @@
-# OPENCLAW_HANDOFF.md
+# OPENCLAW_HANDOFF.md — Codex Review 状态
 
-> **交接文档** — 2026-06-07 20:51 AEST (Sun)
-> 由 玄甲 (OpenClaw main agent) 撰写。下一对话请先读取本文件 + `ROADMAP.md` + `CODEX_REVIEW_SUMMARY.md`。
+## 分支状态
 
----
+| 项 | 值 |
+|---|---|
+| **当前分支** | `codex-review` |
+| **HEAD** | `0d6bd64` — `fix: suburb prefix fallback in db-comparable-source` |
+| **Ahead of main** | 13 commits（clean history，force-pushed） |
+| **Behind main** | 0 commits（已 rebase 到最新 main） |
+| **GitHub 远程** | `origin/codex-review`（force-pushed） |
+| **Vercel Production** | `aushomevalue-db0hv3sue-frankyhf.vercel.app` → `aushomevalue.vercel.app` |
+| **GitHub 远程关联** | 项目 GitHub Vercel 集成未开启；vercel deploy --prod 通过 CLI 部署 |
 
-## 1. 分支与状态
+## Production 实测结果
 
-| 项目 | 值 |
-|------|-----|
-| **分支** | `codex-review`（**未合并** `main`） |
-| **HEAD** | `eb1085f` — `fix: strip unit prefix from Nominatim query address` |
-| **Ahead of main** | 11 commits |
-| **Behind main** | 0 commits（已 rebase main，分叉消除） |
-| **未提交文件** | 无（working tree clean） |
-| **已推送 remote** | ✅ `origin/codex-review` |
-| **目录** | `/Users/FrankAI/Documents/澳洲房地产评估系统` |
+**验证 URL：** https://aushomevalue.vercel.app
 
-### codex-review 全部 commits (oldest → newest)
+场景：`18 Moresby St, Oakleigh South, VIC, PropertyType: House`
 
-```
-cc7d2ea fix(ui): clear default address value on page load; neutral placeholder; P4 test
-f288767 fix(ui): robust suburb extraction and address canonicalization
-abed12f fix(ui): address-suburb dedup rules; tests for 5 real scenarios
-7be1014 fix(ui): address-suburb dedup, conflict resolution, API consistency
-351eacf feat: Nominatim 地址核验作为唯一 canonical address 流程
-600d814 fix: P1 address verification fixes
-3ecf7c6 fix: address verification — partial on missing fields, effectiveAddress truth
-9f7828f docs: handoff — OPENCLAW_HANDOFF.md for next agent session
-068bbed fixup: ahead-of-main count 7→8 (incl handoff doc itself)
-05f9207 docs: update OPENCLAW_HANDOFF.md — HEAD 068bbed, ahead 9 behind 5, 21/21 tests
-eb1085f fix: strip unit prefix from Nominatim query address
-```
+| 字段 | 值 |
+|---|---|
+| `(subject.)address` | `18 Moresby Street, Oakleigh South, VIC, 3167` |
+| `suburb` | `Oakleigh South`（不重复 canonical） |
+| `verification.status` | `verified` |
+| `suburbExact` / `stateMatch` | `true` / `true` |
+| `customerDataStatus` | `sufficient` |
+| `valuation.estimate.midpoint` | `1,291,948` |
+| `valuation.confidence.label` | `Medium` |
+| `comparables` 条数 | 5 |
+| 表头 | address, salePrice, saleDate, distanceMeters |
 
----
+## 本轮修复总结
 
-## 2. 项目底层原则（不可违反）
+| # | 修复 | 文件 | 描述 |
+|---|------|------|------|
+| 1 | Nominatim 查询去除 unit prefix | `collector.js` | 查询前 strip `Unit X/`，否则 `Unit 3/18` Nominatim 无法解析 |
+| 2 | 前端发送 useDatabaseFallback | `app.js` | 前端 POST body 加 `useDatabaseFallback: true` |
+| 3 | API 固定 useDatabaseFallback | `api/valuation.js` | serverless API 始终 `{ fetch: false, useDatabaseFallback: true }` |
+| 4 | DB suburb 前缀 fallback | `db-comparable-source.js` | `matchSuburb`: exact → prefix → first-word prefix fallback |
+| 5 | 前端 key 正确 | `app.js` | POST body 用 `propertyType`（不是 `type`） |
 
-### 2.1 Nominatim 是 canonical address 唯一真理
-- 每次估值 `buildSubject()` 内部调用 Nominatim OpenStreetMap API
-- Nominatim 返回 → `verifier.canonicalAddress` → `effectiveAddress` → `subject.address`
-- 即使 Nominatim 不可用（返回空），也要保持 fallback 路径，地址置信度降为 low
+## DB 数据注意事项
 
-### 2.2 address 字段关系（关键！）
-```
-enteredAddress  （客户原始输入，如 "Unit 3/18 Moresby St"）
-       ↓
-cleanStreet     （formatSubjectStreet 处理，已剥离 unit 前缀）
-       ↓
-canonicalAddress（Nominatim 拼接的规范化地址，如 "18 Moresby Street, Oakleigh South, VIC, 3167"）
-       ↓
-effectiveAddress（= canonicalAddress）
-       ↓
-subject.address （= effectiveAddress，单一真理）
-```
+- **只有 `Oakleigh` (postcode 3166) 数据**，无 `Oakleigh South` (3167)
+- suburb 前缀匹配：`"Oakleigh South"` → `"Oakleigh%"` → 匹配到 `"Oakleigh"` 的 5 条记录
+- **如需 direct DB test**：`api/health.js` 已删除；用 `node --input-type=module` + `getSql()` 测试
 
-**重要：** `valuation-service.js` 中 `address: effectiveAddress`（第 169、194 行）确保最终 subject.address 完全等于 canonicalAddress。不要回退到 `subj.address || effectiveAddress || address`。
+## 已知问题
 
-### 2.3 核验状态机
+1. **DB 数据不足**——只有 5 条 Oakleigh 记录，来自单个采集批次。需要 cron 采集更多 suburbs 数据
+2. **Unit 地址 valuation**——`Unit 3/18 Moresby` 地址核验通过但查 DB comparable 无匹配，返回 `valuation-failed`
+3. **Wrong state 错误消息**——Nominatim 查到了 NSW 同街名，消息显示 suburb mismatch（技术上正确但可优化）
+4. **Deploy force-push**——`codex-review` 分支在 remote 已被 force-push 覆盖
 
-```
-                ┌─── 全部4字段匹配 ──→ status: verified, confidence: high
-                │
-  Nominatim OK ──┼─── 部分字段缺失  ──→ status: partial, unconfirmedFields[], confidence: medium
-                │
-                ├─── 冲突字段确认  ──→ status: mismatch, addressMismatch{} (block)
-                │
-                └─── 全部缺失      ──→ status: partial, 4 unconfirmed, confidence: medium
+## 代码框架
 
-  Nominatim 不可用 ──→ status: unavailable, confidence: low, user_input_fallback
-```
+### 关键文件
 
-**核验的 4 个字段（全部必须匹配才算 verified）：**
-1. `suburbExact` — 精确相等（`.toLowerCase() ===`），**不是 substring**
-2. `stateMatch` — 全名↔缩写映射（Victoria→VIC, New South Wales→NSW 等）
-3. `houseNumMatch` — 门牌号精确匹配
-4. `roadMatch` — 街道名匹配（去掉后缀后缀）
-
-### 2.4 Mismatch vs Partial 分界
-| 场景 | 行为 |
+| 文件 | 职责 |
 |------|------|
-| 双方都有值且明确不同 | **mismatch**（block 估值） |
-| 地图某字段缺失（null/undefined） | **partial**（unconfirmedFields[]，不 block，置信度降 medium） |
-| Unit 号 → 地图无法核验 | **unitStatus: "unverified"**（不 block，unitPrefix 保留） |
+| `api/valuation.js` | Vercel serverless handler。`{ fetch: false, useDatabaseFallback: true }` |
+| `lib/valuation-service.js` | 估值流程编排。collector → DB fallback → valuation engine |
+| `lib/comparable-research-collector.js` | 地址核验（Nominatim） + browser collector（Vercel 环境跳过） |
+| `lib/db-comparable-source.js` | DB 查询。`matchSuburb` 3-tier fallback |
+| `lib/valuation-engine.js` | 估值引擎（未修改） |
+| `app.js` | 前端逻辑。`useDatabaseFallback: true` 硬编码 |
 
-### 2.5 Unit 地址规则
-- Unit prefix（`Unit 3/`、`Apt 4/`、`3/`）从 `enteredAddress` 提取（正则 `/^(unit\s+\d+|apt\s+\d+|apartment\s+\d+|\d+\/)/i`）
-- **不能**从 `cleanStreet`提取（`formatSubjectStreet` 已剥离 unit 前缀）
-- 门牌号提取使用**两阶段清洗**：
-  1. 去掉 unit/apt 前缀
-  2. 去掉数字后的 `/` 分隔符
-  3. 然后 `^(\d+)\s+` 提取 house number
-- canonicalAddress 中的 unit prefix 来自 `enteredAddress` 正则匹配
+### 关键函数位置
 
-### 2.6 测试原则
-| 文件 | 用途 | 运行时间 |
-|------|------|----------|
-| `test-address-verification.mjs` | 15 场景 mock 测试（无需网络） | <50ms |
-| `test-address-lookup.mjs` | 地址查找测试 | <40ms |
-| `regression-test.mjs` | 6 种物业类型回归（VM sandbox） | <50ms |
-| `integration-test.mjs` | 集成测试（部分需网络 → 注意 timeout） | 10s-60s |
+- **`verifyAddress()`**: `collector.js:308-341` — Nominatim 查询
+- **`buildSubject()`**: `collector.js:354-580` — 地址核验 + canonicalAddress 构建
+- **`matchSuburb()`**: `db-comparable-source.js:118-156` — **3-tier suburb 匹配**
+- **`matchSuburbType()`**: `db-comparable-source.js:104-115` — 精确 suburb + type
+- **DB fallback 入口**: `valuation-service.js:108-138` — `comps.length < 3` 时触发
 
-**全量测试命令：** `npm run check`（含 `node --check app.js` + 全部 test）
+### 执行流程（Production Vercel）
 
-**已知无害警告：** `res.json is not a function`（regression-test.mjs VM mock 问题）
+```
+app.js POST → api/valuation.js handler
+  → runValuation(body, { fetch:false, useDatabaseFallback:true })
+    → collectComparableResearch()          // 只做 Nominatim 验证，跳过浏览器
+    → if (comps.length < 3) → dbSource.fetch()
+      → matchSuburbType(Oakleigh South)    // 0 hits
+      → matchSuburb(Oakleigh South)        // prefix fallback → 5 hits
+    → valueProperty()                      // 估值引擎
+    → sanitizeForClient()                  // 删除内部字段
+```
 
-**⚠️ 集成测试 timeout：** full suite 在 `useDatabaseFallback:true` 测试中会做真实 Nominatim 调用（~10.5s），整套 60s 可能 SIGKILL。**不是 test failure**。可单独跑 `node --test --test-name-pattern=xxx` 避开。
-
----
-
-## 3. 已完成内容
-
-### 已完成的全部修改（详见 CODEX_REVIEW_SUMMARY.md）
-
-- Nominatim 地址核验作为唯一 canonical address 流程 ✅
-- 验证状态三值化 (`cross_source_verified` / `single_source_observed` / `unverified`) ✅
-- 置信度动态评分（0-100 连续型，5 等级标签） ✅
-- 客户端 sanitize（不暴露 source URL / 内部评分） ✅
-- DatabaseComparableSource (Neon PostgreSQL) ✅
-- Oakleigh sync 脚本 ✅
-- 端到端验证通过（搜索 33 Tamar Grove → $1,291,930） ✅
-
-### 地址核验最终状态
-
-- `subject.address === canonicalAddress`（effectiveAddress 唯一真理） ✅
-- suburb 精确匹配（===），不是 substring ✅
-- state 比较（全名↔缩写映射） ✅
-- house number + road 加入 allMatch（4 字段全部匹配才算 verified） ✅
-- 前端先读 JSON 再检查 response.ok ✅
-- Missing fields → `unconfirmedFields[]` + `partial` + 不 mismatch ✅
-- Unit address → `unitStatus: "unverified"` + 不 mismatch ✅
-- Mismatch 仅双方都有值且明确不同 ❗️确认已实现 ✅
-- house number regex 两阶段清洗（处理 unit 3/18, unit 3 / 18, unit 3 18, 3/18） ✅
-- unitPrefix 从 enteredAddress 而非 cleanStreet 提取 ✅
-- `test-address-verification.mjs`（15 场景）+ `test-address-lookup.mjs` 已加入 npm test ✅
-- 21/21 测试全绿（address-verification 15 ✅ + address-lookup 5 ✅ + regression ✅） ✅
-
----
-
-## 4. 关键文件与函数位置
-
-### 4.1 核心逻辑
-
-| 文件 | 关键函数 | 行号 | 说明 |
-|------|---------|------|------|
-| `lib/comparable-research-collector.js` | `verifyAddress()` | 311 | Nominatim API 调用 + 字段解析 |
-| `lib/comparable-research-collector.js` | `buildSubject()` | 354 | 全部核验逻辑：匹配/partial/mismatch/unit |
-| `lib/comparable-research-collector.js` | *状态判断块* | 455-533 | unconfirmedFields, allMatch, addressMismatch |
-| `lib/comparable-research-collector.js` | `effectiveAddress` | 557-562 | 最终 subject.address 设置 |
-| `lib/valuation-service.js` | `runValuation()` | 169,194 | `address: effectiveAddress` |
-| `app.js` | 前端 fetch | 1153-1170 | 先 JSON → 检查 mismatch → response.ok |
-
-### 4.2 测试文件
-
-| 文件 | 场景数 | 说明 |
-|------|--------|------|
-| `test-address-verification.mjs` | 15 | mock Nominatim，6 种 mismatch/partial/fallback/unit 场景 |
-| `test-address-lookup.mjs` | 5 | 地址查找 + canonical 测试 |
-| `integration-test.mjs` | 多变 | 集成测试，P0+P1 coverage |
-| `regression-test.mjs` | 6 物业类型 | VM sandbox 回归 |
-
-### 4.3 配置
-
-| 文件 | 说明 |
-|------|------|
-| `package.json` — `scripts.test` | 包含 `test-address-verification.mjs test-address-lookup.mjs` |
-| `package.json` — `scripts.check` | `node --check app.js && npm test` |
-
----
-
-## 5. 当前待修复问题（Codex 最后 Round 已完成但需保持）
-
-以下 5 项已在 `3ecf7c6` 中修复，**不要再次「修复」或重新打开**。下一对话直接验证即可：
-
-### 5.1 ✔️ subject.address 使用 canonical address
-- **已实现：** `effectiveAddress = verifier.canonicalAddress` → `subject.address = effectiveAddress`
-- **位置：** `lib/comparable-research-collector.js` L557-562 + `lib/valuation-service.js` L169,194
-
-### 5.2 ✔️ Unit number 核验状态
-- **已实现：** Unit 检测 → `unitStatus: "unverified"`，house number 仍正常匹配（基于 cleaned street 内的门牌）
-- **位置：** `lib/comparable-research-collector.js` L428-429
-
-### 5.3 ✔️ Nominatim 缺失字段降级而非 mismatch
-- **已实现：** 缺失字段 → `unconfirmedFields[]` → `status: "partial"` → `addressConfidence: "medium"` → 不 block
-- **位置：** `lib/comparable-research-collector.js` L455-460, L472, L521-536
-
-### 5.4 ✔️ 地址专项测试加入 npm test
-- **已实现：** `package.json` scripts.test 包含 `test-address-verification.mjs test-address-lookup.mjs`
-
-### 5.5 ✔️ Service/API canonical address 测试
-- **已实现：** `test-address-verification.mjs` 每个场景都验证 `address === canonicalAddress`
-
----
-
-## 6. 未完成/已知问题
-
-| 问题 | 优先级 | 说明 |
-|------|--------|------|
-| **未合并 main** | ⚡️ 阻塞 | codex-review 有 7 commits 未合 main → 无生产部署 |
-| **Vercel DATABASE_URL** | ⚡️ 阻塞 | 生产环境未设置，当前在 preview 可用 |
-| **CDP browser 未接入** | P2 | `local-cdp-source.js` 未在生产 pipeline 中 |
-| **DBComparableSource 未完全整合** | P2 | 当前是 database_fallback 路径，非独立 CDP/DB 分支 |
-| **仅 Oakleigh 单 suburb** | P3 | 需要扩展更多墨尔本 suburb |
-| **集成测试 timeout** | P4 | `useDatabaseFallback:true` 测试 ~10.5s Nominatim 调用，60s SIGKILL |
-| **workspace 杂文件** | 清理 | `/Users/FrankAI/.openclaw/workspace/` 有大量 fix-*.mjs 残留脚本 |
-
----
-
-## 7. Codex 最新审核意见（Round 10）
-
-### 已采纳
-- **effectiveAddress 单一真理** ✅ — `subject.address = canonicalAddress`（valuation-service.js 两处）
-- **Unit 不误判 house number** ✅ — 清洗 unit 前缀后提取门牌，两阶段正则
-- **缺失字段 ≠ mismatch** ✅ — unconfirmedFields[] + partial 状态
-- **Unit prefix 保留** ✅ — 从 enteredAddress 提取，不是 cleanStreet
-
-### 下一对话建议
-1. 先验证 `test-address-verification.mjs` 15/15 ✅ → `test-address-lookup.mjs` 5/5 ✅ → `regression-test.mjs` ✅ → `npm run check` 🟢
-2. 确认 working tree clean、codex-review 已 push
-3. 决定是否合并 main（需小鱼确认）
-4. 或开始 DBComparableSource CDP pipeline 整合
-5. 或清理 workspace 残留
-
----
-
-## 8. 测试验证速查
+## 测试
 
 ```bash
-cd /Users/FrankAI/Documents/澳洲房地产评估系统
+# 完整本地测试（21/21）
+node --test test-address-verification.mjs test-address-lookup.mjs regression-test.mjs
 
-# 地址核验测试（最快，始终通过）
-node --test test-address-verification.mjs
+# Production API 测试
+curl -X POST "https://aushomevalue.vercel.app/api/valuation" \
+  -H "Content-Type: application/json" \
+  -d '{"address":"18 Moresby St","suburb":"Oakleigh South","state":"VIC","propertyType":"House"}'
 
-# 地址查找测试
-node --test test-address-lookup.mjs
-
-# 回归测试（6 类型）
-node --test regression-test.mjs
-
-# 单项集成测试（避免 timeout 的指定测试）
-node --test --test-name-pattern=address integration-test.mjs
-
-# 全量检查
-npm run check
-
-# 语法检查
-node --check app.js
+# Vercel 日志
+npx vercel logs aushomevalue.vercel.app --limit 20 --expand
 ```
 
----
+## 下一代理主要工作
 
-*撰于 2026-06-07 20:51 AEST。下一对话请从 `cat OPENCLAW_HANDOFF.md` 开始。*
+1. 确认 `codex-review` merge 到 `main`（需用户确认）
+2. 继续 DBComparableSource CDP pipeline 集成
+3. 导入更多 Oakleigh South / Clayton area comparable 数据
+4. 完善 Unit 地址 comparable 匹配（DB 不含 unit prefix 记录）
+5. 清理 workspace 中的 `fix-*.mjs` 残留文件
+6. 考虑 Unit 地址在 comparable 表中的存储格式
