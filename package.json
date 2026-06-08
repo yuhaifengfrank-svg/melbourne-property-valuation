@@ -10,7 +10,7 @@
     "test:valuation": "node valuation-engine-test.mjs",
     "test:valuation-api": "node valuation-api-test.mjs",
     "collect:comparables": "node collect-comparables.mjs",
-    "test": "node --test integration-test.mjs regression-test.mjs",
+    "test": "node --test test-address-verification.mjs test-address-lookup.mjs integration-test.mjs regression-test.mjs",
     "check": "node --check app.js && npm test"
   },
   "dependencies": {

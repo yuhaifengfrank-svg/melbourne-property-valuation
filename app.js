@@ -246,30 +246,64 @@ function explicitStateFromAddress(address) {
 function buildEnteredAddress() {
   const streetAddress = byId("address").value.trim();
   const enteredSuburb = getEnteredSuburb();
+  const inlineSuburb = suburbFromAddress(streetAddress);
   const addressState = explicitStateFromAddress(streetAddress);
   const state = addressState || getSelectedState();
+
+  // 确定有效 suburb：地址中已有 inline suburb 优先，否则用下拉框
+  let effectiveSuburb = "";
+  if (inlineSuburb) {
+    effectiveSuburb = inlineSuburb;
+  } else if (enteredSuburb) {
+    effectiveSuburb = enteredSuburb;
+  }
+
+  // 构建 canonical address
   const parts = [streetAddress];
-  // 只要用户选择了 suburb，就补上（即使 inline 解析出来了也补，防缩写不匹配）
-  if (enteredSuburb) parts.push(enteredSuburb);
+  // 如果 effectiveSuburb 已经包含在 streetAddress 中（case-insensitive），不追加
+  // 检查：streetAddress 是否以 suburb 结尾，或者包含 ", suburb" 或 " suburb,"
+  const suburbInAddress = effectiveSuburb &&
+    (streetAddress.toLowerCase().includes(", " + effectiveSuburb.toLowerCase()) ||
+     streetAddress.toLowerCase().includes(" " + effectiveSuburb.toLowerCase() + ",") ||
+     streetAddress.toLowerCase().endsWith(" " + effectiveSuburb.toLowerCase()));
+  if (effectiveSuburb && !suburbInAddress) {
+    parts.push(effectiveSuburb);
+  }
   if (!addressState && state) parts.push(state);
-  return parts.filter(Boolean).join(", ");
+  return {
+    canonicalAddress: parts.filter(Boolean).join(", "),
+    effectiveSuburb: effectiveSuburb
+  };
+}
+function looksLikeStreetOnly(text) {
+  const streetSuffixes = /\b(street|avenue|road|grove|drive|court|crescent|parade|place|lane|pde|rd|st|dr|crt|hwy|tce|wy|bvd|cl|ct|gdn|grn|gr|pkwy|pl|pt|sq|trc|close|circuit|gate|way|rise|view|vale|ridge)\b$/i;
+  if (/^\d+$/.test(text.trim())) return true;
+  if (streetSuffixes.test(text.trim())) return true;
+  return false;
 }
 
 function suburbFromAddress(address) {
   const cleaned = String(address || "").replace(/\bVIC\b|\bNSW\b|\bQLD\b|\bWA\b|\bSA\b|\bTAS\b|\bACT\b|\bNT\b|\b\d{4}\b/gi, "");
   const parts = cleaned.split(",").map((part) => part.trim()).filter(Boolean);
-  if (parts.length > 1) return parts[parts.length - 1];
+  if (parts.length > 1) {
+    const lastPart = parts[parts.length - 1];
+    if (looksLikeStreetOnly(lastPart)) return "";
+    return toTitleCase(lastPart);
+  }
   const normalized = normalizeAddress(cleaned);
   const inlineSuburbMatch = normalized.match(
-    /^(?:unit\s+\d+\s+)?(?:\d+\s*\/\s*)?\d+\s+.+?\s+(?:street|avenue|road|grove|drive|court|crescent|parade|place|lane|pde|rd|st|dr|crt|hwy|tce|wy|bvd|cl|ct|gdn|grn|gr|pkwy|pl|pt|sq|trc)\s+(.+)$/
+    /^(?:unit\s+\d+\s+)?(?:\d+\s*\/\s*)?\d+\s+.+?\s+(?:street|avenue|road|grove|drive|court|crescent|parade|place|lane|pde|rd|st|dr|crt|hwy|tce|wy|bvd|cl|ct|gdn|grn|gr|pkwy|pl|pt|sq|trc)\s+(.+)$/i
   );
   if (inlineSuburbMatch?.[1]) {
-    return toTitleCase(inlineSuburbMatch[1]);
+    const extracted = inlineSuburbMatch[1].trim();
+    if (looksLikeStreetOnly(extracted)) return "";
+    return toTitleCase(extracted);
   }
   const words = cleaned.trim().split(/\s+/);
-  return words.length > 1 ? words.slice(-2).join(" ") : "";
+  const candidate = words.length > 1 ? words.slice(-2).join(" ") : (words[0] || "");
+  if (looksLikeStreetOnly(candidate)) return "";
+  return toTitleCase(candidate);
 }
-
 function stateFromAddress(address) {
   return explicitStateFromAddress(address) || getSelectedState();
 }
@@ -1090,8 +1124,8 @@ function createUnavailableValuation(address, inferredType = "House", selectedSta
   };
 }
 
-async function runAddressValuation(address, selectedType = "", selectedState = "", enteredSuburb = "") {
-  const normalizedSuburb = normalizeSuburbName(enteredSuburb);
+async function runAddressValuation(address, selectedType = "", selectedState = "", effectiveSuburb = "") {
+  const normalizedSuburb = normalizeSuburbName(effectiveSuburb);
   const resolvedState = explicitStateFromAddress(address) || selectedState;
   const inferredType = inferPropertyTypeFromAddress(address, null, selectedType);
 
@@ -1101,7 +1135,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
       address: address || commercialPendingValuation.address,
       addressZh: address || commercialPendingValuation.addressZh,
       propertyState: resolvedState,
-      propertySuburb: normalizedSuburb
+      propertySuburb: normalizedSuburb || effectiveSuburb
     };
   }
 
@@ -1113,11 +1147,28 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         address,
         suburb: normalizedSuburb,
         state: resolvedState,
-        propertyType: inferredType
+        propertyType: inferredType,
+        useDatabaseFallback: true
       })
     });
-    if (!response.ok) throw new Error(`Valuation API returned ${response.status}`);
-    const result = await response.json();
+    var result = await response.json();
+
+    // ── 地址核验冲突：先读 JSON 再判断状态码 ──
+    if (result.status === "address-mismatch") {
+      var mm = result.mismatch || {};
+      return {
+        ...createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb),
+        addressMismatch: true,
+        mismatchType: mm.type || "suburb",
+        mismatchInput: mm.inputSuburb || "",
+        mismatchVerified: mm.verifiedSuburb || "",
+        mismatchFailures: mm.failures || [],
+        mismatchMessage: mm.message || result.error || "地址信息核验不一致",
+        addressZh: mm.message || result.error || "地址信息核验不一致"
+      };
+    }
+
+    if (!response.ok) throw new Error(result.error || `Valuation API returned ${response.status}`);
 
     if (!result.valuation?.ok || !result.valuation.estimate) {
       // API 返回了明确但无法估值的结果
@@ -1444,6 +1495,16 @@ function renderValuation(data) {
   currentValuation.builtFormVerification = buildBuiltFormVerification(currentValuation);
   data = currentValuation;
   const planningLabels = getPlanningLabels(data);
+  // 地址核验冲突：显示警告消息而非地址
+  if (data.addressMismatch) {
+    const warnMsg = data.mismatchMessage || (language === "zh" ? "地址核验不一致，请确认" : "Address verification failed");
+    byId("property-address").textContent = "⚠ " + warnMsg;
+    byId("estimated-value").textContent = "—";
+    byId("midpoint").textContent = "—";
+    byId("confidence").textContent = "—";
+    byId("mobile-property-address").textContent = "⚠ " + warnMsg;
+    return;
+  }
   byId("property-address").textContent = language === "zh" && data.addressZh ? data.addressZh : data.address;
   byId("estimated-value").textContent = localizeValue(data.value);
   byId("midpoint").textContent = localizeValue(data.midpoint);
@@ -2076,15 +2137,14 @@ byId("start-valuation").addEventListener("click", async () => {
   button.textContent = language === "zh" ? "正在核验公开数据…" : "Checking public evidence…";
 
   const selectedType = document.querySelector(".chip.active")?.dataset.type || "House";
-  const enteredAddress = buildEnteredAddress();
+  const { canonicalAddress, effectiveSuburb } = buildEnteredAddress();
   const selectedState = getSelectedState();
-  const enteredSuburb = getEnteredSuburb();
 
   const valuation = await runAddressValuation(
-    enteredAddress || byId("address").value,
+    canonicalAddress || byId("address").value,
     selectedType,
     selectedState,
-    enteredSuburb
+    effectiveSuburb
   );
   renderValuation(valuation);
 
