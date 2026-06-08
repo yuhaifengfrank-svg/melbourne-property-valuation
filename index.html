@@ -373,6 +373,16 @@ button:hover {
   padding: 20px;
 }
 
+/* ── Section anchor offset for sticky header ── */
+.home-panel,
+.valuation-panel,
+.research-panel,
+.opportunities-panel,
+.about-panel,
+.contact-panel {
+  scroll-margin-top: 80px;
+}
+
 .detail-panel {
   cursor: pointer;
   position: relative;
@@ -1622,6 +1632,14 @@ th {
   max-width: 100%;
 }
 
+.val-search-box {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
 /* ── Research panel ── */
 .research-panel {
   max-width: 880px;
@@ -2041,8 +2059,17 @@ th {
             <div class="stat"><strong>230+</strong> <span data-i18n="stat-suburbs">suburbs covered</span></div>
           </div>
           <div class="home-search-preview">
-            <p class="eyebrow">Free first-layer estimate</p>
+            <p class="eyebrow" data-i18n="hero-estimate-eyebrow">Free first-layer estimate</p>
             <p class="hero-note">本估值基于评估时可获得的公开市场信息、房产特征及统计分析生成，仅供一般信息和研究参考。本报告并非正式估价、信贷决定、法律、税务或财务建议。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── VALUATION ── -->
+      <section id="valuation" class="valuation-panel">
+        <div class="content">
+          <div class="val-search-box">
+            <p class="eyebrow" data-i18n="hero-estimate-eyebrow">Free first-layer estimate</p>
             <form class="search-box" action="#valuation" method="get">
               <label for="property-state">Property location</label>
               <div class="location-row">
@@ -2080,12 +2107,6 @@ th {
               </div>
             </form>
           </div>
-        </div>
-      </section>
-
-      <!-- ── VALUATION ── -->
-      <section id="valuation" class="valuation-panel">
-        <div class="content">
           <section class="mobile-value-card" aria-label="Valuation quick summary">
             <p class="eyebrow">Estimated value</p>
             <h2 id="mobile-property-address">Enter an address to start</h2>
