@@ -1937,14 +1937,167 @@ th {
           </section>
           <section class="panel"><div class="loader hidden" id="valuation-loader"></div></section>
           <section class="content">
-            <section class="summary" id="summary-section"></section>
-            <section class="grid-two"></section>
-            <section class="panel loan-panel" id="loan"></section>
-            <section class="panel" id="comparables"></section>
-            <section class="grid-two location-grid" id="location"></section>
-            <section class="grid-two fundamentals-grid"></section>
-            <section class="panel upload-panel" id="uploads"></section>
-            <section class="panel investor-panel" id="investor"></section>
+            <section class="summary" id="summary-section">
+              <div class="summary-main">
+                <p class="eyebrow">First-layer desktop valuation</p>
+                <h2 id="property-address">Enter an address to start</h2>
+                <div class="value-band">
+                  <div><span>Estimated value</span><strong id="estimated-value">Pending</strong></div>
+                  <div><span>Midpoint</span><strong id="midpoint">Pending</strong></div>
+                  <div><span>Confidence</span><strong id="confidence">Pending</strong></div>
+                </div>
+                <div id="evidence-badge-val" style="display:none;padding:0.35rem 0.75rem;border-radius:6px;margin-top:0.5rem;font-size:0.8rem;font-weight:600;"></div>
+              </div>
+              <div class="summary-card">
+                <h3>Why this estimate?</h3>
+                <ul id="reasons">
+                  <li>Enter a Melbourne property address to generate a first-layer estimate.</li>
+                  <li>Register after the estimate to unlock comparable sales, micro-location and planning checks.</li>
+                </ul>
+              </div>
+            </section>
+            <section class="grid-two">
+              <article class="panel metric-card">
+                <span>Fast starting point</span>
+                <strong>Address in, estimate out</strong>
+                <p>Start with a quick estimate, then unlock the detailed report when you are ready.</p>
+              </article>
+              <article class="panel metric-card">
+                <span>Clear next steps</span>
+                <strong>Know what to check</strong>
+                <p>The report highlights useful follow-up items such as title, planning and condition evidence.</p>
+              </article>
+            </section>
+            <section class="panel loan-panel" id="loan">
+              <div class="panel-header">
+                <div>
+                  <p class="eyebrow">Loan / LVR scenario</p>
+                  <h2>How much could be borrowed against this value?</h2>
+                </div>
+                <div class="lvr-buttons" role="group" aria-label="Select LVR">
+                  <button class="lvr active" data-lvr="0.6" type="button">60%</button>
+                  <button class="lvr" data-lvr="0.7" type="button">70%</button>
+                  <button class="lvr" data-lvr="0.8" type="button">80%</button>
+                </div>
+              </div>
+              <div class="loan-grid">
+                <div><span>Selected LVR</span><strong id="selected-lvr">60%</strong></div>
+                <div><span>Indicative max loan</span><strong id="max-loan">$1.197m</strong></div>
+                <div><span>Required equity before costs</span><strong id="required-equity">$798k</strong></div>
+              </div>
+              <p class="loan-disclaimer">Indicative only. This is not a loan approval, credit assessment or personal financial advice. Actual borrowing capacity depends on lender policy, income, expenses and full application assessment.</p>
+            </section>
+            <section class="panel" id="comparables">
+              <div class="panel-header">
+                <h2>Key Comparables</h2>
+                <button class="ghost detail-trigger" type="button">View adjustments</button>
+              </div>
+              <div class="locked-strip" id="locked-strip">
+                <strong>Full comparable adjustments are locked.</strong>
+                <span>Create a free account to view all sales evidence and adjustment notes.</span>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Address</th>
+                      <th>Price</th>
+                      <th>Date</th>
+                      <th>Distance</th>
+                      <th>Bed</th>
+                      <th>Bath</th>
+                      <th>Car</th>
+                      <th>Land</th>
+                    </tr>
+                  </thead>
+                  <tbody id="comparables-body"></tbody>
+                </table>
+              </div>
+            </section>
+            <section class="grid-two location-grid" id="location">
+              <article class="panel detail-panel" data-detail="micro-location evidence">
+                <h2>Micro-location</h2>
+                <dl class="facts">
+                  <div><dt>Street rank</dt><dd id="street-rank">Top 25%, estimated</dd></div>
+                  <div><dt>Street type</dt><dd id="street-type">Quiet residential street</dd></div>
+                  <div><dt>Amenity access</dt><dd id="amenity-access">Strong</dd></div>
+                  <div><dt>Parking pressure</dt><dd id="parking-pressure">To be checked</dd></div>
+                </dl>
+              </article>
+              <article class="panel map-card" aria-label="Location map preview">
+                <p class="map-status" id="map-status">Loading map&hellip;</p>
+                <div id="map-container" class="map-container"></div>
+              </article>
+            </section>
+            <section class="grid-two fundamentals-grid">
+              <article class="panel detail-panel" data-detail="suburb fundamentals">
+                <h2>Suburb Fundamentals</h2>
+                <ul class="compact-list" id="suburb-list">
+                  <li>Strong transport and retail access.</li>
+                  <li>Demand support from Chadstone, Monash University and Monash Medical.</li>
+                  <li>Comparison set: Hughesdale, Huntingdale, Clayton, Murrumbeena.</li>
+                </ul>
+              </article>
+              <article class="panel detail-panel" data-detail="planning and potential">
+                <h2>Planning & Potential</h2>
+                <dl class="facts">
+                  <div><dt>Land source</dt><dd id="land-source">Portal, not title-confirmed</dd></div>
+                  <div><dt>Granny flat potential</dt><dd id="granny-potential">Medium, subject to controls</dd></div>
+                  <div><dt>Approval certainty</dt><dd id="approval-certainty">Not approved</dd></div>
+                </dl>
+              </article>
+            </section>
+            <section class="panel upload-panel" id="uploads">
+              <div>
+                <p class="eyebrow">Improve accuracy</p>
+                <h2>Upload missing evidence to revise the estimate.</h2>
+                <p>Title, Section 32, current photos and inspection notes can upgrade confidence and narrow the valuation range.</p>
+                <p class="pdf-note">PDF download requires phone number and contact consent.</p>
+              </div>
+              <div class="report-actions">
+                <button id="upload-evidence" type="button">Upload evidence</button>
+                <input class="hidden-file-input" id="evidence-files" type="file" multiple accept=".pdf,.txt,.jpg,.jpeg,.png,.heic,.doc,.docx" />
+                <button class="ghost" id="enter-manual-data" type="button">Enter manual notes</button>
+                <button class="ghost" id="download-pdf" type="button">Download PDF</button>
+              </div>
+              <p class="upload-message" id="upload-message" aria-live="polite"></p>
+              <div class="evidence-review hidden" id="evidence-review">
+                <h3>Evidence review applied</h3>
+                <ul id="evidence-review-list"></ul>
+                <p id="evidence-revision-note">Estimate revised using uploaded evidence. Download the report to see the evidence summary.</p>
+              </div>
+            </section>
+            <section class="panel investor-panel" id="investor">
+              <div>
+                <p class="eyebrow">Investor Hub</p>
+                <h2>Explore property-backed investment themes.</h2>
+                <p>General information only. Specific private opportunities require investor profile, eligibility review and compliance approval.</p>
+                <div class="investor-lock" id="investor-lock">
+                  <strong>Investor Hub details are locked.</strong>
+                  <span>Register to view investor education, profile questions and gated opportunity workflow.</span>
+                </div>
+              </div>
+              <div class="theme-grid">
+                <button class="theme-card detail-trigger" data-detail="property-backed private credit" data-theme="privateCredit" type="button">Private credit</button>
+                <button class="theme-card detail-trigger" data-detail="development finance themes" data-theme="developmentFinance" type="button">Development finance</button>
+                <button class="theme-card detail-trigger" data-detail="income property themes" data-theme="incomeProperty" type="button">Income property</button>
+              </div>
+              <div class="investor-theme-detail hidden" id="investor-theme-detail" aria-live="polite">
+                <h3 id="investor-theme-title">Private credit</h3>
+                <p id="investor-theme-copy">Short-term property-backed lending can be assessed through loan-to-value, exit strategy, borrower strength and security position.</p>
+                <ul id="investor-theme-list">
+                  <li>Indicative LVR and valuation buffer</li>
+                  <li>Security ranking and repayment source</li>
+                  <li>Documentation required before any opportunity review</li>
+                </ul>
+              </div>
+              <div class="investor-detail hidden" id="investor-detail">
+                <article>
+                  <h3>Investor profile</h3>
+                  <ul></ul>
+                </article>
+              </div>
+            </section>
           </section>
         </div>
       </section>
