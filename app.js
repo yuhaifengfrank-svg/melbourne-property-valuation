@@ -250,12 +250,14 @@ function buildEnteredAddress() {
   const addressState = explicitStateFromAddress(streetAddress);
   const state = addressState || getSelectedState();
 
-  // 确定有效 suburb：地址中已有 inline suburb 优先，否则用下拉框
+  // 确定有效 suburb：下拉框显式输入的优先，其次地址中内嵌的 suburb
+  // 注意：suburbFromAddress 对 "12 Joelson Av"（无 suburb）可能误将街道名当作 suburb
+  // 所以取 enteredSuburb 优先；若用户没填下拉框才尝试从地址解析
   let effectiveSuburb = "";
-  if (inlineSuburb) {
-    effectiveSuburb = inlineSuburb;
-  } else if (enteredSuburb) {
+  if (enteredSuburb) {
     effectiveSuburb = enteredSuburb;
+  } else if (inlineSuburb && !looksLikeStreetOnly(inlineSuburb)) {
+    effectiveSuburb = inlineSuburb;
   }
 
   // 构建 canonical address
@@ -275,6 +277,7 @@ function buildEnteredAddress() {
     effectiveSuburb: effectiveSuburb
   };
 }
+
 function looksLikeStreetOnly(text) {
   const streetSuffixes = /\b(street|avenue|road|grove|drive|court|crescent|parade|place|lane|pde|rd|st|dr|crt|hwy|tce|wy|bvd|cl|ct|gdn|grn|gr|pkwy|pl|pt|sq|trc|close|circuit|gate|way|rise|view|vale|ridge)\b$/i;
   if (/^\d+$/.test(text.trim())) return true;
@@ -299,10 +302,9 @@ function suburbFromAddress(address) {
     if (looksLikeStreetOnly(extracted)) return "";
     return toTitleCase(extracted);
   }
-  const words = cleaned.trim().split(/\s+/);
-  const candidate = words.length > 1 ? words.slice(-2).join(" ") : (words[0] || "");
-  if (looksLikeStreetOnly(candidate)) return "";
-  return toTitleCase(candidate);
+  // 当地址中没有逗号分隔时，不宜猜测 suburb（13 Joelson Av 无 suburb 时总是返回街道片段）
+  // 只靠逗号分隔的最后部分来判断
+  return "";
 }
 function stateFromAddress(address) {
   return explicitStateFromAddress(address) || getSelectedState();
