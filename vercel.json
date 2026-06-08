@@ -1,17 +1,8 @@
 {
   "outputDirectory": ".",
   "functions": {
-    "api/opportunity.js": {
-      "maxDuration": 60
-    },
-    "api/valuation.js": {
+    "api/*.js": {
       "maxDuration": 60
     }
-  },
-  "crons": [
-    {
-      "path": "/api/warm",
-      "schedule": "*/4 * * * *"
-    }
-  ]
+  }
 }
