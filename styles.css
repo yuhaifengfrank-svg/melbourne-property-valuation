@@ -1399,3 +1399,323 @@ th {
   margin: 0;
   max-width: 600px;
 }
+
+/* ── Home panel ── */
+.home-panel {
+  max-width: 800px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.home-hero h2 {
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  line-height: 1.2;
+  margin: 0 0 12px;
+}
+
+.hero-sub {
+  color: var(--muted);
+  font-size: 1.05rem;
+  margin: 0 0 28px;
+}
+
+.home-stats {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin: 0 0 36px;
+  flex-wrap: wrap;
+}
+
+.stat strong {
+  display: block;
+  font-size: 1.5rem;
+  color: var(--accent);
+  line-height: 1.1;
+}
+
+.stat span {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.home-search-preview {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+
+.home-search-preview .hero-note {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: -4px 0 20px;
+}
+
+/* ── Valuation panel ── */
+.valuation-panel .content .content {
+  max-width: 100%;
+}
+
+/* ── Research panel ── */
+.research-panel {
+  max-width: 880px;
+  margin: 40px auto;
+}
+
+.research-intro {
+  margin-bottom: 36px;
+}
+
+.research-intro h2 {
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  margin: 0 0 8px;
+}
+
+.research-sub {
+  color: var(--muted);
+  margin: 0;
+}
+
+.research-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.research-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 24px;
+  transition: border-color 0.2s;
+}
+
+.research-card .card-icon {
+  font-size: 1.6rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.research-card h3 {
+  font-size: 1rem;
+  margin: 0 0 8px;
+}
+
+.research-card p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0 0 12px;
+  line-height: 1.45;
+}
+
+.research-card .tag {
+  background: var(--soft);
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+/* ── Opportunities panel ── */
+.opportunities-panel {
+  max-width: 960px;
+  margin: 40px auto;
+}
+
+.opp-intro h2 {
+  font-size: clamp(1.3rem, 3vw, 1.8rem);
+  margin: 0 0 8px;
+}
+
+.opp-sub {
+  color: var(--muted);
+  margin: 0 0 28px;
+}
+
+.opp-filters {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: end;
+}
+
+.filter-row label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.filter-row select {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.9rem;
+  background: white;
+  min-width: 120px;
+}
+
+.filter-actions {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#opp-search-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+#opp-search-btn:hover {
+  opacity: 0.9;
+}
+
+.opp-loading {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.opp-placeholder {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+
+.opp-result-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.opp-result-main {
+  flex: 1;
+  min-width: 240px;
+}
+
+.opp-result-main .address {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.opp-result-main .detail {
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.opp-score-badge {
+  background: var(--accent);
+  color: white;
+  border-radius: 30px;
+  padding: 6px 16px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 4px 0;
+  min-width: 60px;
+  text-align: center;
+}
+
+.opp-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.opp-badge {
+  font-size: 0.72rem;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.opp-badge.value {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.opp-badge.school {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.opp-badge.growth {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.opp-badge.prime {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.opp-scores {
+  display: flex;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.opp-scores span {
+  white-space: nowrap;
+}
+
+.opp-error {
+  color: #dc2626;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-top: 12px;
+}
+
+/* ── Mobile ── */
+@media (max-width: 680px) {
+  .home-stats {
+    gap: 12px;
+  }
+  .stat strong {
+    font-size: 1.2rem;
+  }
+  .filter-row {
+    flex-direction: column;
+  }
+  .filter-row label {
+    width: 100%;
+  }
+  .filter-row select {
+    width: 100%;
+  }
+  .opp-result-card {
+    flex-direction: column;
+    align-items: start;
+  }
+  .opp-score-badge {
+    align-self: start;
+  }
+}

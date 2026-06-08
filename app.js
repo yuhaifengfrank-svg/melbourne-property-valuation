@@ -2153,7 +2153,13 @@ byId("start-valuation").addEventListener("click", async () => {
 
   button.disabled = false;
   button.textContent = originalText;
-  if (window.matchMedia("(max-width: 680px)").matches) scrollToSection(".mobile-value-card");
+
+  // Navigate to valuation section on desktop
+  window.location.hash = "valuation";
+  // Mobile: scroll to results
+  if (window.matchMedia("(max-width: 680px)").matches) {
+    setTimeout(() => scrollToSection(".mobile-value-card"), 100);
+  }
 });
 
 document.querySelectorAll(".chip").forEach((chip) => {
@@ -2280,3 +2286,70 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 applyLanguage();
+
+/* ── Opportunity Scan (Top Opportunities page) ── */
+const oppSearchBtn = document.getElementById("opp-search-btn");
+const oppResults = document.getElementById("opp-results");
+const oppLoading = document.getElementById("opp-loading");
+
+async function runOpportunityScan() {
+  const strategy = document.getElementById("opp-strategy").value;
+  const ptype = document.getElementById("opp-type").value;
+  const minP = document.getElementById("opp-min-price").value;
+  const maxP = document.getElementById("opp-max-price").value;
+  const params = new URLSearchParams({ strategy, maxResults: "50" });
+  if (ptype) params.set("propertyType", ptype);
+  if (minP && Number(minP) > 0) params.set("minPrice", minP);
+  if (maxP && Number(maxP) < 99999999) params.set("maxPrice", maxP);
+  oppLoading.classList.remove("hidden");
+  oppSearchBtn.disabled = true;
+  oppResults.innerHTML = "";
+  try {
+    const res = await fetch("/api/opportunity?" + params.toString());
+    const data = await res.json();
+    oppLoading.classList.add("hidden");
+    oppSearchBtn.disabled = false;
+    if (!data.ok || !data.opportunities || data.opportunities.length === 0) {
+      oppResults.innerHTML = '<div class="opp-placeholder"><p>No opportunities found. Try adjusting the filters.</p></div>';
+      return;
+    }
+    let html = `<p class="opp-meta">Scanned ${data.meta.totalScanned} sales across ${data.meta.suburbCount} suburbs &middot; Average score ${data.meta.averageScore}</p>`;
+    data.opportunities.forEach(o => {
+      const score = o.opportunityScore;
+      const priceK = (o.salePrice / 1000).toFixed(0);
+      const addr = o.address || "Unknown";
+      const dateStr = o.soldDate ? String(o.soldDate).slice(0, 10) : "";
+      const badges = (o.badges || []).map(b => `<span class="opp-badge ${b.type}">${b.label}</span>`).join("");
+      html += `
+        <div class="opp-result-card">
+          <div class="opp-result-main">
+            <div class="address">${addr}</div>
+            <div class="detail">${o.suburb} &middot; ${o.propertyType || "-"} &middot; ${o.bedrooms || "?"}bdr &middot; Sold ${dateStr} &middot; $${priceK}K</div>
+            <div class="opp-scores">
+              <span>U:${o.undervaluationScore}(${o.undervaluationPct}%)</span>
+              <span>S:${o.schoolScore}</span>
+              <span>G:${o.growthScore}</span>
+              <span>CF:${o.cashFlowScore}</span>
+            </div>
+            ${badges ? `<div class="opp-badges">${badges}</div>` : ""}
+          </div>
+          <div class="opp-score-badge">${score}</div>
+        </div>`;
+    });
+    oppResults.innerHTML = html;
+  } catch (err) {
+    oppLoading.classList.add("hidden");
+    oppSearchBtn.disabled = false;
+    oppResults.innerHTML = `<div class="opp-error">Failed to load opportunities: ${err.message}</div>`;
+  }
+}
+
+if (oppSearchBtn) {
+  oppSearchBtn.addEventListener("click", runOpportunityScan);
+}
+
+document.addEventListener("hashchange", () => {
+  if (window.location.hash === "#opportunities" && oppResults && oppResults.querySelector(".opp-placeholder")) {
+    setTimeout(runOpportunityScan, 300);
+  }
+});
