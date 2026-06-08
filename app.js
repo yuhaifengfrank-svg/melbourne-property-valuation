@@ -2429,11 +2429,17 @@ async function runOpportunityScan() {
   if (minP && Number(minP) > 0) params.set("minPrice", minP);
   if (maxP && Number(maxP) < 99999999) params.set("maxPrice", maxP);
   oppLoading.classList.remove("hidden");
+  oppLoading.textContent = "Scanning database...";
   oppSearchBtn.disabled = true;
   oppResults.innerHTML = "";
+  // Cold-start timeout warning
+  const coldTimer = setTimeout(() => {
+    oppLoading.textContent = "Still scanning — this may take a moment on first run.";
+  }, 15000);
   try {
     const res = await fetch("/api/opportunity?" + params.toString());
     const data = await res.json();
+    clearTimeout(coldTimer);
     oppLoading.classList.add("hidden");
     oppSearchBtn.disabled = false;
     if (!data.ok || !data.opportunities || data.opportunities.length === 0) {
@@ -2465,6 +2471,7 @@ async function runOpportunityScan() {
     });
     oppResults.innerHTML = html;
   } catch (err) {
+    clearTimeout(coldTimer);
     oppLoading.classList.add("hidden");
     oppSearchBtn.disabled = false;
     oppResults.innerHTML = `<div class="opp-error">Failed to load opportunities: ${err.message}</div>`;

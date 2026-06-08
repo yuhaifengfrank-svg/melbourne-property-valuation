@@ -1,3 +1,11 @@
 {
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "functions": {
+    "api/opportunity.js": {
+      "maxDuration": 60
+    },
+    "api/valuation.js": {
+      "maxDuration": 60
+    }
+  }
 }
