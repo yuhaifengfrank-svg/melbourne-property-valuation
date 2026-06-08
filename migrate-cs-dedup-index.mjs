@@ -1,8 +1,8 @@
-// ── 一次性索引迁移脚本 ──
-// 将 cs_dedup_idx 从普通单列/复合索引升级为 COALESCE NULL-safe 版本
+// ── 索引迁移脚本（v2: partial unique index for ON CONFLICT support）──
+// 旧的 COALESCE 索引无法用于 ON CONFLICT（PostgreSQL 限制），
+// 改用 partial unique index，支持 sale_date/sale_price 为 NULL 的多行。
 //
 // 用法：node migrate-cs-dedup-index.mjs
-// 使用 sql.transaction(txn => [...]) 保证原子性
 
 import { getSql } from "./api/_db.js";
 
@@ -10,32 +10,18 @@ async function main() {
   const sql = getSql();
   console.log("[Index Migration] Connected to DB");
 
-  await sql.transaction(txn => [
-    // 步骤 1：清理重复数据
-    txn`DELETE FROM comparable_sales
-      WHERE id IN (
-        SELECT id FROM (
-          SELECT id, ROW_NUMBER() OVER (
-            PARTITION BY sale_address,
-                        COALESCE(sale_date, '1970-01-01'::date),
-                        COALESCE(sale_price, -1),
-                        source_name
-            ORDER BY updated_at DESC NULLS LAST, id DESC
-          ) AS rn
-          FROM comparable_sales
-        ) dups
-        WHERE dups.rn > 1
-      )`,
-    // 步骤 2：删除旧索引
-    txn`DROP INDEX IF EXISTS cs_dedup_idx`,
-    // 步骤 3：创建 COALESCE 版
-    txn`CREATE UNIQUE INDEX cs_dedup_idx ON comparable_sales (
+  // 删除旧索引
+  await sql`DROP INDEX IF EXISTS cs_dedup_idx`;
+
+  // 创建新的 partial unique index
+  await sql`
+    CREATE UNIQUE INDEX IF NOT EXISTS cs_dedup_idx2 ON comparable_sales (
       sale_address,
-      COALESCE(sale_date, '1970-01-01'::date),
-      COALESCE(sale_price, -1),
+      sale_date,
+      sale_price,
       source_name
-    )`
-  ]);
+    ) WHERE sale_date IS NOT NULL AND sale_price IS NOT NULL
+  `;
 
   console.log("[Index Migration] Complete");
   process.exit(0);
