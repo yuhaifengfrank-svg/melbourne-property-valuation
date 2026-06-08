@@ -5,7 +5,7 @@ import { runValuation } from "../lib/valuation-service.js";
 
 // 客户端安全过滤：只暴露客户可看字段，隐藏内部审计信息
 // 客户端安全过滤：只暴露客户可查看的字段，删除所有内部审计信息
-function sanitizeForClient(obj) {
+function sanitizeForClient(obj, debug = false) {
   const safe = JSON.parse(JSON.stringify(obj));
 
   // 删除内部字段（顶层）
@@ -63,7 +63,7 @@ function sanitizeForClient(obj) {
   if (safe.valuation?.statisticalIntervals) delete safe.valuation.statisticalIntervals;
 
   // 删除 estimate 内部字段（保留 midpoint/low/high）
-  if (safe.valuation?.estimate) {
+  if (safe.valuation?.estimate && !debug) {
     const { midpoint, low, high } = safe.valuation.estimate;
     safe.valuation.estimate = { midpoint, low, high };
   }
@@ -108,7 +108,8 @@ export default async function handler(request, response) {
       fetch: false,
       useDatabaseFallback: true
     });
-    const safe = sanitizeForClient(result);
+    const debug = request.query?.debug === 'true' || body.debug === true;
+    const safe = sanitizeForClient(result, debug);
     return response.status(result.ok ? 200 : 400)
       .setHeader("Content-Type", "application/json")
       .setHeader("Cache-Control", "no-store")
