@@ -70,46 +70,80 @@ input {
 
 
 /* ── Mobile hamburger menu ── */
-.menu-check { display: none; }
 .menu-btn {
   display: none;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px;
+  padding: 6px;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
+  font-size: 0.75rem;
+  align-items: center;
+  color: var(--ink);
 }
 .menu-btn span {
   display: block;
-  width: 24px;
+  width: 22px;
   height: 2px;
   background: var(--ink);
   border-radius: 2px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.menu-label {
+  display: none;
 }
 @media (max-width: 720px) {
-  .menu-btn { display: flex; }
   .topbar nav { display: none; }
-  .topbar nav.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(244,246,245,0.98); padding: 12px 18px 18px; border-bottom: 1px solid var(--line); z-index: 20; gap: 4px; }
+  .topbar nav.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(244,246,245,0.98); padding: 10px 18px 14px; border-bottom: 1px solid var(--line); z-index: 20; gap: 2px; }
+  .topbar nav.open a { padding: 10px 12px; font-size: 0.95rem; border-radius: 8px; }
   .topbar { position: relative; }
+  .topbar-row { gap: 12px; }
+  .menu-btn { display: flex; }
+  .topbar .header-left { min-width: 0; }
+  .topbar .header-left h1 { font-size: 20px; }
+  .topbar .header-left .eyebrow { font-size: 0.65rem; }
+  .topbar .header-right { display: flex; align-items: center; gap: 6px; }
+  .language-toggle { margin-left: 0; }
+  .menu-label { display: inline; margin-left: 2px; font-size: 0.65rem; }
 }
+/* menu-btn open state — animate to X */
+.menu-btn.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.menu-btn.open span:nth-child(2) { opacity: 0; }
+.menu-btn.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+/* mobile menu overlay + body lock */
+body.mobile-menu-open { overflow: hidden; }
+#mobile-overlay { display: none; }
 @media (max-width: 720px) {
-  .language-toggle { margin-left: auto; }
+  #mobile-overlay.open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    top: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 15;
+  }
 }
 
 .topbar {
-  align-items: center;
   background: rgba(244, 246, 245, 0.92);
   border-bottom: 1px solid var(--line);
-  display: flex;
-  gap: 24px;
-  justify-content: space-between;
   padding: 20px clamp(18px, 4vw, 48px);
   position: sticky;
   top: 0;
   z-index: 10;
   backdrop-filter: blur(14px);
+}
+.topbar-row {
+  align-items: center;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
 }
 
 .topbar h1,
@@ -1448,47 +1482,21 @@ th {
     min-width: 0;
     width: 100%;
   }
+}
 
-  
-/* ── Mobile hamburger menu ── */
-.menu-check { display: none; }
-.menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 8px;
-  flex-direction: column;
-  gap: 5px;
-}
-.menu-btn span {
-  display: block;
-  width: 24px;
-  height: 2px;
-  background: var(--ink);
-  border-radius: 2px;
-  transition: transform 0.2s;
-}
 @media (max-width: 720px) {
-  .menu-btn { display: flex; }
-  .topbar nav { display: none; }
-  .topbar nav.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(244,246,245,0.98); padding: 12px 18px 18px; border-bottom: 1px solid var(--line); z-index: 20; gap: 4px; }
-  .topbar { position: relative; }
-}
-@media (max-width: 720px) {
-  .language-toggle { margin-left: auto; }
+  .topbar {
+    position: relative;
+  }
+  .topbar-row {
+    flex-wrap: wrap;
+  }
 }
 
-.topbar {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 14px;
-    position: static;
-  }
-
-  nav {
-    width: 100%;
-  }
+/* scroll offset for fixed/sticky header */
+[id] {
+  scroll-margin-top: 100px;
+}
 
   .location-row,
   .search-row,
@@ -2030,20 +2038,25 @@ th {
   </head>
   <body>
     <header class="topbar">
-      <div>
-        <p class="eyebrow" data-i18n="hero-banner">Currently expanding across Melbourne and Victoria</p>
-        <h1>AusHomeValue</h1>
+      <div class="topbar-row">
+        <div class="header-left">
+          <p class="eyebrow" data-i18n="hero-banner">Currently expanding across Melbourne and Victoria</p>
+          <h1>AusHomeValue</h1>
+        </div>
+        <nav id="mobile-nav" aria-label="Primary navigation">
+          <a href="#home">Home</a>
+          <a href="#valuation">Valuation</a>
+          <a href="#research">Research</a>
+          <a href="#opportunities">Top Opportunities</a>
+          <a href="#about">About Us</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div class="header-right">
+          <button class="menu-btn" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav" type="button"><span></span><span></span><span></span><span class="menu-label">Menu</span></button>
+          <button class="language-toggle" id="language-toggle" type="button">简体中文</button>
+        </div>
       </div>
-      <nav aria-label="Primary navigation">
-        <a href="#home">Home</a>
-        <a href="#valuation">Valuation</a>
-        <a href="#research">Research</a>
-        <a href="#opportunities">Top Opportunities</a>
-        <a href="#about">About Us</a>
-        <a href="#contact">Contact</a>
-      </nav>
-      <button class="menu-btn" id="menu-btn" aria-label="Menu" type="button"><span></span><span></span><span></span></button>
-      <button class="language-toggle" id="language-toggle" type="button">简体中文</button>
+      <div id="mobile-overlay"></div>
     </header>
 
     <main>
