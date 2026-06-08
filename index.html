@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>AusHomeValue – Australia's Property Opportunity Intelligence Platform | Melbourne Property Valuations</title>
-    <meta name="description" content="AusHomeValue delivers property opportunity intelligence for Australian properties. Get a free estimate, review comparable sales, and understand location, planning and investment potential — all in one bilingual platform." />
-    <meta name="keywords" content="property valuation, Melbourne property estimate, Australian property research, home value estimate, 澳洲房产估值, 墨尔本房产, comparable sales, property opportunity intelligence" />
+    <title>AusHomeValue – Property Opportunity Intelligence | Melbourne Property Estimates</title>
+    <meta name="description" content="AusHomeValue provides property opportunity intelligence for Melbourne and Victorian properties. Free estimates backed by comparable sales, school data and census insights. Bilingual EN/中文." />
+    <meta name="keywords" content="property valuation, Melbourne property estimate, Victorian property research, home value estimate, 澳洲房产估值, 墨尔本房产, comparable sales, property opportunity intelligence" />
     <link rel="canonical" href="https://aushomevalue.vercel.app/" />
-    <meta property="og:title" content="AusHomeValue – Property Opportunity Intelligence Platform" />
-    <meta property="og:description" content="Free property estimates, comparable sales and market intelligence for Australian properties. Bilingual EN/中文." />
+    <meta property="og:title" content="AusHomeValue – Property Opportunity Intelligence" />
+    <meta property="og:description" content="Free property estimates, comparable sales and market intelligence for Melbourne and Victoria. Bilingual EN/中文." />
     <meta property="og:url" content="https://aushomevalue.vercel.app/" />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
@@ -63,6 +63,36 @@ dt {
 button,
 input {
   font: inherit;
+}
+
+
+/* ── Mobile hamburger menu ── */
+.menu-check { display: none; }
+.menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  flex-direction: column;
+  gap: 5px;
+}
+.menu-btn span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.2s;
+}
+@media (max-width: 720px) {
+  .menu-btn { display: flex; }
+  .topbar nav { display: none; }
+  .topbar nav.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(244,246,245,0.98); padding: 12px 18px 18px; border-bottom: 1px solid var(--line); z-index: 20; gap: 4px; }
+  .topbar { position: relative; }
+}
+@media (max-width: 720px) {
+  .language-toggle { margin-left: auto; }
 }
 
 .topbar {
@@ -1400,7 +1430,37 @@ th {
     width: 100%;
   }
 
-  .topbar {
+  
+/* ── Mobile hamburger menu ── */
+.menu-check { display: none; }
+.menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  flex-direction: column;
+  gap: 5px;
+}
+.menu-btn span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--ink);
+  border-radius: 2px;
+  transition: transform 0.2s;
+}
+@media (max-width: 720px) {
+  .menu-btn { display: flex; }
+  .topbar nav { display: none; }
+  .topbar nav.open { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: rgba(244,246,245,0.98); padding: 12px 18px 18px; border-bottom: 1px solid var(--line); z-index: 20; gap: 4px; }
+  .topbar { position: relative; }
+}
+@media (max-width: 720px) {
+  .language-toggle { margin-left: auto; }
+}
+
+.topbar {
     align-items: flex-start;
     flex-direction: column;
     gap: 14px;
@@ -1822,7 +1882,7 @@ th {
   "@type": "Organization",
   "name": "AusHomeValue",
   "url": "https://aushomevalue.vercel.app",
-  "description": "Australia's Property Opportunity Intelligence Platform — free property estimates, comparable sales data and market research.",
+  "description": "Property Opportunity Intelligence Platform — free property estimates, comparable sales and market research for Melbourne and Victoria.",
   "foundingDate": "2026",
   "contactPoint": {
     "@type": "ContactPoint",
@@ -1839,7 +1899,7 @@ th {
   "@type": "WebSite",
   "name": "AusHomeValue",
   "url": "https://aushomevalue.vercel.app",
-  "description": "Property opportunity intelligence platform for Australian property research, valuation estimates and comparable sales.",
+  "description": "Property opportunity intelligence platform for Melbourne and Victorian property research, valuation estimates and comparable sales.",
   "inLanguage": ["en-AU", "zh-CN"],
   "potentialAction": {
     "@type": "SearchAction",
@@ -1855,7 +1915,7 @@ th {
   <body>
     <header class="topbar">
       <div>
-        <p class="eyebrow">Metropolitan Melbourne</p>
+        <p class="eyebrow" data-i18n="hero-banner">Currently expanding across Melbourne and Victoria</p>
         <h1>AusHomeValue</h1>
       </div>
       <nav aria-label="Primary navigation">
@@ -1866,6 +1926,7 @@ th {
         <a href="#about">About Us</a>
         <a href="#contact">Contact</a>
       </nav>
+      <button class="menu-btn" id="menu-btn" aria-label="Menu" type="button"><span></span><span></span><span></span></button>
       <button class="language-toggle" id="language-toggle" type="button">简体中文</button>
     </header>
 
@@ -1873,13 +1934,13 @@ th {
       <!-- ── HOME ── -->
       <section id="home" class="home-panel">
         <div class="home-hero">
-          <p class="eyebrow">Property Opportunity Intelligence</p>
-          <h2>Know what a property is worth — and why it matters.</h2>
-          <p class="hero-sub">Free estimates backed by comparable sales, school data and census insights for Melbourne properties.</p>
+          <p class="eyebrow" data-i18n="hero-eyebrow">Property Opportunity Intelligence</p>
+          <h2 data-i18n="hero-heading">Know what a property is worth — and why it matters.</h2>
+          <p class="hero-sub" data-i18n="hero-sub">Free estimates backed by comparable sales, school data and census insights across Melbourne and Victoria.</p>
           <div class="home-stats">
-            <div class="stat"><strong>3,600+</strong> <span>comparable sales</span></div>
-            <div class="stat"><strong>2,800+</strong> <span>schools mapped</span></div>
-            <div class="stat"><strong>500+</strong> <span>suburbs researched</span></div>
+            <div class="stat"><strong>3,600+</strong> <span data-i18n="stat-sales">comparable sales</span></div>
+            <div class="stat"><strong>2,800+</strong> <span data-i18n="stat-schools">schools mapped</span></div>
+            <div class="stat"><strong>230+</strong> <span data-i18n="stat-suburbs">suburbs covered</span></div>
           </div>
           <div class="home-search-preview">
             <p class="eyebrow">Free first-layer estimate</p>
@@ -2165,33 +2226,33 @@ th {
       <section id="research" class="research-panel">
         <div class="content">
           <div class="research-intro">
-            <p class="eyebrow">Research</p>
-            <h2>Market intelligence for Melbourne property.</h2>
-            <p class="research-sub">Coming soon — market reports, suburb deep dives, investment guides and data-driven rankings.</p>
+            <p class="eyebrow" data-i18n="research-eyebrow">Research</p>
+            <h2 data-i18n="research-heading">Market intelligence for Melbourne property.</h2>
+            <p class="research-sub" data-i18n="research-sub">Coming soon — market reports, suburb deep dives, investment guides and data-driven rankings.</p>
           </div>
           <div class="research-grid">
             <article class="research-card disabled">
               <span class="card-icon">📊</span>
-              <h3>Market Reports</h3>
-              <p>Melbourne Property Outlook, Housing Supply, Migration Impact and more.</p>
-              <span class="tag">Coming soon</span>
+              <h3 data-i18n="research-card1-title">Market Reports</h3>
+              <p data-i18n="research-card1-desc">Melbourne Property Outlook, Housing Supply, Migration Impact and more.</p>
+              <span class="tag" data-i18n="coming-soon">Coming soon</span>
             </article>
             <article class="research-card disabled">
               <span class="card-icon">📍</span>
-              <h3>Suburb Research</h3>
-              <p>Deep dives into individual suburbs — demographics, schools, growth drivers.</p>
+              <h3 data-i18n="research-card2-title">Suburb Research</h3>
+              <p data-i18n="research-card2-desc">Deep dives into individual suburbs — demographics, schools, growth drivers.</p>
               <span class="tag">Coming soon</span>
             </article>
             <article class="research-card disabled">
               <span class="card-icon">📘</span>
-              <h3>Investment Guides</h3>
-              <p>House vs Apartment, Growth vs Cashflow, SMSF, First Investment Property.</p>
+              <h3 data-i18n="research-card3-title">Investment Guides</h3>
+              <p data-i18n="research-card3-desc">House vs Apartment, Growth vs Cashflow, SMSF, First Investment Property.</p>
               <span class="tag">Coming soon</span>
             </article>
             <article class="research-card disabled">
               <span class="card-icon">🏆</span>
-              <h3>Rankings</h3>
-              <p>Top Growth Suburbs, Top School Zones, Top Yield Suburbs, Best Value.</p>
+              <h3 data-i18n="research-card4-title">Rankings</h3>
+              <p data-i18n="research-card4-desc">Top Growth Suburbs, Top School Zones, Top Yield Suburbs, Best Value.</p>
               <span class="tag">Coming soon</span>
             </article>
           </div>
@@ -2202,14 +2263,14 @@ th {
       <section id="opportunities" class="opportunities-panel">
         <div class="content">
           <div class="opp-intro">
-            <p class="eyebrow">Top Opportunities</p>
-            <h2>Investment opportunities ranked by data.</h2>
-            <p class="opp-sub">Scored across undervaluation, school quality, growth potential and cash flow. Refine by strategy, budget and property type.</p>
+            <p class="eyebrow" data-i18n="opp-eyebrow">Top Opportunities <span class="beta-badge">BETA</span></p>
+            <h2 data-i18n="opp-heading">Investment opportunities ranked by data.</h2>
+            <p class="opp-sub" data-i18n="opp-sub">Beta tool — scored across undervaluation, school quality, growth potential and cash flow. Refine by strategy, budget and property type.</p>
           </div>
           <div class="opp-filters">
             <div class="filter-row">
               <label>
-                <span>Strategy</span>
+                <span data-i18n="opp-filter-strategy">Strategy</span>
                 <select id="opp-strategy">
                   <option value="smart">Smart (balanced)</option>
                   <option value="value">Value</option>
@@ -2219,7 +2280,7 @@ th {
                 </select>
               </label>
               <label>
-                <span>Property type</span>
+                <span data-i18n="opp-filter-type">Property type</span>
                 <select id="opp-type">
                   <option value="">All types</option>
                   <option value="House">House</option>
@@ -2229,7 +2290,7 @@ th {
                 </select>
               </label>
               <label>
-                <span>Min price</span>
+                <span data-i18n="opp-filter-min">Min price</span>
                 <select id="opp-min-price">
                   <option value="0">Any</option>
                   <option value="300000">$300K</option>
@@ -2240,7 +2301,7 @@ th {
                 </select>
               </label>
               <label>
-                <span>Max price</span>
+                <span data-i18n="opp-filter-max">Max price</span>
                 <select id="opp-max-price">
                   <option value="99999999">Any</option>
                   <option value="500000">$500K</option>
@@ -2252,13 +2313,13 @@ th {
               </label>
             </div>
             <div class="filter-actions">
-              <button id="opp-search-btn" type="button">Search opportunities</button>
+              <button id="opp-search-btn" type="button" data-i18n="opp-search-btn">Search opportunities</button>
               <span class="opp-loading hidden" id="opp-loading">Scanning database...</span>
             </div>
           </div>
           <div id="opp-results" class="opp-results">
             <div class="opp-placeholder">
-              <p>Adjust filters and click "Search opportunities" to see ranked results.</p>
+              <p data-i18n="opp-placeholder">Adjust filters and click "Search opportunities" to see ranked results.</p>
             </div>
           </div>
         </div>
@@ -2363,12 +2424,13 @@ th {
 
     <footer class="site-footer">
       <div class="footer-inner">
-        <p class="footer-brand">AusHomeValue – Property Opportunity Intelligence Platform.</p>
+        <p class="footer-brand" data-i18n="footer-brand">AusHomeValue – Property Opportunity Intelligence.</p>
         <p class="footer-copy">&copy; 2026 AusHomeValue. Authorised Representatives: <a href="mailto:info@aushomevalue.com.au">info@aushomevalue.com.au</a></p>
         <nav class="footer-nav" aria-label="Footer navigation">
           <a href="#about">About</a> &middot; <a href="#contact">Contact</a> &middot; <a href="#valuation">Valuation</a> &middot; <a href="#opportunities">Top Opportunities</a>
         </nav>
-        <p class="footer-disclaimer">This website provides general property information and research for educational purposes. Not financial advice, not a credit assessment, not a formal valuation. Always consult licensed professionals for legal, tax and lending decisions.</p>
+        <p class="footer-disclaimer" data-i18n="footer-disclaimer-en" lang="en">This website provides general property information and research for educational purposes. Not financial advice, not a credit assessment, not a formal valuation. Always consult licensed professionals for legal, tax and lending decisions.</p>
+        <p class="footer-disclaimer" data-i18n="footer-disclaimer-zh" lang="zh" style="display:none">本网站提供一般房产信息和研究，仅供教育参考。不构成财务建议、信贷评估或正式估值。法律、税务和贷款决策请咨询持牌专业人士。</p>
       </div>
     </footer>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>

@@ -485,19 +485,27 @@ const uiText = {
   en: {
     toggle: "简体中文",
     selectors: {
-      ".topbar .eyebrow": "Australia-wide intake",
+      ".topbar .eyebrow": "Currently expanding across Melbourne and Victoria",
       ".topbar h1": "AusHomeValue",
       'nav a[href="#valuation"]': "Valuation",
-      'nav a[href="#comparables"]': "Comparables",
-      'nav a[href="#location"]': "Location",
-      'nav a[href="#loan"]': "Loan",
-      'nav a[href="#uploads"]': "Uploads",
-      'nav a[href="#investor"]': "Investor Hub",
       'nav a[href="#about"]': "About Us",
       'nav a[href="#contact"]': "Contact",
+      'nav a[href="#opportunities"]': "Top Opportunities",
+      'nav a[href="#research"]': "Research",
+      'nav a[href="#home"]': "Home",
       ".search-copy .eyebrow": "Property Opportunity Intelligence",
       ".search-copy h2": "Estimate, evidence and insight — all in one place.",
       ".hero-note": "This estimate is based on publicly available market information, property characteristics and statistical analysis. For general information and research purposes only. Not a formal valuation, credit decision, legal, taxation or financial advice.",
+      '[data-i18n="hero-banner"]': "Currently expanding across Melbourne and Victoria",
+      '[data-i18n="hero-eyebrow"]': "Property Opportunity Intelligence",
+      '[data-i18n="hero-heading"]': "Know what a property is worth — and why it matters.",
+      '[data-i18n="hero-sub"]': "Free estimates backed by comparable sales, school data and census insights across Melbourne and Victoria.",
+      '[data-i18n="stat-sales"]': "comparable sales",
+      '[data-i18n="stat-schools"]': "schools mapped",
+      '[data-i18n="stat-suburbs"]': "suburbs covered",
+      '[data-i18n="footer-brand"]': "AusHomeValue – Property Opportunity Intelligence.",
+      '[data-i18n="footer-disclaimer-en"]': "This website provides general property information and research for educational purposes. Not financial advice, not a credit assessment, not a formal valuation. Always consult licensed professionals for legal, tax and lending decisions.",
+      '[data-i18n="footer-disclaimer-zh"]': "本网站提供一般房产信息和研究，仅供教育参考。不构成财务建议、信贷评估或正式估值。法律、税务和贷款决策请咨询持牌专业人士。",
       '.search-box label[for="property-state"]': "Property location",
       '.search-box label[for="address"]': "Street address",
       "#start-valuation": "Get free estimate",
@@ -599,25 +607,54 @@ const uiText = {
       "#pdf-requirements-modal h2": "Phone number and contact consent are required.",
       "#pdf-requirements-modal p:not(.eyebrow)": "Please add your phone number and tick the contact consent box before downloading the full report PDF.",
       "#pdf-fill-details": "Fill phone details",
-      "#pdf-close": "Not now"
+      "#pdf-close": "Not now",
+      '[data-i18n="research-eyebrow"]': "Research",
+      '[data-i18n="research-heading"]': "Market intelligence for Melbourne property.",
+      '[data-i18n="research-sub"]': "Coming soon — market reports, suburb deep dives, investment guides and data-driven rankings.",
+      '[data-i18n="research-card1-title"]': "Market Reports",
+      '[data-i18n="research-card1-desc"]': "Melbourne Property Outlook, Housing Supply, Migration Impact and more.",
+      '[data-i18n="research-card2-title"]': "Suburb Research",
+      '[data-i18n="research-card2-desc"]': "Deep dives into individual suburbs — demographics, schools, growth drivers.",
+      '[data-i18n="research-card3-title"]': "Investment Guides",
+      '[data-i18n="research-card3-desc"]': "House vs Apartment, Growth vs Cashflow, SMSF, First Investment Property.",
+      '[data-i18n="research-card4-title"]': "Rankings",
+      '[data-i18n="research-card4-desc"]': "Top Growth Suburbs, Top School Zones, Top Yield Suburbs, Best Value.",
+      '[data-i18n="coming-soon"]': "Coming soon",
+      '[data-i18n="opp-eyebrow"]': "Top Opportunities BETA",
+      '[data-i18n="opp-heading"]': "Investment opportunities ranked by data.",
+      '[data-i18n="opp-sub"]': "Beta tool — scored across undervaluation, school quality, growth potential and cash flow. Refine by strategy, budget and property type.",
+      '[data-i18n="opp-placeholder"]': "Adjust filters and click \"Search opportunities\" to see ranked results.",
+      '[data-i18n="opp-filter-strategy"]': "Strategy",
+      '[data-i18n="opp-filter-type"]': "Property type",
+      '[data-i18n="opp-filter-min"]': "Min price",
+      '[data-i18n="opp-filter-max"]': "Max price",
+      '[data-i18n="opp-search-btn"]': "Search opportunities"
     }
   },
   zh: {
     toggle: "English",
     selectors: {
-      ".topbar .eyebrow": "澳洲全国地址入口",
+      ".topbar .eyebrow": "当前覆盖墨尔本和维多利亚州",
       ".topbar h1": "AusHomeValue",
       'nav a[href="#valuation"]': "估值",
-      'nav a[href="#comparables"]': "可比成交",
-      'nav a[href="#location"]': "位置",
-      'nav a[href="#loan"]': "贷款",
-      'nav a[href="#uploads"]': "上传",
-      'nav a[href="#investor"]': "投资中心",
       'nav a[href="#about"]': "关于我们",
       'nav a[href="#contact"]': "联系",
+      'nav a[href="#opportunities"]': "机会",
+      'nav a[href="#research"]': "研究",
+      'nav a[href="#home"]': "首页",
       ".search-copy .eyebrow": "澳洲房产机会情报",
       ".search-copy h2": "估值、证据、洞见 — 一站集成。",
       ".hero-note": "初步估值仅供参考。结果基于公开资料、可比市场证据和客户补充资料，不构成正式估值、贷款批准或个人金融建议。",
+      '[data-i18n="hero-banner"]': "当前覆盖墨尔本和维多利亚州",
+      '[data-i18n="hero-eyebrow"]': "澳洲房产机会情报",
+      '[data-i18n="hero-heading"]': "知道一个房产值多少钱 — 以及为什么值这个价。",
+      '[data-i18n="hero-sub"]': "基于可比成交、学校数据和人口普查数据，提供墨尔本和维多利亚房产的免费估值。",
+      '[data-i18n="stat-sales"]': "条可比成交",
+      '[data-i18n="stat-schools"]': "所学校已标注",
+      '[data-i18n="stat-suburbs"]': "个区域已覆盖",
+      '[data-i18n="footer-brand"]': "AusHomeValue – 房产机会情报。",
+      '[data-i18n="footer-disclaimer-en"]': "This website provides general property information and research for educational purposes. Not financial advice, not a credit assessment, not a formal valuation. Always consult licensed professionals for legal, tax and lending decisions.",
+      '[data-i18n="footer-disclaimer-zh"]': "本网站提供一般房产信息和研究，仅供教育参考。不构成财务建议、信贷评估或正式估值。法律、税务和贷款决策请咨询持牌专业人士。",
       '.search-box label[for="property-state"]': "房产所在地区",
       '.search-box label[for="address"]': "街道地址",
       "#start-valuation": "获取免费估值",
@@ -720,7 +757,28 @@ const uiText = {
       "#pdf-requirements-modal h2": "下载 PDF 需要填写电话并勾选联系授权。",
       "#pdf-requirements-modal p:not(.eyebrow)": "请先补充电话号码，并勾选同意联系，再下载完整报告 PDF。",
       "#pdf-fill-details": "去填写电话",
-      "#pdf-close": "暂不"
+      "#pdf-close": "暂不",
+      '[data-i18n="research-eyebrow"]': "研究",
+      '[data-i18n="research-heading"]': "墨尔本房产市场情报。",
+      '[data-i18n="research-sub"]': "即将推出 — 市场报告、区域深度研究、投资指南和数据驱动排名。",
+      '[data-i18n="research-card1-title"]': "市场报告",
+      '[data-i18n="research-card1-desc"]': "墨尔本房市展望、住房供应、移民影响等。",
+      '[data-i18n="research-card2-title"]': "区域研究",
+      '[data-i18n="research-card2-desc"]': "深入单个区域分析 — 人口、学校、增长动力。",
+      '[data-i18n="research-card3-title"]': "投资指南",
+      '[data-i18n="research-card3-desc"]': "独立屋 vs 公寓、增长 vs 现金流、SMSF、首套投资房。",
+      '[data-i18n="research-card4-title"]': "排行榜",
+      '[data-i18n="research-card4-desc"]': "增长最快区域、优质学区、最高收益率、最佳价值。",
+      '[data-i18n="coming-soon"]': "即将推出",
+      '[data-i18n="opp-eyebrow"]': "最佳机会 BETA",
+      '[data-i18n="opp-heading"]': "数据驱动的投资机会排名。",
+      '[data-i18n="opp-sub"]': "Beta 工具 — 基于低估程度、学区质量、增长潜力和现金流评分。可按策略、预算和房产类型筛选。",
+      '[data-i18n="opp-placeholder"]': '调整筛选条件后点击“搜索机会”查看排名结果。',
+      '[data-i18n="opp-filter-strategy"]': "策略",
+      '[data-i18n="opp-filter-type"]': "房产类型",
+      '[data-i18n="opp-filter-min"]': "最低价格",
+      '[data-i18n="opp-filter-max"]': "最高价格",
+      '[data-i18n="opp-search-btn"]': "搜索机会"
     }
   }
 };
@@ -1599,6 +1657,10 @@ function applyLanguage() {
     language === "zh"
       ? "例如：产权确认土地面积，厨房翻新，街道安静较宽，没有明显地役权。"
       : "Example: title confirms land size, renovated kitchen, quiet wide street, no visible easement.";
+  // 免责声明语言切换
+  document.querySelectorAll('.footer-disclaimer').forEach(el => {
+    el.style.display = el.getAttribute('lang') === (language === 'zh' ? 'zh' : 'en') ? '' : 'none';
+  });
   renderValuation(currentValuation);
   if (activeInvestorTheme) renderInvestorTheme(activeInvestorTheme);
 }
@@ -2175,6 +2237,18 @@ document.querySelectorAll(".lvr").forEach((button) => {
     renderLoanScenario();
   });
 });
+
+// mobile hamburger menu
+const menuBtn = byId("menu-btn");
+if (menuBtn) {
+  menuBtn.addEventListener("click", () => {
+    document.querySelector(".topbar nav")?.classList.toggle("open");
+  });
+  // close menu on nav link click
+  document.querySelectorAll(".topbar nav a").forEach(a => {
+    a.addEventListener("click", () => document.querySelector(".topbar nav")?.classList.remove("open"));
+  });
+}
 
 byId("language-toggle").addEventListener("click", () => {
   language = language === "en" ? "zh" : "en";
