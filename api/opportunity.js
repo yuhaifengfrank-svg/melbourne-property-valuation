@@ -3,10 +3,23 @@
  * GET /api/opportunity?strategy=smart&suburbRegion=Scoresby&propertyType=House
  */
 
+import { neon } from '@neondatabase/serverless';
 import { scanOpportunities } from '../lib/opportunity-service.js';
 
+// Module-level sql instance — reused across invocations within the same warm function
+let _sql = null;
+function getCachedSql() {
+  if (!_sql && process.env.DATABASE_URL) {
+    _sql = neon(process.env.DATABASE_URL, { fetchOptions: { cache: 'no-store' } });
+  }
+  return _sql;
+}
+
+// Expose for use by scanOpportunities (which also uses neon internally, but we
+// ensure the connection exists before calling it — the cold-start ping happens below)
+export { getCachedSql };
+
 export default async function handler(request) {
-  // CORS
   const headers = new Headers({
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
@@ -29,6 +42,11 @@ export default async function handler(request) {
   };
 
   try {
+    // Cold-start ping: establish Neon connection before running the scan
+    const sql = getCachedSql();
+    if (sql) {
+      await sql`SELECT 1 AS ping`;
+    }
     const result = await scanOpportunities(params);
     return new Response(JSON.stringify({ ok: true, ...result, modelVersion: '1.0.0', collectedAt: new Date().toISOString() }), { headers });
   } catch (error) {
