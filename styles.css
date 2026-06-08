@@ -1234,6 +1234,87 @@ th {
 @media (max-width: 680px) {
   main {
     overflow-x: hidden;
+    padding: 16px 12px;
+  }
+
+  .home-panel,
+  .research-panel,
+  .opportunities-panel,
+  .valuation-panel .content {
+    max-width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .home-hero h2 {
+    font-size: 1.4rem;
+  }
+
+  .home-hero .hero-sub {
+    font-size: 0.92rem;
+  }
+
+  .home-stats {
+    gap: 8px;
+  }
+
+  .stat strong {
+    font-size: 1.1rem;
+  }
+
+  .home-search-preview {
+    padding: 16px;
+  }
+
+  .research-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .research-card {
+    padding: 16px;
+  }
+
+  .opp-filters {
+    padding: 14px;
+  }
+
+  .filter-row {
+    flex-direction: column;
+  }
+
+  .filter-row label {
+    width: 100%;
+  }
+
+  .filter-row select {
+    width: 100%;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #opp-search-btn {
+    width: 100%;
+  }
+
+  .opp-result-card {
+    flex-direction: column;
+    align-items: start;
+  }
+
+  .opp-score-badge {
+    align-self: start;
+    margin-top: 8px;
+  }
+
+  .valuation-panel .content,
+  .valuation-panel .content .content {
+    max-width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
   }
 
   .mobile-value-card {
