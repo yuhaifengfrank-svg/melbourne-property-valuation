@@ -1353,3 +1353,49 @@ th {
     flex-direction: column;
   }
 }
+
+/* ── Footer ── */
+.site-footer {
+  background: #0f172a;
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  line-height: 1.6;
+  margin-top: 3rem;
+  padding: 2rem 1rem;
+}
+
+.footer-inner {
+  margin: 0 auto;
+  max-width: 960px;
+}
+
+.footer-brand {
+  color: #f1f5f9;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+}
+
+.footer-copy {
+  margin: 0 0 0.35rem;
+}
+
+.footer-copy a {
+  color: #94a3b8;
+  text-decoration: underline;
+}
+
+.footer-nav {
+  margin: 0 0 0.75rem;
+}
+
+.footer-nav a {
+  color: #94a3b8;
+  text-decoration: underline;
+}
+
+.footer-disclaimer {
+  color: #64748b;
+  font-size: 0.75rem;
+  margin: 0;
+  max-width: 600px;
+}
