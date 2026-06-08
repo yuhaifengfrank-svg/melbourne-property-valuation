@@ -493,7 +493,7 @@ const uiText = {
       'nav a[href="#opportunities"]': "Top Opportunities",
       'nav a[href="#research"]': "Research",
       'nav a[href="#home"]': "Home",
-      '.menu-label': "Menu",
+
       ".search-copy .eyebrow": "Property Opportunity Intelligence",
       ".search-copy h2": "Estimate, evidence and insight — all in one place.",
       ".hero-note": "This estimate is based on publicly available market information, property characteristics and statistical analysis. For general information and research purposes only. Not a formal valuation, credit decision, legal, taxation or financial advice.",
@@ -649,7 +649,7 @@ const uiText = {
       'nav a[href="#opportunities"]': "机会",
       'nav a[href="#research"]': "研究",
       'nav a[href="#home"]': "首页",
-      '.menu-label': "菜单",
+
       ".search-copy .eyebrow": "澳洲房产机会情报",
       ".search-copy h2": "估值、证据、洞见 — 一站集成。",
       ".hero-note": "初步估值仅供参考。结果基于公开资料、可比市场证据和客户补充资料，不构成正式估值、贷款批准或个人金融建议。",
@@ -2252,73 +2252,7 @@ document.querySelectorAll(".lvr").forEach((button) => {
   });
 });
 
-// mobile hamburger menu
-(function() {
-  var menuBtn = byId("menu-btn");
-  var mobileNav = byId("mobile-nav");
-  if (!menuBtn || !mobileNav) return;
 
-  var mobileOverlay = byId("mobile-overlay");
-
-  function openMobileMenu() {
-    mobileNav.classList.add("open");
-    menuBtn.classList.add("open");
-    menuBtn.setAttribute("aria-expanded", "true");
-    document.body.classList.add("mobile-menu-open");
-    if (mobileOverlay) mobileOverlay.classList.add("open");
-  }
-
-  function closeMobileMenu() {
-    mobileNav.classList.remove("open");
-    menuBtn.classList.remove("open");
-    menuBtn.setAttribute("aria-expanded", "false");
-    document.body.classList.remove("mobile-menu-open");
-    if (mobileOverlay) mobileOverlay.classList.remove("open");
-  }
-
-  function toggleMobileMenu(e) {
-    e.stopPropagation();
-    if (mobileNav.classList.contains("open")) {
-      closeMobileMenu();
-    } else {
-      openMobileMenu();
-    }
-  }
-
-  menuBtn.addEventListener("click", toggleMobileMenu);
-
-  // close menu on overlay click
-  if (mobileOverlay) {
-    mobileOverlay.addEventListener("click", function() {
-      closeMobileMenu();
-    });
-  }
-
-  // close menu on nav link click
-  mobileNav.querySelectorAll("a").forEach(function(a) {
-    a.addEventListener("click", function() {
-      closeMobileMenu();
-    });
-  });
-
-  // close menu on click outside
-  document.addEventListener("click", function(e) {
-    if (!mobileNav.classList.contains("open")) return;
-    if (!mobileNav.contains(e.target) && !menuBtn.contains(e.target)) {
-      closeMobileMenu();
-    }
-  });
-
-  // close menu on Escape key
-  document.addEventListener("keydown", function(e) {
-    if (e.key === "Escape" && mobileNav.classList.contains("open")) {
-      closeMobileMenu();
-    }
-  });
-
-  // ensure menu is closed on page load
-  closeMobileMenu();
-})();
 
 byId("language-toggle").addEventListener("click", () => {
   language = language === "en" ? "zh" : "en";
