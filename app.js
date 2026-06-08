@@ -2181,22 +2181,29 @@ byId("language-toggle").addEventListener("click", () => {
   applyLanguage();
 });
 
-byId("unlock-report").addEventListener("click", async () => {
-  if (!(await saveLead())) return;
-  unlocked = true;
-  renderLockState();
-  renderComparables(currentValuation.comparables);
-  showReportGuideModal();
-});
+const unlockBtn = byId("unlock-report");
+if (unlockBtn) {
+  unlockBtn.addEventListener("click", async () => {
+    if (!(await saveLead())) return;
+    unlocked = true;
+    renderLockState();
+    renderComparables(currentValuation.comparables);
+    showReportGuideModal();
+  });
+}
 
-byId("mobile-report-cta").addEventListener("click", () => {
-  if (unlocked) {
-    scrollToSection("#comparables");
-    return;
-  }
-  scrollToSection(".lead-panel");
-  byId("lead-email").focus({ preventScroll: true });
-});
+const mobileBtn = byId("mobile-report-cta");
+if (mobileBtn) {
+  mobileBtn.addEventListener("click", () => {
+    if (unlocked) {
+      scrollToSection("#comparables");
+      return;
+    }
+    scrollToSection(".lead-panel");
+    const leadEl = byId("lead-email");
+    if (leadEl) leadEl.focus({ preventScroll: true });
+  });
+}
 
 byId("upload-evidence").addEventListener("click", () => {
   byId("evidence-files").click();

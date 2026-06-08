@@ -1927,15 +1927,74 @@ th {
       <!-- ── VALUATION ── -->
       <section id="valuation" class="valuation-panel">
         <div class="content">
-          <section class="mobile-value-card" aria-label="Valuation quick summary"></section>
+          <section class="mobile-value-card" aria-label="Valuation quick summary">
+            <p class="eyebrow">Estimated value</p>
+            <h2 id="mobile-property-address">Enter an address to start</h2>
+            <div class="mobile-value-main">
+              <span class="mobile-value-label">Estimated value</span>
+              <strong id="mobile-estimated-value">Pending</strong>
+            </div>
+            <div class="mobile-value-meta">
+              <span>
+                <small class="mobile-midpoint-label">Midpoint</small>
+                <strong id="mobile-midpoint">Pending</strong>
+              </span>
+              <span>
+                <small class="mobile-confidence-label">Confidence</small>
+                <strong id="mobile-confidence">Pending</strong>
+              </span>
+            </div>
+            <button id="mobile-report-cta" type="button">Unlock full report details</button>
+          </section>
+          <div class="layout">
+          <aside class="side-panel" aria-label="Valuation checks">
           <section class="panel lead-panel">
-            <h2 class="panel-header" id="full-report-header">Full report</h2>
+            <p class="eyebrow">Full report</p>
+            <h2>Leave details to unlock</h2>
+            <p>Basic estimate is free. Register to view comparable adjustments, planning notes and report download options.</p>
+            <form class="lead-form">
+              <label for="lead-email">Email</label>
+              <input id="lead-email" type="email" placeholder="you@example.com" />
+              <label for="lead-name">Name</label>
+              <input id="lead-name" type="text" placeholder="Your name" />
+              <label for="lead-phone">Phone <span>optional</span></label>
+              <input id="lead-phone" type="tel" placeholder="For PDF download" />
+              <label class="consent">
+                <input id="lead-consent" type="checkbox" />
+                <span>You may contact me about this property report.</span>
+              </label>
+              <button id="unlock-report" type="button">Register and unlock</button>
+              <p class="form-provider-note">Submission details are securely stored for report delivery and customer follow-up. We may record an approximate visitor region, but do not display your full IP address.</p>
+              <p class="form-message" id="lead-message" aria-live="polite"></p>
+            </form>
             <div class="report-guide hidden" id="report-guide">
-              <strong></strong>
-              <span></span>
+              <p class="eyebrow">Report unlocked</p>
+              <h3>Your detail report is ready below.</h3>
+              <p>Start with comparable sales, then check micro-location, suburb fundamentals and planning potential.</p>
+              <div class="report-guide-links">
+                <a href="#comparables">Comparables</a>
+                <a href="#location">Location</a>
+                <a href="#uploads">PDF / evidence</a>
+              </div>
             </div>
           </section>
-          <section class="panel"><div class="loader hidden" id="valuation-loader"></div></section>
+          <section class="panel">
+            <div class="panel-header">
+              <h2>Check Status</h2>
+              <span class="status medium" id="check-status">Medium</span>
+            </div>
+            <ol class="checklist">
+              <li class="done">Portal cross-check</li>
+              <li class="done">Recent sales scan</li>
+              <li class="done">Suburb fundamentals</li>
+              <li class="done">Micro-location review</li>
+              <li class="warn">Title confirmation</li>
+              <li class="warn">Current condition</li>
+            </ol>
+          </section>
+          </aside>
+          <section class="content">
+            <div class="loader hidden" id="valuation-loader"></div>
           <section class="content">
             <section class="summary" id="summary-section">
               <div class="summary-main">
@@ -2314,5 +2373,12 @@ th {
     </footer>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="app.js"></script>
+  <!-- hidden fallback elements for JS safety (app.js byId references) -->
+  <div id="check-status" class="hidden"></div>
+  <div id="market-crosscheck-title" class="hidden"></div>
+  <div id="market-crosscheck-summary" class="hidden"></div>
+  <div id="market-crosscheck-score" class="hidden"></div>
+  <div id="market-crosscheck-note" class="hidden"></div>
+  <div id="market-source-grid" class="hidden"></div>
   </body>
 </html>
