@@ -1532,12 +1532,13 @@ function renderValuation(data) {
   const evidenceBadge = byId("evidence-badge-val");
   if (evidenceBadge) {
     const dataStatus = data.customerDataStatus || "unavailable";
+    const hasValuation = data.valuation?.value && data.valuation.value !== "Manual review required";
     evidenceBadge.className = "evidence-badge";
     evidenceBadge.style.display = "flex";
     const labels = {
       sufficient: language === "zh" ? "✓ 基于近期市场证据" : "✓ Based on recent market evidence",
       limited: language === "zh" ? "📊 基于有限市场证据的初步估值" : "📊 Preliminary estimate, limited data",
-      unavailable: language === "zh" ? "✗ 暂时无法生成估值" : "✗ Unable to generate valuation"
+      unavailable: language === "zh" ? "⏳ 该区域公开成交参考数据覆盖有限，地址已记录，后续补充数据后可复核" : "⏳ Comparable sales coverage for this suburb is currently limited. Address recorded for further review."
     };
     evidenceBadge.textContent = labels[dataStatus] || (language === "zh" ? "✗ 暂时无法生成估值" : "✗ Unable to generate valuation");
   }
