@@ -1820,6 +1820,11 @@ th {
   gap: 12px;
 }
 
+.opp-hint {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
 #opp-search-btn {
   background: var(--accent);
   color: white;
@@ -2447,13 +2452,10 @@ th {
             <div class="filter-actions">
               <button id="opp-search-btn" type="button" data-i18n="opp-search-btn">Search opportunities</button>
               <span class="opp-loading hidden" id="opp-loading">Scanning database...</span>
+              <span class="opp-hint" data-i18n="opp-placeholder">Adjust filters and click "Search opportunities" to see ranked results.</span>
             </div>
           </div>
-          <div id="opp-results" class="opp-results">
-            <div class="opp-placeholder">
-              <p data-i18n="opp-placeholder">Adjust filters and click "Search opportunities" to see ranked results.</p>
-            </div>
-          </div>
+          <div id="opp-results" class="opp-results"></div>
 
           <!-- ── INVESTOR THEMES (embedded in Opportunities) ── -->
         </div>
