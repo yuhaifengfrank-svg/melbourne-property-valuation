@@ -1731,6 +1731,25 @@ th {
   margin: 0 0 28px;
 }
 
+.opp-divider {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 36px 0 28px;
+}
+
+.opp-investor .eyebrow {
+  margin-bottom: 4px;
+}
+
+.opp-investor h3 {
+  font-size: 1.1rem;
+  margin: 0 0 4px;
+}
+
+.opp-theme-grid {
+  margin-top: 0;
+}
+
 .opp-filters {
   background: var(--panel);
   border: 1px solid var(--line);
@@ -2228,7 +2247,7 @@ th {
                 <p id="evidence-revision-note">Estimate revised using uploaded evidence. Download the report to see the evidence summary.</p>
               </div>
             </section>
-            <section class="panel investor-panel" id="investor">
+            <section class="panel investor-panel" id="investor" style="display:none">
               <div>
                 <p class="eyebrow">Investor Hub</p>
                 <h2>Explore property-backed investment themes.</h2>
@@ -2243,10 +2262,10 @@ th {
                 <button class="theme-card detail-trigger" data-detail="development finance themes" data-theme="developmentFinance" type="button">Development finance</button>
                 <button class="theme-card detail-trigger" data-detail="income property themes" data-theme="incomeProperty" type="button">Income property</button>
               </div>
-              <div class="investor-theme-detail hidden" id="investor-theme-detail" aria-live="polite">
+              <div class="investor-theme-detail hidden" id="investor-theme-detail-old" aria-live="polite">
                 <h3 id="investor-theme-title">Private credit</h3>
                 <p id="investor-theme-copy">Short-term property-backed lending can be assessed through loan-to-value, exit strategy, borrower strength and security position.</p>
-                <ul id="investor-theme-list">
+                <ul id="investor-theme-list-old">
                   <li>Indicative LVR and valuation buffer</li>
                   <li>Security ranking and repayment source</li>
                   <li>Documentation required before any opportunity review</li>
@@ -2383,6 +2402,28 @@ th {
           <div id="opp-results" class="opp-results">
             <div class="opp-placeholder">
               <p data-i18n="opp-placeholder">Adjust filters and click "Search opportunities" to see ranked results.</p>
+            </div>
+          </div>
+
+          <!-- ── INVESTOR THEMES (embedded in Opportunities) ── -->
+          <div class="opp-investor">
+            <hr class="opp-divider">
+            <p class="eyebrow" data-i18n="investor-eyebrow">Explore Investment Themes</p>
+            <h3 data-i18n="investor-heading">Property-backed investment directions.</h3>
+            <p class="opp-sub" data-i18n="investor-sub">General information only. Specific private opportunities require investor profile, eligibility review and compliance approval.</p>
+            <div class="theme-grid opp-theme-grid">
+              <button class="theme-card detail-trigger" data-detail="property-backed private credit" data-theme="privateCredit" type="button">Private credit</button>
+              <button class="theme-card detail-trigger" data-detail="development finance themes" data-theme="developmentFinance" type="button">Development finance</button>
+              <button class="theme-card detail-trigger" data-detail="income property themes" data-theme="incomeProperty" type="button">Income property</button>
+            </div>
+            <div class="investor-theme-detail hidden" id="investor-theme-detail" aria-live="polite">
+              <h3 id="investor-theme-title">Private credit</h3>
+              <p id="investor-theme-copy">Short-term property-backed lending can be assessed through loan-to-value, exit strategy, borrower strength and security position.</p>
+              <ul id="investor-theme-list">
+                <li>Indicative LVR and valuation buffer</li>
+                <li>Security ranking and repayment source</li>
+                <li>Documentation required before any opportunity review</li>
+              </ul>
             </div>
           </div>
         </div>
