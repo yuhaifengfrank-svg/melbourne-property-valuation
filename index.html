@@ -1680,6 +1680,41 @@ th {
   border-radius: 20px;
 }
 
+.research-links {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.research-links a {
+  font-size: 0.82rem;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(0,0,0,0.12);
+  transition: text-decoration-color 0.15s;
+}
+.research-links a:hover {
+  text-decoration-color: var(--accent);
+}
+.tag-internal {
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.78rem;
+  padding: 0;
+}
+.tag-inner {
+  background: var(--soft);
+  color: var(--accent);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 1px 8px;
+  border-radius: 20px;
+  margin-left: 4px;
+}
+
 /* ── Opportunities panel ── */
 .opportunities-panel {
   max-width: 960px;
@@ -2234,32 +2269,54 @@ th {
           <div class="research-intro">
             <p class="eyebrow" data-i18n="research-eyebrow">Research</p>
             <h2 data-i18n="research-heading">Market intelligence for Melbourne property.</h2>
-            <p class="research-sub" data-i18n="research-sub">Coming soon — market reports, suburb deep dives, investment guides and data-driven rankings.</p>
+            <p class="research-sub" data-i18n="research-sub">Curated market research from Australia's leading property data sources. Own analysis coming soon.</p>
           </div>
           <div class="research-grid">
-            <article class="research-card disabled">
+            <article class="research-card">
               <span class="card-icon">📊</span>
               <h3 data-i18n="research-card1-title">Market Reports</h3>
               <p data-i18n="research-card1-desc">Melbourne Property Outlook, Housing Supply, Migration Impact and more.</p>
-              <span class="tag" data-i18n="coming-soon">Coming soon</span>
+              <ul class="research-links">
+                <li><a href="https://www.nab.com.au/content/dam/nab/documents/reports/loan/melbourne-property-market-insights.pdf" target="_blank" rel="noopener">NAB — Melbourne Property Market Insights (PDF)</a></li>
+                <li><a href="https://www.openagent.com.au/suburb-profiles/melbourne-property-market" target="_blank" rel="noopener">OpenAgent — Melbourne Market Data &amp; Trends</a></li>
+                <li><a href="https://www.api.org.au/professional-development/knowledge-hub/australian-property-market-outlook-q1-2026" target="_blank" rel="noopener">API — Property Market Outlook Q1 2026</a></li>
+                <li><a href="https://kpmg.com/au/en/insights/economics-geopolitics/residential-property-market-outlook.html" target="_blank" rel="noopener">KPMG — Residential Property Outlook</a></li>
+                <li><a href="https://www.cotality.com/au/our-data/mapping-market" target="_blank" rel="noopener">Cotality — Mapping the Market</a></li>
+              </ul>
             </article>
-            <article class="research-card disabled">
+            <article class="research-card">
               <span class="card-icon">📍</span>
               <h3 data-i18n="research-card2-title">Suburb Research</h3>
               <p data-i18n="research-card2-desc">Deep dives into individual suburbs — demographics, schools, growth drivers.</p>
-              <span class="tag">Coming soon</span>
+              <ul class="research-links">
+                <li><a href="https://www.realestate.com.au/vic" target="_blank" rel="noopener">realestate.com.au — VIC Suburb Profiles</a></li>
+                <li><a href="https://www.domain.com.au/suburb-profile" target="_blank" rel="noopener">Domain — Suburb Profiles &amp; Trends</a></li>
+                <li><a href="https://www.openagent.com.au/suburb-profiles/melbourne-property-market" target="_blank" rel="noopener">OpenAgent — Melbourne Suburb Data</a></li>
+                <li><a href="https://propertyupdate.com.au/property-investment-melbourne" target="_blank" rel="noopener">Property Update — Melbourne Market Outlook</a></li>
+                <li><span class="tag tag-internal" data-i18n="soon-suburb">Own Suburb Deep Dives <span class="tag-inner">Coming</span></span></li>
+              </ul>
             </article>
-            <article class="research-card disabled">
+            <article class="research-card">
               <span class="card-icon">📘</span>
               <h3 data-i18n="research-card3-title">Investment Guides</h3>
               <p data-i18n="research-card3-desc">House vs Apartment, Growth vs Cashflow, SMSF, First Investment Property.</p>
-              <span class="tag">Coming soon</span>
+              <ul class="research-links">
+                <li><a href="https://www.stryve.com.au/blog/best-suburbs-to-invest-in-melbourne" target="_blank" rel="noopener">Stryve — Best Suburbs to Invest 2026</a></li>
+                <li><a href="https://satterley.com.au/news/best-suburbs-to-invest-in-melbourne" target="_blank" rel="noopener">Satterley — Best Investment Suburbs 2026</a></li>
+                <li><a href="https://kpmg.com/au/en/media/media-releases/2026/01/house-prices-to-rise-in-2026-despite-interest-rate-uncertainty.html" target="_blank" rel="noopener">KPMG — House Prices to Rise 7.7% in 2026</a></li>
+                <li><a href="https://www.abc.net.au/news/2025-12-01/home-price-streak-continues-but-rates-outlook-takes-out-heat/106083314" target="_blank" rel="noopener">ABC — Property Price Climb Continues</a></li>
+              </ul>
             </article>
-            <article class="research-card disabled">
+            <article class="research-card">
               <span class="card-icon">🏆</span>
               <h3 data-i18n="research-card4-title">Rankings</h3>
               <p data-i18n="research-card4-desc">Top Growth Suburbs, Top School Zones, Top Yield Suburbs, Best Value.</p>
-              <span class="tag">Coming soon</span>
+              <ul class="research-links">
+                <li><a href="https://www.aucoreelite.com/en/post/melbourne-s-top-10-school-zones-in-2026-where-education-meets-property-growth" target="_blank" rel="noopener">Aucore Elite — Top 10 School Zones 2026</a></li>
+                <li><a href="https://www.realestate.com.au/news/the-40-most-popular-suburbs-for-aussie-buyers-and-sellers" target="_blank" rel="noopener">REA — Most Popular Suburbs 2026</a></li>
+                <li><a href="https://www.domain.com.au/news/melbourne-property-prices-the-top-school-zones-for-house-price-growth-20170206-gu3ylc" target="_blank" rel="noopener">Domain — Top School Zones Growth</a></li>
+                <li><span class="tag tag-internal" data-i18n="soon-rankings">Own Rankings <span class="tag-inner">Coming</span></span></li>
+              </ul>
             </article>
           </div>
         </div>
