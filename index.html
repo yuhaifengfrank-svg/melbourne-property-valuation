@@ -313,16 +313,22 @@ button:hover {
 }
 
 .chip {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  color: white;
+  background: #eef0ee;
+  border: 1px solid var(--line);
+  color: var(--ink);
   padding: 9px 11px;
   min-width: 72px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.chip:hover {
+  background: #e0e3e0;
 }
 
 .chip.active {
-  background: white;
-  color: var(--accent);
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
 }
 
 .commercial-chip {
