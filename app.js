@@ -619,6 +619,11 @@ const uiText = {
       '[data-i18n="research-card3-desc"]': "House vs Apartment, Growth vs Cashflow, SMSF, First Investment Property.",
       '[data-i18n="research-card4-title"]': "Rankings",
       '[data-i18n="research-card4-desc"]': "Top Growth Suburbs, Top School Zones, Top Yield Suburbs, Best Value.",
+      '[data-i18n="investor-card-title"]': "Explore Investment Themes",
+      '[data-i18n="investor-card-desc"]': "Private credit, development finance and income property — learn how property-backed investing works.",
+      '[data-i18n="investor-eyebrow"]': "Explore Investment Themes",
+      '[data-i18n="investor-heading"]': "Property-backed investment directions.",
+      '[data-i18n="investor-sub"]': "General information only. Specific private opportunities require investor profile, eligibility review and compliance approval.",
       '[data-i18n="coming-soon"]': "Coming soon",
       '[data-i18n="opp-eyebrow"]': "Top Opportunities BETA",
       '[data-i18n="opp-heading"]': "Investment opportunities ranked by data.",
@@ -769,6 +774,11 @@ const uiText = {
       '[data-i18n="research-card3-desc"]': "独立屋 vs 公寓、增长 vs 现金流、SMSF、首套投资房。",
       '[data-i18n="research-card4-title"]': "排行榜",
       '[data-i18n="research-card4-desc"]': "增长最快区域、优质学区、最高收益率、最佳价值。",
+      '[data-i18n="investor-card-title"]': "探索投资主题",
+      '[data-i18n="investor-card-desc"]': "私域信用、开发融资、收益型地产 — 了解房产抵押投资如何运作。",
+      '[data-i18n="investor-eyebrow"]': "探索投资主题",
+      '[data-i18n="investor-heading"]': "房产抵押投资方向。",
+      '[data-i18n="investor-sub"]': "仅供参考。具体私人投资机会需要投资者简介、资格审查和合规审批。",
       '[data-i18n="coming-soon"]': "即将推出",
       '[data-i18n="opp-eyebrow"]': "最佳机会 BETA",
       '[data-i18n="opp-heading"]': "数据驱动的投资机会排名。",
@@ -2305,6 +2315,42 @@ document.querySelectorAll(".theme-card").forEach((button) => {
   button.addEventListener("click", () => {
     if (!unlocked) return;
     renderInvestorTheme(button.dataset.theme);
+  });
+});
+
+// Research card theme buttons — no registration gate
+const themeData = {
+  privateCredit: {
+    title: { en: "Private credit", zh: "私域信用" },
+    copy: { en: "Short-term property-backed lending can be assessed through loan-to-value, exit strategy, borrower strength and security position.", zh: "短期房产抵押贷款的风险评估主要依据贷款价值比、退出策略、借款人资质和担保结构。" },
+    points: { en: ["Indicative LVR and valuation buffer", "Security ranking and repayment source", "Documentation required before any opportunity review"], zh: ["指示性LVR和估值缓冲", "担保优先级和还款来源", "机会审核前需提交材料"] }
+  },
+  developmentFinance: {
+    title: { en: "Development finance", zh: "开发融资" },
+    copy: { en: "Staged property development funding requires assessment of feasibility, pre-sales, builder track record and exit yield.", zh: "阶段性房地产开发融资需评估可行性、预售情况、建筑商资质和退出收益率。" },
+    points: { en: ["Feasibility study and financial modelling", "Pre-sales percentage and buyer quality", "Builder experience and delivery track record"], zh: ["可行性研究和财务模型", "预售比例和买家质量", "建筑商经验和交付记录"] }
+  },
+  incomeProperty: {
+    title: { en: "Income property", zh: "收益型地产" },
+    copy: { en: "Yield-focused property investment evaluated through rental income, expense ratios, tenant quality and hold period.", zh: "以租金收益为核心的房产投资，评估租金收入、费用比率、租户质量和持有周期。" },
+    points: { en: ["Net rental yield and gross rent multiplier", "Tenant quality and lease terms", "Capital expenditure reserve and hold period"], zh: ["净租金收益率和总租金倍数", "租户质量和租约条款", "资本支出预留和持有周期"] }
+  }
+};
+function renderResearchTheme(themeKey) {
+  const data = themeData[themeKey];
+  if (!data) return;
+  const lang = language === "zh" ? "zh" : "en";
+  byId("research-investor-title").textContent = data.title[lang];
+  byId("research-investor-copy").textContent = data.copy[lang];
+  const list = byId("research-investor-list");
+  list.innerHTML = "";
+  data.points[lang].forEach(p => { const li = document.createElement("li"); li.textContent = p; list.appendChild(li); });
+  byId("research-investor-detail").classList.remove("hidden");
+}
+document.querySelectorAll(".research-link-btn").forEach((btn) => {
+  btn.addEventListener("click", (e) => {
+    e.preventDefault();
+    renderResearchTheme(btn.dataset.theme);
   });
 });
 

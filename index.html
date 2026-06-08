@@ -1715,6 +1715,26 @@ th {
   margin-left: 4px;
 }
 
+.research-link-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.82rem;
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: rgba(0,0,0,0.12);
+  padding: 0;
+  transition: text-decoration-color 0.15s;
+}
+.research-link-btn:hover {
+  text-decoration-color: var(--accent);
+}
+
+#research-investor-detail {
+  margin-top: 20px;
+}
+
 /* ── Opportunities panel ── */
 .opportunities-panel {
   max-width: 960px;
@@ -2337,6 +2357,26 @@ th {
                 <li><span class="tag tag-internal" data-i18n="soon-rankings">Own Rankings <span class="tag-inner">Coming</span></span></li>
               </ul>
             </article>
+            <!-- ── INVESTOR THEMES (card 5) ── -->
+            <article class="research-card">
+              <span class="card-icon">🏦</span>
+              <h3 data-i18n="investor-card-title">Explore Investment Themes</h3>
+              <p data-i18n="investor-card-desc">Private credit, development finance and income property — learn how property-backed investing works.</p>
+              <ul class="research-links">
+                <li><button class="research-link-btn detail-trigger" data-detail="property-backed private credit" data-theme="privateCredit" type="button">→ Private credit</button></li>
+                <li><button class="research-link-btn detail-trigger" data-detail="development finance themes" data-theme="developmentFinance" type="button">→ Development finance</button></li>
+                <li><button class="research-link-btn detail-trigger" data-detail="income property themes" data-theme="incomeProperty" type="button">→ Income property</button></li>
+              </ul>
+            </article>
+          </div>
+          <div class="investor-theme-detail hidden" id="research-investor-detail" aria-live="polite">
+            <h3 id="research-investor-title">Private credit</h3>
+            <p id="research-investor-copy">Short-term property-backed lending can be assessed through loan-to-value, exit strategy, borrower strength and security position.</p>
+            <ul id="research-investor-list">
+              <li>Indicative LVR and valuation buffer</li>
+              <li>Security ranking and repayment source</li>
+              <li>Documentation required before any opportunity review</li>
+            </ul>
           </div>
         </div>
       </section>
@@ -2406,26 +2446,6 @@ th {
           </div>
 
           <!-- ── INVESTOR THEMES (embedded in Opportunities) ── -->
-          <div class="opp-investor">
-            <hr class="opp-divider">
-            <p class="eyebrow" data-i18n="investor-eyebrow">Explore Investment Themes</p>
-            <h3 data-i18n="investor-heading">Property-backed investment directions.</h3>
-            <p class="opp-sub" data-i18n="investor-sub">General information only. Specific private opportunities require investor profile, eligibility review and compliance approval.</p>
-            <div class="theme-grid opp-theme-grid">
-              <button class="theme-card detail-trigger" data-detail="property-backed private credit" data-theme="privateCredit" type="button">Private credit</button>
-              <button class="theme-card detail-trigger" data-detail="development finance themes" data-theme="developmentFinance" type="button">Development finance</button>
-              <button class="theme-card detail-trigger" data-detail="income property themes" data-theme="incomeProperty" type="button">Income property</button>
-            </div>
-            <div class="investor-theme-detail hidden" id="investor-theme-detail" aria-live="polite">
-              <h3 id="investor-theme-title">Private credit</h3>
-              <p id="investor-theme-copy">Short-term property-backed lending can be assessed through loan-to-value, exit strategy, borrower strength and security position.</p>
-              <ul id="investor-theme-list">
-                <li>Indicative LVR and valuation buffer</li>
-                <li>Security ranking and repayment source</li>
-                <li>Documentation required before any opportunity review</li>
-              </ul>
-            </div>
-          </div>
         </div>
       </section>
 
