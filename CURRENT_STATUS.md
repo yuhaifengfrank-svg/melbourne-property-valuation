@@ -1,28 +1,35 @@
 # CURRENT_STATUS.md
 
-最后更新: 2026-06-07 21:53 AEST — 后续新对话只读此文件。
+最后更新: 2026-06-08 11:37 AEST — 后续新对话只读此文件。
 
 ## 项目 & 分支
 
 | 项 | 值 |
 |---|---|
 | 项目 | `/Users/FrankAI/Documents/澳洲房地产评估系统` |
-| 分支 | `codex-review` — ahead **16**, behind **0** (main) |
-| HEAD | `c987744` — working tree **clean** |
-| 远程 | `origin/codex-review` (force-pushed, 不合并 main) |
+| 分支 | `codex-review` — ahead **18**, behind **0** (main) |
+| HEAD | `50f6c44` — working tree **clean** |
+| 远程 | `origin/codex-review` (force-pushed) |
+
+## 测试
+
+`npm run check` (node --check + node --test ×72) ✅ **72/72 全绿**
+
+```
+ℹ tests 72
+ℹ suites 14
+ℹ pass 72
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+```
+
+包含: 地址核验、数据可信度、数据库 source、物业类型覆盖(6类)、地址州冲突、索引迁移、cron隔离、上传逻辑、来源验证、前端渲染、代码契约、regression(7类型全过)、Nominatim buildSubject(15场景)。
 
 ## Production
 
-**URL**: https://aushomevalue.vercel.app (deploy `dpl_HeSAET...`, alias 含 aushomevalue.com.au)
-
-| 测试场景 | 结果 |
-|---|---|
-| 18 Moresby + Oakleigh South + VIC | ✅ completed, $1,291,949, sufficient(5 comps) |
-| wrong suburb (Chelsea) | ✅ address-mismatch, 明确提示 suburb |
-| wrong state (NSW) | ✅ address-mismatch (Nominatim 找到 NSW 同名街) |
-| Unit 3/18 + Oakleigh South + VIC | ✅ verified + unitStatus: unverified, 估值无 comps |
-| 手机排版/comparable 表 | ✅ viewport, mobile grid, 6 列表头 |
-| API 参数 propertyType | ✅ 正确传递 "House" 非 "type" |
+**URL**: https://aushomevalue.vercel.app (deploy `dpl_HeSAET...`)
 
 ## 核心功能 (done)
 
@@ -31,24 +38,10 @@
 3. DB prefix fallback — exact→prefix→first-word (Oakleigh South→Oakleigh%)
 4. subject.address = canonicalAddress (单一 truth)
 5. api/valuation.js 硬编码 `{ fetch:false, useDatabaseFallback:true }`
+6. `customerDataStatus` — sufficient / limited / unavailable 三级映射
+7. addressMismatch — DB source injected 时跳过地址冲突检测
+8. 7 种 property type 全回归通过: House, Vacant land, Townhouse, Villa, Unit, Apartment, Commercial
 
-## 测试
+## 待合并
 
-fast(21/21) ✅ (~49ms). `npm run check` — 1 integration fixture 不足 (mock salePrice 不够, 不影响生产).
-
-## 未完成
-
-1. DB 仅有 Oakleigh(3166), 缺 Oakleigh South(3167)/Clayton
-2. Unit 地址估值 0 comps (DB 无 unit 记录)
-3. branch 未合并 main
-
-## 下一步
-
-1. 采集 Oakleigh South+ comparable 数据
-2. 合并 codex-review → main
-3. Unit 地址 strip prefix 后 match street 记录
-
-## 归档
-
-`docs/archive/2026-06/` — OPENCLAW_HANDOFF / CODEX_REVIEW_SUMMARY / ROADMAP
-`memory/archive/` — 历史日志
+`codex-review` → `main`。等待 Codex 最终确认。
