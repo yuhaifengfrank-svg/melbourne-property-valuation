@@ -45,16 +45,15 @@ function makeNomEntry(overrides = {}) {
   };
 }
 
-function mockOk(addrOverrides) {
+function mockOk(suburbOverrides) {
   mock.reset();
-  const entry = makeNomEntry(addrOverrides ? { address: addrOverrides } : {});
+  const entry = makeNomEntry(suburbOverrides ? { address: suburbOverrides } : {});
   globalThis.fetch = mock.fn(async () => ({
     ok: true, json: async () => [entry], status: 200
   }));
 }
 
 function mockOkPartial(partialOverrides) {
-  // partialOverrides: keys to omit from result (set to actual values for ones that exist)
   mock.reset();
   const entry = makeNomEntry({ address: partialOverrides });
   globalThis.fetch = mock.fn(async () => ({
@@ -128,16 +127,20 @@ describe("buildSubject — Nominatim 核验", () => {
   });
 
   // ────────────────────────────────────────────
-  // III: suburb mismatch
+  // III: suburb mismatch（Nominatim top result 在其他 suburb）
   // ────────────────────────────────────────────
-  it("III: suburb 明确冲突（输入 Oakleigh South vs 地图 Chelsea）→ mismatch", async () => {
+  it("III: Nominatim top result 在 Chelsea 但输入 Oakleigh South → 不阻断，降级 unconfirmed", async () => {
     mockOk({ suburb: "Chelsea" });
     const r = await buildSubject(BASE);
-    assert.equal(r.verification.status, "mismatch");
+    // 无候选匹配输入 suburb → unconfirmed，不 mismatch
+    assert.equal(r.verification.status, "unconfirmed");
     assert.equal(r.verification.suburbExact, false);
-    assert.equal(r.addressMismatch.inputSuburb, "Oakleigh South");
-    assert.equal(r.addressMismatch.verifiedSuburb, "Chelsea");
-    assert.ok(r.addressMismatch.message.includes("suburb"));
+    assert.equal(r.addressMismatch, null);
+    assert.equal(r.suburb, "Oakleigh South"); // 保留客户输入
+    assert.equal(r.addressResolved, true);
+    assert.equal(r.addressSource, "user_input_fallback");
+    assert.ok(r.verification.nominatimHint);
+    assert.ok(r.verification.nominatimHint.message.includes("Chelsea"));
   });
 
   // ────────────────────────────────────────────
