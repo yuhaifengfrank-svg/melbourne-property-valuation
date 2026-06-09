@@ -40,5 +40,8 @@
   "bugs": {
     "url": "https://github.com/yuhaifengfrank-svg/melbourne-property-valuation/issues"
   },
-  "homepage": "https://github.com/yuhaifengfrank-svg/melbourne-property-valuation#readme"
+  "homepage": "https://github.com/yuhaifengfrank-svg/melbourne-property-valuation#readme",
+  "engines": {
+    "node": "20.x"
+  }
 }
