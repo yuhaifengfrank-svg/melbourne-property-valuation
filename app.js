@@ -2411,15 +2411,62 @@ document.addEventListener("DOMContentLoaded", () => {
 
 applyLanguage();
 
-/* ── Home Page Top Opportunities Snippet ── */
-// Snippet is inlined in index.html. Fetch as fallback to keep fresh.
-fetch('/top-opportunities-snippet.html')
-  .then(r => { if (!r.ok) throw new Error('snippet not found'); return r.text(); })
-  .then(html => {
-    const el = document.getElementById('home-snippet');
-    if (el && el.children.length < 2) el.innerHTML = html;
-  })
-  .catch(() => {}); // non-critical, silent fail
+/* ── Home Page Top Opportunities Snippet (live from API) ── */
+async function loadHomeOpportunities() {
+  const el = document.getElementById('home-snippet');
+  if (!el) return;
+  try {
+    const res = await fetch('/api/opportunity?maxResults=50');
+    const data = await res.json();
+    if (!data.ok || !data.opportunities || data.opportunities.length === 0) return;
+
+    const all = data.opportunities;
+
+    // Sort into categories by opportunityType
+    const byType = {};
+    all.forEach(o => {
+      const t = o.opportunityType || 'Balanced';
+      if (!byType[t]) byType[t] = [];
+      byType[t].push(o);
+    });
+
+    // Pick best 3 from each category
+    const categories = {
+      'Smart Buy':    { label: 'Top Value',     color: '#0d6b57', desc: o => `${o.opportunityType} · Improving fundamentals` },
+      'Growth':       { label: 'Top Growth',    color: '#065f46', desc: o => `Strong growth indicators` },
+      'School Zone':  { label: 'Top School',    color: '#1e40af', desc: o => `School score ${(o.schoolScore || 0).toFixed(0)}/100` },
+      'Balanced':     { label: 'Top Balanced',  color: '#0d6b57', desc: o => `${o.opportunityType} · ${(o.growth3y||0) > 20 ? 'High Growth' : 'Developing'}` }
+    };
+
+    let html = `<div id="top-opportunities" style="max-width:960px;margin:40px auto;padding:0 20px;">
+  <h2>Top Opportunities</h2>
+  <p style="color:#66736d;margin-bottom:20px;">Data-driven rankings refreshed nightly. Scores based on growth, school quality, rental yield, vacancy and undervaluation.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">`;
+
+    for (const [type, cfg] of Object.entries(categories)) {
+      const items = (byType[type] || []).slice(0, 3);
+      if (items.length === 0) continue;
+      html += `<div><h3 style="color:${cfg.color};">${cfg.label}</h3>`;
+      items.forEach(o => {
+        const slug = o.suburb.toLowerCase().replace(/\s+/g, '-') + '-' + (o.state||'vic').toLowerCase();
+        html += `<div><a href="/suburb/${slug}.html">${o.suburb}</a> <span style="background:${cfg.color};color:white;border-radius:20px;padding:2px 8px;font-size:0.8rem;">${o.opportunityScore}</span> <span style="color:#66736d;font-size:0.8rem;">${cfg.desc(o)}</span></div>`;
+      });
+      html += `</div>`;
+    }
+
+    html += `
+  </div>
+  <div style="text-align:center;margin-top:24px;"><a href="/opportunities/" style="background:#0d6b57;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:600;">View all opportunities →</a></div>
+</div>`;
+
+    el.innerHTML = html;
+  } catch(e) {
+    // Non-critical — fallback silently
+  }
+}
+
+// Load on page ready
+setTimeout(loadHomeOpportunities, 100);
 
 /* ── Opportunity Scan (Top Opportunities page) — gate behind registration ── */
 const oppSearchBtn = document.getElementById("opp-search-btn");
