@@ -81,10 +81,26 @@ async function generateAll() {
     };
   });
 
-  const growthSub = top.filter(s => (s.opportunity_type || '').includes('Growth') || (s.growth_3y || 0) >= 10).slice(0, 3);
-  const yieldSub = top.filter(s => s.gross_yield != null ? s.gross_yield >= 4 : false).slice(0, 3);
-  const schoolSub = top.filter(s => (s.school_score || 0) >= 70).slice(0, 3);
-  const balancedSub = top.filter(s => (s.opportunity_type || '') === 'Balanced Opportunity' || (s.opportunity_type || '') === 'Value').slice(0, 3);
+  // Data-aware fallback chains: try best available, fall back to top overall
+  const growthSub = (() => {
+    const withGrowth = top.filter(s => (s.growth_3y || 0) >= 5);
+    if (withGrowth.length >= 3) return withGrowth.slice(0, 3);
+    return top.filter(s => (s.median_house_price || 999999) < 700000).slice(0, 3);
+  })();
+  const yieldSub = (() => {
+    const withYield = top.filter(s => s.gross_yield != null && s.gross_yield >= 4);
+    return withYield.length >= 3 ? withYield.slice(0, 3) : [];
+  })();
+  const schoolSub = (() => {
+    const withSchool = top.filter(s => (s.school_score || 0) >= 65);
+    if (withSchool.length >= 3) return withSchool.slice(0, 3);
+    return [...top].filter(s => s.school_score != null).sort((a, b) => (b.school_score || 0) - (a.school_score || 0)).slice(0, 3);
+  })();
+  const balancedSub = (() => {
+    const withBal = top.filter(s => s.opportunity_type === 'Value');
+    if (withBal.length >= 3) return withBal.slice(0, 3);
+    return top.slice(0, 3);
+  })();
 
   const topSections = [
     { title: 'Top Growth', color: '#065f46', items: growthSub.map(s => ({ name: s.suburb, slug: slug(s.suburb, s.state), score: s.opportunity_score, desc: (s.growth_3y != null ? s.growth_3y + '% 3yr growth' : 'Strong growth indicators') })) },

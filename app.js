@@ -2408,6 +2408,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
 applyLanguage();
 
+/* ── Home Page Top Opportunities Snippet ── */
+// Snippet is inlined in index.html. Fetch as fallback to keep fresh.
+fetch('/top-opportunities-snippet.html')
+  .then(r => { if (!r.ok) throw new Error('snippet not found'); return r.text(); })
+  .then(html => {
+    const el = document.getElementById('home-snippet');
+    if (el && el.children.length < 2) el.innerHTML = html;
+  })
+  .catch(() => {}); // non-critical, silent fail
+
 /* ── Opportunity Scan (Top Opportunities page) ── */
 const oppSearchBtn = document.getElementById("opp-search-btn");
 const oppResults = document.getElementById("opp-results");
@@ -2426,6 +2436,8 @@ async function runOpportunityScan() {
   oppLoading.textContent = "Scanning database...";
   oppSearchBtn.disabled = true;
   oppResults.innerHTML = "";
+  const snippetEl = document.getElementById('home-snippet');
+  if (snippetEl) snippetEl.style.display = 'none';
   // Cold-start timeout warning
   const coldTimer = setTimeout(() => {
     oppLoading.textContent = "Still scanning — this may take a moment on first run.";
