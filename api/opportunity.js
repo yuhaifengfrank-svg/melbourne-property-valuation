@@ -1,23 +1,18 @@
 /**
- * api/opportunity.js - Opportunity Scan API endpoint
- * GET /api/opportunity?strategy=smart&suburbRegion=Scoresby&propertyType=House
+ * api/opportunity.js - Opportunity API endpoint (v2)
+ * Reads pre-computed scores from suburb_metrics — fast, no N+1 queries.
+ * GET /api/opportunity?suburb=&minScore=&maxResults=&strategy=
  */
 
 import { neon } from '@neondatabase/serverless';
-import { scanOpportunities } from '../lib/opportunity-service.js';
 
-// Module-level sql instance — reused across invocations within the same warm function
 let _sql = null;
-function getCachedSql() {
+function getSql() {
   if (!_sql && process.env.DATABASE_URL) {
     _sql = neon(process.env.DATABASE_URL, { fetchOptions: { cache: 'no-store' } });
   }
   return _sql;
 }
-
-// Expose for use by scanOpportunities (which also uses neon internally, but we
-// ensure the connection exists before calling it — the cold-start ping happens below)
-export { getCachedSql };
 
 export default async function handler(request) {
   const headers = new Headers({
@@ -31,26 +26,76 @@ export default async function handler(request) {
   }
 
   const url = new URL(request.url, 'http://localhost');
-  const params = {
-    strategy: url.searchParams.get('strategy') || 'smart',
-    suburbRegion: url.searchParams.get('suburb'),
-    propertyType: url.searchParams.get('propertyType'),
-    minPrice: url.searchParams.get('minPrice') ? Number(url.searchParams.get('minPrice')) : null,
-    maxPrice: url.searchParams.get('maxPrice') ? Number(url.searchParams.get('maxPrice')) : null,
-    minScore: url.searchParams.get('minScore') ? Number(url.searchParams.get('minScore')) : 0,
-    maxResults: url.searchParams.get('maxResults') ? Number(url.searchParams.get('maxResults')) : 50
-  };
+  const suburbFilter = url.searchParams.get('suburb');
+  const minScore = Number(url.searchParams.get('minScore') || 0);
+  const maxResults = Math.min(Number(url.searchParams.get('maxResults') || 50), 200);
+  const strategy = url.searchParams.get('strategy') || 'smart';
+  const minPrice = url.searchParams.get('minPrice') ? Number(url.searchParams.get('minPrice')) : null;
+  const maxPrice = url.searchParams.get('maxPrice') ? Number(url.searchParams.get('maxPrice')) : null;
 
   try {
-    // Cold-start ping: establish Neon connection before running the scan
-    const sql = getCachedSql();
-    if (sql) {
-      await sql`SELECT 1 AS ping`;
+    const sql = getSql();
+
+    let where = [`opportunity_score IS NOT NULL`];
+    let params = [];
+    let p = 0;
+
+    if (suburbFilter) {
+      p++; where.push(`LOWER(suburb) LIKE $${p}`); params.push(`%${suburbFilter.toLowerCase()}%`);
     }
-    const result = await scanOpportunities(params);
-    return new Response(JSON.stringify({ ok: true, ...result, modelVersion: '1.0.0', collectedAt: new Date().toISOString() }), { headers });
+    if (minPrice != null) {
+      p++; where.push(`median_house_price >= $${p}`); params.push(minPrice);
+    }
+    if (maxPrice != null) {
+      p++; where.push(`median_house_price <= $${p}`); params.push(maxPrice);
+    }
+    where.push(`opportunity_score >= ${minScore}`);
+
+    const q = `
+      SELECT suburb, state,
+             median_house_price, median_unit_price,
+             growth_1y, growth_3y, growth_5y,
+             school_score, vacancy_rate,
+             opportunity_score, opportunity_type
+      FROM suburb_metrics
+      WHERE ${where.join(' AND ')}
+      ORDER BY opportunity_score DESC
+      LIMIT $${++p}
+    `;
+    params.push(maxResults);
+
+    const rows = await sql.query(q, params);
+
+    const opportunities = rows.map(r => ({
+      suburb: r.suburb,
+      state: r.state || 'VIC',
+      medianHousePrice: Number(r.median_house_price) || null,
+      medianUnitPrice: Number(r.median_unit_price) || null,
+      growth1y: Number(r.growth_1y) || null,
+      growth3y: Number(r.growth_3y) || null,
+      growth5y: Number(r.growth_5y) || null,
+      schoolScore: Number(r.school_score) || null,
+      vacancyRate: Number(r.vacancy_rate) || null,
+      opportunityScore: Number(r.opportunity_score),
+      opportunityType: r.opportunity_type || 'Balanced'
+    }));
+
+    return new Response(JSON.stringify({
+      ok: true,
+      opportunities,
+      meta: {
+        totalFound: rows.length,
+        strategy,
+        collectedAt: new Date().toISOString()
+      }
+    }), { headers });
+
   } catch (error) {
-    console.error('Opportunity scan error:', error);
-    return new Response(JSON.stringify({ ok: false, error: error.message, opportunities: [], meta: { totalScanned: 0, strategy: params.strategy } }), { status: 500, headers });
+    console.error('Opportunity API error:', error);
+    return new Response(JSON.stringify({
+      ok: false,
+      error: error.message,
+      opportunities: []
+    }), { status: 500, headers });
   }
 }
