@@ -5,10 +5,26 @@
     }
   },
   "rewrites": [
-    { "source": "/dist/(.*)", "destination": "/dist/$1" },
-    { "source": "/suburb/(.*)", "destination": "/dist/suburb/$1" },
-    { "source": "/opportunities/(.*)", "destination": "/dist/opportunities/$1" },
-    { "source": "/top-opportunities-snippet.html", "destination": "/dist/top-opportunities-snippet.html" },
-    { "source": "/(.*)", "destination": "/$1" }
-  ]
+    {
+      "source": "/dist/(.*)",
+      "destination": "/dist/$1"
+    },
+    {
+      "source": "/suburb/(.*)",
+      "destination": "/dist/suburb/$1"
+    },
+    {
+      "source": "/opportunities/(.*)",
+      "destination": "/dist/opportunities/$1"
+    },
+    {
+      "source": "/top-opportunities-snippet.html",
+      "destination": "/dist/top-opportunities-snippet.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/$1"
+    }
+  ],
+  "outputDirectory": "dist"
 }
