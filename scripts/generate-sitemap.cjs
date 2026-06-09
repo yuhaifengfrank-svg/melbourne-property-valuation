@@ -28,6 +28,7 @@ const PRIORITY = {
   '/top-value-suburbs-victoria.html': '0.9',
   '/top-yield-suburbs-victoria.html': '0.9',
   '/top-school-zone-suburbs-victoria.html': '0.9',
+  '/top-supply-constrained-suburbs-victoria.html': '0.9',
   '/opportunities/index.html': '0.8',
 };
 
@@ -60,6 +61,7 @@ function collectUrls() {
     'top-value-suburbs-victoria.html',
     'top-yield-suburbs-victoria.html',
     'top-school-zone-suburbs-victoria.html',
+    'top-supply-constrained-suburbs-victoria.html',
   ];
   for (const f of topPages) {
     const fullPath = path.join(PUBLIC, f);
