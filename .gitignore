@@ -1,9 +1,10 @@
-node_modules/
-.env*
-.vercel/
-.learnings/
-outputs/
-marketing-video-demo/
-dev-tools/
 .env
+.env*
+.learnings/
 .vercel
+.vercel/
+data/2021Census_G*_VIC_SA2.csv
+dev-tools/
+marketing-video-demo/
+node_modules/
+outputs/

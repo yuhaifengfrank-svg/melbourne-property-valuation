@@ -42,6 +42,10 @@
       "destination": "/public/top-school-zone-suburbs-victoria.html"
     },
     {
+      "source": "/research/(.*)",
+      "destination": "/public/research/$1"
+    },
+    {
       "source": "/index-phase3c-preview.html",
       "destination": "/public/index-phase3c-preview.html"
     },

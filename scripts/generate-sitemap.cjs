@@ -54,7 +54,7 @@ function collectUrls() {
   // Homepage
   urls.push({ path: '/', lastmod: getFileMtime(path.join(PUBLIC, 'index.html')) });
 
-  // Top ranking pages
+  // Top ranking pages (Phase 3A)
   const topPages = [
     'top-growth-suburbs-victoria.html',
     'top-value-suburbs-victoria.html',
@@ -65,6 +65,15 @@ function collectUrls() {
     const fullPath = path.join(PUBLIC, f);
     if (fs.existsSync(fullPath)) {
       urls.push({ path: '/' + f, lastmod: getFileMtime(fullPath) });
+    }
+  }
+
+  // Research centre pages (Track C V1)
+  const researchDir = path.join(PUBLIC, 'research');
+  if (fs.existsSync(researchDir)) {
+    const researchFiles = fs.readdirSync(researchDir).filter(f => f.endsWith('.html'));
+    for (const f of researchFiles) {
+      urls.push({ path: '/research/' + f, lastmod: getFileMtime(path.join(researchDir, f)) });
     }
   }
 
