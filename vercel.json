@@ -50,6 +50,7 @@
       "destination": "/public/index-phase3c-preview.html"
     },
     { "source": "/", "destination": "/public/index.html" },
-    { "source": "/styles.css", "destination": "/public/styles.css" }
+    { "source": "/styles.css", "destination": "/public/styles.css" },
+    { "source": "/assets/(.*)", "destination": "/public/assets/$1" }
   ]
 }
