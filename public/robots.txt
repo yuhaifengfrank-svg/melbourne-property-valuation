@@ -1,0 +1,33 @@
+# AusHomeValue — robots.txt
+# Last updated: 2026-06-09
+
+User-agent: Googlebot
+Allow: /
+Crawl-Delay: 10
+
+User-agent: Bingbot
+Allow: /
+Crawl-Delay: 10
+
+User-agent: GPTBot
+Allow: /
+Crawl-Delay: 10
+
+User-agent: PerplexityBot
+Allow: /
+Crawl-Delay: 10
+
+User-agent: ClaudeBot
+Allow: /
+Crawl-Delay: 10
+
+User-agent: Applebot
+Allow: /
+Crawl-Delay: 10
+
+User-agent: *
+Disallow: /
+Disallow: /api/
+Disallow: *?debug=true
+
+Sitemap: https://aushomevalue.vercel.app/sitemap.xml

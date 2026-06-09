@@ -6,6 +6,14 @@
   },
   "rewrites": [
     {
+      "source": "/robots.txt",
+      "destination": "/public/robots.txt"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/public/sitemap.xml"
+    },
+    {
       "source": "/suburb/(.*)",
       "destination": "/public/suburb/$1"
     },
