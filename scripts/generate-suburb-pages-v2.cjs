@@ -140,11 +140,11 @@ function buildSuburbPage(data, suburb) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${escapeHtml(suburb)} Property Market Analysis & Opportunity Score | AusHomeValue</title>
   <meta name="description" content="Detailed property intelligence for ${escapeHtml(suburb)}, ${state}. ${confidence}/100 confidence. Factor breakdown: Value ${data.value?.score ?? '—'}, Growth ${data.growth?.score ?? '—'}, School ${data.school?.score ?? '—'}. Why this suburb scores—analysis from AusHomeValue." />
-  <link rel="canonical" href="https://www.aushomevalue.com.au/suburb/${slug}" />
+  <link rel="canonical" href="https://www.aushomevalue.com.au/suburb/${slug}-vic.html" />
   <meta name="robots" content="index, follow" />
   <meta property="og:title" content="${escapeHtml(suburb)} Property Intelligence | AusHomeValue" />
   <meta property="og:description" content="Confidence ${confidence}/100. Growth ${data.growth?.score ?? '—'}, School ${data.school?.score ?? '—'}, Value ${data.value?.score ?? '—'}, Infrastructure ${data.infrastructure?.score ?? '—'}. Full factor breakdown with explanations." />
-  <meta property="og:url" content="https://www.aushomevalue.com.au/suburb/${slug}" />
+  <meta property="og:url" content="https://www.aushomevalue.com.au/suburb/${slug}-vic.html" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
