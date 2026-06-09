@@ -50,5 +50,17 @@ export async function ensureSchema(sql) {
   await sql`CREATE INDEX IF NOT EXISTS leads_property_idx ON leads (LOWER(property_address))`;
   await sql`CREATE INDEX IF NOT EXISTS leads_state_suburb_idx ON leads (property_state, LOWER(property_suburb))`;
   await sql`CREATE INDEX IF NOT EXISTS leads_notification_dedupe_idx ON leads (LOWER(email), LOWER(property_address), event_type)`;
+
+  /* Migration 008: Opportunity gate columns */
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS consent_timestamp TIMESTAMPTZ`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS source TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS strategy TEXT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS budget_min BIGINT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS budget_max BIGINT`;
+  await sql`ALTER TABLE leads ADD COLUMN IF NOT EXISTS destination_state TEXT`;
+  await sql`CREATE INDEX IF NOT EXISTS leads_source_idx ON leads (source)`;
+  await sql`CREATE INDEX IF NOT EXISTS leads_email_source_idx ON leads (LOWER(email), source)`;
+  await sql`CREATE INDEX IF NOT EXISTS leads_opp_notification_dedupe_idx ON leads (LOWER(email), source)`;
+
   initialized = true;
 }
