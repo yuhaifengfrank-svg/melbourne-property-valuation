@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AusHomeValue Preview — Phase 3C</title>
+  <meta name="description" content="Preview of homepage opportunity intelligence blocks." />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Inter, system-ui, -apple-system, sans-serif; background: #f4f6f5; color: #17211d; line-height: 1.6; }
+    a { color: #0d6b57; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
+    h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 8px; }
+    .subhead { color: #4a5650; margin-bottom: 32px; }
+    .home-section { margin-bottom: 36px; }
+    .home-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .home-section-header h3 { font-size: 1.1rem; font-weight: 700; }
+    .view-all-link { font-size: 0.85rem; color: #0d6b57; font-weight: 500; }
+    .preview-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .preview-card {
+      background: white; border: 1px solid #dbe2de; border-radius: 10px;
+      padding: 14px; display: flex; flex-direction: column; gap: 6px;
+      transition: all 0.12s; color: #17211d;
+    }
+    .preview-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); border-color: #0d6b57; text-decoration: none; }
+    .preview-rank { font-size: 1.2rem; }
+    .preview-name { font-size: 1rem; font-weight: 700; }
+    .preview-score { font-size: 0.85rem; color: #0d6b57; font-weight: 600; }
+    @media (max-width: 640px) {
+      .preview-strip { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🏘 AusHomeValue</h2>
+    <p class="subhead">Data-driven opportunity intelligence for Victorian property investors.</p>
+
+    
+    <div class="home-section">
+      <div class="home-section-header">
+        <h3>📈 Top Growth Suburbs</h3>
+        <a href="/top-growth-suburbs-victoria.html" class="view-all-link">View all →</a>
+      </div>
+      <div class="preview-strip">
+        <a href="/suburb/werribee-vic.html" class="preview-card">
+        <span class="preview-rank">🥇</span>
+        <span class="preview-name">Werribee</span>
+        <span class="preview-score">85</span>
+      </a><a href="/suburb/sunshine-vic.html" class="preview-card">
+        <span class="preview-rank">🥈</span>
+        <span class="preview-name">Sunshine</span>
+        <span class="preview-score">85</span>
+      </a><a href="/suburb/dandenong-vic.html" class="preview-card">
+        <span class="preview-rank">🥉</span>
+        <span class="preview-name">Dandenong</span>
+        <span class="preview-score">85</span>
+      </a>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <div class="home-section-header">
+        <h3>💎 Top Value Suburbs</h3>
+        <a href="/top-value-suburbs-victoria.html" class="view-all-link">View all →</a>
+      </div>
+      <div class="preview-strip">
+        <a href="/suburb/dandenong-vic.html" class="preview-card">
+        <span class="preview-rank">🥇</span>
+        <span class="preview-name">Dandenong</span>
+        <span class="preview-score">90</span>
+      </a><a href="/suburb/west-melbourne-vic.html" class="preview-card">
+        <span class="preview-rank">🥈</span>
+        <span class="preview-name">West Melbourne</span>
+        <span class="preview-score">90</span>
+      </a><a href="/suburb/murrumbeena-vic.html" class="preview-card">
+        <span class="preview-rank">🥉</span>
+        <span class="preview-name">Murrumbeena</span>
+        <span class="preview-score">90</span>
+      </a>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <div class="home-section-header">
+        <h3>💰 Top Yield Suburbs</h3>
+        <a href="/top-yield-suburbs-victoria.html" class="view-all-link">View all →</a>
+      </div>
+      <div class="preview-strip">
+        <a href="/suburb/caulfield-east-vic.html" class="preview-card">
+        <span class="preview-rank">🥇</span>
+        <span class="preview-name">Caulfield East</span>
+        <span class="preview-score">60</span>
+      </a><a href="/suburb/notting-hill-vic.html" class="preview-card">
+        <span class="preview-rank">🥈</span>
+        <span class="preview-name">Notting Hill</span>
+        <span class="preview-score">60</span>
+      </a><a href="/suburb/caulfield-south-vic.html" class="preview-card">
+        <span class="preview-rank">🥉</span>
+        <span class="preview-name">Caulfield South</span>
+        <span class="preview-score">54</span>
+      </a>
+      </div>
+    </div>
+
+    <div class="home-section">
+      <div class="home-section-header">
+        <h3>🏫 Top School Zone Suburbs</h3>
+        <a href="/top-school-zone-suburbs-victoria.html" class="view-all-link">View all →</a>
+      </div>
+      <div class="preview-strip">
+        <a href="/suburb/fairfield-vic.html" class="preview-card">
+        <span class="preview-rank">🥇</span>
+        <span class="preview-name">Fairfield</span>
+        <span class="preview-score">85</span>
+      </a><a href="/suburb/burwood-vic.html" class="preview-card">
+        <span class="preview-rank">🥈</span>
+        <span class="preview-name">Burwood</span>
+        <span class="preview-score">85</span>
+      </a><a href="/suburb/canterbury-vic.html" class="preview-card">
+        <span class="preview-rank">🥉</span>
+        <span class="preview-name">Canterbury</span>
+        <span class="preview-score">85</span>
+      </a>
+      </div>
+    </div>
+  </div>
+  <div class="footer" style="text-align:center;padding:32px 20px;color:#8a9b93;font-size:0.85rem;border-top:1px solid #dbe2de;">
+    <p>Preview — Phase 3C Homepage Integration</p>
+  </div>
+</body>
+</html>

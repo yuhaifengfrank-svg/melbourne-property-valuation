@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Top Growth Suburbs Victoria 2026 | AusHomeValue</title>
+  <meta name="description" content="Discover Victoria's top growth suburbs for 2026. Ranked by weighted 1-year, 3-year, and 5-year price growth with confidence-adjusted opportunity scores from AusHomeValue's intelligence engine." />
+  <link rel="canonical" href="https://www.aushomevalue.com.au/top-growth-suburbs-victoria.html" />
+  <meta property="og:title" content="Top Growth Suburbs Victoria 2026" />
+  <meta property="og:description" content="Discover Victoria's top growth suburbs for 2026. Ranked by weighted 1-year, 3-year, and 5-year price growth with confidence-adjusted opportunity scores from AusHomeValue's intelligence engine." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.aushomevalue.com.au/top-growth-suburbs-victoria.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: #f4f6f5; color: #17211d; line-height: 1.6;
+    }
+    a { color: #0d6b57; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .topbar {
+      background: linear-gradient(135deg, #0d6b57 0%, #0a8f6e 100%);
+      color: white; padding: 14px 24px; position: sticky; top: 0; z-index: 100;
+    }
+    .topbar a { color: white; font-weight: 600; font-size: 1.1rem; }
+    .topbar .back { opacity: 0.85; }
+    .topbar .back:hover { opacity: 1; text-decoration: none; }
+    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
+    .page-desc { color: #4a5650; font-size: 1rem; max-width: 720px; margin-bottom: 32px; line-height: 1.7; }
+    .tabs {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 28px;
+    }
+    .tab {
+      padding: 8px 18px; border-radius: 30px; font-size: 0.9rem; font-weight: 600;
+      background: #e8f3ef; color: #0d6b57; transition: all 0.15s; white-space: nowrap;
+    }
+    .tab:hover { background: #d0e8e0; text-decoration: none; }
+    .tab-active { background: #0d6b57; color: white; }
+    .rank-card {
+      display: flex; gap: 16px;
+      background: white; border: 1px solid #dbe2de; border-radius: 12px;
+      padding: 20px; margin-bottom: 12px; transition: box-shadow 0.15s;
+    }
+    .rank-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+    .rank-number {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+      background: #0d6b57; color: white; font-size: 1rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .rank-number[data-rank="1"] { background: #ffd700; color: #17211d; }
+    .rank-number[data-rank="2"] { background: #c0c0c0; color: #17211d; }
+    .rank-number[data-rank="3"] { background: #cd7f32; color: white; }
+    .rank-body { flex: 1; min-width: 0; }
+    .rank-body h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 6px; }
+    .rank-body h3 a { color: #17211d; }
+    .rank-body h3 a:hover { color: #0d6b57; }
+    .rank-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .tag {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 0.78rem; font-weight: 600;
+    }
+    .tag-growth { background: #e3f5e3; color: #1a7a1a; }
+    .tag-value { background: #e3eef5; color: #1a5a7a; }
+    .tag-yield { background: #f5ede3; color: #7a5a1a; }
+    .tag-school { background: #ede3f5; color: #5a1a7a; }
+    .tag-opp { background: #f0f0f0; color: #555; }
+    .rank-stats { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+    .stat { display: flex; flex-direction: column; }
+    .stat-label { font-size: 0.75rem; color: #8a9b93; text-transform: uppercase; letter-spacing: 0.04em; }
+    .stat-value { font-size: 1.05rem; font-weight: 700; }
+    .stat-tier { font-size: 0.8rem; color: #66736d; }
+    .stat-type { font-size: 0.85rem; color: #0d6b57; font-weight: 500; }
+    .explain-list { margin: 6px 0 0 0; padding: 0; list-style: none; }
+    .explain-list li {
+      font-size: 0.85rem; color: #4a5650; line-height: 1.5;
+      padding-left: 16px; position: relative; margin-bottom: 2px;
+    }
+    .explain-list li::before { content: '→'; position: absolute; left: 0; color: #0d6b57; }
+    .footer {
+      text-align: center; padding: 40px 20px; color: #8a9b93; font-size: 0.85rem;
+      border-top: 1px solid #dbe2de; margin-top: 48px;
+    }
+    .foot-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
+    .foot-links a { color: #4a5650; font-size: 0.85rem; }
+    .breadcrumb { font-size: 0.85rem; color: #66736d; margin-bottom: 20px; }
+    .breadcrumb a { color: #0d6b57; }
+    @media (max-width: 640px) {
+      .container { padding: 20px 14px; }
+      .rank-card { flex-direction: column; padding: 14px; }
+      .rank-number { width: 32px; height: 32px; font-size: 0.9rem; }
+      .rank-stats { gap: 12px; }
+    }
+  </style>
+  <script src="/opportunity-gate.js" defer></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": "Top Growth Suburbs Victoria 2026",
+    "description": "Discover Victoria's top growth suburbs for 2026. Ranked by weighted 1-year, 3-year, and 5-year price growth with confidence-adjusted opportunity scores from AusHomeValue's intelligence engine.",
+    "url": "https://www.aushomevalue.com.au/top-growth-suburbs-victoria.html",
+    "about": {
+      "@type": "Thing",
+      "name": "Victorian Property Market"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div class="topbar">
+    <a href="/" class="back">← AusHomeValue</a>
+  </div>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="/">Home</a> / 📈 Top Growth Suburbs in Victoria
+    </div>
+    <h1>Top Growth Suburbs in Victoria</h1>
+    <p class="page-desc">Suburbs with the strongest forecast price appreciation. These areas show sustained 1–5 year capital growth momentum driven by infrastructure investment, demographic shifts, and supply constraints.</p>
+    <div class="tabs">
+      
+    <a href="/top-growth-suburbs-victoria.html" class="tab tab-active">
+      📈 Growth
+    </a>
+          
+    <a href="/top-value-suburbs-victoria.html" class="tab ">
+      💎 Value
+    </a>
+          
+    <a href="/top-yield-suburbs-victoria.html" class="tab ">
+      💰 Yield
+    </a>
+          
+    <a href="/top-school-zone-suburbs-victoria.html" class="tab ">
+      🏫 Schools
+    </a>
+    </div>
+    <p style="margin-bottom: 20px; color: #66736d; font-size: 0.9rem;">
+      Showing top 50 suburbs ranked by growth score.
+      Scores combine market data, confidence calibrations, and factor-specific analysis.
+      <a href="/methodology.html">Learn about our methodology →</a>
+    </p>
+    <div class="rank-list">
+      
+    <div class="rank-card" data-rank="1">
+      <div class="rank-number">1</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/werribee-vic.html">Werribee</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 27</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">81.1%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="2">
+      <div class="rank-number">2</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/sunshine-vic.html">Sunshine</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 23</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.8%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="3">
+      <div class="rank-number">3</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/dandenong-vic.html">Dandenong</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 32</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="4">
+      <div class="rank-number">4</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/lysterfield-vic.html">Lysterfield</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 33</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="5">
+      <div class="rank-number">5</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/croydon-north-vic.html">Croydon North</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 33</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="6">
+      <div class="rank-number">6</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/beaconsfield-vic.html">Beaconsfield</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 33</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="7">
+      <div class="rank-number">7</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/langwarrin-vic.html">Langwarrin</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 32</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="8">
+      <div class="rank-number">8</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/croydon-south-vic.html">Croydon South</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 31</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="9">
+      <div class="rank-number">9</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/somerville-vic.html">Somerville</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 30</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="10">
+      <div class="rank-number">10</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/skye-vic.html">Skye</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 35</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="11">
+      <div class="rank-number">11</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/clyde-vic.html">Clyde</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 35</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="12">
+      <div class="rank-number">12</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/scoresby-vic.html">Scoresby</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 31</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="13">
+      <div class="rank-number">13</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/lyndhurst-vic.html">Lyndhurst</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 34</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="14">
+      <div class="rank-number">14</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/knoxfield-vic.html">Knoxfield</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 31</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="15">
+      <div class="rank-number">15</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/south-morang-vic.html">South Morang</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 35</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="16">
+      <div class="rank-number">16</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/clyde-north-vic.html">Clyde North</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 36</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="17">
+      <div class="rank-number">17</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/cranbourne-east-vic.html">Cranbourne East</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 35</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="18">
+      <div class="rank-number">18</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/pakenham-vic.html">Pakenham</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 33</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="19">
+      <div class="rank-number">19</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/keysborough-vic.html">Keysborough</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 35</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="20">
+      <div class="rank-number">20</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/endeavour-hills-vic.html">Endeavour Hills</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 33</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="21">
+      <div class="rank-number">21</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/lalor-vic.html">Lalor</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 31</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="22">
+      <div class="rank-number">22</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/hallam-vic.html">Hallam</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 31</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="23">
+      <div class="rank-number">23</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/hampton-park-vic.html">Hampton Park</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 33</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="24">
+      <div class="rank-number">24</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/deer-park-vic.html">Deer Park</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 36</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="25">
+      <div class="rank-number">25</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/surrey-hills-vic.html">Surrey Hills</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 24</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="26">
+      <div class="rank-number">26</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/hampton-vic.html">Hampton</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 22</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="27">
+      <div class="rank-number">27</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/aberfeldie-vic.html">Aberfeldie</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 22</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="28">
+      <div class="rank-number">28</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/beaumaris-vic.html">Beaumaris</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 29</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="29">
+      <div class="rank-number">29</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/templestowe-vic.html">Templestowe</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 28</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="30">
+      <div class="rank-number">30</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/mount-eliza-vic.html">Mount Eliza</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 29</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="31">
+      <div class="rank-number">31</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/strathmore-vic.html">Strathmore</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 28</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="32">
+      <div class="rank-number">32</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/patterson-lakes-vic.html">Patterson Lakes</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 24</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="33">
+      <div class="rank-number">33</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/edithvale-vic.html">Edithvale</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 28</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="34">
+      <div class="rank-number">34</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/rosanna-vic.html">Rosanna</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 24</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="35">
+      <div class="rank-number">35</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/newport-vic.html">Newport</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 26</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="36">
+      <div class="rank-number">36</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/mitcham-vic.html">Mitcham</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 29</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="37">
+      <div class="rank-number">37</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/frankston-south-vic.html">Frankston South</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 30</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="38">
+      <div class="rank-number">38</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/wantirna-vic.html">Wantirna</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 30</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="39">
+      <div class="rank-number">39</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/moorabbin-vic.html">Moorabbin</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 26</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="40">
+      <div class="rank-number">40</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/cheltenham-vic.html">Cheltenham</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 27</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="41">
+      <div class="rank-number">41</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/sandringham-vic.html">Sandringham</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 27</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="42">
+      <div class="rank-number">42</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/altona-vic.html">Altona</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 26</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="43">
+      <div class="rank-number">43</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/clarinda-vic.html">Clarinda</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 26</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="44">
+      <div class="rank-number">44</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/yarraville-vic.html">Yarraville</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 27</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="45">
+      <div class="rank-number">45</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/watsonia-vic.html">Watsonia</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 30</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="46">
+      <div class="rank-number">46</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/ringwood-vic.html">Ringwood</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 24</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="47">
+      <div class="rank-number">47</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/heidelberg-vic.html">Heidelberg</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 25</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="48">
+      <div class="rank-number">48</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/heathmont-vic.html">Heathmont</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 30</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="49">
+      <div class="rank-number">49</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/airport-west-vic.html">Airport West</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 26</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="50">
+      <div class="rank-number">50</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/croydon-vic.html">Croydon</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-growth">📈 Growth</span>
+          <span class="tag tag-opp">Opp 29</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Growth</span>
+            <span class="stat-value">85%</span>
+            <span class="stat-tier">A</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Strong 3-year growth of 25.0% outpaces Melbourne market average</li><li>Recent 1-year momentum of 30.0% signals accelerating demand</li></ul>
+      </div>
+    </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="foot-links">
+      <a href="/">Home</a>
+      <a href="/opportunities/">Opportunities</a>
+      <a href="/top-growth-suburbs-victoria.html">Top Growth</a>
+      <a href="/top-value-suburbs-victoria.html">Top Value</a>
+      <a href="/top-yield-suburbs-victoria.html">Top Yield</a>
+      <a href="/top-school-zone-suburbs-victoria.html">Top Schools</a>
+      <a href="/contact.html">Contact</a>
+    </div>
+    <p>© 2026 AusHomeValue — Australian Property Intelligence</p>
+  </div>
+</body>
+</html>
