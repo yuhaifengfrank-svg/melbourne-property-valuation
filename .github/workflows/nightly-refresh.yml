@@ -1,0 +1,26 @@
+name: Nightly Suburb Metrics Refresh
+
+on:
+  schedule:
+    # Run daily at 03:00 AEST (17:00 UTC previous day)
+    - cron: '0 17 * * *'
+  workflow_dispatch:  # allow manual trigger
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      - name: Run suburb metrics refresh
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node lib/refresh-suburb-metrics.js
