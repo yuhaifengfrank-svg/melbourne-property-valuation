@@ -17,7 +17,7 @@ function slug(suburb, state) {
   return `${suburb.toLowerCase().replace(/\s+/g, '-')}-${(state || 'vic').toLowerCase()}`;
 }
 
-async function getTopSuburbs(limit = 20) {
+async function getTopSuburbs(limit) {
   const rows = await sql.query(
     'SELECT suburb, state, median_house_price, median_unit_price, median_house_rent, median_unit_rent, ' +
     'gross_yield, vacancy_rate, growth_1y, growth_3y, growth_5y, population_growth, ' +
@@ -30,7 +30,9 @@ async function getTopSuburbs(limit = 20) {
 }
 
 async function generateAll() {
-  const top = await getTopSuburbs(20);
+  const limit = parseInt(process.argv.find(a => a.startsWith('--limit='))?.split('=')[1] || '230', 10);
+  const top = await getTopSuburbs(limit);
+  console.log(`Adding AI explanations for ${top.length} suburbs...`);
 
   // Add AI explanations and regenerate suburb pages with full content
   for (const s of top) {

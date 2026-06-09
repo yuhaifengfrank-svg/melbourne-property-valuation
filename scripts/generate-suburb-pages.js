@@ -1,27 +1,25 @@
 /**
  * generate-suburb-pages.js — SEO static page generator
  *
- * Generates /suburb/{suburb}-{state}.html for top 20 suburbs
+ * Generates /suburb/{suburb}-{state}.html for top N suburbs
  * + /opportunities/ index pages.
  *
- * Run: node scripts/generate-suburb-pages.js
+ * Run: node scripts/generate-suburb-pages.js [--limit=230]
  * Output: dist/opportunities/  and  dist/suburb/
  */
 
 import { neon } from '@neondatabase/serverless';
-import { scanOpportunitiesV2 } from '../lib/opportunity-scoring-v2.js';
 import fs from 'fs';
 import path from 'path';
 
 const sql = neon(process.env.DATABASE_URL, { fetchOptions: { cache: 'no-store' } });
-
 const OUT = 'dist';
 
 function slug(suburb, state) {
   return `${suburb.toLowerCase().replace(/\s+/g, '-')}-${(state || 'vic').toLowerCase()}`;
 }
 
-async function getTopSuburbs(limit = 20) {
+async function getAllSuburbs(limit) {
   const rows = await sql.query(
     'SELECT suburb, state, median_house_price, median_unit_price, ' +
     'growth_1y, growth_3y, growth_5y, school_score, opportunity_score, opportunity_type ' +
@@ -45,6 +43,9 @@ function suburbPageHTML(data) {
   const priceStr = data.medianHousePrice
     ? `$${(data.medianHousePrice / 1000).toFixed(0)}K`
     : 'N/A';
+  const unitStr = data.medianUnitPrice
+    ? `$${(data.medianUnitPrice / 1000).toFixed(0)}K`
+    : 'N/A';
   const growthStr = data.growth3y != null
     ? `${data.growth3y >= 0 ? '+' : ''}${data.growth3y}%`
     : 'Limited data';
@@ -52,16 +53,19 @@ function suburbPageHTML(data) {
     ? `${Math.round(data.schoolScore)}/100`
     : 'Limited data';
 
+  const topOpt = data.opportunityType || 'Balanced Opportunity';
+  const score = data.opportunityScore || 0;
+
   const drivers = [
-    data.opportunityScore >= 70 ? 'Strong price growth indicators' : 'Stable market fundamentals',
+    score >= 60 ? 'Metric-supported opportunity ranking' : 'Developing market indicators',
     data.schoolScore >= 60 ? 'Quality school zone present' : 'Standard school zone performance',
     data.growth3y >= 5 ? 'Positive 3-year price trend' : 'Moderate price movement',
     data.medianHousePrice ? 'Median price available for comparison' : 'Price data developing',
   ];
 
   const risks = [
-    data.opportunityScore < 60 ? 'Below-average opportunity score' : 'Competitive market conditions',
-    data.growth3y != null && data.growth3y < 0 ? 'Recent price decline' : 'Stable price cycle',
+    score < 50 ? 'Below-average opportunity score' : 'Competitive market conditions',
+    data.growth3y != null && data.growth3y < 0 ? 'Recent price correction' : 'Stable price cycle',
   ];
 
   return `<!DOCTYPE html>
@@ -70,25 +74,26 @@ function suburbPageHTML(data) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${data.suburb} ${data.state} Property Market & Opportunity Analysis | AusHomeValue</title>
-  <meta name="description" content="Detailed property market analysis for ${data.suburb}, ${data.state}. Opportunity Score: ${data.opportunityScore}/100. Median house price ${priceStr}. Growth: ${growthStr}. Schools: ${schools}." />
+  <meta name="description" content="Detailed property market analysis for ${data.suburb}, ${data.state}. Opportunity Score: ${score}/100. Median house price ${priceStr}. Growth: ${growthStr}. Schools: ${schools}." />
   <link rel="canonical" href="https://www.aushomevalue.com.au/suburb/${s}" />
   <meta name="robots" content="index, follow" />
   <meta property="og:title" content="${data.suburb} Property Market Analysis | AusHomeValue" />
-  <meta property="og:description" content="Opportunity Score ${data.opportunityScore}/100 — ${data.opportunityType || 'Balanced'}. Median house price ${priceStr}. ${growthStr} 3-year growth." />
+  <meta property="og:description" content="Opportunity Score ${score}/100 — ${topOpt}. Median house price ${priceStr}. ${growthStr} 3-year growth." />
   <meta property="og:url" content="https://www.aushomevalue.com.au/suburb/${s}" />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Place",
     "name": "${data.suburb}, ${data.state}",
-    "description": "Property market analysis for ${data.suburb}, ${data.state}. Opportunity score ${data.opportunityScore}/100.",
+    "description": "Property market analysis for ${data.suburb}, ${data.state}. Opportunity score ${score}/100.",
     "containedInPlace": { "@type": "State", "name": "${data.state}, Australia" },
     "additionalProperty": [
-      { "@type": "PropertyValue", "name": "Opportunity Score", "value": "${data.opportunityScore}/100" },
+      { "@type": "PropertyValue", "name": "Opportunity Score", "value": "${score}/100" },
       { "@type": "PropertyValue", "name": "Median House Price", "value": "${priceStr}" },
+      { "@type": "PropertyValue", "name": "Median Unit Price", "value": "${unitStr}" },
       { "@type": "PropertyValue", "name": "3-Year Growth", "value": "${growthStr}" },
       { "@type": "PropertyValue", "name": "School Score", "value": "${schools}" },
-      { "@type": "PropertyValue", "name": "Opportunity Type", "value": "${data.opportunityType || 'Balanced'}" }
+      { "@type": "PropertyValue", "name": "Opportunity Type", "value": "${topOpt}" }
     ]
   }
   </script>
@@ -118,15 +123,15 @@ function suburbPageHTML(data) {
   <div class="container">
     <h1>${data.suburb}, ${data.state} — Property Market Analysis</h1>
     <div class="score-hero">
-      <div class="score-badge">${data.opportunityScore}</div>
-      <div><strong>${data.opportunityType || 'Balanced Opportunity'}</strong><br /><span class="score-sub">Opportunity Score · ${data.opportunityScore}/100</span></div>
+      <div class="score-badge">${score}</div>
+      <div><strong>${topOpt}</strong><br /><span class="score-sub">Opportunity Score · ${score}/100</span></div>
     </div>
 
     <div class="grid-2">
       <div class="card"><h3>Median House Price</h3><div class="value">${priceStr}</div></div>
       <div class="card"><h3>3-Year Growth</h3><div class="value">${growthStr}</div></div>
       <div class="card"><h3>School Score</h3><div class="value">${schools}</div></div>
-      <div class="card"><h3>Median Unit Price</h3><div class="value">${data.medianUnitPrice ? '$' + (data.medianUnitPrice/1000).toFixed(0) + 'K' : 'N/A'}</div></div>
+      <div class="card"><h3>Median Unit Price</h3><div class="value">${unitStr}</div></div>
     </div>
 
     <h2>Growth Drivers</h2>
@@ -138,12 +143,12 @@ function suburbPageHTML(data) {
     <div class="faq">
       <h2>FAQ — ${data.suburb} Property Market</h2>
       <div class="faq-q">What is the property opportunity score for ${data.suburb}?</div>
-      <div class="faq-a">${data.suburb} scores ${data.opportunityScore}/100, classified as a ${(data.opportunityType || 'Balanced Opportunity').toLowerCase()}.</div>
+      <div class="faq-a">${data.suburb} scores ${score}/100, classified as ${topOpt.toLowerCase()}.</div>
       <div class="faq-q">What is the median house price in ${data.suburb}?</div>
       <div class="faq-a">The median house price is approximately ${priceStr}, based on recent comparable sales data.</div>
       <div class="faq-q">Is ${data.suburb} a good area for property investment?</div>
-      <div class="faq-a">With an opportunity score of ${data.opportunityScore}/100 and ${growthStr} 3-year growth, ${data.suburb} presents a ${data.opportunityScore >= 70 ? 'strong' : 'moderate'} opportunity for property investment. Factors include ${drivers.slice(0, 2).join(' and ')}.</div>
-      <div class="faq-q">What schools are in ${data.suburb}?</div>
+      <div class="faq-a">With an opportunity score of ${score}/100 and ${growthStr} 3-year growth, ${data.suburb} presents a ${score >= 60 ? 'stronger' : 'developing'} opportunity for property investment.</div>
+      <div class="faq-q">What are the schools like in ${data.suburb}?</div>
       <div class="faq-a">The school quality score for ${data.suburb} is ${schools}, based on ICSEA data from ACARA school profiles in the area.</div>
     </div>
   </div>
@@ -151,25 +156,25 @@ function suburbPageHTML(data) {
 </html>`;
 }
 
-async function generateAll() {
-  const top = await getTopSuburbs(20);
+function opportunitiesIndexHTML(top, categories) {
+  const oppList = top.map(s => {
+    const slugName = slug(s.suburb, s.state);
+    const pctGrowth = s.growth3y != null ? (s.growth3y >= 0 ? '+' : '') + s.growth3y + '%' : 'N/A';
+    return `<div class="card">
+        <div>
+          <h2><a href="/suburb/${slugName}.html" style="color:#0d6b57;text-decoration:none;">${s.suburb}, ${s.state}</a></h2>
+          <div class="meta">${s.opportunityType || 'Balanced'} · Median $${(s.medianHousePrice / 1000).toFixed(0)}K · ${pctGrowth} 3yr</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">${s.opportunityScore}</span><span class="badge-sub">${s.opportunityType || 'Balanced'}</span></div>
+      </div>`;
+  }).join('');
 
-  // Ensure output dirs
-  const suburbDir = path.join(OUT, 'suburb');
-  const oppDir = path.join(OUT, 'opportunities');
-  fs.mkdirSync(suburbDir, { recursive: true });
-  fs.mkdirSync(oppDir, { recursive: true });
+  const catLinks = categories.map(c => {
+    const count = top.filter(c.filter).length;
+    return `<a href="/opportunities/${c.file}">${c.title} (${count})</a>`;
+  }).join('\n      ');
 
-  // Generate suburb pages
-  for (const s of top) {
-    const html = suburbPageHTML(s);
-    const filename = slug(s.suburb, s.state) + '.html';
-    fs.writeFileSync(path.join(suburbDir, filename), html);
-    console.log(`  [suburb] ${filename}`);
-  }
-
-  // Generate /opportunities index
-  const oppIndex = `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -201,42 +206,44 @@ async function generateAll() {
   <div class="topbar"><a href="/" style="color:white;text-decoration:none;font-weight:600;">← AusHomeValue</a></div>
   <div class="container">
     <h1>Top Property Opportunities in Victoria</h1>
-    <p class="desc">Data-driven rankings updated nightly. Scoring based on price growth, school quality, rental yield, vacancy rates and undervaluation analysis.</p>
+    <p class="desc">Data-driven rankings updated nightly. ${top.length} suburbs scored across Melbourne and regional Victoria.</p>
 
     <div class="nav-links">
-      <a href="/opportunities/growth.html">Growth Opportunities</a>
-      <a href="/opportunities/school-zone.html">School Zone Opportunities</a>
-      <a href="/opportunities/cashflow.html">Cashflow Opportunities</a>
-      <a href="/opportunities/infrastructure.html">Infrastructure Opportunities</a>
+      ${catLinks}
     </div>
 
-    ${top.map(s => {
-      const pctGrowth = s.growth3y != null ? (s.growth3y >= 0 ? '+' : '') + s.growth3y + '%' : 'N/A';
-      return `<div class="card">
-        <div>
-          <h2><a href="/suburb/${slug(s.suburb, s.state)}.html" style="color:#0d6b57;text-decoration:none;">${s.suburb}, ${s.state}</a></h2>
-          <div class="meta">${s.opportunityType || 'Balanced'} · Median $${(s.medianHousePrice/1000).toFixed(0)}K · ${pctGrowth} 3yr</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">${s.opportunityScore}</span><span class="badge-sub">${s.opportunityType || 'Balanced'}</span></div>
-      </div>`;
-    }).join('')}
+    ${oppList}
   </div>
 </body>
 </html>`;
-  fs.writeFileSync(path.join(oppDir, 'index.html'), oppIndex);
-  console.log('  [opp] index.html');
+}
 
-  // Generate category pages
-  const categories = [
-    { file: 'growth.html', title: 'Growth Opportunities', desc: 'Suburbs with the strongest price growth trajectory — driven by 1-year, 3-year and 5-year trends plus population growth.', filter: s => s.growth3y >= 8 },
-    { file: 'school-zone.html', title: 'School Zone Opportunities', desc: 'Top-ranked suburbs for school quality based on ICSEA scores from ACARA. Ideal for family-focused investment.', filter: s => s.schoolScore >= 70 },
-    { file: 'cashflow.html', title: 'Cashflow Opportunities', desc: 'Properties with strong rental yield potential — combining gross yield data and market indicators.', filter: s => s.schoolScore >= 60 && s.opportunityScore >= 60 },
-    { file: 'infrastructure.html', title: 'Infrastructure Opportunities', desc: 'Growth corridors and suburbs near major infrastructure projects across Melbourne and Victoria.', filter: s => s.opportunityScore >= 65 },
-  ];
+function categoryPageHTML(cat, items, top) {
+  const style = `  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Inter, system-ui, -apple-system, sans-serif; background: #f4f6f5; color: #17211d; line-height: 1.6; }
+    .topbar { background: #0d6b57; color: white; padding: 14px 24px; }
+    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: 1.8rem; margin-bottom: 8px; }
+    .desc { color: #66736d; margin-bottom: 28px; }
+    .card { background: white; border: 1px solid #dbe2de; border-radius: 10px; padding: 18px; margin-bottom: 12px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; }
+    .card h2 { font-size: 1.1rem; margin: 0; }
+    .card .meta { font-size: 0.85rem; color: #66736d; margin-top: 4px; }
+    .badge { background: #0d6b57; color: white; border-radius: 30px; padding: 6px 16px; font-weight: 700; font-size: 1.1rem; }
+    .badge-sub { background: #e8f3ef; color: #0d6b57; border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; }
+    @media (max-width: 640px) { .card { flex-direction: column; align-items: start; gap: 8px; } }
+`;
 
-  for (const cat of categories) {
-    const items = top.filter(cat.filter);
-    const catHtml = `<!DOCTYPE html>
+  const itemsHtml = items.length > 0 ? items.map(s => {
+    return `<div class="card">
+        <div>
+          <h2><a href="/suburb/${slug(s.suburb, s.state)}.html" style="color:#0d6b57;text-decoration:none;">${s.suburb}, ${s.state}</a></h2>
+          <div class="meta">Score ${s.opportunityScore} · Median $${(s.medianHousePrice / 1000).toFixed(0)}K · ${s.growth3y != null ? (s.growth3y >= 0 ? '+' : '') + s.growth3y + '%' : 'N/A'} 3yr</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">${s.opportunityScore}</span><span class="badge-sub">${s.opportunityType || 'Balanced'}</span></div>
+      </div>`;
+  }).join('') : '<p>No suburbs currently match this category. Data refreshes nightly.</p>';
+
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -246,7 +253,7 @@ async function generateAll() {
   <link rel="canonical" href="https://www.aushomevalue.com.au/opportunities/${cat.file}" />
   <meta property="og:title" content="${cat.title} | AusHomeValue" />
   <meta property="og:description" content="${cat.desc}" />
-  <style>${oppIndex.match(/<style>[\s\S]*?<\/style>/)?.[0] || ''}</style>
+  <style>${style}</style>
 </head>
 <body>
   <div class="topbar"><a href="/" style="color:white;text-decoration:none;font-weight:600;">← AusHomeValue</a></div>
@@ -254,23 +261,57 @@ async function generateAll() {
     <h1>${cat.title}</h1>
     <p class="desc">${cat.desc}</p>
     <p><a href="/opportunities/">← Back to all opportunities</a></p>
-    ${items.length > 0 ? items.map(s => {
-      return `<div class="card">
-        <div>
-          <h2><a href="/suburb/${slug(s.suburb, s.state)}.html" style="color:#0d6b57;text-decoration:none;">${s.suburb}, ${s.state}</a></h2>
-          <div class="meta">Score ${s.opportunityScore} · Median $${(s.medianHousePrice/1000).toFixed(0)}K · ${s.growth3y != null ? (s.growth3y >= 0 ? '+' : '') + s.growth3y + '%' : 'N/A'} 3yr</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">${s.opportunityScore}</span><span class="badge-sub">${s.opportunityType || 'Balanced'}</span></div>
-      </div>`;
-    }).join('') : '<p>No suburbs currently match this category. Data refreshes nightly.</p>'}
+    ${itemsHtml}
   </div>
 </body>
 </html>`;
-    fs.writeFileSync(path.join(oppDir, cat.file), catHtml);
-    console.log(`  [opp] ${cat.file}`);
+}
+
+async function generateAll() {
+  const limit = parseInt(process.argv.find(a => a.startsWith('--limit='))?.split('=')[1] || '230', 10);
+  const top = await getAllSuburbs(limit);
+  console.log(`Fetching ${top.length} suburbs...`);
+
+  const suburbDir = path.join(OUT, 'suburb');
+  const oppDir = path.join(OUT, 'opportunities');
+  fs.mkdirSync(suburbDir, { recursive: true });
+  fs.mkdirSync(oppDir, { recursive: true });
+
+  // Suburb pages
+  let n = 0;
+  for (const s of top) {
+    const html = suburbPageHTML(s);
+    const filename = slug(s.suburb, s.state) + '.html';
+    fs.writeFileSync(path.join(suburbDir, filename), html);
+    n++;
+    if (n % 50 === 0) process.stdout.write(`  [suburb] ${n}/${top.length}...\n`);
+  }
+  console.log(`  [suburb] ${n} pages generated`);
+
+  // Category definitions
+  const categories = [
+    { file: 'growth.html', title: 'Growth Opportunities', desc: 'Suburbs with the strongest price growth trajectory.', filter: s => (s.growth3y || 0) >= 5 },
+    { file: 'school-zone.html', title: 'School Zone Opportunities', desc: 'Top-ranked suburbs for school quality based on ICSEA scores from ACARA.', filter: s => s.schoolScore >= 65 },
+    { file: 'cashflow.html', title: 'Cashflow Opportunities', desc: 'Suburbs with strong rental yield potential and rental demand indicators.', filter: s => (s.schoolScore || 0) >= 60 && (s.opportunityScore || 0) >= 60 },
+    { file: 'infrastructure.html', title: 'Infrastructure Opportunities', desc: 'Growth corridors and suburbs near major infrastructure developments.', filter: s => (s.opportunityScore || 0) >= 65 },
+    { file: 'balanced.html', title: 'Balanced Opportunities', desc: 'Suburbs with balanced growth-yield-value profiles.', filter: s => s.opportunityType !== 'Value' && s.opportunityType !== 'School Zone' },
+    { file: 'value.html', title: 'Value Opportunities', desc: 'Suburbs priced below median with upside potential.', filter: s => s.opportunityType === 'Value' },
+  ];
+
+  // Opportunities index
+  const oppHtml = opportunitiesIndexHTML(top, categories);
+  fs.writeFileSync(path.join(oppDir, 'index.html'), oppHtml);
+  console.log('  [opp] index.html');
+
+  // Category pages
+  for (const cat of categories) {
+    const items = top.filter(cat.filter);
+    const html = categoryPageHTML(cat, items, top);
+    fs.writeFileSync(path.join(oppDir, cat.file), html);
+    console.log(`  [opp] ${cat.file} (${items.length} suburbs)`);
   }
 
-  console.log(`\n✓ Generated pages for ${top.length} suburbs + 5 opportunity pages`);
+  console.log(`\n✓ Generated ${top.length} suburb pages + ${1 + categories.length} opportunity pages`);
 }
 
 generateAll()
