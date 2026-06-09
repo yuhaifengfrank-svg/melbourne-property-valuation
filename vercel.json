@@ -17,6 +17,26 @@
       "source": "/top-opportunities-snippet.html",
       "destination": "/public/top-opportunities-snippet.html"
     },
+    {
+      "source": "/top-growth-suburbs-victoria.html",
+      "destination": "/public/top-growth-suburbs-victoria.html"
+    },
+    {
+      "source": "/top-value-suburbs-victoria.html",
+      "destination": "/public/top-value-suburbs-victoria.html"
+    },
+    {
+      "source": "/top-yield-suburbs-victoria.html",
+      "destination": "/public/top-yield-suburbs-victoria.html"
+    },
+    {
+      "source": "/top-school-zone-suburbs-victoria.html",
+      "destination": "/public/top-school-zone-suburbs-victoria.html"
+    },
+    {
+      "source": "/index-phase3c-preview.html",
+      "destination": "/public/index-phase3c-preview.html"
+    },
     { "source": "/", "destination": "/public/index.html" },
     { "source": "/styles.css", "destination": "/public/styles.css" }
   ]
