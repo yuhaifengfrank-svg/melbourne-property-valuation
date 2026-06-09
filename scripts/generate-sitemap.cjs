@@ -16,7 +16,9 @@
 const fs = require('fs');
 const path = require('path');
 
-const BASE = 'https://aushomevalue.vercel.app';
+// Use canonical domain — must match <link rel="canonical"> in pages
+// Change to production domain when live
+const BASE = 'https://www.aushomevalue.com.au';
 const PUBLIC = path.join(__dirname, '..', 'public');
 
 // Priority and changefreq mapping

@@ -1,0 +1,944 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:x="urn:schemas-microsoft-com:office:excel"
+ xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+ xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Worksheet ss:Name="Tier 0: Already Integrated">
+   <Table>  <Row>
+    <Cell><Data ss:Type="String">#</Data></Cell>
+    <Cell><Data ss:Type="String">Source Name</Data></Cell>
+    <Cell><Data ss:Type="String">URL</Data></Cell>
+    <Cell><Data ss:Type="String">Free/Paid</Data></Cell>
+    <Cell><Data ss:Type="String">Geo Level</Data></Cell>
+    <Cell><Data ss:Type="String">Refresh Freq</Data></Cell>
+    <Cell><Data ss:Type="String">Hist Depth</Data></Cell>
+    <Cell><Data ss:Type="String">API?</Data></Cell>
+    <Cell><Data ss:Type="String">CSV/XLS?</Data></Cell>
+    <Cell><Data ss:Type="String">Map Diff</Data></Cell>
+    <Cell><Data ss:Type="String">Data Quality (1-10)</Data></Cell>
+    <Cell><Data ss:Type="String">Value</Data></Cell>
+    <Cell><Data ss:Type="String">Growth</Data></Cell>
+    <Cell><Data ss:Type="String">Yield</Data></Cell>
+    <Cell><Data ss:Type="String">Vacancy</Data></Cell>
+    <Cell><Data ss:Type="String">School</Data></Cell>
+    <Cell><Data ss:Type="String">Income</Data></Cell>
+    <Cell><Data ss:Type="String">Population</Data></Cell>
+    <Cell><Data ss:Type="String">Infrastructure</Data></Cell>
+    <Cell><Data ss:Type="String">Supply Constraint</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T0-01</Data></Cell>
+    <Cell><Data ss:Type="String">VGV Median Prices</Data></Cell>
+    <Cell><Data ss:Type="String">https://discover.data.vic.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Suburb</Data></Cell>
+    <Cell><Data ss:Type="String">Quarterly</Data></Cell>
+    <Cell><Data ss:Type="String">2014-present</Data></Cell>
+    <Cell><Data ss:Type="String">CKAN API</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLS</Data></Cell>
+    <Cell><Data ss:Type="String">2</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T0-02</Data></Cell>
+    <Cell><Data ss:Type="String">ABS Census 2021 G01-G34</Data></Cell>
+    <Cell><Data ss:Type="String">https://abs.gov.au/census</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">SA2</Data></Cell>
+    <Cell><Data ss:Type="String">5 yr</Data></Cell>
+    <Cell><Data ss:Type="String">2021</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T0-03</Data></Cell>
+    <Cell><Data ss:Type="String">ABS Census G36</Data></Cell>
+    <Cell><Data ss:Type="String">https://abs.gov.au/census</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">SA2</Data></Cell>
+    <Cell><Data ss:Type="String">5 yr</Data></Cell>
+    <Cell><Data ss:Type="String">2021</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T0-04</Data></Cell>
+    <Cell><Data ss:Type="String">SEIFA IRSD+IEO</Data></Cell>
+    <Cell><Data ss:Type="String">https://abs.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">SA2</Data></Cell>
+    <Cell><Data ss:Type="String">5 yr</Data></Cell>
+    <Cell><Data ss:Type="String">2021</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ CSV</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T0-05</Data></Cell>
+    <Cell><Data ss:Type="String">ACARA School Data</Data></Cell>
+    <Cell><Data ss:Type="String">https://myschool.edu.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">School</Data></Cell>
+    <Cell><Data ss:Type="String">Annual</Data></Cell>
+    <Cell><Data ss:Type="String">Current</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ CSV</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">8</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T0-06</Data></Cell>
+    <Cell><Data ss:Type="String">SQM Vacancy Rates</Data></Cell>
+    <Cell><Data ss:Type="String">https://sqmresearch.com.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Suburb</Data></Cell>
+    <Cell><Data ss:Type="String">Quarterly</Data></Cell>
+    <Cell><Data ss:Type="String">Current</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">❌</Data></Cell>
+    <Cell><Data ss:Type="String">4</Data></Cell>
+    <Cell><Data ss:Type="String">7</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T0-07</Data></Cell>
+    <Cell><Data ss:Type="String">RBA Cash Rate</Data></Cell>
+    <Cell><Data ss:Type="String">https://rba.gov.au/statistics</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">National</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly</Data></Cell>
+    <Cell><Data ss:Type="String">1990+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">1</Data></Cell>
+    <Cell><Data ss:Type="String">10</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T0-08</Data></Cell>
+    <Cell><Data ss:Type="String">comparable_sales</Data></Cell>
+    <Cell><Data ss:Type="String">Scraped</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Property</Data></Cell>
+    <Cell><Data ss:Type="String">On-demand</Data></Cell>
+    <Cell><Data ss:Type="String">2025+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">5</Data></Cell>
+    <Cell><Data ss:Type="String">6</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T0-09</Data></Cell>
+    <Cell><Data ss:Type="String">VicPlan Zoning API</Data></Cell>
+    <Cell><Data ss:Type="String">https://mapshare.vic.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Coordinate</Data></Cell>
+    <Cell><Data ss:Type="String">Real-time</Data></Cell>
+    <Cell><Data ss:Type="String">Current</Data></Cell>
+    <Cell><Data ss:Type="String">✅ REST</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">4</Data></Cell>
+    <Cell><Data ss:Type="String">8</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T0-10</Data></Cell>
+    <Cell><Data ss:Type="String">infrastructure_projects</Data></Cell>
+    <Cell><Data ss:Type="String">Manual entry</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Suburb</Data></Cell>
+    <Cell><Data ss:Type="String">Static</Data></Cell>
+    <Cell><Data ss:Type="String">2026</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">2</Data></Cell>
+    <Cell><Data ss:Type="String">8</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+   </Table>
+  </Worksheet>
+  <Worksheet ss:Name="Tier 1: Immediate Priority">
+   <Table>  <Row>
+    <Cell><Data ss:Type="String">#</Data></Cell>
+    <Cell><Data ss:Type="String">Source Name</Data></Cell>
+    <Cell><Data ss:Type="String">URL</Data></Cell>
+    <Cell><Data ss:Type="String">Free/Paid</Data></Cell>
+    <Cell><Data ss:Type="String">Geo Level</Data></Cell>
+    <Cell><Data ss:Type="String">Refresh Freq</Data></Cell>
+    <Cell><Data ss:Type="String">Hist Depth</Data></Cell>
+    <Cell><Data ss:Type="String">API?</Data></Cell>
+    <Cell><Data ss:Type="String">CSV/XLS?</Data></Cell>
+    <Cell><Data ss:Type="String">Map Diff</Data></Cell>
+    <Cell><Data ss:Type="String">Data Quality (1-10)</Data></Cell>
+    <Cell><Data ss:Type="String">Value</Data></Cell>
+    <Cell><Data ss:Type="String">Growth</Data></Cell>
+    <Cell><Data ss:Type="String">Yield</Data></Cell>
+    <Cell><Data ss:Type="String">Vacancy</Data></Cell>
+    <Cell><Data ss:Type="String">School</Data></Cell>
+    <Cell><Data ss:Type="String">Income</Data></Cell>
+    <Cell><Data ss:Type="String">Population</Data></Cell>
+    <Cell><Data ss:Type="String">Infrastructure</Data></Cell>
+    <Cell><Data ss:Type="String">Supply Constraint</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T1-01</Data></Cell>
+    <Cell><Data ss:Type="String">ABS G45 Dwelling Counts</Data></Cell>
+    <Cell><Data ss:Type="String">https://abs.gov.au/census</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">SA2</Data></Cell>
+    <Cell><Data ss:Type="String">5 yr</Data></Cell>
+    <Cell><Data ss:Type="String">2021</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">2</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T1-02</Data></Cell>
+    <Cell><Data ss:Type="String">SALM SA2 Labour</Data></Cell>
+    <Cell><Data ss:Type="String">https://labourmarketinsights.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">SA2</Data></Cell>
+    <Cell><Data ss:Type="String">Quarterly</Data></Cell>
+    <Cell><Data ss:Type="String">2011+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ CSV</Data></Cell>
+    <Cell><Data ss:Type="String">2</Data></Cell>
+    <Cell><Data ss:Type="String">8</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T1-03</Data></Cell>
+    <Cell><Data ss:Type="String">VPA Precinct Boundaries</Data></Cell>
+    <Cell><Data ss:Type="String">https://data-planvic.opendata.arcgis.com</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Precinct</Data></Cell>
+    <Cell><Data ss:Type="String">Irregular</Data></Cell>
+    <Cell><Data ss:Type="String">N/A</Data></Cell>
+    <Cell><Data ss:Type="String">✅ ArcGIS</Data></Cell>
+    <Cell><Data ss:Type="String">✅ GeoJSON</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">8</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T1-04</Data></Cell>
+    <Cell><Data ss:Type="String">ABS G43 Dwelling Type</Data></Cell>
+    <Cell><Data ss:Type="String">https://abs.gov.au/census</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">SA2</Data></Cell>
+    <Cell><Data ss:Type="String">5 yr</Data></Cell>
+    <Cell><Data ss:Type="String">2021</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">2</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T1-05</Data></Cell>
+    <Cell><Data ss:Type="String">Vicmap Admin Boundaries</Data></Cell>
+    <Cell><Data ss:Type="String">https://discover.data.vic.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Parcel</Data></Cell>
+    <Cell><Data ss:Type="String">Annual</Data></Cell>
+    <Cell><Data ss:Type="String">Current</Data></Cell>
+    <Cell><Data ss:Type="String">✅ WFS</Data></Cell>
+    <Cell><Data ss:Type="String">✅ Shapefile</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T1-06</Data></Cell>
+    <Cell><Data ss:Type="String">ABS Building Approvals 8731.0</Data></Cell>
+    <Cell><Data ss:Type="String">https://abs.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">SA4</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly</Data></Cell>
+    <Cell><Data ss:Type="String">1990+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">1</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T1-07</Data></Cell>
+    <Cell><Data ss:Type="String">RBA D1 Housing Credit</Data></Cell>
+    <Cell><Data ss:Type="String">https://rba.gov.au/statistics</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">National</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly</Data></Cell>
+    <Cell><Data ss:Type="String">1990+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">1</Data></Cell>
+    <Cell><Data ss:Type="String">10</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T1-08</Data></Cell>
+    <Cell><Data ss:Type="String">RBA G4 Monthly CPI</Data></Cell>
+    <Cell><Data ss:Type="String">https://rba.gov.au/statistics</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Capital City</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly</Data></Cell>
+    <Cell><Data ss:Type="String">2022+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">1</Data></Cell>
+    <Cell><Data ss:Type="String">10</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+   </Table>
+  </Worksheet>
+  <Worksheet ss:Name="Tier 2: Next Phase">
+   <Table>  <Row>
+    <Cell><Data ss:Type="String">#</Data></Cell>
+    <Cell><Data ss:Type="String">Source Name</Data></Cell>
+    <Cell><Data ss:Type="String">URL</Data></Cell>
+    <Cell><Data ss:Type="String">Free/Paid</Data></Cell>
+    <Cell><Data ss:Type="String">Geo Level</Data></Cell>
+    <Cell><Data ss:Type="String">Refresh Freq</Data></Cell>
+    <Cell><Data ss:Type="String">Hist Depth</Data></Cell>
+    <Cell><Data ss:Type="String">API?</Data></Cell>
+    <Cell><Data ss:Type="String">CSV/XLS?</Data></Cell>
+    <Cell><Data ss:Type="String">Map Diff</Data></Cell>
+    <Cell><Data ss:Type="String">Data Quality (1-10)</Data></Cell>
+    <Cell><Data ss:Type="String">Value</Data></Cell>
+    <Cell><Data ss:Type="String">Growth</Data></Cell>
+    <Cell><Data ss:Type="String">Yield</Data></Cell>
+    <Cell><Data ss:Type="String">Vacancy</Data></Cell>
+    <Cell><Data ss:Type="String">School</Data></Cell>
+    <Cell><Data ss:Type="String">Income</Data></Cell>
+    <Cell><Data ss:Type="String">Population</Data></Cell>
+    <Cell><Data ss:Type="String">Infrastructure</Data></Cell>
+    <Cell><Data ss:Type="String">Supply Constraint</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T2-01</Data></Cell>
+    <Cell><Data ss:Type="String">ABS Indicator API</Data></Cell>
+    <Cell><Data ss:Type="String">https://indicator.api.abs.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Varies</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly</Data></Cell>
+    <Cell><Data ss:Type="String">Long</Data></Cell>
+    <Cell><Data ss:Type="String">✅ SDMX</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">4</Data></Cell>
+    <Cell><Data ss:Type="String">10</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T2-02</Data></Cell>
+    <Cell><Data ss:Type="String">Mesh Block Housing</Data></Cell>
+    <Cell><Data ss:Type="String">https://github.com/carlhiggs/abs_mesh_block_counts_csv</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Mesh Block</Data></Cell>
+    <Cell><Data ss:Type="String">5 yr</Data></Cell>
+    <Cell><Data ss:Type="String">2021</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ CSV</Data></Cell>
+    <Cell><Data ss:Type="String">4</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T2-03</Data></Cell>
+    <Cell><Data ss:Type="String">ATO Rental Property Data</Data></Cell>
+    <Cell><Data ss:Type="String">https://ato.gov.au/statistics</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Postcode</Data></Cell>
+    <Cell><Data ss:Type="String">Annual</Data></Cell>
+    <Cell><Data ss:Type="String">2013+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T2-04</Data></Cell>
+    <Cell><Data ss:Type="String">Urban Growth Boundary</Data></Cell>
+    <Cell><Data ss:Type="String">https://discover.data.vic.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Polygon</Data></Cell>
+    <Cell><Data ss:Type="String">Ad-hoc</Data></Cell>
+    <Cell><Data ss:Type="String">N/A</Data></Cell>
+    <Cell><Data ss:Type="String">✅ WMS</Data></Cell>
+    <Cell><Data ss:Type="String">✅ Shapefile</Data></Cell>
+    <Cell><Data ss:Type="String">2</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T2-05</Data></Cell>
+    <Cell><Data ss:Type="String">VPA Structure Plans</Data></Cell>
+    <Cell><Data ss:Type="String">https://vpa.vic.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Precinct</Data></Cell>
+    <Cell><Data ss:Type="String">Ad-hoc</Data></Cell>
+    <Cell><Data ss:Type="String">N/A</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">5</Data></Cell>
+    <Cell><Data ss:Type="String">6</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T2-06</Data></Cell>
+    <Cell><Data ss:Type="String">ABS ERP (Population)</Data></Cell>
+    <Cell><Data ss:Type="String">https://abs.gov.au/statistics/people/population</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">SA2</Data></Cell>
+    <Cell><Data ss:Type="String">Annual</Data></Cell>
+    <Cell><Data ss:Type="String">2016+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T2-07</Data></Cell>
+    <Cell><Data ss:Type="String">Home Affairs Migration</Data></Cell>
+    <Cell><Data ss:Type="String">https://homeaffairs.gov.au/research</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">LGA</Data></Cell>
+    <Cell><Data ss:Type="String">Quarterly</Data></Cell>
+    <Cell><Data ss:Type="String">2010+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">7</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T2-08</Data></Cell>
+    <Cell><Data ss:Type="String">VicBigBuild API</Data></Cell>
+    <Cell><Data ss:Type="String">https://bigbuild.vic.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Project</Data></Cell>
+    <Cell><Data ss:Type="String">Ad-hoc</Data></Cell>
+    <Cell><Data ss:Type="String">N/A</Data></Cell>
+    <Cell><Data ss:Type="String">✅ CKAN</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">4</Data></Cell>
+    <Cell><Data ss:Type="String">6</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T2-09</Data></Cell>
+    <Cell><Data ss:Type="String">APRA ADI Statistics</Data></Cell>
+    <Cell><Data ss:Type="String">https://apra.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">ADI</Data></Cell>
+    <Cell><Data ss:Type="String">Quarterly</Data></Cell>
+    <Cell><Data ss:Type="String">2000+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">1</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T2-10</Data></Cell>
+    <Cell><Data ss:Type="String">ABS RPPI 6416.0</Data></Cell>
+    <Cell><Data ss:Type="String">https://abs.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Capital City</Data></Cell>
+    <Cell><Data ss:Type="String">Quarterly</Data></Cell>
+    <Cell><Data ss:Type="String">2003+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">1</Data></Cell>
+    <Cell><Data ss:Type="String">10</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+   </Table>
+  </Worksheet>
+  <Worksheet ss:Name="Tier 3: Future Consideration">
+   <Table>  <Row>
+    <Cell><Data ss:Type="String">#</Data></Cell>
+    <Cell><Data ss:Type="String">Source Name</Data></Cell>
+    <Cell><Data ss:Type="String">URL</Data></Cell>
+    <Cell><Data ss:Type="String">Free/Paid</Data></Cell>
+    <Cell><Data ss:Type="String">Geo Level</Data></Cell>
+    <Cell><Data ss:Type="String">Refresh Freq</Data></Cell>
+    <Cell><Data ss:Type="String">Hist Depth</Data></Cell>
+    <Cell><Data ss:Type="String">API?</Data></Cell>
+    <Cell><Data ss:Type="String">CSV/XLS?</Data></Cell>
+    <Cell><Data ss:Type="String">Map Diff</Data></Cell>
+    <Cell><Data ss:Type="String">Data Quality (1-10)</Data></Cell>
+    <Cell><Data ss:Type="String">Value</Data></Cell>
+    <Cell><Data ss:Type="String">Growth</Data></Cell>
+    <Cell><Data ss:Type="String">Yield</Data></Cell>
+    <Cell><Data ss:Type="String">Vacancy</Data></Cell>
+    <Cell><Data ss:Type="String">School</Data></Cell>
+    <Cell><Data ss:Type="String">Income</Data></Cell>
+    <Cell><Data ss:Type="String">Population</Data></Cell>
+    <Cell><Data ss:Type="String">Infrastructure</Data></Cell>
+    <Cell><Data ss:Type="String">Supply Constraint</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T3-01</Data></Cell>
+    <Cell><Data ss:Type="String">CoreLogic/Cotality Index</Data></Cell>
+    <Cell><Data ss:Type="String">https://corelogic.com.au</Data></Cell>
+    <Cell><Data ss:Type="String">Paid (~$300/mo)</Data></Cell>
+    <Cell><Data ss:Type="String">Suburb</Data></Cell>
+    <Cell><Data ss:Type="String">Daily/Weekly</Data></Cell>
+    <Cell><Data ss:Type="String">Long</Data></Cell>
+    <Cell><Data ss:Type="String">✅ API</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">10</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T3-02</Data></Cell>
+    <Cell><Data ss:Type="String">PropTrack (REA)</Data></Cell>
+    <Cell><Data ss:Type="String">https://reagroup.com</Data></Cell>
+    <Cell><Data ss:Type="String">Paid</Data></Cell>
+    <Cell><Data ss:Type="String">Suburb</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly</Data></Cell>
+    <Cell><Data ss:Type="String">Long</Data></Cell>
+    <Cell><Data ss:Type="String">✅ API</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">🔴</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T3-03</Data></Cell>
+    <Cell><Data ss:Type="String">Domain Group API</Data></Cell>
+    <Cell><Data ss:Type="String">https://developer.domain.com.au</Data></Cell>
+    <Cell><Data ss:Type="String">Paid</Data></Cell>
+    <Cell><Data ss:Type="String">Suburb</Data></Cell>
+    <Cell><Data ss:Type="String">Real-time</Data></Cell>
+    <Cell><Data ss:Type="String">Long</Data></Cell>
+    <Cell><Data ss:Type="String">✅ REST</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">8</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T3-04</Data></Cell>
+    <Cell><Data ss:Type="String">AIHW Housing Dashboard</Data></Cell>
+    <Cell><Data ss:Type="String">https://housingdata.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">LGA</Data></Cell>
+    <Cell><Data ss:Type="String">Annual</Data></Cell>
+    <Cell><Data ss:Type="String">Current</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">4</Data></Cell>
+    <Cell><Data ss:Type="String">6</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T3-05</Data></Cell>
+    <Cell><Data ss:Type="String">Jobs & Skills Australia</Data></Cell>
+    <Cell><Data ss:Type="String">https://jskills.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">SA4</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly</Data></Cell>
+    <Cell><Data ss:Type="String">2020+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">2</Data></Cell>
+    <Cell><Data ss:Type="String">7</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T3-06</Data></Cell>
+    <Cell><Data ss:Type="String">Treasury Housing</Data></Cell>
+    <Cell><Data ss:Type="String">https://treasury.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">National</Data></Cell>
+    <Cell><Data ss:Type="String">Annual</Data></Cell>
+    <Cell><Data ss:Type="String">Long</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">1</Data></Cell>
+    <Cell><Data ss:Type="String">6</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T3-07</Data></Cell>
+    <Cell><Data ss:Type="String">Infrastructure Victoria</Data></Cell>
+    <Cell><Data ss:Type="String">https://infrastructurevictoria.com.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">State</Data></Cell>
+    <Cell><Data ss:Type="String">Irregular</Data></Cell>
+    <Cell><Data ss:Type="String">N/A</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">2</Data></Cell>
+    <Cell><Data ss:Type="String">5</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T3-08</Data></Cell>
+    <Cell><Data ss:Type="String">Major Projects Victoria</Data></Cell>
+    <Cell><Data ss:Type="String">https://dtp.vic.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Project</Data></Cell>
+    <Cell><Data ss:Type="String">Irregular</Data></Cell>
+    <Cell><Data ss:Type="String">N/A</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">3</Data></Cell>
+    <Cell><Data ss:Type="String">5</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T3-09</Data></Cell>
+    <Cell><Data ss:Type="String">ABS LFS 6291.0</Data></Cell>
+    <Cell><Data ss:Type="String">https://abs.gov.au</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">SA4</Data></Cell>
+    <Cell><Data ss:Type="String">Monthly</Data></Cell>
+    <Cell><Data ss:Type="String">1990+</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ XLSX</Data></Cell>
+    <Cell><Data ss:Type="String">1</Data></Cell>
+    <Cell><Data ss:Type="String">9</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+  <Row>
+    <Cell><Data ss:Type="String">T3-10</Data></Cell>
+    <Cell><Data ss:Type="String">Mesh Block Population</Data></Cell>
+    <Cell><Data ss:Type="String">https://github.com/carlhiggs/abs_mesh_block_counts_csv</Data></Cell>
+    <Cell><Data ss:Type="String">Free</Data></Cell>
+    <Cell><Data ss:Type="String">Mesh Block</Data></Cell>
+    <Cell><Data ss:Type="String">5 yr</Data></Cell>
+    <Cell><Data ss:Type="String">2021</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">✅ CSV</Data></Cell>
+    <Cell><Data ss:Type="String">4</Data></Cell>
+    <Cell><Data ss:Type="String">8</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">🔵</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+    <Cell><Data ss:Type="String">-</Data></Cell>
+  </Row>
+   </Table>
+  </Worksheet>
+</Workbook>
