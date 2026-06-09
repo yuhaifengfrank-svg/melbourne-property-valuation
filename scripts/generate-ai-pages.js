@@ -88,8 +88,7 @@ async function generateAll() {
     return top.filter(s => (s.median_house_price || 999999) < 700000).slice(0, 3);
   })();
   const yieldSub = (() => {
-    const withYield = top.filter(s => s.gross_yield != null && s.gross_yield >= 4);
-    return withYield.length >= 3 ? withYield.slice(0, 3) : [];
+    return [...top].filter(s => s.gross_yield != null).sort((a, b) => (b.gross_yield || 0) - (a.gross_yield || 0)).slice(0, 3);
   })();
   const schoolSub = (() => {
     const withSchool = top.filter(s => (s.school_score || 0) >= 65);
