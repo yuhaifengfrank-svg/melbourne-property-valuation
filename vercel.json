@@ -25,6 +25,5 @@
       "source": "/(.*)",
       "destination": "/$1"
     }
-  ],
-  "outputDirectory": "dist"
+  ]
 }
