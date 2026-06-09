@@ -1601,6 +1601,121 @@ th {
   margin-bottom: 20px;
 }
 
+/* ── Opportunity Preview (Phase 3C) ── */
+.opportunity-preview-section {
+  max-width: 960px;
+  margin: 40px auto 0;
+  padding: 0 clamp(18px, 4vw, 48px);
+}
+
+.opp-preview-sub {
+  color: var(--muted);
+  margin-bottom: 28px;
+  max-width: 620px;
+}
+
+.opp-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.opp-preview-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 18px;
+  transition: box-shadow 0.15s;
+}
+
+.opp-preview-card:hover {
+  box-shadow: var(--shadow);
+}
+
+.opp-preview-card h3 {
+  font-size: 1rem;
+  margin: 0 0 4px;
+}
+
+.opp-preview-desc {
+  color: var(--muted);
+  font-size: 0.82rem;
+  margin-bottom: 12px;
+}
+
+.opp-preview-mini-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.opp-preview-item {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: all 0.1s;
+}
+
+.opp-preview-item:hover {
+  background: var(--soft);
+  border-color: var(--accent);
+  text-decoration: none;
+}
+
+.opp-preview-rank {
+  background: var(--accent);
+  border-radius: 50%;
+  color: white;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  height: 22px;
+  line-height: 22px;
+  text-align: center;
+  width: 22px;
+}
+
+.opp-preview-name {
+  flex: 1;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.opp-preview-score {
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.opp-preview-cta {
+  color: var(--accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.opp-preview-cta:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 720px) {
+  .opp-preview-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .opp-preview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ── Research panel ── */
 .research-panel {
   max-width: 880px;
@@ -2318,6 +2433,110 @@ th {
               </div>
             </section>
           </section>
+        </div>
+      </section>
+
+      <!-- ── OPPORTUNITY PREVIEW (Phase 3C) ── -->
+      <section id="top-opportunities" class="opportunity-preview-section">
+        <div class="content">
+          <p class="eyebrow" data-i18n="opp-preview-eyebrow">Ranked Opportunities</p>
+          <h2 data-i18n="opp-preview-heading">Discover Victoria&#39;s top investment opportunities.</h2>
+          <p class="opp-preview-sub" data-i18n="opp-preview-sub">Data-driven rankings across growth, value, rental yield and school zones. Updated nightly from market data.</p>
+          <div class="opp-preview-grid">
+
+            <div class="opp-preview-card">
+              <h3>📈 Top Growth</h3>
+              <p class="opp-preview-desc">Strongest forecast price appreciation.</p>
+              <div class="opp-preview-mini-list">
+                <a href="/suburb/werribee-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">1</span>
+                  <span class="opp-preview-name">Werribee</span>
+                  <span class="opp-preview-score">85</span>
+                </a>
+                <a href="/suburb/sunshine-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">2</span>
+                  <span class="opp-preview-name">Sunshine</span>
+                  <span class="opp-preview-score">85</span>
+                </a>
+                <a href="/suburb/dandenong-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">3</span>
+                  <span class="opp-preview-name">Dandenong</span>
+                  <span class="opp-preview-score">85</span>
+                </a>
+              </div>
+              <a href="/top-growth-suburbs-victoria.html" class="opp-preview-cta" data-i18n="opp-preview-cta">View full ranking →</a>
+            </div>
+
+            <div class="opp-preview-card">
+              <h3>💎 Top Value</h3>
+              <p class="opp-preview-desc">Most affordable opportunities with upside.</p>
+              <div class="opp-preview-mini-list">
+                <a href="/suburb/dandenong-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">1</span>
+                  <span class="opp-preview-name">Dandenong</span>
+                  <span class="opp-preview-score">90</span>
+                </a>
+                <a href="/suburb/west-melbourne-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">2</span>
+                  <span class="opp-preview-name">West Melbourne</span>
+                  <span class="opp-preview-score">90</span>
+                </a>
+                <a href="/suburb/murrumbeena-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">3</span>
+                  <span class="opp-preview-name">Murrumbeena</span>
+                  <span class="opp-preview-score">90</span>
+                </a>
+              </div>
+              <a href="/top-value-suburbs-victoria.html" class="opp-preview-cta" data-i18n="opp-preview-cta">View full ranking →</a>
+            </div>
+
+            <div class="opp-preview-card">
+              <h3>💰 Top Yield</h3>
+              <p class="opp-preview-desc">Best rental returns for cash flow.</p>
+              <div class="opp-preview-mini-list">
+                <a href="/suburb/caulfield-east-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">1</span>
+                  <span class="opp-preview-name">Caulfield East</span>
+                  <span class="opp-preview-score">60</span>
+                </a>
+                <a href="/suburb/notting-hill-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">2</span>
+                  <span class="opp-preview-name">Notting Hill</span>
+                  <span class="opp-preview-score">60</span>
+                </a>
+                <a href="/suburb/caulfield-south-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">3</span>
+                  <span class="opp-preview-name">Caulfield South</span>
+                  <span class="opp-preview-score">54</span>
+                </a>
+              </div>
+              <a href="/top-yield-suburbs-victoria.html" class="opp-preview-cta" data-i18n="opp-preview-cta">View full ranking →</a>
+            </div>
+
+            <div class="opp-preview-card">
+              <h3>🏫 Top School Zones</h3>
+              <p class="opp-preview-desc">Highest-rated education catchments.</p>
+              <div class="opp-preview-mini-list">
+                <a href="/suburb/fairfield-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">1</span>
+                  <span class="opp-preview-name">Fairfield</span>
+                  <span class="opp-preview-score">85</span>
+                </a>
+                <a href="/suburb/burwood-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">2</span>
+                  <span class="opp-preview-name">Burwood</span>
+                  <span class="opp-preview-score">85</span>
+                </a>
+                <a href="/suburb/canterbury-vic.html" class="opp-preview-item">
+                  <span class="opp-preview-rank">3</span>
+                  <span class="opp-preview-name">Canterbury</span>
+                  <span class="opp-preview-score">85</span>
+                </a>
+              </div>
+              <a href="/top-school-zone-suburbs-victoria.html" class="opp-preview-cta" data-i18n="opp-preview-cta">View full ranking →</a>
+            </div>
+
+          </div>
         </div>
       </section>
 

@@ -26,8 +26,8 @@ Allow: /
 Crawl-Delay: 10
 
 User-agent: *
-Disallow: /
+Allow: /
 Disallow: /api/
-Disallow: *?debug=true
+Disallow: /*?debug=true
 
 Sitemap: https://aushomevalue.vercel.app/sitemap.xml
