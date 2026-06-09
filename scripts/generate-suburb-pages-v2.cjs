@@ -139,7 +139,7 @@ function buildSuburbPage(data, suburb) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${escapeHtml(suburb)} Property Market Analysis & Opportunity Score | AusHomeValue</title>
-  <meta name="description" content="Detailed property intelligence for ${escapeHtml(suburb)}, ${state}. ${confidence}/100 confidence. Factor breakdown: Value ${data.value?.score ?? '—'}, Growth ${data.growth?.score ?? '—'}, School ${data.school?.score ?? '—'}. Why this suburb scores—analysis from AusHomeValue." />
+  <meta name="description" content="Property intelligence for ${escapeHtml(suburb)}, ${state}. ${confidence}/100 confidence. Factor breakdown: Value ${data.value?.score ?? '—'}, Growth ${data.growth?.score ?? '—'}, School ${data.school?.score ?? '—'}. Analysis from AusHomeValue." />
   <link rel="canonical" href="https://www.aushomevalue.com.au/suburb/${slug}-vic.html" />
   <meta name="robots" content="index, follow" />
   <meta property="og:title" content="${escapeHtml(suburb)} Property Intelligence | AusHomeValue" />
