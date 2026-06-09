@@ -3,12 +3,18 @@
    Loaded by /opportunities/*.html. */
 
 (function () {
-  var REG_KEY = "lead.opportunity_unlocked";
+  var REG_KEY = "lead.unlocked.v2";
 
   function getEl(id) { return document.getElementById(id); }
 
   function hasLocalStorageToken() {
-    try { return localStorage.getItem(REG_KEY) === "true"; } catch (e) { return false; }
+    try {
+      // Invalidate old v1 key
+      if (localStorage.getItem("lead.opportunity_unlocked") === "true") {
+        localStorage.removeItem("lead.opportunity_unlocked");
+      }
+      return localStorage.getItem(REG_KEY) === "true";
+    } catch (e) { return false; }
   }
 
   function setLocalStorageToken() {

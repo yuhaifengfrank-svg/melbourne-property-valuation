@@ -2169,9 +2169,6 @@ async function saveLead({ pdfDownload = false } = {}) {
     console.error(error);
   }
 
-  // Grant opportunity access on any successful lead submission
-  if (stored) oppGrantConsent();
-
   message.textContent = stored
     ? pdfDownload
       ? language === "zh"
@@ -2473,48 +2470,28 @@ const oppSearchBtn = document.getElementById("opp-search-btn");
 const oppResults = document.getElementById("opp-results");
 const oppLoading = document.getElementById("opp-loading");
 
-/** Check whether this device has registered for opportunity results */
-function oppHasConsent() {
-  return localStorage.getItem("lead.opportunity_unlocked") === "true";
-}
-
-/** Mark consent as given */
-function oppGrantConsent() {
-  localStorage.setItem("lead.opportunity_unlocked", "true");
-}
-
-/** Request consent via the existing registration modal, then run the scan */
-function oppRequestConsent(callback) {
-  const modal = byId("unlock-modal");
-  if (modal && typeof modal.showModal === "function") {
-    // Customise the unlock modal for opportunity access
-    const titleEl = modal.querySelector("h2");
-    const msgEl = modal.querySelector("p");
-    if (titleEl) titleEl.textContent = language === "zh" ? "注册查看投资机会" : "Register to view opportunities";
-    if (msgEl) msgEl.textContent = language === "zh"
-      ? "填写邮箱和姓名即可查看排名投资机会。下载完整报告和 PDF 需要额外信息。"
-      : "Enter email and name to see ranked investment opportunities. Full PDF reports require additional details.";
-    modal.showModal();
-    // Override the close handler to capture the submit
-    const closeHandler = () => {
-      modal.removeEventListener("close", closeHandler);
-      if (typeof callback === "function") callback();
-    };
-    modal.addEventListener("close", closeHandler);
-  }
-}
-
-async function oppAfterGrant() {
-  oppGrantConsent();
-  await runOpportunityScan();
-}
-
 async function runOpportunityScan() {
-  // Registration gate
-  if (!oppHasConsent()) {
+  // Registration gate: requires server-confirmed full registration (name+email+phone+consent)
+  // Versioned localStorage key prevents old key bypass
+  if (window.opportunityGate && !window.opportunityGate.isUnlocked()) {
     oppLoading.classList.add("hidden");
-    oppRequestConsent(oppAfterGrant);
-    return;
+    const strategy = document.getElementById("opp-strategy").value;
+    const ptype = document.getElementById("opp-type").value;
+    const minP = document.getElementById("opp-min-price").value;
+    const maxP = document.getElementById("opp-max-price").value;
+    const stateEl = document.getElementById("opp-state");
+    const state = stateEl ? stateEl.value : "vic";
+    const waitForGate = await window.opportunityGate.run({
+      language: language,
+      strategy: strategy,
+      propertyType: ptype || null,
+      budgetMin: minP && Number(minP) > 0 ? Number(minP) : null,
+      budgetMax: maxP && Number(maxP) < 99999999 ? Number(maxP) : null,
+      state: state
+    }, async function () {
+      await runOpportunityScan();
+    });
+    if (waitForGate) return; // gate was shown
   }
 
   const strategy = document.getElementById("opp-strategy").value;

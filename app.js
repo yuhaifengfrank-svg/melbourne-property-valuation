@@ -2169,9 +2169,6 @@ async function saveLead({ pdfDownload = false } = {}) {
     console.error(error);
   }
 
-  // Grant opportunity access on any successful lead submission
-  if (stored) oppGrantConsent();
-
   message.textContent = stored
     ? pdfDownload
       ? language === "zh"
@@ -2473,17 +2470,10 @@ const oppSearchBtn = document.getElementById("opp-search-btn");
 const oppResults = document.getElementById("opp-results");
 const oppLoading = document.getElementById("opp-loading");
 
-/** Check whether this device has registered for opportunity results */
-function oppHasConsent() {
-  if (window.opportunityGate && typeof window.opportunityGate.isUnlocked === "function") {
-    return window.opportunityGate.isUnlocked();
-  }
-  try { return localStorage.getItem("lead.opportunity_unlocked") === "true"; } catch(e) { return false; }
-}
-
 async function runOpportunityScan() {
-  // Use the new opportunity gate: full name+email+phone+consent registration
-  if (window.opportunityGate && !oppHasConsent()) {
+  // Registration gate: requires server-confirmed full registration (name+email+phone+consent)
+  // Versioned localStorage key prevents old key bypass
+  if (window.opportunityGate && !window.opportunityGate.isUnlocked()) {
     oppLoading.classList.add("hidden");
     const strategy = document.getElementById("opp-strategy").value;
     const ptype = document.getElementById("opp-type").value;
