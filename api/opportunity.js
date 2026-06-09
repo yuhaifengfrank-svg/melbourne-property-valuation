@@ -14,24 +14,22 @@ function getSql() {
   return _sql;
 }
 
-export default async function handler(request) {
-  const headers = new Headers({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
-  });
+export default async function handler(request, response) {
+  response.setHeader('Access-Control-Allow-Origin', '*');
+  response.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  response.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (request.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers });
+    response.status(204).end();
+    return;
   }
 
-  const url = new URL(request.url, 'http://localhost');
-  const suburbFilter = url.searchParams.get('suburb');
-  const minScore = Number(url.searchParams.get('minScore') || 0);
-  const maxResults = Math.min(Number(url.searchParams.get('maxResults') || 50), 200);
-  const strategy = url.searchParams.get('strategy') || 'smart';
-  const minPrice = url.searchParams.get('minPrice') ? Number(url.searchParams.get('minPrice')) : null;
-  const maxPrice = url.searchParams.get('maxPrice') ? Number(url.searchParams.get('maxPrice')) : null;
+  const suburbFilter = request.query.suburb;
+  const minScore = Number(request.query.minScore || 0);
+  const maxResults = Math.min(Number(request.query.maxResults || 50), 200);
+  const strategy = request.query.strategy || 'smart';
+  const minPrice = request.query.minPrice ? Number(request.query.minPrice) : null;
+  const maxPrice = request.query.maxPrice ? Number(request.query.maxPrice) : null;
 
   try {
     const sql = getSql();
@@ -80,7 +78,7 @@ export default async function handler(request) {
       opportunityType: r.opportunity_type || 'Balanced'
     }));
 
-    return new Response(JSON.stringify({
+    response.status(200).json({
       ok: true,
       opportunities,
       meta: {
@@ -88,14 +86,14 @@ export default async function handler(request) {
         strategy,
         collectedAt: new Date().toISOString()
       }
-    }), { headers });
+    });
 
   } catch (error) {
     console.error('Opportunity API error:', error);
-    return new Response(JSON.stringify({
+    response.status(500).json({
       ok: false,
       error: error.message,
       opportunities: []
-    }), { status: 500, headers });
+    });
   }
 }
