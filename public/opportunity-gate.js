@@ -342,6 +342,22 @@
     isUnlocked: hasLocalStorageToken,
     reset: function () {
       try { localStorage.removeItem(REG_KEY); } catch(e) {}
+    },
+    /** Redirect unregistered users from stand-alone opp pages back to home */
+    protectPage: function () {
+      if (hasLocalStorageToken()) return;
+      var path = window.location.pathname;
+      if (path === "/opportunities/" || path === "/opportunities/index.html" || path.startsWith("/opportunities/")) {
+        try { document.documentElement.style.visibility = "hidden"; } catch(e) {}
+        window.setTimeout(function() {
+          window.location.href = "/#opportunities";
+        }, 30);
+      }
     }
   };
+
+  /* Auto-protect stand-alone opportunity pages */
+  if (typeof window !== "undefined") {
+    window.opportunityGate.protectPage();
+  }
 })();
