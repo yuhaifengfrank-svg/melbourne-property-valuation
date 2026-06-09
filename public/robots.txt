@@ -30,4 +30,4 @@ Allow: /
 Disallow: /api/
 Disallow: /*?debug=true
 
-Sitemap: https://aushomevalue.vercel.app/sitemap.xml
+Sitemap: https://www.aushomevalue.com.au/sitemap.xml
