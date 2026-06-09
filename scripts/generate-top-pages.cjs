@@ -1,62 +1,75 @@
 #!/usr/bin/env node
 /**
  * generate-top-pages.js — Phase 3A
- * Fetches from production API, generates static HTML for 4 top-N pages.
+ * Fetches from production API, generates static HTML for 5 top-N pages (Top 100 each).
  *
  * Usage:
- *   node scripts/generate-top-pages.js
+ *   node scripts/generate-top-pages.cjs
  *
  * Output:
  *   public/top-growth-suburbs-victoria.html
  *   public/top-value-suburbs-victoria.html
  *   public/top-yield-suburbs-victoria.html
  *   public/top-school-zone-suburbs-victoria.html
+ *   public/top-supply-constrained-suburbs-victoria.html
  */
 
 const BASE = 'https://aushomevalue.vercel.app';
 const fs = require('fs');
 const path = require('path');
 
+const PAGE_LIMIT = 100;
+
 const PAGES = [
   {
     slug: 'top-growth-suburbs-victoria',
-    title: 'Top Growth Suburbs Victoria 2026',
-    h1: 'Top Growth Suburbs in Victoria',
-    desc: 'Suburbs with the strongest forecast price appreciation. These areas show sustained 1–5 year capital growth momentum driven by infrastructure investment, demographic shifts, and supply constraints.',
+    title: 'Top 100 Growth Suburbs Victoria 2026',
+    h1: 'Top 100 Growth Suburbs in Victoria',
+    desc: 'The top 100 Victorian suburbs with the strongest forecast price appreciation. These areas show sustained 1–5 year capital growth momentum driven by infrastructure investment, demographic shifts, and supply constraints.',
     factor: 'growth',
-    seo: 'Victoria\'s top growth suburbs for 2026. Ranked by weighted 1, 3 and 5-year price growth with confidence-adjusted opportunity scores.',
+    seo: 'Top 100 growth suburbs in Victoria for 2026. Ranked by weighted 1, 3 and 5-year price growth with confidence-adjusted opportunity scores.',
     navLabel: 'Growth',
     icon: '📈',
   },
   {
     slug: 'top-value-suburbs-victoria',
-    title: 'Top Value Suburbs Victoria 2026 — Most Affordable Opportunities',
-    h1: 'Top Value Suburbs in Victoria',
-    desc: 'The most affordable entry points in the Victorian property market. These suburbs offer below-median pricing with strong upside potential — ideal for first-home buyers and value-conscious investors.',
+    title: 'Top 100 Value Suburbs Victoria 2026 — Most Affordable Opportunities',
+    h1: 'Top 100 Value Suburbs in Victoria',
+    desc: 'The top 100 most affordable entry points in the Victorian property market. These suburbs offer below-median pricing with strong upside potential — ideal for first-home buyers and value-conscious investors.',
     factor: 'value',
-    seo: 'Victoria\'s best value suburbs for 2026. Affordable median prices, growth corridors and infrastructure tailwinds. Ranked by price-to-value ratio.',
+    seo: 'Top 100 best value suburbs in Victoria for 2026. Affordable median prices, growth corridors and infrastructure tailwinds. Ranked by price-to-value ratio.',
     navLabel: 'Value',
     icon: '💎',
   },
   {
     slug: 'top-yield-suburbs-victoria',
-    title: 'Top Rental Yield Suburbs Victoria 2026',
-    h1: 'Top Rental Yield Suburbs in Victoria',
-    desc: 'Suburbs delivering the strongest gross rental yields across Victoria. These areas offer compelling cash flow for investors, combining strong tenant demand with affordable purchase prices.',
+    title: 'Top 100 Rental Yield Suburbs Victoria 2026',
+    h1: 'Top 100 Rental Yield Suburbs in Victoria',
+    desc: 'The top 100 suburbs delivering the strongest gross rental yields across Victoria. These areas offer compelling cash flow for investors, combining strong tenant demand with affordable purchase prices.',
     factor: 'yield',
-    seo: 'Best rental yield suburbs in Victoria for 2026. Gross yield rankings with vacancy context and growth projections. Cash-flow positive opportunities.',
+    seo: 'Top 100 best rental yield suburbs in Victoria for 2026. Gross yield rankings with vacancy context and growth projections. Cash-flow positive opportunities.',
     navLabel: 'Yield',
     icon: '💰',
   },
   {
     slug: 'top-school-zone-suburbs-victoria',
-    title: 'Top School Zone Suburbs Victoria 2026 — Best Education Catchments',
-    h1: 'Top School Zone Suburbs in Victoria',
-    desc: 'Suburbs with the highest-rated school catchments. These areas command family-buyer premiums and offer superior price insulation during market downturns — ideal for long-term capital preservation.',
+    title: 'Top 100 School Zone Suburbs Victoria 2026 — Best Education Catchments',
+    h1: 'Top 100 School Zone Suburbs in Victoria',
+    desc: 'The top 100 suburbs with the highest-rated school catchments. These areas command family-buyer premiums and offer superior price insulation during market downturns — ideal for long-term capital preservation.',
     factor: 'school',
-    seo: 'Best school zone suburbs in Victoria for 2026. Toorak, Fairfield, Burwood — ranked by school quality scores. Family-friendly investment opportunities.',
+    seo: 'Top 100 best school zone suburbs in Victoria for 2026. Toorak, Fairfield, Burwood — ranked by school quality scores. Family-friendly investment opportunities.',
     navLabel: 'Schools',
     icon: '🏫',
+  },
+  {
+    slug: 'top-supply-constrained-suburbs-victoria',
+    title: 'Top 100 Supply-Constrained Suburbs Victoria 2026',
+    h1: 'Top 100 Supply-Constrained Suburbs in Victoria',
+    desc: 'The top 100 most supply-constrained suburbs in Victoria. These areas have limited developable land, high occupancy rates, and strong housing demand relative to stock — driving price support for investors.',
+    factor: 'supply',
+    seo: 'Top 100 supply-constrained suburbs in Victoria for 2026. Housing supply constraints drive price support. Ranked by Dwelling-to-Population, occupancy rates, and development pipeline.',
+    navLabel: 'Supply',
+    icon: '🏗️',
   },
 ];
 
@@ -64,7 +77,7 @@ async function main() {
   for (const page of PAGES) {
     console.log(`\n─── ${page.title} ───`);
 
-    const url = `${BASE}/api/top-${page.factor}?limit=50`;
+    const url = `${BASE}/api/top-${page.factor}?limit=${PAGE_LIMIT}`;
     const res = await fetch(url);
     if (!res.ok) { console.error(`  FAIL ${url}: ${res.status}`); continue; }
     const json = await res.json();
@@ -122,8 +135,9 @@ function buildPage(page, results) {
     </div>`;
   }).join('\n');
 
-  // Navigation tabs
-  const navTabs = PAGES.map(p => `
+  // Navigation tabs (always include Supply for cross-linking)
+  const allTabPages = PAGES; // PAGES includes Supply now
+  const navTabs = allTabPages.map(p => `
     <a href="/${p.slug}.html" class="tab ${p.factor === page.factor ? 'tab-active' : ''}">
       ${p.icon} ${p.navLabel}
     </a>`).join('\n          ');
@@ -271,6 +285,7 @@ function buildPage(page, results) {
       <a href="/top-value-suburbs-victoria.html">Top Value</a>
       <a href="/top-yield-suburbs-victoria.html">Top Yield</a>
       <a href="/top-school-zone-suburbs-victoria.html">Top Schools</a>
+      <a href="/top-supply-constrained-suburbs-victoria.html">Supply</a>
       <a href="/contact.html">Contact</a>
     </div>
     <p>© ${new Date().getFullYear()} AusHomeValue — Australian Property Intelligence</p>
@@ -289,7 +304,7 @@ function escapeHtml(s) {
 }
 
 function factorTag(f) {
-  const map = { growth: 'growth', value: 'value', yield: 'yield', school: 'school' };
+  const map = { growth: 'growth', value: 'value', yield: 'yield', school: 'school', supply: 'opp' };
   return map[f] || 'opp';
 }
 

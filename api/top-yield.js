@@ -20,7 +20,7 @@ export default async function handler(req, res) {
 
   try {
     const { fetchTopByFactor } = await import('../lib/factor-breakdown.js');
-    const limit = Math.min(Number(req.query.limit || 20), 50);
+    const limit = Math.min(Number(req.query.limit || 100), 200);
     const results = await fetchTopByFactor('yield', limit);
     res.status(200).json({ factor: 'yield', count: results.length, results });
   } catch (e) {

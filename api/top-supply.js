@@ -1,10 +1,10 @@
 /**
- * api/top-value.js — Top Value Suburbs API
+ * api/top-supply.js — Top Supply-Constrained Suburbs API
  *
- * GET /api/top-value
- *   Returns suburbs with best value (lowest median prices)
+ * GET /api/top-supply
+ *   Returns suburbs with highest supply constraint scores
  *
- * GET /api/top-value?limit=10
+ * GET /api/top-supply?limit=100
  */
 
 export default async function handler(req, res) {
@@ -21,10 +21,10 @@ export default async function handler(req, res) {
   try {
     const { fetchTopByFactor } = await import('../lib/factor-breakdown.js');
     const limit = Math.min(Number(req.query.limit || 100), 200);
-    const results = await fetchTopByFactor('value', limit);
-    res.status(200).json({ factor: 'value', count: results.length, results });
+    const results = await fetchTopByFactor('supply', limit);
+    res.status(200).json({ factor: 'supply', count: results.length, results });
   } catch (e) {
-    console.error('[top-value]', e.message);
+    console.error('[top-supply]', e.message);
     res.status(500).json({ error: 'Internal server error' });
   }
 }
