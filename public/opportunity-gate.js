@@ -91,6 +91,7 @@
 
     var overlay = document.createElement("div");
     overlay.id = "opp-gate-overlay";
+    overlay.className = "opp-gate-overlay";
 
     var errorStyle = 'color:#dc2626;font-size:0.8rem;margin-bottom:8px;display:none;';
 
@@ -210,6 +211,7 @@
 
     var overlay = document.createElement("div");
     overlay.id = "opp-gate-overlay";
+    overlay.className = "opp-gate-overlay";
 
     var html =
       '<div class="opp-gate-box">' +
@@ -347,11 +349,13 @@
     protectPage: function () {
       if (hasLocalStorageToken()) return;
       var path = window.location.pathname;
-      if (path === "/opportunities/" || path === "/opportunities/index.html" || path.startsWith("/opportunities/")) {
-        try { document.documentElement.style.visibility = "hidden"; } catch(e) {}
-        window.setTimeout(function() {
-          window.location.href = "/#opportunities";
-        }, 30);
+      if (path === "/opportunities/" || path === "/opportunities/index.html") {
+        // Prevent flash: stop rendering, redirect immediately
+        try {
+          document.head.innerHTML = '<meta http-equiv="refresh" content="0;url=/#opportunities">';
+          document.documentElement.innerHTML = '';
+        } catch(e) {}
+        window.location.href = "/#opportunities";
       }
     }
   };
