@@ -2506,6 +2506,8 @@ async function runOpportunityScan() {
   oppLoading.textContent = "Ranking suburbs...";
   oppSearchBtn.disabled = true;
   oppResults.innerHTML = "";
+  const oldTrust = document.getElementById("opp-trust-layer");
+  if (oldTrust) oldTrust.remove();
   const snippetEl = document.getElementById('home-snippet');
   if (snippetEl) snippetEl.style.display = 'none';
   const coldTimer = setTimeout(() => {
@@ -2545,6 +2547,20 @@ async function runOpportunityScan() {
         </div>`;
     });
     oppResults.innerHTML = html;
+    // ── Trust Layer: methodology + confidence for first result ──
+    const trustContainer = document.createElement("div");
+    trustContainer.id = "opp-trust-layer";
+    oppResults.parentNode.insertBefore(trustContainer, oppResults.nextSibling);
+    if (typeof TrustLayer !== "undefined") {
+      const first = data.opportunities[0];
+      TrustLayer.render(trustContainer, {
+        suburb: first ? first.suburb : "",
+        language: (typeof language !== "undefined") ? language : "en",
+        showMethodology: true,
+        showConfidence: true,
+        showWhySuburb: true,
+      });
+    }
   } catch (err) {
     clearTimeout(coldTimer);
     oppLoading.classList.add("hidden");
