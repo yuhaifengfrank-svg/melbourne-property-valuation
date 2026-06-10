@@ -317,6 +317,34 @@ button:hover {
   background: #e0e3e0;
 }
 
+.land-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+.land-row label {
+  font-size: 0.9em;
+  color: var(--ink-50);
+  white-space: nowrap;
+}
+.land-row label small {
+  font-weight: 400;
+  color: var(--ink-30);
+}
+.land-row input {
+  width: 110px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 0.95em;
+}
+.land-unit {
+  font-size: 0.85em;
+  color: var(--ink-50);
+}
+
 .chip.active {
   background: var(--accent);
   color: white;
@@ -2215,6 +2243,11 @@ th {
                 <button class="chip" data-type="Unit" type="button">Unit</button>
                 <button class="chip" data-type="Apartment" type="button">Apartment</button>
                 <button class="chip commercial-chip" data-type="Commercial" type="button">Commercial</button>
+              </div>
+              <div class="land-row">
+                <label for="land-size">Land size <small>(optional)</small></label>
+                <input id="land-size" name="land-size" type="number" placeholder="e.g. 1027" min="0" step="1" />
+                <span class="land-unit">m²</span>
               </div>
             </form>
           </div>

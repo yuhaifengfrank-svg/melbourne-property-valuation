@@ -1222,6 +1222,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         suburb: normalizedSuburb,
         state: resolvedState,
         propertyType: inferredType,
+        landSize: parseInt(byId("land-size").value) || undefined,
         useDatabaseFallback: true
       })
     });

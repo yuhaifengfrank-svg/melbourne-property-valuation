@@ -1,0 +1,1847 @@
+{
+  "Aberfeldie": {
+    "source": "comparable_sales",
+    "median": 687,
+    "q25": 544,
+    "q75": 702,
+    "min": 352,
+    "max": 739,
+    "count": "7"
+  },
+  "Airport West": {
+    "source": "comparable_sales",
+    "median": 422,
+    "q25": 279,
+    "q75": 570,
+    "min": 198,
+    "max": 584,
+    "count": "6"
+  },
+  "Altona": {
+    "source": "comparable_sales",
+    "median": 454,
+    "q25": 294,
+    "q75": 605,
+    "min": 85,
+    "max": 787,
+    "count": "9"
+  },
+  "Altona Meadows": {
+    "source": "comparable_sales",
+    "median": 465,
+    "q25": 411,
+    "q75": 483,
+    "min": 108,
+    "max": 600,
+    "count": "15"
+  },
+  "Altona North": {
+    "source": "comparable_sales",
+    "median": 544,
+    "q25": 476,
+    "q75": 561,
+    "min": 264,
+    "max": 692,
+    "count": "8"
+  },
+  "Armstrong Creek": {
+    "source": "comparable_sales",
+    "median": 371,
+    "q25": 312,
+    "q75": 450,
+    "min": 220,
+    "max": 558,
+    "count": "22"
+  },
+  "Ashburton": {
+    "source": "comparable_sales",
+    "median": 259,
+    "q25": 160,
+    "q75": 416,
+    "min": 140,
+    "max": 610,
+    "count": "4"
+  },
+  "Ashwood": {
+    "source": "comparable_sales",
+    "median": 720,
+    "q25": 704,
+    "q75": 765,
+    "min": 354,
+    "max": 774,
+    "count": "5"
+  },
+  "Aspendale": {
+    "source": "comparable_sales",
+    "median": 470,
+    "q25": 370,
+    "q75": 592,
+    "min": 321,
+    "max": 619,
+    "count": "8"
+  },
+  "Bayswater": {
+    "source": "comparable_sales",
+    "median": 778,
+    "q25": 726,
+    "q75": 806,
+    "min": 140,
+    "max": 982,
+    "count": "13"
+  },
+  "Bayswater North": {
+    "source": "comparable_sales",
+    "median": 792,
+    "q25": 785,
+    "q75": 899,
+    "min": 360,
+    "max": 1018,
+    "count": "13"
+  },
+  "Beaconsfield": {
+    "source": "comparable_sales",
+    "median": 710,
+    "q25": 679,
+    "q75": 1000,
+    "min": 272,
+    "max": 4003,
+    "count": "13"
+  },
+  "Beaconsfield Upper": {
+    "source": "comparable_sales",
+    "median": 4160,
+    "q25": 2304,
+    "q75": 5079,
+    "min": 939,
+    "max": 6739,
+    "count": "14"
+  },
+  "Beaumaris": {
+    "source": "comparable_sales",
+    "median": 614,
+    "q25": 537,
+    "q75": 696,
+    "min": 468,
+    "max": 783,
+    "count": "4"
+  },
+  "Bell Park": {
+    "source": "comparable_sales",
+    "median": 603,
+    "q25": 353,
+    "q75": 656,
+    "min": 215,
+    "max": 754,
+    "count": "23"
+  },
+  "Bell Post Hill": {
+    "source": "comparable_sales",
+    "median": 622,
+    "q25": 541,
+    "q75": 636,
+    "min": 171,
+    "max": 935,
+    "count": "25"
+  },
+  "Belmont": {
+    "source": "comparable_sales",
+    "median": 666,
+    "q25": 602,
+    "q75": 741,
+    "min": 489,
+    "max": 1054,
+    "count": "12"
+  },
+  "Bentleigh East": {
+    "source": "comparable_sales",
+    "median": 612,
+    "q25": 440,
+    "q75": 655,
+    "min": 343,
+    "max": 734,
+    "count": "6"
+  },
+  "Berwick": {
+    "source": "comparable_sales",
+    "median": 642,
+    "q25": 488,
+    "q75": 673,
+    "min": 304,
+    "max": 1015,
+    "count": "18"
+  },
+  "Black Rock": {
+    "source": "comparable_sales",
+    "median": 655,
+    "q25": 560,
+    "q75": 1275,
+    "min": 465,
+    "max": 1895,
+    "count": "3"
+  },
+  "Blackburn": {
+    "source": "comparable_sales",
+    "median": 664,
+    "q25": 449,
+    "q75": 728,
+    "min": 88,
+    "max": 1476,
+    "count": "19"
+  },
+  "Blackburn North": {
+    "source": "comparable_sales",
+    "median": 585,
+    "q25": 531,
+    "q75": 604,
+    "min": 252,
+    "max": 809,
+    "count": "17"
+  },
+  "Blackburn South": {
+    "source": "comparable_sales",
+    "median": 670,
+    "q25": 582,
+    "q75": 718,
+    "min": 534,
+    "max": 859,
+    "count": "12"
+  },
+  "Blairgowrie": {
+    "source": "comparable_sales",
+    "median": 762,
+    "q25": 741,
+    "q75": 952,
+    "min": 603,
+    "max": 1370,
+    "count": "14"
+  },
+  "Bonbeach": {
+    "source": "comparable_sales",
+    "median": 296,
+    "q25": 265,
+    "q75": 450,
+    "min": 234,
+    "max": 604,
+    "count": "3"
+  },
+  "Boronia": {
+    "source": "comparable_sales",
+    "median": 727,
+    "q25": 726,
+    "q75": 775,
+    "min": 382,
+    "max": 1014,
+    "count": "13"
+  },
+  "Botanic Ridge": {
+    "source": "comparable_sales",
+    "median": 574,
+    "q25": 533,
+    "q75": 770,
+    "min": 447,
+    "max": 1621,
+    "count": "20"
+  },
+  "Box Hill": {
+    "source": "comparable_sales",
+    "median": 274,
+    "q25": 152,
+    "q75": 629,
+    "min": 82,
+    "max": 788,
+    "count": "7"
+  },
+  "Braybrook": {
+    "source": "comparable_sales",
+    "median": 591,
+    "q25": 432,
+    "q75": 617,
+    "min": 284,
+    "max": 698,
+    "count": "7"
+  },
+  "Broadmeadows": {
+    "source": "comparable_sales",
+    "median": 662,
+    "q25": 620,
+    "q75": 706,
+    "min": 104,
+    "max": 788,
+    "count": "10"
+  },
+  "Brunswick West": {
+    "source": "comparable_sales",
+    "median": 516,
+    "q25": 482,
+    "q75": 550,
+    "min": 427,
+    "max": 606,
+    "count": "4"
+  },
+  "Bundoora": {
+    "source": "comparable_sales",
+    "median": 537,
+    "q25": 534,
+    "q75": 591,
+    "min": 78,
+    "max": 1875,
+    "count": "11"
+  },
+  "Burwood": {
+    "source": "comparable_sales",
+    "median": 662,
+    "q25": 360,
+    "q75": 706,
+    "min": 283,
+    "max": 782,
+    "count": "7"
+  },
+  "Burwood East": {
+    "source": "comparable_sales",
+    "median": 585,
+    "q25": 503,
+    "q75": 610,
+    "min": 68,
+    "max": 7205,
+    "count": "11"
+  },
+  "Cairnlea": {
+    "source": "comparable_sales",
+    "median": 519,
+    "q25": 412,
+    "q75": 560,
+    "min": 239,
+    "max": 9028,
+    "count": "13"
+  },
+  "Camberwell": {
+    "source": "comparable_sales",
+    "median": 748,
+    "q25": 632,
+    "q75": 864,
+    "min": 632,
+    "max": 864,
+    "count": "4"
+  },
+  "Canterbury": {
+    "source": "comparable_sales",
+    "median": 608,
+    "q25": 518,
+    "q75": 662,
+    "min": 369,
+    "max": 697,
+    "count": "4"
+  },
+  "Carnegie": {
+    "source": "comparable_sales",
+    "median": 404,
+    "q25": 299,
+    "q75": 557,
+    "min": 256,
+    "max": 627,
+    "count": "6"
+  },
+  "Caroline Springs": {
+    "source": "comparable_sales",
+    "median": 466,
+    "q25": 400,
+    "q75": 572,
+    "min": 203,
+    "max": 687,
+    "count": "16"
+  },
+  "Carrum Downs": {
+    "source": "comparable_sales",
+    "median": 656,
+    "q25": 520,
+    "q75": 719,
+    "min": 113,
+    "max": 7133,
+    "count": "16"
+  },
+  "Caulfield East": {
+    "source": "comparable_sales",
+    "median": 512,
+    "q25": 424,
+    "q75": 530,
+    "min": 343,
+    "max": 575,
+    "count": "5"
+  },
+  "Caulfield North": {
+    "source": "comparable_sales",
+    "median": 550,
+    "q25": 330,
+    "q75": 721,
+    "min": 109,
+    "max": 892,
+    "count": "3"
+  },
+  "Caulfield South": {
+    "source": "comparable_sales",
+    "median": 306,
+    "q25": 199,
+    "q75": 444,
+    "min": 92,
+    "max": 581,
+    "count": "3"
+  },
+  "Chadstone": {
+    "source": "comparable_sales",
+    "median": 676,
+    "q25": 606,
+    "q75": 713,
+    "min": 535,
+    "max": 750,
+    "count": "3"
+  },
+  "Chelsea": {
+    "source": "comparable_sales",
+    "median": 295,
+    "q25": 249,
+    "q75": 510,
+    "min": 203,
+    "max": 725,
+    "count": "3"
+  },
+  "Cheltenham": {
+    "source": "comparable_sales",
+    "median": 658,
+    "q25": 629,
+    "q75": 704,
+    "min": 600,
+    "max": 751,
+    "count": "3"
+  },
+  "Chirnside Park": {
+    "source": "comparable_sales",
+    "median": 587,
+    "q25": 470,
+    "q75": 866,
+    "min": 356,
+    "max": 984,
+    "count": "15"
+  },
+  "Clarinda": {
+    "source": "comparable_sales",
+    "median": 592,
+    "q25": 538,
+    "q75": 660,
+    "min": 90,
+    "max": 923,
+    "count": "12"
+  },
+  "Clayton": {
+    "source": "comparable_sales",
+    "median": 677,
+    "q25": 363,
+    "q75": 709,
+    "min": 65,
+    "max": 739,
+    "count": "17"
+  },
+  "Clayton South": {
+    "source": "comparable_sales",
+    "median": 638,
+    "q25": 212,
+    "q75": 725,
+    "min": 81,
+    "max": 766,
+    "count": "12"
+  },
+  "Clyde": {
+    "source": "comparable_sales",
+    "median": 327,
+    "q25": 296,
+    "q75": 360,
+    "min": 156,
+    "max": 379,
+    "count": "10"
+  },
+  "Clyde North": {
+    "source": "comparable_sales",
+    "median": 420,
+    "q25": 362,
+    "q75": 452,
+    "min": 231,
+    "max": 598,
+    "count": "15"
+  },
+  "Coburg": {
+    "source": "comparable_sales",
+    "median": 488,
+    "q25": 409,
+    "q75": 767,
+    "min": 304,
+    "max": 1126,
+    "count": "9"
+  },
+  "Coburg North": {
+    "source": "comparable_sales",
+    "median": 627,
+    "q25": 559,
+    "q75": 652,
+    "min": 468,
+    "max": 689,
+    "count": "7"
+  },
+  "Craigieburn": {
+    "source": "comparable_sales",
+    "median": 448,
+    "q25": 333,
+    "q75": 485,
+    "min": 232,
+    "max": 681,
+    "count": "13"
+  },
+  "Cranbourne": {
+    "source": "comparable_sales",
+    "median": 565,
+    "q25": 512,
+    "q75": 604,
+    "min": 177,
+    "max": 619,
+    "count": "9"
+  },
+  "Cranbourne East": {
+    "source": "comparable_sales",
+    "median": 400,
+    "q25": 325,
+    "q75": 443,
+    "min": 263,
+    "max": 651,
+    "count": "17"
+  },
+  "Croydon": {
+    "source": "comparable_sales",
+    "median": 858,
+    "q25": 774,
+    "q75": 941,
+    "min": 250,
+    "max": 1740,
+    "count": "8"
+  },
+  "Croydon North": {
+    "source": "comparable_sales",
+    "median": 777,
+    "q25": 562,
+    "q75": 1050,
+    "min": 323,
+    "max": 1458,
+    "count": "11"
+  },
+  "Croydon South": {
+    "source": "comparable_sales",
+    "median": 653,
+    "q25": 543,
+    "q75": 868,
+    "min": 353,
+    "max": 2176,
+    "count": "16"
+  },
+  "Dandenong": {
+    "source": "comparable_sales",
+    "median": 858,
+    "q25": 712,
+    "q75": 1434,
+    "min": 90,
+    "max": 1595,
+    "count": "6"
+  },
+  "Deer Park": {
+    "source": "comparable_sales",
+    "median": 587,
+    "q25": 531,
+    "q75": 617,
+    "min": 143,
+    "max": 2775,
+    "count": "17"
+  },
+  "Derrimut": {
+    "source": "comparable_sales",
+    "median": 578,
+    "q25": 515,
+    "q75": 640,
+    "min": 355,
+    "max": 750,
+    "count": "14"
+  },
+  "Diggers Rest": {
+    "source": "comparable_sales",
+    "median": 400,
+    "q25": 375,
+    "q75": 585,
+    "min": 206,
+    "max": 589,
+    "count": "17"
+  },
+  "Dingley Village": {
+    "source": "comparable_sales",
+    "median": 584,
+    "q25": 547,
+    "q75": 649,
+    "min": 530,
+    "max": 726,
+    "count": "14"
+  },
+  "Doncaster": {
+    "source": "comparable_sales",
+    "median": 624,
+    "q25": 315,
+    "q75": 725,
+    "min": 229,
+    "max": 728,
+    "count": "12"
+  },
+  "Doncaster East": {
+    "source": "comparable_sales",
+    "median": 741,
+    "q25": 703,
+    "q75": 838,
+    "min": 650,
+    "max": 1738,
+    "count": "12"
+  },
+  "Donnybrook": {
+    "source": "comparable_sales",
+    "median": 350,
+    "q25": 244,
+    "q75": 388,
+    "min": 195,
+    "max": 1015,
+    "count": "18"
+  },
+  "Donvale": {
+    "source": "comparable_sales",
+    "median": 1027,
+    "q25": 651,
+    "q75": 2058,
+    "min": 323,
+    "max": 4301,
+    "count": "13"
+  },
+  "Dromana": {
+    "source": "comparable_sales",
+    "median": 604,
+    "q25": 602,
+    "q75": 733,
+    "min": 245,
+    "max": 1738,
+    "count": "14"
+  },
+  "Eaglemont": {
+    "source": "comparable_sales",
+    "median": 1115,
+    "q25": 930,
+    "q75": 1286,
+    "min": 664,
+    "max": 6784,
+    "count": "5"
+  },
+  "Edithvale": {
+    "source": "comparable_sales",
+    "median": 702,
+    "q25": 577,
+    "q75": 773,
+    "min": 335,
+    "max": 816,
+    "count": "7"
+  },
+  "Elsternwick": {
+    "source": "comparable_sales",
+    "median": 458,
+    "q25": 312,
+    "q75": 534,
+    "min": 70,
+    "max": 562,
+    "count": "4"
+  },
+  "Endeavour Hills": {
+    "source": "comparable_sales",
+    "median": 672,
+    "q25": 656,
+    "q75": 722,
+    "min": 600,
+    "max": 1222,
+    "count": "19"
+  },
+  "Epping": {
+    "source": "comparable_sales",
+    "median": 475,
+    "q25": 293,
+    "q75": 546,
+    "min": 227,
+    "max": 576,
+    "count": "12"
+  },
+  "Essendon": {
+    "source": "comparable_sales",
+    "median": 702,
+    "q25": 608,
+    "q75": 822,
+    "min": 502,
+    "max": 1010,
+    "count": "4"
+  },
+  "Fawkner": {
+    "source": "comparable_sales",
+    "median": 633,
+    "q25": 602,
+    "q75": 15422,
+    "min": 535,
+    "max": 63384,
+    "count": "12"
+  },
+  "Ferntree Gully": {
+    "source": "comparable_sales",
+    "median": 788,
+    "q25": 728,
+    "q75": 1229,
+    "min": 427,
+    "max": 1723,
+    "count": "11"
+  },
+  "Footscray": {
+    "source": "comparable_sales",
+    "median": 240,
+    "q25": 125,
+    "q75": 319,
+    "min": 91,
+    "max": 358,
+    "count": "8"
+  },
+  "Forest Hill": {
+    "source": "comparable_sales",
+    "median": 606,
+    "q25": 586,
+    "q75": 763,
+    "min": 423,
+    "max": 838,
+    "count": "6"
+  },
+  "Frankston": {
+    "source": "comparable_sales",
+    "median": 586,
+    "q25": 551,
+    "q75": 612,
+    "min": 171,
+    "max": 697,
+    "count": "8"
+  },
+  "Frankston South": {
+    "source": "comparable_sales",
+    "median": 650,
+    "q25": 541,
+    "q75": 948,
+    "min": 346,
+    "max": 3257,
+    "count": "13"
+  },
+  "Glen Huntly": {
+    "source": "comparable_sales",
+    "median": 639,
+    "q25": 441,
+    "q75": 702,
+    "min": 243,
+    "max": 764,
+    "count": "3"
+  },
+  "Glen Waverley": {
+    "source": "comparable_sales",
+    "median": 666,
+    "q25": 651,
+    "q75": 746,
+    "min": 233,
+    "max": 970,
+    "count": "12"
+  },
+  "Glenroy": {
+    "source": "comparable_sales",
+    "median": 644,
+    "q25": 638,
+    "q75": 684,
+    "min": 610,
+    "max": 751,
+    "count": "6"
+  },
+  "Gowanbrae": {
+    "source": "comparable_sales",
+    "median": 465,
+    "q25": 234,
+    "q75": 593,
+    "min": 161,
+    "max": 732,
+    "count": "11"
+  },
+  "Greenvale": {
+    "source": "comparable_sales",
+    "median": 488,
+    "q25": 390,
+    "q75": 760,
+    "min": 229,
+    "max": 5903,
+    "count": "16"
+  },
+  "Hallam": {
+    "source": "comparable_sales",
+    "median": 654,
+    "q25": 592,
+    "q75": 776,
+    "min": 126,
+    "max": 79724,
+    "count": "10"
+  },
+  "Hampton": {
+    "source": "comparable_sales",
+    "median": 589,
+    "q25": 506,
+    "q75": 608,
+    "min": 422,
+    "max": 627,
+    "count": "3"
+  },
+  "Hampton Park": {
+    "source": "comparable_sales",
+    "median": 602,
+    "q25": 534,
+    "q75": 644,
+    "min": 451,
+    "max": 777,
+    "count": "15"
+  },
+  "Hastings": {
+    "source": "comparable_sales",
+    "median": 664,
+    "q25": 485,
+    "q75": 859,
+    "min": 221,
+    "max": 8361,
+    "count": "15"
+  },
+  "Heatherton": {
+    "source": "comparable_sales",
+    "median": 419,
+    "q25": 362,
+    "q75": 534,
+    "min": 291,
+    "max": 932,
+    "count": "13"
+  },
+  "Heathmont": {
+    "source": "comparable_sales",
+    "median": 719,
+    "q25": 545,
+    "q75": 786,
+    "min": 233,
+    "max": 1032,
+    "count": "16"
+  },
+  "Heidelberg": {
+    "source": "comparable_sales",
+    "median": 1073,
+    "q25": 648,
+    "q75": 2866,
+    "min": 586,
+    "max": 7029,
+    "count": "4"
+  },
+  "Heidelberg Heights": {
+    "source": "comparable_sales",
+    "median": 596,
+    "q25": 596,
+    "q75": 718,
+    "min": 564,
+    "max": 762,
+    "count": "6"
+  },
+  "Highett": {
+    "source": "comparable_sales",
+    "median": 624,
+    "q25": 616,
+    "q75": 633,
+    "min": 609,
+    "max": 642,
+    "count": "3"
+  },
+  "Highton": {
+    "source": "comparable_sales",
+    "median": 714,
+    "q25": 601,
+    "q75": 1105,
+    "min": 335,
+    "max": 1377,
+    "count": "12"
+  },
+  "Hoppers Crossing": {
+    "source": "comparable_sales",
+    "median": 616,
+    "q25": 563,
+    "q75": 685,
+    "min": 278,
+    "max": 6003,
+    "count": "22"
+  },
+  "Huntingdale": {
+    "source": "comparable_sales",
+    "median": 620,
+    "q25": 603,
+    "q75": 622,
+    "min": 80,
+    "max": 623,
+    "count": "5"
+  },
+  "Ivanhoe East": {
+    "source": "comparable_sales",
+    "median": 684,
+    "q25": 561,
+    "q75": 825,
+    "min": 442,
+    "max": 998,
+    "count": "4"
+  },
+  "Keilor Park": {
+    "source": "comparable_sales",
+    "median": 575,
+    "q25": 534,
+    "q75": 596,
+    "min": 263,
+    "max": 737,
+    "count": "17"
+  },
+  "Kew": {
+    "source": "comparable_sales",
+    "median": 177,
+    "q25": 78,
+    "q75": 798,
+    "min": 78,
+    "max": 798,
+    "count": "5"
+  },
+  "Keysborough": {
+    "source": "comparable_sales",
+    "median": 534,
+    "q25": 432,
+    "q75": 541,
+    "min": 306,
+    "max": 705,
+    "count": "19"
+  },
+  "Kilsyth": {
+    "source": "comparable_sales",
+    "median": 864,
+    "q25": 410,
+    "q75": 880,
+    "min": 240,
+    "max": 1836,
+    "count": "16"
+  },
+  "Knoxfield": {
+    "source": "comparable_sales",
+    "median": 732,
+    "q25": 668,
+    "q75": 782,
+    "min": 293,
+    "max": 2497,
+    "count": "14"
+  },
+  "Lalor": {
+    "source": "comparable_sales",
+    "median": 598,
+    "q25": 556,
+    "q75": 682,
+    "min": 231,
+    "max": 750,
+    "count": "16"
+  },
+  "Langwarrin": {
+    "source": "comparable_sales",
+    "median": 649,
+    "q25": 594,
+    "q75": 706,
+    "min": 460,
+    "max": 1053,
+    "count": "11"
+  },
+  "Langwarrin South": {
+    "source": "comparable_sales",
+    "median": 3037,
+    "q25": 2052,
+    "q75": 3902,
+    "min": 1067,
+    "max": 4766,
+    "count": "3"
+  },
+  "Lara": {
+    "source": "comparable_sales",
+    "median": 478,
+    "q25": 367,
+    "q75": 666,
+    "min": 230,
+    "max": 2878,
+    "count": "18"
+  },
+  "Laverton": {
+    "source": "comparable_sales",
+    "median": 554,
+    "q25": 547,
+    "q75": 569,
+    "min": 401,
+    "max": 605,
+    "count": "8"
+  },
+  "Leopold": {
+    "source": "comparable_sales",
+    "median": 648,
+    "q25": 432,
+    "q75": 784,
+    "min": 355,
+    "max": 25084,
+    "count": "13"
+  },
+  "Lilydale": {
+    "source": "comparable_sales",
+    "median": 874,
+    "q25": 603,
+    "q75": 1476,
+    "min": 511,
+    "max": 7296,
+    "count": "14"
+  },
+  "Lynbrook": {
+    "source": "comparable_sales",
+    "median": 602,
+    "q25": 560,
+    "q75": 633,
+    "min": 152,
+    "max": 769,
+    "count": "16"
+  },
+  "Lyndhurst": {
+    "source": "comparable_sales",
+    "median": 487,
+    "q25": 448,
+    "q75": 602,
+    "min": 220,
+    "max": 35002,
+    "count": "17"
+  },
+  "Lysterfield": {
+    "source": "comparable_sales",
+    "median": 1204,
+    "q25": 722,
+    "q75": 1406,
+    "min": 631,
+    "max": 6792,
+    "count": "14"
+  },
+  "Macleod": {
+    "source": "comparable_sales",
+    "median": 825,
+    "q25": 686,
+    "q75": 912,
+    "min": 510,
+    "max": 1015,
+    "count": "7"
+  },
+  "Maidstone": {
+    "source": "comparable_sales",
+    "median": 581,
+    "q25": 526,
+    "q75": 623,
+    "min": 452,
+    "max": 957,
+    "count": "5"
+  },
+  "Malvern East": {
+    "source": "comparable_sales",
+    "median": 666,
+    "q25": 468,
+    "q75": 780,
+    "min": 219,
+    "max": 781,
+    "count": "6"
+  },
+  "Manor Lakes": {
+    "source": "comparable_sales",
+    "median": 426,
+    "q25": 362,
+    "q75": 460,
+    "min": 189,
+    "max": 902,
+    "count": "16"
+  },
+  "Maribyrnong": {
+    "source": "comparable_sales",
+    "median": 89,
+    "q25": 77,
+    "q75": 193,
+    "min": 70,
+    "max": 476,
+    "count": "4"
+  },
+  "McCrae": {
+    "source": "comparable_sales",
+    "median": 824,
+    "q25": 438,
+    "q75": 926,
+    "min": 170,
+    "max": 1671,
+    "count": "16"
+  },
+  "McKinnon": {
+    "source": "comparable_sales",
+    "median": 695,
+    "q25": 466,
+    "q75": 829,
+    "min": 78,
+    "max": 930,
+    "count": "4"
+  },
+  "Melton": {
+    "source": "comparable_sales",
+    "median": 341,
+    "q25": 288,
+    "q75": 465,
+    "min": 234,
+    "max": 589,
+    "count": "3"
+  },
+  "Mentone": {
+    "source": "comparable_sales",
+    "median": 595,
+    "q25": 586,
+    "q75": 608,
+    "min": 577,
+    "max": 620,
+    "count": "3"
+  },
+  "Mernda": {
+    "source": "comparable_sales",
+    "median": 434,
+    "q25": 402,
+    "q75": 544,
+    "min": 300,
+    "max": 720,
+    "count": "13"
+  },
+  "Mickleham": {
+    "source": "comparable_sales",
+    "median": 350,
+    "q25": 260,
+    "q75": 424,
+    "min": 175,
+    "max": 515,
+    "count": "15"
+  },
+  "Mitcham": {
+    "source": "comparable_sales",
+    "median": 614,
+    "q25": 365,
+    "q75": 655,
+    "min": 217,
+    "max": 857,
+    "count": "12"
+  },
+  "Mont Albert": {
+    "source": "comparable_sales",
+    "median": 650,
+    "q25": 358,
+    "q75": 792,
+    "min": 66,
+    "max": 934,
+    "count": "3"
+  },
+  "Moorabbin": {
+    "source": "comparable_sales",
+    "median": 603,
+    "q25": 490,
+    "q75": 638,
+    "min": 377,
+    "max": 673,
+    "count": "3"
+  },
+  "Mooroolbark": {
+    "source": "comparable_sales",
+    "median": 864,
+    "q25": 543,
+    "q75": 914,
+    "min": 308,
+    "max": 1508,
+    "count": "18"
+  },
+  "Mount Eliza": {
+    "source": "comparable_sales",
+    "median": 810,
+    "q25": 617,
+    "q75": 2050,
+    "min": 531,
+    "max": 3794,
+    "count": "16"
+  },
+  "Mount Martha": {
+    "source": "comparable_sales",
+    "median": 741,
+    "q25": 437,
+    "q75": 970,
+    "min": 219,
+    "max": 2050,
+    "count": "15"
+  },
+  "Mount Waverley": {
+    "source": "comparable_sales",
+    "median": 578,
+    "q25": 288,
+    "q75": 728,
+    "min": 217,
+    "max": 806,
+    "count": "12"
+  },
+  "Mulgrave": {
+    "source": "comparable_sales",
+    "median": 654,
+    "q25": 534,
+    "q75": 676,
+    "min": 247,
+    "max": 769,
+    "count": "12"
+  },
+  "Murrumbeena": {
+    "source": "comparable_sales",
+    "median": 465,
+    "q25": 307,
+    "q75": 621,
+    "min": 300,
+    "max": 622,
+    "count": "4"
+  },
+  "Narre Warren": {
+    "source": "comparable_sales",
+    "median": 654,
+    "q25": 545,
+    "q75": 674,
+    "min": 197,
+    "max": 811,
+    "count": "18"
+  },
+  "Narre Warren East": {
+    "source": "comparable_sales",
+    "median": 2542,
+    "q25": 2329,
+    "q75": 4298,
+    "min": 1926,
+    "max": 9331,
+    "count": "4"
+  },
+  "Narre Warren North": {
+    "source": "comparable_sales",
+    "median": 2106,
+    "q25": 1254,
+    "q75": 4010,
+    "min": 650,
+    "max": 6299,
+    "count": "14"
+  },
+  "Narre Warren South": {
+    "source": "comparable_sales",
+    "median": 607,
+    "q25": 593,
+    "q75": 645,
+    "min": 421,
+    "max": 56004,
+    "count": "18"
+  },
+  "Newport": {
+    "source": "comparable_sales",
+    "median": 420,
+    "q25": 389,
+    "q75": 444,
+    "min": 325,
+    "max": 490,
+    "count": "4"
+  },
+  "Newtown": {
+    "source": "comparable_sales",
+    "median": 510,
+    "q25": 245,
+    "q75": 590,
+    "min": 76,
+    "max": 843,
+    "count": "11"
+  },
+  "Noble Park": {
+    "source": "comparable_sales",
+    "median": 534,
+    "q25": 510,
+    "q75": 588,
+    "min": 186,
+    "max": 730,
+    "count": "12"
+  },
+  "North Melbourne": {
+    "source": "comparable_sales",
+    "median": 126,
+    "q25": 109,
+    "q75": 172,
+    "min": 92,
+    "max": 217,
+    "count": "3"
+  },
+  "Northcote": {
+    "source": "comparable_sales",
+    "median": 436,
+    "q25": 430,
+    "q75": 493,
+    "min": 424,
+    "max": 550,
+    "count": "3"
+  },
+  "Notting Hill": {
+    "source": "comparable_sales",
+    "median": 394,
+    "q25": 88,
+    "q75": 686,
+    "min": 78,
+    "max": 731,
+    "count": "8"
+  },
+  "Nunawading": {
+    "source": "comparable_sales",
+    "median": 610,
+    "q25": 604,
+    "q75": 623,
+    "min": 582,
+    "max": 688,
+    "count": "6"
+  },
+  "Oakleigh": {
+    "source": "comparable_sales",
+    "median": 409,
+    "q25": 208,
+    "q75": 506,
+    "min": 63,
+    "max": 875,
+    "count": "8"
+  },
+  "Oakleigh East": {
+    "source": "comparable_sales",
+    "median": 830,
+    "q25": 676,
+    "q75": 842,
+    "min": 521,
+    "max": 854,
+    "count": "3"
+  },
+  "Oakleigh South": {
+    "source": "comparable_sales",
+    "median": 617,
+    "q25": 548,
+    "q75": 625,
+    "min": 345,
+    "max": 632,
+    "count": "10"
+  },
+  "Ocean Grove": {
+    "source": "comparable_sales",
+    "median": 542,
+    "q25": 450,
+    "q75": 632,
+    "min": 152,
+    "max": 684,
+    "count": "15"
+  },
+  "Officer": {
+    "source": "comparable_sales",
+    "median": 381,
+    "q25": 294,
+    "q75": 514,
+    "min": 239,
+    "max": 54802,
+    "count": "20"
+  },
+  "Officer South": {
+    "source": "comparable_sales",
+    "median": 420,
+    "q25": 362,
+    "q75": 512,
+    "min": 156,
+    "max": 611,
+    "count": "18"
+  },
+  "Pakenham": {
+    "source": "comparable_sales",
+    "median": 544,
+    "q25": 381,
+    "q75": 619,
+    "min": 76,
+    "max": 894,
+    "count": "17"
+  },
+  "Parkdale": {
+    "source": "comparable_sales",
+    "median": 713,
+    "q25": 696,
+    "q75": 779,
+    "min": 691,
+    "max": 928,
+    "count": "4"
+  },
+  "Pascoe Vale": {
+    "source": "comparable_sales",
+    "median": 627,
+    "q25": 503,
+    "q75": 675,
+    "min": 268,
+    "max": 682,
+    "count": "4"
+  },
+  "Pascoe Vale South": {
+    "source": "comparable_sales",
+    "median": 556,
+    "q25": 373,
+    "q75": 610,
+    "min": 82,
+    "max": 706,
+    "count": "6"
+  },
+  "Patterson Lakes": {
+    "source": "comparable_sales",
+    "median": 619,
+    "q25": 584,
+    "q75": 750,
+    "min": 400,
+    "max": 7286,
+    "count": "12"
+  },
+  "Point Cook": {
+    "source": "comparable_sales",
+    "median": 441,
+    "q25": 382,
+    "q75": 521,
+    "min": 336,
+    "max": 796,
+    "count": "12"
+  },
+  "Preston": {
+    "source": "comparable_sales",
+    "median": 550,
+    "q25": 444,
+    "q75": 558,
+    "min": 65,
+    "max": 571,
+    "count": "7"
+  },
+  "Reservoir": {
+    "source": "comparable_sales",
+    "median": 743,
+    "q25": 604,
+    "q75": 850,
+    "min": 229,
+    "max": 1095,
+    "count": "11"
+  },
+  "Ringwood": {
+    "source": "comparable_sales",
+    "median": 632,
+    "q25": 468,
+    "q75": 756,
+    "min": 63,
+    "max": 928,
+    "count": "10"
+  },
+  "Ringwood East": {
+    "source": "comparable_sales",
+    "median": 844,
+    "q25": 423,
+    "q75": 954,
+    "min": 300,
+    "max": 1076,
+    "count": "12"
+  },
+  "Rockbank": {
+    "source": "comparable_sales",
+    "median": 350,
+    "q25": 289,
+    "q75": 370,
+    "min": 202,
+    "max": 604,
+    "count": "16"
+  },
+  "Rosanna": {
+    "source": "comparable_sales",
+    "median": 916,
+    "q25": 651,
+    "q75": 977,
+    "min": 601,
+    "max": 6132,
+    "count": "9"
+  },
+  "Rosebud": {
+    "source": "comparable_sales",
+    "median": 404,
+    "q25": 340,
+    "q75": 764,
+    "min": 171,
+    "max": 952,
+    "count": "23"
+  },
+  "Rowville": {
+    "source": "comparable_sales",
+    "median": 725,
+    "q25": 626,
+    "q75": 736,
+    "min": 299,
+    "max": 994,
+    "count": "15"
+  },
+  "Rye": {
+    "source": "comparable_sales",
+    "median": 778,
+    "q25": 632,
+    "q75": 948,
+    "min": 241,
+    "max": 1200,
+    "count": "19"
+  },
+  "Safety Beach": {
+    "source": "comparable_sales",
+    "median": 660,
+    "q25": 440,
+    "q75": 789,
+    "min": 170,
+    "max": 1215,
+    "count": "8"
+  },
+  "Sandringham": {
+    "source": "comparable_sales",
+    "median": 514,
+    "q25": 359,
+    "q75": 758,
+    "min": 300,
+    "max": 1081,
+    "count": "4"
+  },
+  "Scoresby": {
+    "source": "comparable_sales",
+    "median": 728,
+    "q25": 544,
+    "q75": 739,
+    "min": 213,
+    "max": 1056,
+    "count": "19"
+  },
+  "Seaford": {
+    "source": "comparable_sales",
+    "median": 604,
+    "q25": 388,
+    "q75": 702,
+    "min": 201,
+    "max": 1002,
+    "count": "14"
+  },
+  "Skye": {
+    "source": "comparable_sales",
+    "median": 598,
+    "q25": 507,
+    "q75": 657,
+    "min": 289,
+    "max": 3034,
+    "count": "13"
+  },
+  "Somerville": {
+    "source": "comparable_sales",
+    "median": 670,
+    "q25": 572,
+    "q75": 845,
+    "min": 184,
+    "max": 13006,
+    "count": "17"
+  },
+  "South Morang": {
+    "source": "comparable_sales",
+    "median": 544,
+    "q25": 451,
+    "q75": 682,
+    "min": 345,
+    "max": 1024,
+    "count": "13"
+  },
+  "Springvale": {
+    "source": "comparable_sales",
+    "median": 646,
+    "q25": 585,
+    "q75": 754,
+    "min": 180,
+    "max": 1292,
+    "count": "13"
+  },
+  "St Albans": {
+    "source": "comparable_sales",
+    "median": 594,
+    "q25": 538,
+    "q75": 659,
+    "min": 173,
+    "max": 766,
+    "count": "12"
+  },
+  "Strathmore": {
+    "source": "comparable_sales",
+    "median": 642,
+    "q25": 570,
+    "q75": 669,
+    "min": 370,
+    "max": 739,
+    "count": "4"
+  },
+  "Sunbury": {
+    "source": "comparable_sales",
+    "median": 701,
+    "q25": 600,
+    "q75": 748,
+    "min": 315,
+    "max": 1125,
+    "count": "19"
+  },
+  "Sunshine": {
+    "source": "comparable_sales",
+    "median": 558,
+    "q25": 483,
+    "q75": 600,
+    "min": 346,
+    "max": 698,
+    "count": "9"
+  },
+  "Sunshine North": {
+    "source": "comparable_sales",
+    "median": 617,
+    "q25": 581,
+    "q75": 656,
+    "min": 315,
+    "max": 697,
+    "count": "9"
+  },
+  "Sunshine West": {
+    "source": "comparable_sales",
+    "median": 610,
+    "q25": 535,
+    "q75": 652,
+    "min": 268,
+    "max": 709,
+    "count": "14"
+  },
+  "Tarneit": {
+    "source": "comparable_sales",
+    "median": 400,
+    "q25": 333,
+    "q75": 448,
+    "min": 150,
+    "max": 31832,
+    "count": "17"
+  },
+  "Templestowe": {
+    "source": "comparable_sales",
+    "median": 828,
+    "q25": 674,
+    "q75": 977,
+    "min": 368,
+    "max": 4044,
+    "count": "10"
+  },
+  "Thomastown": {
+    "source": "comparable_sales",
+    "median": 581,
+    "q25": 552,
+    "q75": 660,
+    "min": 535,
+    "max": 702,
+    "count": "16"
+  },
+  "Thornbury": {
+    "source": "comparable_sales",
+    "median": 480,
+    "q25": 386,
+    "q75": 528,
+    "min": 134,
+    "max": 641,
+    "count": "4"
+  },
+  "Tootgarook": {
+    "source": "comparable_sales",
+    "median": 918,
+    "q25": 665,
+    "q75": 1264,
+    "min": 535,
+    "max": 1999,
+    "count": "19"
+  },
+  "Torquay": {
+    "source": "comparable_sales",
+    "median": 455,
+    "q25": 400,
+    "q75": 575,
+    "min": 348,
+    "max": 4440,
+    "count": "14"
+  },
+  "Truganina": {
+    "source": "comparable_sales",
+    "median": 365,
+    "q25": 300,
+    "q75": 448,
+    "min": 231,
+    "max": 585,
+    "count": "17"
+  },
+  "Vermont": {
+    "source": "comparable_sales",
+    "median": 697,
+    "q25": 614,
+    "q75": 799,
+    "min": 321,
+    "max": 5459,
+    "count": "11"
+  },
+  "Vermont South": {
+    "source": "comparable_sales",
+    "median": 656,
+    "q25": 651,
+    "q75": 785,
+    "min": 479,
+    "max": 878,
+    "count": "19"
+  },
+  "Viewbank": {
+    "source": "comparable_sales",
+    "median": 586,
+    "q25": 563,
+    "q75": 652,
+    "min": 247,
+    "max": 864,
+    "count": "15"
+  },
+  "Wantirna": {
+    "source": "comparable_sales",
+    "median": 721,
+    "q25": 636,
+    "q75": 774,
+    "min": 537,
+    "max": 1672,
+    "count": "16"
+  },
+  "Wantirna South": {
+    "source": "comparable_sales",
+    "median": 730,
+    "q25": 704,
+    "q75": 750,
+    "min": 498,
+    "max": 887,
+    "count": "7"
+  },
+  "Warranwood": {
+    "source": "comparable_sales",
+    "median": 803,
+    "q25": 747,
+    "q75": 908,
+    "min": 553,
+    "max": 3631,
+    "count": "13"
+  },
+  "Watsonia": {
+    "source": "comparable_sales",
+    "median": 560,
+    "q25": 430,
+    "q75": 580,
+    "min": 238,
+    "max": 693,
+    "count": "15"
+  },
+  "Waurn Ponds": {
+    "source": "comparable_sales",
+    "median": 585,
+    "q25": 502,
+    "q75": 631,
+    "min": 228,
+    "max": 1089,
+    "count": "13"
+  },
+  "Werribee": {
+    "source": "comparable_sales",
+    "median": 430,
+    "q25": 381,
+    "q75": 615,
+    "min": 256,
+    "max": 1284,
+    "count": "16"
+  },
+  "Werribee South": {
+    "source": "comparable_sales",
+    "median": 607,
+    "q25": 412,
+    "q75": 929,
+    "min": 53,
+    "max": 2136,
+    "count": "8"
+  },
+  "West Footscray": {
+    "source": "comparable_sales",
+    "median": 334,
+    "q25": 326,
+    "q75": 406,
+    "min": 185,
+    "max": 521,
+    "count": "7"
+  },
+  "West Melbourne": {
+    "source": "comparable_sales",
+    "median": 110,
+    "q25": 59,
+    "q75": 163,
+    "min": 57,
+    "max": 270,
+    "count": "6"
+  },
+  "Wheelers Hill": {
+    "source": "comparable_sales",
+    "median": 658,
+    "q25": 654,
+    "q75": 697,
+    "min": 627,
+    "max": 764,
+    "count": "8"
+  },
+  "Williamstown": {
+    "source": "comparable_sales",
+    "median": 354,
+    "q25": 286,
+    "q75": 498,
+    "min": 102,
+    "max": 589,
+    "count": "6"
+  },
+  "Wollert": {
+    "source": "comparable_sales",
+    "median": 396,
+    "q25": 322,
+    "q75": 420,
+    "min": 179,
+    "max": 480,
+    "count": "18"
+  },
+  "Wyndham Vale": {
+    "source": "comparable_sales",
+    "median": 436,
+    "q25": 368,
+    "q75": 571,
+    "min": 201,
+    "max": 696,
+    "count": "20"
+  },
+  "Yarraville": {
+    "source": "comparable_sales",
+    "median": 337,
+    "q25": 277,
+    "q75": 412,
+    "min": 217,
+    "max": 487,
+    "count": "3"
+  }
+}

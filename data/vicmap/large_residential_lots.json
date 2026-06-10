@@ -1,0 +1,261 @@
+[
+  {
+    "suburb": "Lysterfield",
+    "median_land_m2": 1204,
+    "q25_m2": 722,
+    "q75_m2": 1406,
+    "count": "14"
+  },
+  {
+    "suburb": "Eaglemont",
+    "median_land_m2": 1115,
+    "q25_m2": 930,
+    "q75_m2": 1286,
+    "count": "5"
+  },
+  {
+    "suburb": "Donvale",
+    "median_land_m2": 1027,
+    "q25_m2": 651,
+    "q75_m2": 2058,
+    "count": "13"
+  },
+  {
+    "suburb": "Tootgarook",
+    "median_land_m2": 918,
+    "q25_m2": 665,
+    "q75_m2": 1264,
+    "count": "19"
+  },
+  {
+    "suburb": "Rosanna",
+    "median_land_m2": 916,
+    "q25_m2": 651,
+    "q75_m2": 977,
+    "count": "9"
+  },
+  {
+    "suburb": "Lilydale",
+    "median_land_m2": 874,
+    "q25_m2": 603,
+    "q75_m2": 1476,
+    "count": "14"
+  },
+  {
+    "suburb": "Kilsyth",
+    "median_land_m2": 864,
+    "q25_m2": 410,
+    "q75_m2": 880,
+    "count": "16"
+  },
+  {
+    "suburb": "Mooroolbark",
+    "median_land_m2": 864,
+    "q25_m2": 543,
+    "q75_m2": 914,
+    "count": "18"
+  },
+  {
+    "suburb": "Croydon",
+    "median_land_m2": 858,
+    "q25_m2": 774,
+    "q75_m2": 941,
+    "count": "8"
+  },
+  {
+    "suburb": "Dandenong",
+    "median_land_m2": 858,
+    "q25_m2": 712,
+    "q75_m2": 1434,
+    "count": "6"
+  },
+  {
+    "suburb": "Ringwood East",
+    "median_land_m2": 844,
+    "q25_m2": 423,
+    "q75_m2": 954,
+    "count": "12"
+  },
+  {
+    "suburb": "Templestowe",
+    "median_land_m2": 828,
+    "q25_m2": 674,
+    "q75_m2": 977,
+    "count": "10"
+  },
+  {
+    "suburb": "Macleod",
+    "median_land_m2": 825,
+    "q25_m2": 686,
+    "q75_m2": 912,
+    "count": "7"
+  },
+  {
+    "suburb": "McCrae",
+    "median_land_m2": 824,
+    "q25_m2": 438,
+    "q75_m2": 926,
+    "count": "16"
+  },
+  {
+    "suburb": "Mount Eliza",
+    "median_land_m2": 810,
+    "q25_m2": 617,
+    "q75_m2": 2050,
+    "count": "16"
+  },
+  {
+    "suburb": "Warranwood",
+    "median_land_m2": 803,
+    "q25_m2": 747,
+    "q75_m2": 908,
+    "count": "13"
+  },
+  {
+    "suburb": "Bayswater North",
+    "median_land_m2": 792,
+    "q25_m2": 785,
+    "q75_m2": 899,
+    "count": "13"
+  },
+  {
+    "suburb": "Ferntree Gully",
+    "median_land_m2": 788,
+    "q25_m2": 728,
+    "q75_m2": 1229,
+    "count": "11"
+  },
+  {
+    "suburb": "Bayswater",
+    "median_land_m2": 778,
+    "q25_m2": 726,
+    "q75_m2": 806,
+    "count": "13"
+  },
+  {
+    "suburb": "Rye",
+    "median_land_m2": 778,
+    "q25_m2": 632,
+    "q75_m2": 948,
+    "count": "19"
+  },
+  {
+    "suburb": "Croydon North",
+    "median_land_m2": 777,
+    "q25_m2": 562,
+    "q75_m2": 1050,
+    "count": "11"
+  },
+  {
+    "suburb": "Blairgowrie",
+    "median_land_m2": 762,
+    "q25_m2": 741,
+    "q75_m2": 952,
+    "count": "14"
+  },
+  {
+    "suburb": "Reservoir",
+    "median_land_m2": 743,
+    "q25_m2": 604,
+    "q75_m2": 850,
+    "count": "11"
+  },
+  {
+    "suburb": "Doncaster East",
+    "median_land_m2": 741,
+    "q25_m2": 703,
+    "q75_m2": 838,
+    "count": "12"
+  },
+  {
+    "suburb": "Mount Martha",
+    "median_land_m2": 741,
+    "q25_m2": 437,
+    "q75_m2": 970,
+    "count": "15"
+  },
+  {
+    "suburb": "Knoxfield",
+    "median_land_m2": 732,
+    "q25_m2": 668,
+    "q75_m2": 782,
+    "count": "14"
+  },
+  {
+    "suburb": "Wantirna South",
+    "median_land_m2": 730,
+    "q25_m2": 704,
+    "q75_m2": 750,
+    "count": "7"
+  },
+  {
+    "suburb": "Scoresby",
+    "median_land_m2": 728,
+    "q25_m2": 544,
+    "q75_m2": 739,
+    "count": "19"
+  },
+  {
+    "suburb": "Boronia",
+    "median_land_m2": 727,
+    "q25_m2": 726,
+    "q75_m2": 775,
+    "count": "13"
+  },
+  {
+    "suburb": "Rowville",
+    "median_land_m2": 725,
+    "q25_m2": 626,
+    "q75_m2": 736,
+    "count": "15"
+  },
+  {
+    "suburb": "Wantirna",
+    "median_land_m2": 721,
+    "q25_m2": 636,
+    "q75_m2": 774,
+    "count": "16"
+  },
+  {
+    "suburb": "Ashwood",
+    "median_land_m2": 720,
+    "q25_m2": 704,
+    "q75_m2": 765,
+    "count": "5"
+  },
+  {
+    "suburb": "Heathmont",
+    "median_land_m2": 719,
+    "q25_m2": 545,
+    "q75_m2": 786,
+    "count": "16"
+  },
+  {
+    "suburb": "Highton",
+    "median_land_m2": 714,
+    "q25_m2": 601,
+    "q75_m2": 1105,
+    "count": "12"
+  },
+  {
+    "suburb": "Beaconsfield",
+    "median_land_m2": 710,
+    "q25_m2": 679,
+    "q75_m2": 1000,
+    "count": "13"
+  },
+  {
+    "suburb": "Edithvale",
+    "median_land_m2": 702,
+    "q25_m2": 577,
+    "q75_m2": 773,
+    "count": "7"
+  },
+  {
+    "suburb": "Sunbury",
+    "median_land_m2": 701,
+    "q25_m2": 600,
+    "q75_m2": 748,
+    "count": "19"
+  }
+]
