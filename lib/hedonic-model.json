@@ -1,0 +1,1388 @@
+{
+  "modelType": "log-linear",
+  "globalCoefficients": {
+    "intercept": 11.624530252486693,
+    "perBedroom": 0.12093175313992077,
+    "perLogLand": 0.27777071555397015
+  },
+  "suburbEffects": {
+    "Aberfeldie": {
+      "logAdjustment": 0.5674186093922102,
+      "priceMultiplier": 1.763708349901198,
+      "medianResidual": 0.5455291083984974,
+      "sampleCount": 5,
+      "std": 0.11837654712895389
+    },
+    "Airport West": {
+      "logAdjustment": 0.08784658727568602,
+      "priceMultiplier": 1.0918206100050452,
+      "medianResidual": 0.11378444093242024,
+      "sampleCount": 6,
+      "std": 0.12482133430619308
+    },
+    "Altona": {
+      "logAdjustment": 0.2024223941693406,
+      "priceMultiplier": 1.2243650635670607,
+      "medianResidual": 0.12575230050883413,
+      "sampleCount": 8,
+      "std": 0.1711431631542965
+    },
+    "Altona Meadows": {
+      "logAdjustment": -0.14951629048630496,
+      "priceMultiplier": 0.8611244097700337,
+      "medianResidual": -0.15568710497752392,
+      "sampleCount": 11,
+      "std": 0.08541748963518361
+    },
+    "Altona North": {
+      "logAdjustment": -0.008008835917699488,
+      "priceMultiplier": 0.9920231493634314,
+      "medianResidual": -0.03996013354582395,
+      "sampleCount": 7,
+      "std": 0.14089733562001563
+    },
+    "Armstrong Creek": {
+      "logAdjustment": -0.24686348382867537,
+      "priceMultiplier": 0.7812473391473832,
+      "medianResidual": -0.24506877015344664,
+      "sampleCount": 18,
+      "std": 0.06895123626222142
+    },
+    "Ashwood": {
+      "logAdjustment": 0.24725800451323865,
+      "priceMultiplier": 1.2805094473791971,
+      "medianResidual": 0.3389763707068383,
+      "sampleCount": 4,
+      "std": 0.13478784220094975
+    },
+    "Aspendale": {
+      "logAdjustment": 0.40948784977035907,
+      "priceMultiplier": 1.506046265621987,
+      "medianResidual": 0.4730776854333829,
+      "sampleCount": 6,
+      "std": 0.14969455510677732
+    },
+    "Bayswater": {
+      "logAdjustment": -0.17416340529997354,
+      "priceMultiplier": 0.8401595999096981,
+      "medianResidual": -0.20080184097603038,
+      "sampleCount": 11,
+      "std": 0.0596799909644354
+    },
+    "Bayswater North": {
+      "logAdjustment": -0.1492579244522331,
+      "priceMultiplier": 0.861346923812426,
+      "medianResidual": -0.1311731634132034,
+      "sampleCount": 12,
+      "std": 0.16992176925711183
+    },
+    "Beaconsfield": {
+      "logAdjustment": -0.03322105028209954,
+      "priceMultiplier": 0.9673247085542792,
+      "medianResidual": 0.015134612954730287,
+      "sampleCount": 12,
+      "std": 0.18567781322547203
+    },
+    "Beaconsfield Upper": {
+      "logAdjustment": -0.15154634486100807,
+      "priceMultiplier": 0.8593780535935596,
+      "medianResidual": -0.08353629894347847,
+      "sampleCount": 14,
+      "std": 0.30241889303130065
+    },
+    "Beaumaris": {
+      "logAdjustment": 0.5734183611951215,
+      "priceMultiplier": 1.7743219699581565,
+      "medianResidual": 0.5480928330143069,
+      "sampleCount": 3,
+      "std": 0.07322100981544623
+    },
+    "Bell Park": {
+      "logAdjustment": -0.2671425616248684,
+      "priceMultiplier": 0.7655639236485178,
+      "medianResidual": -0.27256168062288566,
+      "sampleCount": 16,
+      "std": 0.14320667600579856
+    },
+    "Bell Post Hill": {
+      "logAdjustment": -0.25954069435460364,
+      "priceMultiplier": 0.7714058154934385,
+      "medianResidual": -0.2626673525094976,
+      "sampleCount": 22,
+      "std": 0.10748605104165919
+    },
+    "Belmont": {
+      "logAdjustment": -0.20697733189896939,
+      "priceMultiplier": 0.8130380798080206,
+      "medianResidual": -0.12726627049639028,
+      "sampleCount": 12,
+      "std": 0.19426816082782933
+    },
+    "Bentleigh East": {
+      "logAdjustment": 0.33227513727981234,
+      "priceMultiplier": 1.3941363746387352,
+      "medianResidual": 0.3312483686841574,
+      "sampleCount": 5,
+      "std": 0.06414795965932123
+    },
+    "Berwick": {
+      "logAdjustment": -0.09003806988267667,
+      "priceMultiplier": 0.9138963926805095,
+      "medianResidual": -0.10561801976476559,
+      "sampleCount": 18,
+      "std": 0.16939489044766526
+    },
+    "Black Rock": {
+      "logAdjustment": 1.1022667898622356,
+      "priceMultiplier": 3.010983561076781,
+      "medianResidual": 1.2954759914301217,
+      "sampleCount": 3,
+      "std": 0.32766678207574723
+    },
+    "Blackburn": {
+      "logAdjustment": 0.39824535281631224,
+      "priceMultiplier": 1.4892093667994502,
+      "medianResidual": 0.38745296135839524,
+      "sampleCount": 16,
+      "std": 0.0914013738099639
+    },
+    "Blackburn North": {
+      "logAdjustment": 0.3219221904398959,
+      "priceMultiplier": 1.3797774119068638,
+      "medianResidual": 0.2964371599421547,
+      "sampleCount": 16,
+      "std": 0.21680242754461415
+    },
+    "Blackburn South": {
+      "logAdjustment": 0.16285991877544811,
+      "priceMultiplier": 1.1768718204954418,
+      "medianResidual": 0.1595311815690561,
+      "sampleCount": 12,
+      "std": 0.08927054794826918
+    },
+    "Blairgowrie": {
+      "logAdjustment": 0.09995333665450991,
+      "priceMultiplier": 1.1051193483064903,
+      "medianResidual": 0.044686074886056915,
+      "sampleCount": 14,
+      "std": 0.34402288421827454
+    },
+    "Bonbeach": {
+      "logAdjustment": 0.1643986913986364,
+      "priceMultiplier": 1.1786841526597747,
+      "medianResidual": 0.1390884174830429,
+      "sampleCount": 3,
+      "std": 0.08785489247510042
+    },
+    "Boronia": {
+      "logAdjustment": -0.20100843674703223,
+      "priceMultiplier": 0.8179055310626888,
+      "medianResidual": -0.20375961942976417,
+      "sampleCount": 13,
+      "std": 0.08604265450197064
+    },
+    "Botanic Ridge": {
+      "logAdjustment": 0.0009025581682823179,
+      "priceMultiplier": 1.0009029655964725,
+      "medianResidual": -0.02195962948472996,
+      "sampleCount": 18,
+      "std": 0.15039894704198864
+    },
+    "Braybrook": {
+      "logAdjustment": -0.06880332918435249,
+      "priceMultiplier": 0.9335102562490845,
+      "medianResidual": -0.10275500079324118,
+      "sampleCount": 7,
+      "std": 0.18027714838073483
+    },
+    "Broadmeadows": {
+      "logAdjustment": -0.38156532498772244,
+      "priceMultiplier": 0.6827917812364798,
+      "medianResidual": -0.36714978561379397,
+      "sampleCount": 8,
+      "std": 0.04808505869312978
+    },
+    "Brunswick West": {
+      "logAdjustment": 0.2580528224462211,
+      "priceMultiplier": 1.2944071905726473,
+      "medianResidual": 0.3027915655571203,
+      "sampleCount": 4,
+      "std": 0.07156182553506067
+    },
+    "Bundoora": {
+      "logAdjustment": -0.16008733808253575,
+      "priceMultiplier": 0.8520693676115948,
+      "medianResidual": -0.1312762942405854,
+      "sampleCount": 9,
+      "std": 0.17262140582835336
+    },
+    "Burwood": {
+      "logAdjustment": 0.392560013017885,
+      "priceMultiplier": 1.4807667278946806,
+      "medianResidual": 0.4188271453318162,
+      "sampleCount": 7,
+      "std": 0.17842220848243834
+    },
+    "Burwood East": {
+      "logAdjustment": 0.2101920279940581,
+      "priceMultiplier": 1.2339149834271517,
+      "medianResidual": 0.2945169625355337,
+      "sampleCount": 9,
+      "std": 0.23320572039473783
+    },
+    "Cairnlea": {
+      "logAdjustment": 0.06904137874313467,
+      "priceMultiplier": 1.0714805447492992,
+      "medianResidual": 0.05969092881436211,
+      "sampleCount": 11,
+      "std": 0.12650501504925993
+    },
+    "Camberwell": {
+      "logAdjustment": 0.9044481811157574,
+      "priceMultiplier": 2.470568240629228,
+      "medianResidual": 1.0499201038827177,
+      "sampleCount": 4,
+      "std": 0.1454719227669603
+    },
+    "Canterbury": {
+      "logAdjustment": 0.7944609686176545,
+      "priceMultiplier": 2.2132476652629136,
+      "medianResidual": 0.7861445781267342,
+      "sampleCount": 4,
+      "std": 0.10886642469365623
+    },
+    "Carnegie": {
+      "logAdjustment": 0.36889756538084273,
+      "priceMultiplier": 1.4461394613424465,
+      "medianResidual": 0.35640189441257775,
+      "sampleCount": 5,
+      "std": 0.04627281415892395
+    },
+    "Caroline Springs": {
+      "logAdjustment": -0.0968644919836853,
+      "priceMultiplier": 0.907678995580198,
+      "medianResidual": -0.1312859702128506,
+      "sampleCount": 16,
+      "std": 0.11778429151779006
+    },
+    "Carrum Downs": {
+      "logAdjustment": -0.1761374138326342,
+      "priceMultiplier": 0.8385027535431329,
+      "medianResidual": -0.17208405130647186,
+      "sampleCount": 14,
+      "std": 0.07651915383303819
+    },
+    "Caulfield East": {
+      "logAdjustment": 0.48548495726824736,
+      "priceMultiplier": 1.6249628553401756,
+      "medianResidual": 0.5368737484553971,
+      "sampleCount": 4,
+      "std": 0.1112267872650886
+    },
+    "Chadstone": {
+      "logAdjustment": 0.42970241090866895,
+      "priceMultiplier": 1.5368001205411552,
+      "medianResidual": 0.49285181439385184,
+      "sampleCount": 3,
+      "std": 0.09160045065980975
+    },
+    "Chelsea": {
+      "logAdjustment": 0.35663413460983523,
+      "priceMultiplier": 1.4285131307197032,
+      "medianResidual": 0.18981308987597423,
+      "sampleCount": 3,
+      "std": 0.3009499375109839
+    },
+    "Cheltenham": {
+      "logAdjustment": 0.4209453186866939,
+      "priceMultiplier": 1.5234009745652117,
+      "medianResidual": 0.49184623568108776,
+      "sampleCount": 3,
+      "std": 0.34685460677253016
+    },
+    "Chirnside Park": {
+      "logAdjustment": -0.04867308625758054,
+      "priceMultiplier": 0.9524924616816549,
+      "medianResidual": -0.08927336664182128,
+      "sampleCount": 15,
+      "std": 0.18443006182972874
+    },
+    "Clarinda": {
+      "logAdjustment": 0.10832355699126191,
+      "priceMultiplier": 1.1144082616437194,
+      "medianResidual": 0.05870018225845719,
+      "sampleCount": 11,
+      "std": 0.17196076636522525
+    },
+    "Clayton": {
+      "logAdjustment": 0.13352771806536742,
+      "priceMultiplier": 1.1428529433686812,
+      "medianResidual": 0.09842854274744717,
+      "sampleCount": 12,
+      "std": 0.1402302570385364
+    },
+    "Clayton South": {
+      "logAdjustment": 0.06449545215631414,
+      "priceMultiplier": 1.066620727409278,
+      "medianResidual": 0.04275631814433467,
+      "sampleCount": 8,
+      "std": 0.06136307812986939
+    },
+    "Clyde": {
+      "logAdjustment": -0.20647282382113125,
+      "priceMultiplier": 0.8134483675749176,
+      "medianResidual": -0.189306747157719,
+      "sampleCount": 10,
+      "std": 0.06656457304633973
+    },
+    "Clyde North": {
+      "logAdjustment": -0.14888825151472876,
+      "priceMultiplier": 0.8616653993222237,
+      "medianResidual": -0.15910199466180153,
+      "sampleCount": 14,
+      "std": 0.11124358580097923
+    },
+    "Coburg": {
+      "logAdjustment": 0.25902235005617746,
+      "priceMultiplier": 1.2956627626399748,
+      "medianResidual": 0.29676601795004665,
+      "sampleCount": 9,
+      "std": 0.31658517554582033
+    },
+    "Coburg North": {
+      "logAdjustment": 0.22833488970483604,
+      "priceMultiplier": 1.256506045919775,
+      "medianResidual": 0.15209701484279137,
+      "sampleCount": 7,
+      "std": 0.14928477476639973
+    },
+    "Craigieburn": {
+      "logAdjustment": -0.22596456865894374,
+      "priceMultiplier": 0.7977463663885267,
+      "medianResidual": -0.19910671436229954,
+      "sampleCount": 13,
+      "std": 0.07502767928992177
+    },
+    "Cranbourne": {
+      "logAdjustment": -0.25979261454162145,
+      "priceMultiplier": 0.7712115072722421,
+      "medianResidual": -0.26525108584517376,
+      "sampleCount": 9,
+      "std": 0.08136075926985739
+    },
+    "Cranbourne East": {
+      "logAdjustment": -0.1748237045112435,
+      "priceMultiplier": 0.8396050263009444,
+      "medianResidual": -0.17428666995024678,
+      "sampleCount": 15,
+      "std": 0.0696343294018103
+    },
+    "Croydon": {
+      "logAdjustment": -0.12805971345801584,
+      "priceMultiplier": 0.8798008416254423,
+      "medianResidual": -0.19222189912026444,
+      "sampleCount": 7,
+      "std": 0.1875577594207883
+    },
+    "Croydon North": {
+      "logAdjustment": -0.09115078558302887,
+      "priceMultiplier": 0.9128800513702091,
+      "medianResidual": -0.0555691483341203,
+      "sampleCount": 10,
+      "std": 0.19468034365995343
+    },
+    "Croydon South": {
+      "logAdjustment": -0.03842548605135754,
+      "priceMultiplier": 0.9623034070950263,
+      "medianResidual": -0.07899223604213468,
+      "sampleCount": 15,
+      "std": 0.18686159008033096
+    },
+    "Dandenong": {
+      "logAdjustment": -0.12266014434458761,
+      "priceMultiplier": 0.8845642356402552,
+      "medianResidual": -0.09806164414990448,
+      "sampleCount": 5,
+      "std": 0.042843320568198826
+    },
+    "Deer Park": {
+      "logAdjustment": -0.22119188359655237,
+      "priceMultiplier": 0.8015628587685506,
+      "medianResidual": -0.2742997920168051,
+      "sampleCount": 14,
+      "std": 0.24788129830310107
+    },
+    "Derrimut": {
+      "logAdjustment": -0.14209850212040628,
+      "priceMultiplier": 0.8675357981614228,
+      "medianResidual": -0.11219522719051156,
+      "sampleCount": 14,
+      "std": 0.11782481987671956
+    },
+    "Diggers Rest": {
+      "logAdjustment": -0.4041774063472644,
+      "priceMultiplier": 0.6675256874698665,
+      "medianResidual": -0.3272275243006,
+      "sampleCount": 16,
+      "std": 0.21511967857726152
+    },
+    "Dingley Village": {
+      "logAdjustment": 0.20802343553077612,
+      "priceMultiplier": 1.2312420240211033,
+      "medianResidual": 0.2403749833660278,
+      "sampleCount": 14,
+      "std": 0.10003871642933873
+    },
+    "Doncaster": {
+      "logAdjustment": 0.3321039503236509,
+      "priceMultiplier": 1.3938977371026864,
+      "medianResidual": 0.2748610659655686,
+      "sampleCount": 8,
+      "std": 0.2116278570669736
+    },
+    "Doncaster East": {
+      "logAdjustment": 0.2875180337533578,
+      "priceMultiplier": 1.3331146330069181,
+      "medianResidual": 0.2446122816759555,
+      "sampleCount": 12,
+      "std": 0.1455091223053548
+    },
+    "Donnybrook": {
+      "logAdjustment": -0.2567853777706993,
+      "priceMultiplier": 0.7735342135885466,
+      "medianResidual": -0.278013527818624,
+      "sampleCount": 10,
+      "std": 0.10530038783085581
+    },
+    "Donvale": {
+      "logAdjustment": 0.22811403044325473,
+      "priceMultiplier": 1.2562285655654817,
+      "medianResidual": 0.2504506801906121,
+      "sampleCount": 13,
+      "std": 0.23969105601633836
+    },
+    "Dromana": {
+      "logAdjustment": -0.12792880113110391,
+      "priceMultiplier": 0.8799160259401974,
+      "medianResidual": -0.18792544089842877,
+      "sampleCount": 13,
+      "std": 0.2087088878843457
+    },
+    "Eaglemont": {
+      "logAdjustment": 0.5620051669119928,
+      "priceMultiplier": 1.754186412680489,
+      "medianResidual": 0.3890018510998612,
+      "sampleCount": 5,
+      "std": 0.29464023266129036
+    },
+    "Edithvale": {
+      "logAdjustment": 0.2538084948510715,
+      "priceMultiplier": 1.288924944867611,
+      "medianResidual": 0.2000810897593066,
+      "sampleCount": 6,
+      "std": 0.18260872140061382
+    },
+    "Elsternwick": {
+      "logAdjustment": 0.8745928397085988,
+      "priceMultiplier": 2.3978987660185638,
+      "medianResidual": 0.8626905526190516,
+      "sampleCount": 3,
+      "std": 0.1496081673130537
+    },
+    "Endeavour Hills": {
+      "logAdjustment": -0.1974567742159455,
+      "priceMultiplier": 0.8208156202596517,
+      "medianResidual": -0.1895652355141042,
+      "sampleCount": 19,
+      "std": 0.1050896173545384
+    },
+    "Epping": {
+      "logAdjustment": -0.20372836244257123,
+      "priceMultiplier": 0.8156839114819471,
+      "medianResidual": -0.18752498385364014,
+      "sampleCount": 11,
+      "std": 0.09878642512217042
+    },
+    "Essendon": {
+      "logAdjustment": 0.7364137393489067,
+      "priceMultiplier": 2.0884324055253543,
+      "medianResidual": 0.8427982430741618,
+      "sampleCount": 4,
+      "std": 0.3227143610120507
+    },
+    "Fawkner": {
+      "logAdjustment": -0.051255190440923845,
+      "priceMultiplier": 0.9500361994389617,
+      "medianResidual": -0.03337849978434804,
+      "sampleCount": 9,
+      "std": 0.12146762702718018
+    },
+    "Ferntree Gully": {
+      "logAdjustment": -0.06581778439963964,
+      "priceMultiplier": 0.9363014574809698,
+      "medianResidual": -0.07561766057156127,
+      "sampleCount": 11,
+      "std": 0.2002971826576132
+    },
+    "Footscray": {
+      "logAdjustment": 0.34308161455729635,
+      "priceMultiplier": 1.4092837753044303,
+      "medianResidual": 0.3950657906276831,
+      "sampleCount": 6,
+      "std": 0.07887551971500001
+    },
+    "Forest Hill": {
+      "logAdjustment": 0.1525209203652557,
+      "priceMultiplier": 1.1647668291872335,
+      "medianResidual": 0.14850214366329517,
+      "sampleCount": 6,
+      "std": 0.15439108428946716
+    },
+    "Frankston": {
+      "logAdjustment": -0.11548128463750773,
+      "priceMultiplier": 0.8909372462945694,
+      "medianResidual": -0.1490393693772898,
+      "sampleCount": 8,
+      "std": 0.23567571847743557
+    },
+    "Frankston South": {
+      "logAdjustment": 0.09765937517854956,
+      "priceMultiplier": 1.1025871525852762,
+      "medianResidual": 0.08561050684615701,
+      "sampleCount": 11,
+      "std": 0.08751437417619805
+    },
+    "Glen Waverley": {
+      "logAdjustment": 0.3246323484582904,
+      "priceMultiplier": 1.3835218985066104,
+      "medianResidual": 0.2796213584576517,
+      "sampleCount": 11,
+      "std": 0.20329767750920427
+    },
+    "Glenroy": {
+      "logAdjustment": -0.06120295996503433,
+      "priceMultiplier": 0.9406323097003975,
+      "medianResidual": -0.020779429552131745,
+      "sampleCount": 6,
+      "std": 0.13950783164969854
+    },
+    "Gowanbrae": {
+      "logAdjustment": 0.05473806162709458,
+      "priceMultiplier": 1.056263902388343,
+      "medianResidual": 0.07422941063024169,
+      "sampleCount": 10,
+      "std": 0.1174703766851111
+    },
+    "Greenvale": {
+      "logAdjustment": -0.015998467177868167,
+      "priceMultiplier": 0.984128828548578,
+      "medianResidual": -0.04038171048758166,
+      "sampleCount": 11,
+      "std": 0.13236192874306302
+    },
+    "Hallam": {
+      "logAdjustment": -0.20139078404141916,
+      "priceMultiplier": 0.8175928668727854,
+      "medianResidual": -0.20912683203715154,
+      "sampleCount": 7,
+      "std": 0.14585239081637671
+    },
+    "Hampton": {
+      "logAdjustment": 0.8299812694839623,
+      "priceMultiplier": 2.2932757856230213,
+      "medianResidual": 0.7749980253169788,
+      "sampleCount": 3,
+      "std": 0.09257200355496047
+    },
+    "Hampton Park": {
+      "logAdjustment": -0.25092411480083915,
+      "priceMultiplier": 0.7780814141817769,
+      "medianResidual": -0.25883539496756036,
+      "sampleCount": 15,
+      "std": 0.06243216191255958
+    },
+    "Hastings": {
+      "logAdjustment": -0.2056696934209512,
+      "priceMultiplier": 0.8141019351027385,
+      "medianResidual": -0.2334442509539283,
+      "sampleCount": 11,
+      "std": 0.19972544524149616
+    },
+    "Heatherton": {
+      "logAdjustment": 0.15092770593104574,
+      "priceMultiplier": 1.1629125833603158,
+      "medianResidual": 0.2357302447509273,
+      "sampleCount": 12,
+      "std": 0.15251822701128853
+    },
+    "Heathmont": {
+      "logAdjustment": 0.02827252328987697,
+      "priceMultiplier": 1.0286759843890387,
+      "medianResidual": 0.01995920058331002,
+      "sampleCount": 15,
+      "std": 0.16166396221624096
+    },
+    "Heidelberg": {
+      "logAdjustment": 0.21233513999973086,
+      "priceMultiplier": 1.2365622371094676,
+      "medianResidual": 0.3662045368305922,
+      "sampleCount": 4,
+      "std": 0.2737084833828089
+    },
+    "Heidelberg Heights": {
+      "logAdjustment": 0.13977222322095884,
+      "priceMultiplier": 1.1500118230334455,
+      "medianResidual": 0.12280178215736726,
+      "sampleCount": 5,
+      "std": 0.09198628724727952
+    },
+    "Highett": {
+      "logAdjustment": 0.20038200299965384,
+      "priceMultiplier": 1.2218694268063088,
+      "medianResidual": 0.09390153083406538,
+      "sampleCount": 3,
+      "std": 0.15938455430362108
+    },
+    "Highton": {
+      "logAdjustment": -0.07843097823701309,
+      "priceMultiplier": 0.9245658728958309,
+      "medianResidual": -0.10844357465276211,
+      "sampleCount": 11,
+      "std": 0.23377046760636602
+    },
+    "Hoppers Crossing": {
+      "logAdjustment": -0.32802743680851737,
+      "priceMultiplier": 0.7203432555142011,
+      "medianResidual": -0.328666744195397,
+      "sampleCount": 19,
+      "std": 0.17793065658970694
+    },
+    "Huntingdale": {
+      "logAdjustment": 0.33194927388945983,
+      "priceMultiplier": 1.3936821506445864,
+      "medianResidual": 0.29936715042042117,
+      "sampleCount": 4,
+      "std": 0.07809251141703658
+    },
+    "Ivanhoe East": {
+      "logAdjustment": 0.6365220971234145,
+      "priceMultiplier": 1.889896559448799,
+      "medianResidual": 0.7428781399927136,
+      "sampleCount": 4,
+      "std": 0.1388749448839697
+    },
+    "Keilor Park": {
+      "logAdjustment": -0.05112545521184906,
+      "priceMultiplier": 0.9501594605984097,
+      "medianResidual": -0.07131756351541263,
+      "sampleCount": 15,
+      "std": 0.14063095819716562
+    },
+    "Kew": {
+      "logAdjustment": 0.9546290090538191,
+      "priceMultiplier": 2.597706678472119,
+      "medianResidual": 1.0080404031870138,
+      "sampleCount": 3,
+      "std": 0.0755351179684188
+    },
+    "Keysborough": {
+      "logAdjustment": 0.07190740188092794,
+      "priceMultiplier": 1.0745558376074291,
+      "medianResidual": -0.020575021466131105,
+      "sampleCount": 19,
+      "std": 0.2370929978935479
+    },
+    "Kilsyth": {
+      "logAdjustment": -0.14084095527121246,
+      "priceMultiplier": 0.8686274513296006,
+      "medianResidual": -0.19041487119761058,
+      "sampleCount": 15,
+      "std": 0.14108739466815368
+    },
+    "Knoxfield": {
+      "logAdjustment": -0.011442718633464846,
+      "priceMultiplier": 0.9886225002738352,
+      "medianResidual": 0.02497763836104916,
+      "sampleCount": 14,
+      "std": 0.18733685787830368
+    },
+    "Lalor": {
+      "logAdjustment": -0.1847929607124127,
+      "priceMultiplier": 0.8312763729049479,
+      "medianResidual": -0.19946120531456124,
+      "sampleCount": 16,
+      "std": 0.10358182454200028
+    },
+    "Langwarrin": {
+      "logAdjustment": -0.14267429406263477,
+      "priceMultiplier": 0.8670364218214798,
+      "medianResidual": -0.1672868478673628,
+      "sampleCount": 11,
+      "std": 0.10623640761846395
+    },
+    "Langwarrin South": {
+      "logAdjustment": -0.01332255538077535,
+      "priceMultiplier": 0.986765797064829,
+      "medianResidual": -0.0270207946499319,
+      "sampleCount": 3,
+      "std": 0.1969522582586575
+    },
+    "Lara": {
+      "logAdjustment": -0.2589151839097544,
+      "priceMultiplier": 0.7718884888311164,
+      "medianResidual": -0.25154191204184784,
+      "sampleCount": 17,
+      "std": 0.129130712816723
+    },
+    "Laverton": {
+      "logAdjustment": -0.3478994519638585,
+      "priceMultiplier": 0.7061698766391262,
+      "medianResidual": -0.3319882101514491,
+      "sampleCount": 8,
+      "std": 0.08833495401115525
+    },
+    "Leopold": {
+      "logAdjustment": -0.2846166403659139,
+      "priceMultiplier": 0.7523026014955486,
+      "medianResidual": -0.27175774091905325,
+      "sampleCount": 11,
+      "std": 0.07339758294418577
+    },
+    "Lilydale": {
+      "logAdjustment": -0.05922372082570959,
+      "priceMultiplier": 0.9424958896102547,
+      "medianResidual": -0.05499440202666683,
+      "sampleCount": 14,
+      "std": 0.17608721159701457
+    },
+    "Lynbrook": {
+      "logAdjustment": -0.10595954789389128,
+      "priceMultiplier": 0.8994610324331318,
+      "medianResidual": -0.0964309354088364,
+      "sampleCount": 16,
+      "std": 0.08096592499140978
+    },
+    "Lyndhurst": {
+      "logAdjustment": -0.0011743676029150052,
+      "priceMultiplier": 0.9988263216968616,
+      "medianResidual": 0.023838085658930197,
+      "sampleCount": 16,
+      "std": 0.11718255369751662
+    },
+    "Lysterfield": {
+      "logAdjustment": 0.10350622942401494,
+      "priceMultiplier": 1.1090527021030854,
+      "medianResidual": 0.12878664287259411,
+      "sampleCount": 13,
+      "std": 0.20125999631367517
+    },
+    "Macleod": {
+      "logAdjustment": 0.37391107449091265,
+      "priceMultiplier": 1.4534078996727018,
+      "medianResidual": 0.4428340029083344,
+      "sampleCount": 7,
+      "std": 0.34171924524174485
+    },
+    "Maidstone": {
+      "logAdjustment": 0.12107738128465755,
+      "priceMultiplier": 1.1287122501920723,
+      "medianResidual": 0.09234421343769483,
+      "sampleCount": 5,
+      "std": 0.10847873360034992
+    },
+    "Malvern East": {
+      "logAdjustment": 0.7509750588481214,
+      "priceMultiplier": 2.119065222895553,
+      "medianResidual": 0.638864578212706,
+      "sampleCount": 4,
+      "std": 0.242394984211029
+    },
+    "Manor Lakes": {
+      "logAdjustment": -0.3458226086916196,
+      "priceMultiplier": 0.7076380048048302,
+      "medianResidual": -0.3354244350319622,
+      "sampleCount": 16,
+      "std": 0.07142804782492149
+    },
+    "McCrae": {
+      "logAdjustment": 0.005148191421191406,
+      "priceMultiplier": 1.0051614661291155,
+      "medianResidual": 0.16032080753355693,
+      "sampleCount": 10,
+      "std": 0.18823712412378843
+    },
+    "Melton": {
+      "logAdjustment": -0.44975142307929933,
+      "priceMultiplier": 0.6377866709655644,
+      "medianResidual": -0.5879119754737747,
+      "sampleCount": 3,
+      "std": 0.220938223422505
+    },
+    "Mentone": {
+      "logAdjustment": 0.4185413110805201,
+      "priceMultiplier": 1.5197431055691946,
+      "medianResidual": 0.4751506259181042,
+      "sampleCount": 3,
+      "std": 0.19059868129299562
+    },
+    "Mernda": {
+      "logAdjustment": -0.14236547692364462,
+      "priceMultiplier": 0.8673042188766988,
+      "medianResidual": -0.15340397354716373,
+      "sampleCount": 13,
+      "std": 0.0693692306930172
+    },
+    "Mickleham": {
+      "logAdjustment": -0.2224584432593435,
+      "priceMultiplier": 0.8005482742359953,
+      "medianResidual": -0.2512172835696074,
+      "sampleCount": 13,
+      "std": 0.06815141530854636
+    },
+    "Mitcham": {
+      "logAdjustment": 0.1710705844161933,
+      "priceMultiplier": 1.186574499734263,
+      "medianResidual": 0.13287794299712097,
+      "sampleCount": 11,
+      "std": 0.14782891764100897
+    },
+    "Moorabbin": {
+      "logAdjustment": 0.20396224826907408,
+      "priceMultiplier": 1.2262518594521312,
+      "medianResidual": 0.2059026238340511,
+      "sampleCount": 3,
+      "std": 0.08515692671059073
+    },
+    "Mooroolbark": {
+      "logAdjustment": -0.10547526562103325,
+      "priceMultiplier": 0.8998967309582864,
+      "medianResidual": -0.0850768603612817,
+      "sampleCount": 17,
+      "std": 0.18389975796226288
+    },
+    "Mount Eliza": {
+      "logAdjustment": 0.24677669984563722,
+      "priceMultiplier": 1.2798932804991583,
+      "medianResidual": 0.17424719284417378,
+      "sampleCount": 16,
+      "std": 0.26076132435633653
+    },
+    "Mount Martha": {
+      "logAdjustment": 0.19570561976055512,
+      "priceMultiplier": 1.2161688365594046,
+      "medianResidual": 0.19340226006016614,
+      "sampleCount": 10,
+      "std": 0.3087356115597733
+    },
+    "Mount Waverley": {
+      "logAdjustment": 0.4524546842962123,
+      "priceMultiplier": 1.5721666255648084,
+      "medianResidual": 0.44550188054289386,
+      "sampleCount": 9,
+      "std": 0.07403872300567144
+    },
+    "Mulgrave": {
+      "logAdjustment": 0.04054636851033164,
+      "priceMultiplier": 1.0413795958035788,
+      "medianResidual": -0.011984088117149128,
+      "sampleCount": 11,
+      "std": 0.13186197211677902
+    },
+    "Murrumbeena": {
+      "logAdjustment": 0.5023242935034175,
+      "priceMultiplier": 1.652557839767638,
+      "medianResidual": 0.4974312206287408,
+      "sampleCount": 3,
+      "std": 0.1629291433762652
+    },
+    "Narre Warren": {
+      "logAdjustment": -0.19327005628849675,
+      "priceMultiplier": 0.8242593476594331,
+      "medianResidual": -0.20583564339199611,
+      "sampleCount": 17,
+      "std": 0.0985063059741191
+    },
+    "Narre Warren East": {
+      "logAdjustment": -0.27558606923091666,
+      "priceMultiplier": 0.7591270917972357,
+      "medianResidual": -0.3310137504827928,
+      "sampleCount": 4,
+      "std": 0.14350895391976162
+    },
+    "Narre Warren North": {
+      "logAdjustment": -0.04658822576730041,
+      "priceMultiplier": 0.9544803470941301,
+      "medianResidual": -0.006051498373292219,
+      "sampleCount": 9,
+      "std": 0.17469469225451542
+    },
+    "Narre Warren South": {
+      "logAdjustment": -0.2151389878930124,
+      "priceMultiplier": 0.8064293484718049,
+      "medianResidual": -0.21969332645514328,
+      "sampleCount": 17,
+      "std": 0.09129219571558062
+    },
+    "Newport": {
+      "logAdjustment": 0.3564845644310748,
+      "priceMultiplier": 1.428299483733387,
+      "medianResidual": 0.4051835159026993,
+      "sampleCount": 4,
+      "std": 0.10574187797436739
+    },
+    "Newtown": {
+      "logAdjustment": 0.10970867364414705,
+      "priceMultiplier": 1.1159529166017297,
+      "medianResidual": 0.16430130630537754,
+      "sampleCount": 8,
+      "std": 0.23659896718884174
+    },
+    "Noble Park": {
+      "logAdjustment": -0.11067204165131042,
+      "priceMultiplier": 0.8952322996968896,
+      "medianResidual": -0.1279917141714222,
+      "sampleCount": 10,
+      "std": 0.07603866979326993
+    },
+    "Northcote": {
+      "logAdjustment": 0.6821998145613689,
+      "priceMultiplier": 1.978224676691059,
+      "medianResidual": 0.7465827563759504,
+      "sampleCount": 3,
+      "std": 0.16575748339198576
+    },
+    "Notting Hill": {
+      "logAdjustment": 0.12738695435518865,
+      "priceMultiplier": 1.135856457357518,
+      "medianResidual": 0.19353566758424456,
+      "sampleCount": 4,
+      "std": 0.11435009656950094
+    },
+    "Nunawading": {
+      "logAdjustment": 0.23999308073310152,
+      "priceMultiplier": 1.2712403542396704,
+      "medianResidual": 0.30078087975665646,
+      "sampleCount": 6,
+      "std": 0.22667653609696706
+    },
+    "Oakleigh": {
+      "logAdjustment": 0.4489742543087381,
+      "priceMultiplier": 1.5667043207944675,
+      "medianResidual": 0.45601834606781466,
+      "sampleCount": 5,
+      "std": 0.13190106174236013
+    },
+    "Oakleigh South": {
+      "logAdjustment": 0.2728305405087479,
+      "priceMultiplier": 1.3136776108219503,
+      "medianResidual": 0.2507543479641434,
+      "sampleCount": 9,
+      "std": 0.27194009068256814
+    },
+    "Ocean Grove": {
+      "logAdjustment": -0.1525909380297728,
+      "priceMultiplier": 0.8584808218520499,
+      "medianResidual": -0.12918215981284575,
+      "sampleCount": 10,
+      "std": 0.11957604410580507
+    },
+    "Officer": {
+      "logAdjustment": -0.1302840638506236,
+      "priceMultiplier": 0.877846031175642,
+      "medianResidual": -0.14941016764096737,
+      "sampleCount": 15,
+      "std": 0.10782172394156976
+    },
+    "Officer South": {
+      "logAdjustment": -0.09078281367845283,
+      "priceMultiplier": 0.9132160273924387,
+      "medianResidual": -0.11368798277007564,
+      "sampleCount": 18,
+      "std": 0.10637235649125133
+    },
+    "Pakenham": {
+      "logAdjustment": -0.2628160965566748,
+      "priceMultiplier": 0.7688832845935097,
+      "medianResidual": -0.23761751481562499,
+      "sampleCount": 15,
+      "std": 0.1073580886718837
+    },
+    "Parkdale": {
+      "logAdjustment": 0.5357464951391613,
+      "priceMultiplier": 1.7087233199278544,
+      "medianResidual": 0.6288793815756417,
+      "sampleCount": 4,
+      "std": 0.17944661340248663
+    },
+    "Pascoe Vale": {
+      "logAdjustment": 0.4361428352647678,
+      "priceMultiplier": 1.5467297065191612,
+      "medianResidual": 0.30082534577536535,
+      "sampleCount": 3,
+      "std": 0.4110499429229478
+    },
+    "Pascoe Vale South": {
+      "logAdjustment": 0.2717334638980038,
+      "priceMultiplier": 1.3122371961081765,
+      "medianResidual": 0.27578415748568297,
+      "sampleCount": 6,
+      "std": 0.15836951435994184
+    },
+    "Patterson Lakes": {
+      "logAdjustment": 0.23574723292296454,
+      "priceMultiplier": 1.2658543034327687,
+      "medianResidual": 0.1794442499291815,
+      "sampleCount": 12,
+      "std": 0.23257503718125655
+    },
+    "Point Cook": {
+      "logAdjustment": -0.11479365876575649,
+      "priceMultiplier": 0.8915500884741498,
+      "medianResidual": -0.1677211328641821,
+      "sampleCount": 10,
+      "std": 0.17054824517298078
+    },
+    "Preston": {
+      "logAdjustment": 0.3024485245018343,
+      "priceMultiplier": 1.3531680196304663,
+      "medianResidual": 0.3594008095132839,
+      "sampleCount": 6,
+      "std": 0.16181873941509706
+    },
+    "Reservoir": {
+      "logAdjustment": -0.05811424321574921,
+      "priceMultiplier": 0.9435421479900568,
+      "medianResidual": -0.05936601898078386,
+      "sampleCount": 11,
+      "std": 0.18138273822040168
+    },
+    "Ringwood": {
+      "logAdjustment": 0.05065652881218874,
+      "priceMultiplier": 1.0519615127545394,
+      "medianResidual": 0.023700702044608946,
+      "sampleCount": 9,
+      "std": 0.255018921793222
+    },
+    "Ringwood East": {
+      "logAdjustment": -0.051603661109755644,
+      "priceMultiplier": 0.9497051973647355,
+      "medianResidual": -0.00872211565454073,
+      "sampleCount": 9,
+      "std": 0.16051203880635484
+    },
+    "Rockbank": {
+      "logAdjustment": -0.3637581727085721,
+      "priceMultiplier": 0.6950592587187814,
+      "medianResidual": -0.34223426787911393,
+      "sampleCount": 13,
+      "std": 0.0760563311482034
+    },
+    "Rosanna": {
+      "logAdjustment": 0.1609833516797098,
+      "priceMultiplier": 1.1746654124450615,
+      "medianResidual": 0.24375616663519573,
+      "sampleCount": 9,
+      "std": 0.2375005132025266
+    },
+    "Rosebud": {
+      "logAdjustment": -0.17057690070317963,
+      "priceMultiplier": 0.8431782461353567,
+      "medianResidual": -0.2669688021482255,
+      "sampleCount": 19,
+      "std": 0.18190981722697752
+    },
+    "Rowville": {
+      "logAdjustment": 0.018948962945291234,
+      "priceMultiplier": 1.0191296339151992,
+      "medianResidual": 0.031360820268572454,
+      "sampleCount": 15,
+      "std": 0.09228888373067282
+    },
+    "Rye": {
+      "logAdjustment": -0.21118500365684015,
+      "priceMultiplier": 0.809624269574641,
+      "medianResidual": -0.2590373604927798,
+      "sampleCount": 17,
+      "std": 0.22004940058251884
+    },
+    "Safety Beach": {
+      "logAdjustment": 0.11427132280324533,
+      "priceMultiplier": 1.1210562517488307,
+      "medianResidual": 0.14131848968826333,
+      "sampleCount": 6,
+      "std": 0.24484331567457962
+    },
+    "Sandringham": {
+      "logAdjustment": 0.6144812017606864,
+      "priceMultiplier": 1.8486972498471297,
+      "medianResidual": 0.610995709532185,
+      "sampleCount": 4,
+      "std": 0.17570275276543207
+    },
+    "Scoresby": {
+      "logAdjustment": -0.037018726868498865,
+      "priceMultiplier": 0.9636580888817687,
+      "medianResidual": -0.06735037342571282,
+      "sampleCount": 17,
+      "std": 0.14187175329321788
+    },
+    "Seaford": {
+      "logAdjustment": -0.07559669723924738,
+      "priceMultiplier": 0.9271900694791042,
+      "medianResidual": -0.06194954130174146,
+      "sampleCount": 12,
+      "std": 0.09189575233272278
+    },
+    "Skye": {
+      "logAdjustment": -0.15740226360986684,
+      "priceMultiplier": 0.8543603116207468,
+      "medianResidual": -0.15295587610093264,
+      "sampleCount": 13,
+      "std": 0.078732343579568
+    },
+    "Somerville": {
+      "logAdjustment": -0.11573735535024113,
+      "priceMultiplier": 0.890709132566779,
+      "medianResidual": -0.12580879731722128,
+      "sampleCount": 13,
+      "std": 0.12560280458352793
+    },
+    "South Morang": {
+      "logAdjustment": -0.1361724709221627,
+      "priceMultiplier": 0.8726921054961289,
+      "medianResidual": -0.10994897699467643,
+      "sampleCount": 11,
+      "std": 0.11372787499037137
+    },
+    "Springvale": {
+      "logAdjustment": -0.0018581519885865888,
+      "priceMultiplier": 0.9981435733070338,
+      "medianResidual": -0.07884392959010711,
+      "sampleCount": 13,
+      "std": 0.2073983776752181
+    },
+    "St Albans": {
+      "logAdjustment": -0.26492591175990904,
+      "priceMultiplier": 0.7672627930201512,
+      "medianResidual": -0.2563728808196277,
+      "sampleCount": 10,
+      "std": 0.05112202146166636
+    },
+    "Strathmore": {
+      "logAdjustment": 0.37371071142826917,
+      "priceMultiplier": 1.4531167195864942,
+      "medianResidual": 0.39035547125050485,
+      "sampleCount": 4,
+      "std": 0.13551654951656175
+    },
+    "Sunbury": {
+      "logAdjustment": -0.3256429778342667,
+      "priceMultiplier": 0.722062933890832,
+      "medianResidual": -0.34647501817157256,
+      "sampleCount": 19,
+      "std": 0.12571338586289027
+    },
+    "Sunshine": {
+      "logAdjustment": -0.02983753189438312,
+      "priceMultiplier": 0.9706032128045263,
+      "medianResidual": -0.13135428224013168,
+      "sampleCount": 9,
+      "std": 0.20760427106489457
+    },
+    "Sunshine North": {
+      "logAdjustment": -0.15010323094265784,
+      "priceMultiplier": 0.8606191293152626,
+      "medianResidual": -0.20502480361049003,
+      "sampleCount": 9,
+      "std": 0.16633594267153806
+    },
+    "Sunshine West": {
+      "logAdjustment": -0.2040998451377358,
+      "priceMultiplier": 0.8153809552990811,
+      "medianResidual": -0.22252822003929573,
+      "sampleCount": 14,
+      "std": 0.08248459104221971
+    },
+    "Tarneit": {
+      "logAdjustment": -0.32172221906619825,
+      "priceMultiplier": 0.7248995256321966,
+      "medianResidual": -0.30885269470958754,
+      "sampleCount": 14,
+      "std": 0.05632139617202974
+    },
+    "Templestowe": {
+      "logAdjustment": 0.37322119564160733,
+      "priceMultiplier": 1.4524055700860488,
+      "medianResidual": 0.4267473032411644,
+      "sampleCount": 9,
+      "std": 0.26272031081279457
+    },
+    "Thomastown": {
+      "logAdjustment": -0.22798481286151817,
+      "priceMultiplier": 0.7961363507766497,
+      "medianResidual": -0.21544927658570678,
+      "sampleCount": 16,
+      "std": 0.09905143675277406
+    },
+    "Thornbury": {
+      "logAdjustment": 0.6317553133063916,
+      "priceMultiplier": 1.8809092683678132,
+      "medianResidual": 0.7706246911520864,
+      "sampleCount": 4,
+      "std": 0.1519810456704128
+    },
+    "Tootgarook": {
+      "logAdjustment": -0.22471452454989999,
+      "priceMultiplier": 0.7987442080774678,
+      "medianResidual": -0.20953790698685815,
+      "sampleCount": 17,
+      "std": 0.1526729333651999
+    },
+    "Torquay": {
+      "logAdjustment": 0.20555021716529673,
+      "priceMultiplier": 1.2282006561686474,
+      "medianResidual": 0.19655374924133895,
+      "sampleCount": 14,
+      "std": 0.22171479154394508
+    },
+    "Truganina": {
+      "logAdjustment": -0.2905997184199619,
+      "priceMultiplier": 0.7478149546682606,
+      "medianResidual": -0.2960490872619488,
+      "sampleCount": 15,
+      "std": 0.05972679101273438
+    },
+    "Vermont": {
+      "logAdjustment": 0.13955111696785735,
+      "priceMultiplier": 1.1497575763370351,
+      "medianResidual": 0.16550576602249834,
+      "sampleCount": 11,
+      "std": 0.19579386727810807
+    },
+    "Vermont South": {
+      "logAdjustment": 0.2406678397905698,
+      "priceMultiplier": 1.2720984246457454,
+      "medianResidual": 0.20588089200740534,
+      "sampleCount": 19,
+      "std": 0.09864244669901087
+    },
+    "Viewbank": {
+      "logAdjustment": 0.160268544704599,
+      "priceMultiplier": 1.173826053440399,
+      "medianResidual": 0.14339024815505752,
+      "sampleCount": 15,
+      "std": 0.14465253566583244
+    },
+    "Wantirna": {
+      "logAdjustment": 0.06972124465675589,
+      "priceMultiplier": 1.0722092555335254,
+      "medianResidual": 0.07668536844374074,
+      "sampleCount": 16,
+      "std": 0.14172390928240858
+    },
+    "Wantirna South": {
+      "logAdjustment": 0.08577067108427576,
+      "priceMultiplier": 1.0895564328567304,
+      "medianResidual": 0.09552639390404316,
+      "sampleCount": 7,
+      "std": 0.14877420715702597
+    },
+    "Warranwood": {
+      "logAdjustment": 0.021257507275748082,
+      "priceMultiplier": 1.0214850576075019,
+      "medianResidual": 0.05036119024034491,
+      "sampleCount": 12,
+      "std": 0.14116784172138197
+    },
+    "Watsonia": {
+      "logAdjustment": 0.04355513715152075,
+      "priceMultiplier": 1.0445175844486534,
+      "medianResidual": 0.01046461765372797,
+      "sampleCount": 13,
+      "std": 0.10765599435397119
+    },
+    "Waurn Ponds": {
+      "logAdjustment": -0.22715197572645218,
+      "priceMultiplier": 0.7967996788779489,
+      "medianResidual": -0.21162591897358496,
+      "sampleCount": 12,
+      "std": 0.0802721214612409
+    },
+    "Werribee": {
+      "logAdjustment": -0.2119411503443805,
+      "priceMultiplier": 0.8090123062612239,
+      "medianResidual": -0.23907045353259448,
+      "sampleCount": 14,
+      "std": 0.28828697063626224
+    },
+    "Werribee South": {
+      "logAdjustment": -0.14840868282101707,
+      "priceMultiplier": 0.8620787261735807,
+      "medianResidual": -0.19121700892557136,
+      "sampleCount": 6,
+      "std": 0.39354548315662863
+    },
+    "West Footscray": {
+      "logAdjustment": 0.2304012228773788,
+      "priceMultiplier": 1.259105090365068,
+      "medianResidual": 0.23338641034989394,
+      "sampleCount": 7,
+      "std": 0.2559547744908864
+    },
+    "Wheelers Hill": {
+      "logAdjustment": 0.1739880159761702,
+      "priceMultiplier": 1.1900413042515587,
+      "medianResidual": 0.18219024211394874,
+      "sampleCount": 8,
+      "std": 0.11056285975063469
+    },
+    "Williamstown": {
+      "logAdjustment": 0.6027494674139675,
+      "priceMultiplier": 1.827135550191238,
+      "medianResidual": 0.5363204581059566,
+      "sampleCount": 5,
+      "std": 0.1535364223572452
+    },
+    "Wollert": {
+      "logAdjustment": -0.21839047280981347,
+      "priceMultiplier": 0.8038115138400386,
+      "medianResidual": -0.22101408385421806,
+      "sampleCount": 15,
+      "std": 0.08936530894551498
+    },
+    "Wyndham Vale": {
+      "logAdjustment": -0.3882218091002553,
+      "priceMultiplier": 0.6782618819201072,
+      "medianResidual": -0.36373371675673916,
+      "sampleCount": 16,
+      "std": 0.1098645576734565
+    },
+    "Yarraville": {
+      "logAdjustment": 0.644105180732956,
+      "priceMultiplier": 1.9042822781912,
+      "medianResidual": 0.8345823964704646,
+      "sampleCount": 3,
+      "std": 0.34077054973495197
+    }
+  },
+  "metrics": {
+    "r2Log": 0.2645218302016661,
+    "r2Price": 1,
+    "mape": 23.92319582870502,
+    "rmse": 447676.6498066056,
+    "trainingSize": 2034
+  },
+  "metadata": {
+    "version": "2.0",
+    "trainedAt": "2026-06-10T06:34:25.795Z",
+    "model": "log(price) ~ bedrooms + log(landSize) + suburb_effects",
+    "config": {
+      "minPrice": 200000,
+      "maxPrice": 12000000,
+      "maxLandSize": 10000,
+      "minLandSize": 80,
+      "minPerSuburb": 3,
+      "maxBedrooms": 8
+    }
+  }
+}
