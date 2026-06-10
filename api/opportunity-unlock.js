@@ -50,21 +50,33 @@ export default async function handler(req, res) {
 
     /* ── GET: Check registration status ── */
     if (req.method === "GET") {
-      const email = clean(req.query.email, 254).toLowerCase();
-      if (!email || !email.includes("@")) {
-        return res.status(200).json({ ok: false, status: "none", error: "Valid email required" });
+      const email = clean(req.query.email || "", 254).toLowerCase();
+      const phone = clean(req.query.phone || "", 30);
+      if (email && email.includes("@")) {
+        var rows = await sql`
+          SELECT id, name, email, phone, contact_consent, consent_timestamp, source,
+                 strategy, budget_min, budget_max, property_type, destination_state,
+                 created_at, updated_at
+          FROM leads
+          WHERE LOWER(email) = ${email}
+            AND source = 'top_opportunities'
+          ORDER BY updated_at DESC
+          LIMIT 1
+        `;
+      } else if (phone) {
+        var rows = await sql`
+          SELECT id, name, email, phone, contact_consent, consent_timestamp, source,
+                 strategy, budget_min, budget_max, property_type, destination_state,
+                 created_at, updated_at
+          FROM leads
+          WHERE phone = ${phone}
+            AND source = 'top_opportunities'
+          ORDER BY updated_at DESC
+          LIMIT 1
+        `;
+      } else {
+        return res.status(200).json({ ok: false, status: "none", error: "Email or phone required" });
       }
-
-      const rows = await sql`
-        SELECT id, name, email, phone, contact_consent, consent_timestamp, source,
-               strategy, budget_min, budget_max, property_type, destination_state,
-               created_at, updated_at
-        FROM leads
-        WHERE LOWER(email) = ${email}
-          AND source = 'top_opportunities'
-        ORDER BY updated_at DESC
-        LIMIT 1
-      `;
 
       if (!rows.length) {
         return res.status(200).json({ ok: true, status: "none", lead: null });

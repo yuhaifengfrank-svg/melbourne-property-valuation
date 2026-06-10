@@ -2284,18 +2284,25 @@ const existingLink = byId("existing-unlock-link");
 if (existingLink) {
   existingLink.addEventListener("click", async (e) => {
     e.preventDefault();
-    var email = prompt(language === "zh" ? "请输入注册时使用的邮箱：" : "Enter the email you registered with:");
-    if (!email || !email.includes("@")) return;
+    var contact = prompt(language === "zh" ? "输入注册时使用的邮箱或手机号：" : "Enter the email or phone you registered with:");
+    if (!contact || contact.trim().length < 2) return;
+    contact = contact.trim();
+    var isEmail = contact.includes("@");
+    var url = isEmail
+      ? "/api/opportunity-unlock?email=" + encodeURIComponent(contact)
+      : "/api/opportunity-unlock?phone=" + encodeURIComponent(contact);
     try {
-      var res = await fetch("/api/opportunity-unlock?email=" + encodeURIComponent(email.trim()));
+      var res = await fetch(url);
       if (!res.ok) { alert(language === "zh" ? "验证失败，请稍后再试。" : "Verification failed, please try again."); return; }
       var data = await res.json();
       if (!data.ok || data.status !== "full") {
-        alert(language === "zh" ? "该邮箱尚未注册，请先填写上方表格。" : "This email is not registered. Please fill in the form above.");
+        alert(language === "zh" ? "该联系方式尚未注册，请先填写上方表格。" : "This contact is not registered. Please fill in the form above.");
         return;
       }
       /* Restore unlocked state */
-      try { localStorage.setItem("aushomevalue.reg.email", JSON.stringify(email.trim())); } catch(e) {}
+      if (isEmail) {
+        try { localStorage.setItem("aushomevalue.reg.email", JSON.stringify(contact)); } catch(e) {}
+      }
       unlocked = true;
       renderLockState();
       renderComparables(currentValuation.comparables);
