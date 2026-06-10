@@ -2155,6 +2155,11 @@ async function saveLead({ pdfDownload = false } = {}) {
     lead.priority = savedLead?.priority;
     lead.shouldSendNotification = databaseResult.notification?.should_send !== false;
     stored = true;
+    /* Persist email so page reload can restore unlocked state */
+    try { localStorage.setItem("aushomevalue.reg.email", JSON.stringify(email)); } catch(e) {}
+    if (window.opportunityGate) {
+      try { localStorage.setItem("lead.unlocked.v2", "true"); } catch(e) {}
+    }
   } catch (error) {
     console.error(error);
   }
@@ -2407,6 +2412,26 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 applyLanguage();
+
+/* Restore unlocked state from previous registration */
+(function restoreUnlockedSession() {
+  async function checkServer() {
+    try {
+      var stored = localStorage.getItem("aushomevalue.reg.email");
+      if (!stored) return;
+      var email = JSON.parse(stored);
+      if (!email || !email.includes("@")) return;
+      var res = await fetch("/api/opportunity-unlock?email=" + encodeURIComponent(email));
+      if (!res.ok) return;
+      var data = await res.json();
+      if (data.ok && data.status === "full") {
+        unlocked = true;
+        renderLockState();
+      }
+    } catch(e) {}
+  }
+  setTimeout(checkServer, 500);
+})();
 
 /* ── Home Page Top Opportunities Snippet (live from API) ── */
 async function loadHomeOpportunities() {
