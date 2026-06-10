@@ -135,6 +135,20 @@ async function upsertRecords(suburb, records) {
 }
 
 // ── Format scraped sales into comparable records ──
+function inferPropertyTypeFromRecord(s, suburb) {
+  const addr = (s.address || "").toLowerCase();
+  // 地址格式 check: 数字/数字 → Unit
+  if (/^\s*\d+\s*\//.test(addr)) return "Unit";
+  // 关键词 check
+  if (/\b(?:unit|flat|apartment|apt)\b/i.test(addr)) return "Unit";
+  if (/\btown(?:house)?\b/i.test(addr)) return "Townhouse";
+  if (/\bvilla\b/i.test(addr)) return "Villa";
+  if (/\bland\b/i.test(addr) || /vacant/i.test(addr)) return "Vacant land";
+  // 如果 source 来自 REA domain 筛选 URL 中含 unit-apartment
+  if (s.sourceUrl && /propertyTypes=unit-apartment/i.test(s.sourceUrl)) return "Unit";
+  return "House";
+}
+
 function formatRecords(sales, suburb) {
   const minDate = null;
   const maxDate = null;
@@ -157,7 +171,7 @@ function formatRecords(sales, suburb) {
       sale_address: s.address,
       sale_price: s.price || s.salePrice || 0,
       sale_date: sd,
-      property_type: "House",
+      property_type: s.propertyType || inferPropertyTypeFromRecord(s, suburb),
       bedrooms: s.bedrooms || null,
       bathrooms: s.bathrooms || null,
       car_spaces: s.carSpaces || null,
