@@ -1667,6 +1667,10 @@ function applyLanguage() {
   byId("lead-email").placeholder = language === "zh" ? "you@example.com" : "you@example.com";
   byId("lead-name").placeholder = language === "zh" ? "你的姓名" : "Your name";
   byId("lead-phone").placeholder = language === "zh" ? "下载 PDF 时需要" : "For PDF download";
+  var existingLink = byId("existing-unlock-link");
+  if (existingLink) {
+    existingLink.textContent = language === "zh" ? "已注册？输入邮箱直接解锁" : "Already registered? Enter your email to unlock";
+  }
   byId("manual-data-notes").placeholder =
     language === "zh"
       ? "例如：产权确认土地面积，厨房翻新，街道安静较宽，没有明显地役权。"
@@ -2272,6 +2276,33 @@ if (unlockBtn) {
     renderLockState();
     renderComparables(currentValuation.comparables);
     showReportGuideModal();
+  });
+}
+
+/* Already registered — just enter email to re-unlock */
+const existingLink = byId("existing-unlock-link");
+if (existingLink) {
+  existingLink.addEventListener("click", async (e) => {
+    e.preventDefault();
+    var email = prompt(language === "zh" ? "请输入注册时使用的邮箱：" : "Enter the email you registered with:");
+    if (!email || !email.includes("@")) return;
+    try {
+      var res = await fetch("/api/opportunity-unlock?email=" + encodeURIComponent(email.trim()));
+      if (!res.ok) { alert(language === "zh" ? "验证失败，请稍后再试。" : "Verification failed, please try again."); return; }
+      var data = await res.json();
+      if (!data.ok || data.status !== "full") {
+        alert(language === "zh" ? "该邮箱尚未注册，请先填写上方表格。" : "This email is not registered. Please fill in the form above.");
+        return;
+      }
+      /* Restore unlocked state */
+      try { localStorage.setItem("aushomevalue.reg.email", JSON.stringify(email.trim())); } catch(e) {}
+      unlocked = true;
+      renderLockState();
+      renderComparables(currentValuation.comparables);
+      showReportGuideModal();
+    } catch(e) {
+      alert(language === "zh" ? "网络错误，请稍后再试。" : "Network error, please try again.");
+    }
   });
 }
 

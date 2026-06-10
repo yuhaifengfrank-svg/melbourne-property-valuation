@@ -596,6 +596,20 @@ button:hover {
   font-weight: 500;
 }
 
+.existing-unlock {
+  margin: 0.75rem 0 0;
+  font-size: 0.8125rem;
+  text-align: center;
+}
+.existing-unlock a {
+  color: var(--link);
+  cursor: pointer;
+  text-decoration: underline;
+}
+.existing-unlock a:hover {
+  opacity: 0.8;
+}
+
 .lead-form input:not([type="checkbox"]) {
   border: 1px solid var(--line);
   width: 100%;
@@ -2243,6 +2257,9 @@ th {
               <button id="unlock-report" type="button">Register and unlock</button>
               <p class="form-provider-note">Submission details are securely stored for report delivery and customer follow-up. We may record an approximate visitor region, but do not display your full IP address.</p>
               <p class="form-message" id="lead-message" aria-live="polite"></p>
+              <p class="existing-unlock">
+                <a id="existing-unlock-link" href="#">Already registered? Enter your email to unlock</a>
+              </p>
             </form>
             <div class="report-guide hidden" id="report-guide">
               <p class="eyebrow">Report unlocked</p>
