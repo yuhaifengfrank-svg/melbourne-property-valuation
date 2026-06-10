@@ -8,6 +8,9 @@ import { runValuation } from "../lib/valuation-service.js";
 function sanitizeForClient(obj, debug = false) {
   const safe = JSON.parse(JSON.stringify(obj));
 
+  // 保留关键元数据
+  // dataTier, valuationMethod, subject 保留
+
   // 删除内部字段（顶层）
   delete safe.sourceResults;
   delete safe.isSingleSource;
@@ -82,6 +85,7 @@ function sanitizeForClient(obj, debug = false) {
 
 function mapCustomerDataStatus(obj) {
   // evidenceMode 转换逻辑（从 runValuation 的原始响应中计算）
+  if (obj.customerDataStatus === 'model_based') return 'model_based';
   if (!obj.valuation?.ok || !obj.valuation?.estimate) return "unavailable";
   const acc = obj.valuation?.acceptedComparables || [];
   const crossVerified = acc.filter(c => c.verificationStatus === "cross_source_verified").length;

@@ -137,16 +137,25 @@ async function upsertRecords(suburb, records) {
 // ── Format scraped sales into comparable records ──
 function inferPropertyTypeFromRecord(s, suburb) {
   const addr = (s.address || "").toLowerCase();
-  // 地址格式 check: 数字/数字 → Unit
-  if (/^\s*\d+\s*\//.test(addr)) return "Unit";
-  // 关键词 check
-  if (/\b(?:unit|flat|apartment|apt)\b/i.test(addr)) return "Unit";
-  if (/\btown(?:house)?\b/i.test(addr)) return "Townhouse";
-  if (/\bvilla\b/i.test(addr)) return "Villa";
-  if (/\bland\b/i.test(addr) || /vacant/i.test(addr)) return "Vacant land";
-  // 如果 source 来自 REA domain 筛选 URL 中含 unit-apartment
-  if (s.sourceUrl && /propertyTypes=unit-apartment/i.test(s.sourceUrl)) return "Unit";
-  return "House";
+  // Address format check: digit/digit prefix → Unit
+  if (/^\s*\d+\s*\//.test(addr)) return { type: "Unit", confidence: "high", source: "address_format" };
+  // Keyword check
+  if (/\b(?:unit|flat|apartment|apt)\b/i.test(addr)) return { type: "Unit", confidence: "high", source: "keyword" };
+  if (/\btown(?:house)?\b/i.test(addr)) return { type: "Townhouse", confidence: "high", source: "keyword" };
+  if (/\bvilla\b/i.test(addr)) return { type: "Villa", confidence: "medium", source: "keyword" };
+  if (/\bland\b/i.test(addr) || /vacant/i.test(addr)) return { type: "Vacant land", confidence: "high", source: "keyword" };
+  // If source URL is REA with unit-apartment type filter
+  if (s.sourceUrl && /propertyTypes=unit-apartment/i.test(s.sourceUrl)) return { type: "Unit", confidence: "high", source: "source_url" };
+  // If s.propertyType is a detected/scraped type from browser-collector, trust it
+  if (s.propertyType && ['Unit','Apartment','Townhouse','Villa','Vacant land'].includes(s.propertyType)) {
+    return { type: s.propertyType, confidence: "high", source: "scraper" };
+  }
+  // Legacy check: if s.propertyType was explicitly set by browser-collector, preserve it
+  if (s.propertyType && s.propertyType !== 'House') {
+    return { type: s.propertyType, confidence: "medium", source: "scraper_fallback" };
+  }
+  // Default to House with medium confidence when no other signals
+  return { type: "House", confidence: "medium", source: "default" };
 }
 
 function formatRecords(sales, suburb) {
@@ -171,7 +180,9 @@ function formatRecords(sales, suburb) {
       sale_address: s.address,
       sale_price: s.price || s.salePrice || 0,
       sale_date: sd,
-      property_type: s.propertyType || inferPropertyTypeFromRecord(s, suburb),
+      property_type: s.propertyType 
+        || inferPropertyTypeFromRecord(s, suburb).type
+        || "Unknown",
       bedrooms: s.bedrooms || null,
       bathrooms: s.bathrooms || null,
       car_spaces: s.carSpaces || null,
@@ -188,6 +199,7 @@ function formatRecords(sales, suburb) {
         domainLanding: hasDomain,
         collectionUrl: s.collectionUrl || s.sourceUrl || null,
         batchDate: BATCH_DATE,
+        typeInference: inferPropertyTypeFromRecord(s, suburb),
       },
     };
   });
