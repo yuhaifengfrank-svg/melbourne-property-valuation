@@ -1,0 +1,13 @@
+{
+  "topic": "top-school",
+  "strategy": "school",
+  "titleZh": "顶级学区",
+  "titleEn": "Best-School",
+  "generatedAt": "2026-06-11T00:50:21.879Z",
+  "dataAgeHours": null,
+  "suburbCount": 10,
+  "deepDiveSuburb": "Deer Park",
+  "deepDiveConfidence": 36,
+  "titleVariantUsed": "zh_aspirational",
+  "filenameBase": "2026-top-school-victoria"
+}

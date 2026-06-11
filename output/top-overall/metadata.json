@@ -1,0 +1,13 @@
+{
+  "topic": "top-overall",
+  "strategy": "overall",
+  "titleZh": "最佳投资",
+  "titleEn": "Best-Overall",
+  "generatedAt": "2026-06-11T00:50:22.904Z",
+  "dataAgeHours": null,
+  "suburbCount": 10,
+  "deepDiveSuburb": "Deer Park",
+  "deepDiveConfidence": 36,
+  "titleVariantUsed": "zh_aspirational",
+  "filenameBase": "2026-top-overall-victoria"
+}

@@ -1,0 +1,13 @@
+{
+  "topic": "top-growth",
+  "strategy": "growth",
+  "titleZh": "增长最快",
+  "titleEn": "Fastest-Growing",
+  "generatedAt": "2026-06-11T00:50:20.338Z",
+  "dataAgeHours": null,
+  "suburbCount": 10,
+  "deepDiveSuburb": "Deer Park",
+  "deepDiveConfidence": 36,
+  "titleVariantUsed": "zh_aspirational",
+  "filenameBase": "2026-top-growth-victoria"
+}

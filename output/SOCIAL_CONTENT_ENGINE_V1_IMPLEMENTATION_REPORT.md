@@ -1,0 +1,182 @@
+# Social Content Engine V1 — Implementation Report
+
+**Date:** 2026-06-11  
+**Author:** 玄甲  
+**Status:** Implemented ✅
+
+---
+
+## 1. Summary
+
+The Social Content Engine V1 converts live API data into structured social media content packages. Each run fetches ranking data from the production API (`www.aushomevalue.com.au/api/opportunity`) and renders 6 content files + 1 metadata file per topic.
+
+**Total topics generated:** 6  
+**Total files produced:** 42 (7 files × 6 topics)
+
+---
+
+## 2. Files per Topic
+
+| # | File | Description |
+|---|------|-------------|
+| 1 | `metadata.json` | Generation timestamp, topic, suburb count, deep-dive suburb |
+| 2 | `content-title.md` | 3 title variants (2 Chinese, 1 English) |
+| 3 | `xiaohongshu.md` | Full 小红书 post with data + hashtags |
+| 4 | `wechat-article-outline.md` | WeChat article outline with 6-section structure |
+| 5 | `video-30s.md` | 30-second short-form video script with timestamps |
+| 6 | `video-60s.md` | 60-second long-form video script with timestamps |
+| 7 | `screenshot-plan.md` | Screenshot checklist for manual capture |
+
+---
+
+## 3. Generated Outputs
+
+```
+output/
+├── SOCIAL_CONTENT_ENGINE_V1_IMPLEMENTATION_REPORT.md  ← this file
+├── top-growth/
+│   ├── metadata.json
+│   ├── content-title.md
+│   ├── xiaohongshu.md
+│   ├── wechat-article-outline.md
+│   ├── video-30s.md
+│   ├── video-60s.md
+│   └── screenshot-plan.md
+├── top-value/
+│   ├── ...
+├── top-yield/
+│   ├── ...
+├── top-school/
+│   ├── ...
+├── top-supply/
+│   ├── ...
+└── top-overall/
+    ├── ...
+```
+
+---
+
+## 4. Sample Output: top-growth
+
+### metadata.json
+```json
+{
+  "topic": "top-growth",
+  "strategy": "growth",
+  "titleZh": "增长最快",
+  "titleEn": "Fastest-Growing",
+  "generatedAt": "2026-06-11T00:50:22.301Z",
+  "suburbCount": 10,
+  "deepDiveSuburb": "Deer Park",
+  "deepDiveConfidence": 36,
+  "titleVariantUsed": "zh_aspirational",
+  "filenameBase": "2026-top-growth-victoria"
+}
+```
+
+### content-title.md
+```
+### Variant 1
+2026 维州增长最快的 10 个郊区：年涨幅最高达 +20% — +30%
+
+### Variant 2
+维州这些郊区还在涨？2026 最新数据告诉你答案
+
+### Variant 3
+2026 Victoria's 10 Fastest-Growing Suburbs — Up to +20% — +30%
+```
+
+### xiaohongshu.md (abridged)
+```
+【2026 维州增长最快的 10 个郊区：年涨幅最高达 +20% — +30%】
+
+🏠 数据来源：AusHomeValue 多维度评分系统
+━━━━━━━━━━━━━━━━
+墨尔本房市回暖？不是所有郊区都在涨。我们筛选了...
+━━━━━━━━━━━━━━━━
+📊 TOP 3：
+NO.1 Deer Park — 机会分 36，增长领先
+💰 中位价 $730,000
+📈 +25%（3年涨幅）
+🏫 学区评分 40.2
+NO.2 Clyde North — 机会分 36...
+NO.3 South Morang — 机会分 35...
+━━━━━━━━━━━━━━━━
+💡 深度分析：Deer Park 是这份榜单中最值得关注的郊区...
+━━━━━━━━━━━━━━━━
+#澳洲房产 #维州房产 #增长最快 #AusHomeValue
+```
+
+### video-30s.md (abridged)
+```
+--- 00:00-00:05 ---
+VISUAL: [Screenshot of ranking page title / Top 1 suburb card]
+AUDIO: "2026 维州增长最快的 10 个郊区，第一名你绝对猜不到。"
+TEXT OVERLAY: "增长最快 TOP 10"
+
+--- 00:05-00:10 ---
+VISUAL: [Quick montage: 3 suburb score cards, 0.5s each]
+AUDIO: "No.1 Deer Park，机会分 36，+25%。"
+TEXT OVERLAY: "📈 +25% | #Deer Park"
+
+--- 00:10-00:20 ---
+VISUAL: [Factor breakdown screenshot]
+AUDIO: "我们的 9 维评分系统给它打了高分——增长 +25%，中位价 $730,000。"
+...
+```
+
+---
+
+## 5. Known Limitations
+
+| Limitation | Details |
+|------------|---------|
+| **API data variance** | Currently all strategies return similar top suburbs. The API needs better data differentiation for yield/school/supply. |
+| **No TTS/dubbing** | V1 outputs text scripts only. Video production requires manual voiceover + editing. |
+| **No screenshot automation** | Screenshot plans are instructions for manual capture. V2 should use Playwright. |
+| **No scheduler** | V1 is run-on-demand. No cron job for daily/weekly rotation. |
+| **Static text templates** | Titles and outlines use string templates. No AI-generated variations (could use GPT for richer copy). |
+| **No Chinese suburb names** | Only a few suburbs have Chinese name mappings. Most use English names. |
+
+---
+
+## 6. How to Run
+
+```bash
+# Single topic
+node scripts/generate-content.mjs --topic top-growth
+
+# All 6 topics
+node scripts/generate-content.mjs --all
+
+# Output location
+ls output/{topic-slug}/
+```
+
+---
+
+## 7. Recommendation for V2
+
+1. **Screenshot Automation (highest priority)** — Use Playwright to open each page URL from the screenshot plan and capture actual PNGs at specified viewports
+2. **AI Copy Generation** — Use GPT to rewrite templates with more varied and engaging copy per topic
+3. **TTS Dubbing** — Integrate ElevenLabs or similar TTS to generate voiceover audio files alongside scripts
+4. **Scheduler** — Cron job for daily/weekly content rotation with drift detection
+5. **Multi-language** — Full English content packages for international audience
+
+---
+
+## 8. File Size Summary
+
+| Topic | Files | Total Size |
+|-------|-------|-----------|
+| top-growth | 7 | ~9.6 KB |
+| top-value | 7 | ~9.3 KB |
+| top-yield | 7 | ~9.3 KB |
+| top-school | 7 | ~9.4 KB |
+| top-supply | 7 | ~9.3 KB |
+| top-overall | 7 | ~9.3 KB |
+| **Total** | **42** | **~56 KB** |
+
+---
+
+*Generated by AusHomeValue Social Content Engine V1*
