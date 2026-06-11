@@ -311,18 +311,39 @@ async function main() {
   }
 
   // ── Large-Lot Group Reporting ──
+  // Use land >= 2000 as proxy for production detectLargeLotMode (which uses
+  // suburb P90 + user-provided landSize). The backtest does not have per-suburb
+  // land stats, so 2000㎡ is the standard large-lot threshold for Melbourne.
+  const LARGE_LOT_THRESHOLD = 2000;
+
   const largeLotPredictions = {
-    currentStyle: predictions.currentStyle.filter(p => p.land >= 2000),
-    naiveLandUnit: predictions.naiveLandUnit.filter(p => p.land >= 2000),
-    elasticLand: predictions.elasticLand.filter(p => p.land >= 2000)
+    currentStyle: predictions.currentStyle.filter(p => p.land >= LARGE_LOT_THRESHOLD),
+    naiveLandUnit: predictions.naiveLandUnit.filter(p => p.land >= LARGE_LOT_THRESHOLD),
+    elasticLand: predictions.elasticLand.filter(p => p.land >= LARGE_LOT_THRESHOLD)
   };
 
-  // Large-lot definitions:
+  // Large-lot definitions by tier
   const largeLotTiers = {
     "size_2000plus": predictions.currentStyle.filter(p => p.land >= 2000),
     "size_3000plus": predictions.currentStyle.filter(p => p.land >= 3000),
     "size_4000plus": predictions.currentStyle.filter(p => p.land >= 4000),
   };
+
+  // Per-model large-lot summary (matches production large_lot_house mode)
+  const largeLotModels = {};
+  for (const [modelName, preds] of Object.entries(largeLotPredictions)) {
+    const standardPreds = predictions[modelName];
+    if (!standardPreds) continue;
+    const regularPreds = standardPreds.filter(p => p.land < LARGE_LOT_THRESHOLD);
+    largeLotModels[modelName] = {
+      standard: regularPreds.length
+        ? { meanLandSize: regularPreds.reduce((s, p) => s + p.land, 0) / regularPreds.length, ...summarise(regularPreds) }
+        : null,
+      largeLotHouse: preds.length
+        ? { meanLandSize: preds.reduce((s, p) => s + p.land, 0) / preds.length, ...summarise(preds) }
+        : null
+    };
+  }
 
   const result = {
     generatedAt: new Date().toISOString(),
@@ -375,6 +396,11 @@ async function main() {
           size2000Plus: largeLotPredictions.elasticLand.length ? summarise(largeLotPredictions.elasticLand) : null
         }
       }
+    },
+    largeLotHouseReport: {
+      description: `Per-model breakdown: standard vs large-lot (≥${LARGE_LOT_THRESHOLD}㎡) — proxy for production large_lot_house mode`,
+      threshold: LARGE_LOT_THRESHOLD,
+      models: largeLotModels
     }
   };
 

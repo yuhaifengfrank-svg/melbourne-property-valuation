@@ -9,7 +9,7 @@ function sanitizeForClient(obj, debug = false) {
   const safe = JSON.parse(JSON.stringify(obj));
 
   // 保留关键元数据
-  // dataTier, valuationMethod, subject 保留
+  // dataTier, valuationMethod, subject, valuationMode, largeLotDetect, largeLotResult 保留
 
   // 删除内部字段（顶层）
   delete safe.sourceResults;

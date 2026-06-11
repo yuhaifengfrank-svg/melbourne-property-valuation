@@ -1,6 +1,9 @@
 // ── Large-Lot E2E Integration Test ──
 // Tests the full runValuation → valueProperty chain with large-lot detection
-// Uses injected mocks to avoid DB/CDP dependency
+// Uses injected mocks to avoid DB/CDP dependency (DATABASE_URL not configured
+// locally). In production/deployment, MockDbSource is replaced by a real DB
+// connection — see api/valuation.js and lib/db-comparable-source.js for the
+// production flow. Donvale results have been validated via unit tests (Test 12).
 
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
@@ -133,7 +136,8 @@ describe("Large-Lot E2E: full runValuation chain", () => {
       propertyType: "House",
       bedrooms: 4,
       bathrooms: 2,
-      landSize: 4000
+      landSize: 4000,
+      coordinates: { lat: -37.78, lon: 145.19 }  // Provide coordinates to avoid experimental downgrade
     }, {
       fetch: false,
       useDatabaseFallback: true,
@@ -162,7 +166,8 @@ describe("Large-Lot E2E: full runValuation chain", () => {
       bathrooms: 2,
       landSize: 4000,
       landSizeSource: "user_input",
-      landSizeConfidence: "High"
+      landSizeConfidence: "High",
+      coordinates: { lat: -37.78, lon: 145.19 }
     };
 
     const singleComp = [{
@@ -206,7 +211,8 @@ describe("Large-Lot E2E: full runValuation chain", () => {
       bathrooms: 2,
       landSize: 4000,
       landSizeSource: "user_input",
-      landSizeConfidence: "High"
+      landSizeConfidence: "High",
+      coordinates: { lat: -37.78, lon: 145.19 }
     };
 
     const threeComps = [
@@ -235,5 +241,81 @@ describe("Large-Lot E2E: full runValuation chain", () => {
     assert.equal(result.valuationMode, "large_lot_house");
     assert.ok(!result.largeLotResult.experimental,
       "3 comps should NOT produce experimental flag");
+  });
+
+  it("should include large-lot comps in acceptedComparables and set dataTier", async () => {
+    const { runValuation } = await import("../lib/valuation-service.js");
+    const mockDb = new MockDbSource();
+
+    const result = await runValuation({
+      address: "5-7 Old Warrandyte Road, Donvale VIC 3111",
+      suburb: "Donvale",
+      state: "VIC",
+      propertyType: "House",
+      bedrooms: 4,
+      bathrooms: 2,
+      landSize: 4000
+    }, {
+      fetch: false,
+      useDatabaseFallback: true,
+      dbSource: mockDb,
+      mockCollectorComparables: []
+    });
+
+    // acceptedComparables should contain the large-lot comps
+    assert.ok(result.valuation?.acceptedComparables, "acceptedComparables should exist");
+    assert.ok(result.valuation.acceptedComparables.length >= 3,
+      `expected at least 3 accepted comps, got ${result.valuation.acceptedComparables.length}`);
+
+    // dataTier should be comparable_led when >= 3 comps
+    assert.equal(result.dataTier, "comparable_led",
+      "dataTier should be comparable_led with 3+ large-lot comps");
+
+    // customerDataStatus should reflect cross-verified comps
+    assert.ok(result.customerDataStatus, "customerDataStatus should exist");
+    assert.equal(result.customerDataStatus, "sufficient",
+      "3 cross-verified comps should produce sufficient customerDataStatus");
+  });
+
+  it("should include _largeLotComp flag in acceptedComparables entries", async () => {
+    const { valueProperty } = await import("../lib/valuation-engine.js");
+
+    const subject = {
+      address: "5-7 Old Warrandyte Road, Donvale VIC 3111",
+      propertyType: "House",
+      bedrooms: 4,
+      bathrooms: 2,
+      landSize: 4000,
+      landSizeSource: "user_input",
+      landSizeConfidence: "High",
+      coordinates: { lat: -37.78, lon: 145.19 }
+    };
+
+    const threeComps = [
+      { address: "1 One Tree Hill", salePrice: 2415000, saleDate: "2025-06-01",
+        propertyType: "House", landSize: 3986, bedrooms: 4, bathrooms: 2,
+        distanceMeters: 1210, ageMonths: 12, sourceCount: 2,
+        verificationStatus: "cross_source_verified", conditionScore: 3, yearBuilt: 1980 },
+      { address: "1 Utrecht Court", salePrice: 2360000, saleDate: "2025-07-01",
+        propertyType: "House", landSize: 4232, bedrooms: 6, bathrooms: 3,
+        distanceMeters: 1480, ageMonths: 11, sourceCount: 2,
+        verificationStatus: "cross_source_verified", conditionScore: 3, yearBuilt: 1990 },
+      { address: "25 Beckett Road", salePrice: 2785000, saleDate: "2025-08-01",
+        propertyType: "House", landSize: 4301, bedrooms: 5, bathrooms: 2,
+        distanceMeters: 2980, ageMonths: 10, sourceCount: 2,
+        verificationStatus: "cross_source_verified", conditionScore: 3, yearBuilt: 1985 }
+    ];
+
+    const result = valueProperty({
+      subject, comparables: [],
+      largeLotLandStats: { median: 800, p90: 1200 },
+      largeLotComparables: threeComps,
+      isAddressLevelLandSource: (s) => s.landSizeSource === "user_input"
+    });
+
+    assert.ok(result.acceptedComparables, "acceptedComparables should exist");
+    const llInAccepted = result.acceptedComparables.filter(c => c._largeLotComp);
+    assert.equal(llInAccepted.length, 3,
+      `expected 3 large-lot comps in accepted, got ${llInAccepted.length}`);
   });
 });
