@@ -25,9 +25,9 @@ const PAGES = [
     slug: 'top-growth-suburbs-victoria',
     title: 'Top 100 Growth Suburbs Victoria 2026',
     h1: 'Top 100 Growth Suburbs in Victoria',
-    desc: 'The top 100 Victorian suburbs with the strongest forecast price appreciation. These areas show sustained 1–5 year capital growth momentum driven by infrastructure investment, demographic shifts, and supply constraints.',
+    desc: 'Showing suburbs ranked by Beta composite opportunity score. The experimental trend signal is one input and is not a measured multi-year growth rate.',
     factor: 'growth',
-    seo: 'Top 100 growth suburbs in Victoria for 2026. Ranked by weighted 1, 3 and 5-year price growth with confidence-adjusted opportunity scores.',
+    seo: 'Top 100 growth suburbs in Victoria for 2026. Ranked by Beta composite opportunity score using experimental recent-market trend signals. Not a measured multi-year growth rate.',
     navLabel: 'Growth',
     icon: '📈',
   },
@@ -102,7 +102,7 @@ function buildPage(page, results) {
     // Build explanation summary
     let explainHtml = '';
     if (r.explanations && r.explanations.length > 0) {
-      const bullets = r.explanations.slice(0, 2).map(e => `<li>${escapeHtml(e)}</li>`).join('');
+      const bullets = r.explanations.slice(0, 2).map(e => `<li>${escapeHtml(sanitizeExplain(e))}</li>`).join('');
       explainHtml = `<ul class="explain-list">${bullets}</ul>`;
     }
 
@@ -138,7 +138,7 @@ function buildPage(page, results) {
   // Navigation tabs (always include Supply for cross-linking)
   const allTabPages = PAGES; // PAGES includes Supply now
   const navTabs = allTabPages.map(p => `
-    <a href="/${p.slug}.html" class="tab ${p.factor === page.factor ? 'tab-active' : ''}">
+    <a href="/${p.slug}.html" class="tab touch-target ${p.factor === page.factor ? 'tab-active' : ''}">
       ${p.icon} ${p.navLabel}
     </a>`).join('\n          ');
 
@@ -158,24 +158,12 @@ function buildPage(page, results) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/shared-responsive.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Inter, system-ui, -apple-system, sans-serif;
-      background: #f4f6f5; color: #17211d; line-height: 1.6;
-    }
-    a { color: #0d6b57; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .topbar {
-      background: linear-gradient(135deg, #0d6b57 0%, #0a8f6e 100%);
-      color: white; padding: 14px 24px; position: sticky; top: 0; z-index: 100;
-    }
-    .topbar a { color: white; font-weight: 600; font-size: 1.1rem; }
-    .topbar .back { opacity: 0.85; }
-    .topbar .back:hover { opacity: 1; text-decoration: none; }
-    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
     h1 { font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
     .page-desc { color: #4a5650; font-size: 1rem; max-width: 720px; margin-bottom: 32px; line-height: 1.7; }
+    .breadcrumb { font-size: 0.85rem; color: #66736d; margin-bottom: 20px; }
+    .breadcrumb a { color: #0d6b57; }
     .tabs {
       display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 28px;
     }
@@ -225,20 +213,6 @@ function buildPage(page, results) {
       padding-left: 16px; position: relative; margin-bottom: 2px;
     }
     .explain-list li::before { content: '→'; position: absolute; left: 0; color: #0d6b57; }
-    .footer {
-      text-align: center; padding: 40px 20px; color: #8a9b93; font-size: 0.85rem;
-      border-top: 1px solid #dbe2de; margin-top: 48px;
-    }
-    .foot-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
-    .foot-links a { color: #4a5650; font-size: 0.85rem; }
-    .breadcrumb { font-size: 0.85rem; color: #66736d; margin-bottom: 20px; }
-    .breadcrumb a { color: #0d6b57; }
-    @media (max-width: 640px) {
-      .container { padding: 20px 14px; }
-      .rank-card { flex-direction: column; padding: 14px; }
-      .rank-number { width: 32px; height: 32px; font-size: 0.9rem; }
-      .rank-stats { gap: 12px; }
-    }
   </style>
   <script src="/opportunity-gate.js" defer></script>
   <script type="application/ld+json">
@@ -269,7 +243,9 @@ function buildPage(page, results) {
       ${navTabs}
     </div>
     <p style="margin-bottom: 20px; color: #66736d; font-size: 0.9rem;">
-      Showing top ${results.length} suburbs ranked by ${page.navLabel.toLowerCase()} score.
+      ${page.navLabel === 'Growth'
+        ? 'Showing suburbs ranked by Beta composite opportunity score. The experimental trend signal is one input and is not a measured multi-year growth rate.'
+        : `Showing top ${results.length} suburbs ranked by ${page.navLabel.toLowerCase()} score.`}
       Scores combine market data, confidence calibrations, and factor-specific analysis.
       <a href="/methodology.html">Learn about our methodology →</a>
     </p>
@@ -301,6 +277,26 @@ function escapeHtml(s) {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
+}
+
+/**
+ * Sanitize factor explanations: remove disallowed growth/momentum/forecast phrasing.
+ */
+function sanitizeExplain(text) {
+  if (!text) return text;
+  let s = text;
+  // Phase 0A/Codex: growth_3y/growth_1y are ~136-day OLS trend extrapolations, NOT actual returns.
+  s = s.replace(/Strong 3-year growth of ([\d.]+)%[^]*$/, 'Experimental short-term trend signal');
+  s = s.replace(/([\d.]+)% 3-year growth observed/, 'Experimental short-term trend signal');
+  s = s.replace(/3-year growth of ([\d.]+)% is (modest but positive|negative.*)/, 'Experimental short-term trend signal');
+  s = s.replace(/Recent 1-year momentum of ([\d.]+)% signals accelerating demand/, 'Based on limited recent transaction data');
+  s = s.replace(/([\d.]+)% 1-year change observed/, 'Based on limited recent transaction data');
+  s = s.replace(/1-year growth of ([\d.]+)% shows (steady|flat) market conditions/, 'Based on limited recent transaction data');
+  s = s.replace(/1-year decline of ([\d.-]+)%[^]*$/, 'Based on limited recent transaction data — declining');
+  s = s.replace(/5-year CAGR of ([\d.]+)% confirms sustained long-term appreciation/, 'Long-term trend reference — short data window');
+  s = s.replace(/forecast price appreciation/gi, 'price growth indicators');
+  s = s.replace(/sustained capital growth/gi, 'historical price growth');
+  return s;
 }
 
 function factorTag(f) {

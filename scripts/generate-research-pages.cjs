@@ -41,21 +41,21 @@ const PAGES = [
     slug: 'top-growth-suburbs-victoria-2026',
     title: 'Top 100 Growth Suburbs Victoria 2026 — Best Property Growth Areas',
     h1: 'Top 100 Growth Suburbs in Victoria — 2026 Rankings',
-    desc: 'Victoria\'s highest-growth suburbs ranked by weighted 1, 3 and 5-year price appreciation. Data-driven analysis for investors seeking capital growth opportunities in the Victorian property market.',
-    seo: 'Top 100 growth suburbs in Victoria for 2026. Ranked by weighted 1, 3 and 5-year price growth with confidence-adjusted scores. Data from ABS, VGV and DEWR SALM.',
+    desc: 'Victoria\'s highest-scoring suburbs by Beta composite opportunity score using experimental recent-market trend signals. Not a measured multi-year growth rate or calibrated forecast.',
+    seo: 'Top 100 growth suburbs in Victoria for 2026. Ranked by Beta composite opportunity score based on experimental trend signals. Not a measured multi-year growth rate. Data from ABS, VGV and DEWR SALM.',
     apiSlug: 'growth',
     icon: '📈',
     navLabel: 'Growth',
     tagClass: 'tag-growth',
     methodologyTitle: 'Growth Score Methodology',
     methodology: [
-      'Growth scores are calculated from a weighted average of 1-year (25%), 3-year (50%) and 5-year (25%) median house price growth.',
+      'Growth scores are calculated from a Beta composite of experimental short-term trend signals derived from recent transaction data. These are not measured 1-year or 3-year growth rates.',
       'Each suburb\'s raw growth rate is normalised to a 0–100 score using percentile ranking against all Victorian suburbs.',
-      'The Opportunity Score factors in growth momentum, supply constraints, and population tailwinds to identify suburbs with sustained appreciation potential.',
+      'The Opportunity Score factors in growth momentum, supply constraints, and population tailwinds to identify suburbs with historical price growth characteristics. Beta composite — not a calibrated forecast.',
       'Confidence calibration adjusts for data recency, transaction volume, and statistical significance — scores with insufficient sales data receive lower confidence.',
       'Data sources: ABS Census (population/demographics), Victorian Government Valuer-General (sales data), DEWR SALM (labour market indicators).'
     ],
-    subtitle: 'Suburbs with the strongest forecast price appreciation — sustained 1–5 year capital growth momentum driven by infrastructure investment, demographic shifts, and supply constraints.',
+    subtitle: 'Suburbs ranked by a composite of historical price growth signals. Beta composite — not a calibrated forecast. Use alongside local research and professional advice.',
   },
   {
     slug: 'top-value-suburbs-victoria-2026',
@@ -121,7 +121,7 @@ const PAGES = [
     slug: 'top-supply-constrained-suburbs-victoria-2026',
     title: 'Top 100 Supply-Constrained Suburbs Victoria 2026 — Lowest Housing Supply',
     h1: 'Top 100 Supply-Constrained Suburbs in Victoria — 2026 Rankings',
-    desc: 'Victoria\'s most supply-constrained suburbs ranked by housing shortage intensity. Limited new development and strong demand create conditions for sustained price support.',
+    desc: 'Victoria\'s most supply-constrained suburbs ranked by housing shortage intensity. Limited new development and strong demand create conditions for price support.',
     seo: 'Top 100 supply-constrained suburbs in Victoria for 2026. Ranked by housing shortage intensity — limited land release, low dwelling growth, and strong demand support prices.',
     apiSlug: null, // special: direct DB query
     icon: '🔒',
@@ -135,7 +135,7 @@ const PAGES = [
       'Suburbs in inner and middle-ring Melbourne (5–15 km from CBD) typically score higher due to infill constraints and mature zoning frameworks.',
       'Data sources: VGV subdivision data, Victorian Planning Authority land release mapping, ABS population projections, DEWR SALM housing needs assessment.'
     ],
-    subtitle: 'Victoria\'s most supply-constrained suburbs — limited housing availability, low new dwelling completions, and strong underlying demand create conditions for sustained price support.',
+    subtitle: 'Victoria\'s most supply-constrained suburbs — limited housing availability, low new dwelling completions, and strong underlying demand create conditions for price support.',
   },
 ];
 
@@ -151,6 +151,22 @@ function escapeHtml(s) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+function sanitizeExplain(text) {
+  if (!text) return text;
+  let s = text;
+  s = s.replace(/Strong 3-year growth of ([\d.]+)%[^]*$/, 'Experimental short-term trend signal');
+  s = s.replace(/([\d.]+)% 3-year growth observed/, 'Experimental short-term trend signal');
+  s = s.replace(/3-year growth of ([\d.]+)% is (modest but positive|negative.*)/, 'Experimental short-term trend signal');
+  s = s.replace(/Recent 1-year momentum of ([\d.]+)% signals accelerating demand/, 'Based on limited recent transaction data');
+  s = s.replace(/([\d.]+)% 1-year change observed/, 'Based on limited recent transaction data');
+  s = s.replace(/1-year growth of ([\d.]+)% shows (steady|flat) market conditions/, 'Based on limited recent transaction data');
+  s = s.replace(/1-year decline of ([\d.-]+)%[^]*$/, 'Based on limited recent transaction data — declining');
+  s = s.replace(/5-year CAGR of ([\d.]+)% confirms sustained long-term appreciation/, 'Long-term trend reference — short data window');
+  s = s.replace(/forecast price appreciation/gi, 'price growth indicators');
+  s = s.replace(/sustained capital growth/gi, 'historical price growth');
+  return s;
 }
 
 function formatPrice(val) {
@@ -189,7 +205,7 @@ function buildMethodology(page) {
   return `
       <div class="methodology">
         <h2>${escapeHtml(page.methodologyTitle)}</h2>
-        <p>These rankings are generated from the <a href="https://aushomevalue.vercel.app">AusHomeValue</a> property intelligence platform, which combines multiple government and market datasets to produce calibrated opportunity scores for every suburb in Victoria. Below is how this specific ranking is constructed.</p>
+        <p>These rankings are generated from the <a href="https://aushomevalue.vercel.app">AusHomeValue</a> property intelligence platform, which combines multiple government and market datasets to produce experimental opportunity scores based on data-driven trend analysis for every suburb in Victoria. Below is how this specific ranking is constructed.</p>
         <ol>
 ${points}
         </ol>
@@ -245,7 +261,7 @@ function buildCard(r, i, page) {
   // Build explanation bullets
   let explainHtml = '';
   if (r.explanations && r.explanations.length > 0) {
-    const bullets = r.explanations.map(e => `<li>${escapeHtml(e)}</li>`).join('');
+    const bullets = r.explanations.map(e => `<li>${escapeHtml(sanitizeExplain(e))}</li>`).join('');
     explainHtml = `<ul class="explain-list">${bullets}</ul>`;
   }
 
@@ -464,7 +480,9 @@ ${navTabs}
     </div>
     ${methodologyHtml}
     <p class="rank-intro">
-      Showing <strong>${results.length}</strong> Victorian suburbs ranked by ${page.navLabel.toLowerCase()} score.
+      ${page.navLabel === 'Growth'
+        ? 'Showing suburbs ranked by Beta composite opportunity score using experimental recent-market trend signals. Not a measured multi-year growth rate.'
+        : `Showing <strong>${results.length}</strong> Victorian suburbs ranked by ${page.navLabel.toLowerCase()} score.`}
       Scores combine market data, confidence calibrations, and factor-specific supply-demand analysis.
       <a href="/methodology.html">Learn about our overall methodology →</a>
     </p>

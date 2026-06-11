@@ -100,14 +100,16 @@ function buildSuburbPage(data, suburb) {
       : '#cc4444';
 
     const explanations = data.explanations && data.explanations[f] ? data.explanations[f] : [];
-    const explainHtml = explanations.length > 0
-      ? `<ul class="factor-explain">${explanations.slice(0, 2).map(e => `<li>${escapeHtml(e)}</li>`).join('')}</ul>`
+    // ⚠️ Sanitize: replace disallowed growth/momentum/forecast phrasing
+    const sanitized = explanations.map(e => sanitizeExplain(e));
+    const explainHtml = sanitized.length > 0
+      ? `<ul class="factor-explain">${sanitized.slice(0, 2).map(e => `<li>${escapeHtml(e)}</li>`).join('')}</ul>`
       : '';
 
     // Why section — strongest factors drive why text
     if (score !== '—' && Number(score) >= 65 && explanations.length > 0) {
       whyHtml += `<div class="why-item">
-        <strong>${factorLabels[f]} (${score}/${tier})</strong> — ${escapeHtml(explanations[0])}
+        <strong>${factorLabels[f]} (${score}/${tier})</strong> — ${escapeHtml(sanitized[0])}
       </div>`;
     }
 
@@ -150,18 +152,12 @@ function buildSuburbPage(data, suburb) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/shared-responsive.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Inter, system-ui, -apple-system, sans-serif; background: #f4f6f5; color: #17211d; line-height: 1.6; }
-    a { color: #0d6b57; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .topbar { background: linear-gradient(135deg, #0d6b57 0%, #0a8f6e 100%); color: white; padding: 14px 24px; position: sticky; top: 0; z-index: 100; }
-    .topbar a { color: white; font-weight: 600; font-size: 1.1rem; }
-    .topbar .back { opacity: 0.85; }
-    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
     h1 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
     .breadcrumb { font-size: 0.85rem; color: #66736d; margin-bottom: 20px; }
     .breadcrumb a { color: #0d6b57; }
+    .stamp { font-size: 0.8rem; color: #8a9b93; margin: 8px 0 16px; line-height: 1.5; }
     .confidence-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; }
     .conf-badge { background: #0d6b57; color: white; border-radius: 30px; padding: 8px 20px; font-size: 1.5rem; font-weight: 700; }
     .conf-badge.high { background: #1a7a1a; }
@@ -191,15 +187,6 @@ function buildSuburbPage(data, suburb) {
     .next-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 40px; }
     .next-link { background: white; border: 1px solid #dbe2de; border-radius: 8px; padding: 10px 18px; color: #0d6b57; font-size: 0.9rem; font-weight: 500; transition: all 0.12s; }
     .next-link:hover { background: #e8f3ef; border-color: #0d6b57; text-decoration: none; }
-    .footer { text-align: center; padding: 40px 20px; color: #8a9b93; font-size: 0.85rem; border-top: 1px solid #dbe2de; margin-top: 48px; }
-    .foot-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
-    .foot-links a { color: #4a5650; font-size: 0.85rem; }
-    .stamp { font-size: 0.8rem; color: #8a9b93; margin: 8px 0 16px; line-height: 1.5; }
-    @media (max-width: 640px) {
-      .container { padding: 20px 14px; }
-      .factor-grid { grid-template-columns: 1fr; }
-      .confidence-bar { gap: 8px; }
-    }
   </style>
   <script type="application/ld+json">
   {
@@ -364,6 +351,32 @@ function buildHomepagePreview(growthTop, valueTop, yieldTop, schoolTop) {
 function escapeHtml(s) {
   if (s == null) return '';
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+/**
+ * Sanitize factor explanations: remove disallowed growth/momentum/forecast phrasing.
+ * Phase 0A mandated: no "Strong 3-year growth", "Recent 1-year momentum",
+ * "forecast price appreciation", "sustained capital growth".
+ * Replace with neutral, data-safe descriptions.
+ */
+function sanitizeExplain(text) {
+  if (!text) return text;
+  let s = text;
+  // Phase 0A/Codex: growth_3y/growth_1y are ~136-day OLS trend extrapolations,
+  // NOT actual measured 1- or 3-year returns. Never show percentages or call them "growth".
+  s = s.replace(/Strong 3-year growth of ([\d.]+)%[^]*$/, 'Experimental short-term trend signal');
+  s = s.replace(/([\d.]+)% 3-year growth observed/, 'Experimental short-term trend signal');
+  s = s.replace(/3-year growth of ([\d.]+)% is (modest but positive|negative.*)/, 'Experimental short-term trend signal');
+  s = s.replace(/Recent 1-year momentum of ([\d.]+)% signals accelerating demand/, 'Based on limited recent transaction data');
+  s = s.replace(/([\d.]+)% 1-year change observed/, 'Based on limited recent transaction data');
+  s = s.replace(/1-year growth of ([\d.]+)% shows (steady|flat) market conditions/, 'Based on limited recent transaction data');
+  s = s.replace(/1-year decline of ([\d.-]+)%[^]*$/, 'Based on limited recent transaction data — declining');
+  // 5-year CAGR — also from the same OLS extrapolation, short data window
+  s = s.replace(/5-year CAGR of ([\d.]+)% confirms sustained long-term appreciation/, 'Long-term trend reference — short data window');
+  // Other catch-alls
+  s = s.replace(/forecast price appreciation/gi, 'price growth indicators');
+  s = s.replace(/sustained capital growth/gi, 'historical price growth');
+  return s;
 }
 
 function confidenceLevel(conf) {

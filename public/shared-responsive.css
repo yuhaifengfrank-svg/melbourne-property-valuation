@@ -1,0 +1,509 @@
+/* ============================================================
+   shared-responsive.css — AusHomeValue Responsive Framework
+   Mobile-first, no UA detection.  Use across all generated pages.
+   ============================================================ */
+
+/* ── Variables & Reset ── */
+:root {
+  --nav-h: 56px;
+  --topbar-pad-v: 12px;
+  --topbar-pad-h: clamp(12px, 4vw, 48px);
+  --content-pad: clamp(12px, 4vw, 48px);
+  --container-max: 1320px;
+  --touch-min: 44px;
+  --bg: #f4f6f5;
+  --soft: rgba(244, 246, 245, 0.92);
+  --accent: #15372f;
+  --accent-light: #1e4a40;
+  --white: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #555;
+}
+
+html { overflow-x: hidden; }
+
+/* ══ Global base styles (for generated pages without inline CSS) ══ */
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  width: 100%;
+  min-width: 320px;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* ══ Topbar — green background nav bar ══ */
+.topbar {
+  background: var(--accent);
+  color: white;
+  width: 100%;
+  max-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--topbar-pad-v) var(--topbar-pad-h);
+  box-sizing: border-box;
+}
+.topbar a,
+.topbar-nav a {
+  color: white;
+  text-decoration: none;
+  min-height: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 10px;
+}
+.topbar a:hover {
+  text-decoration: underline;
+}
+
+/* ══ Container — page content width & centering ══ */
+.container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 24px var(--content-pad);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* ══ Back / breadcrumb link ══ */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: var(--touch-min);
+  padding: 8px 12px;
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+
+
+/* ── Box-sizing everywhere ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* ── Prevent iOS zoom ── */
+input, select, textarea {
+  font-size: 16px !important;
+  max-width: 100%;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Container — generic page width constraint
+   ════════════════════════════════════════════════════════════ */
+/* Explicit class selectors only — NO [class*="container"] to avoid Leaflet */
+.page-body,
+.page-container {
+  max-width: 100%;
+  padding-left: var(--content-pad);
+  padding-right: var(--content-pad);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Topbar row (flex layout inside .topbar)
+   ════════════════════════════════════════════════════════════ */
+.topbar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Navigation
+   ════════════════════════════════════════════════════════════ */
+.topbar-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* Touch-friendly: only interactive elements that need 44px */
+button,
+input[type="submit"],
+input[type="reset"],
+input[type="button"],
+[role="button"],
+.topbar-nav a,
+.nav-links a,
+.tab,
+.chip,
+.cta-button,
+.language-toggle,
+.next-link,
+.back,
+.touch-target {
+  min-height: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Back link (used on suburb/opp pages)
+   ════════════════════════════════════════════════════════════ */
+.back {
+  padding: 8px 4px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Search panel
+   ════════════════════════════════════════════════════════════ */
+.search-panel {
+  display: grid;
+  grid-template-columns: 1fr !important;
+  gap: 20px;
+  padding: clamp(18px, 4vw, 42px);
+}
+
+.search-copy h2,
+.hero-note {
+  max-width: 100% !important;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Valuation result grid
+   ════════════════════════════════════════════════════════════ */
+.summary-main {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Comparables table
+   ════════════════════════════════════════════════════════════ */
+.comparables-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.comparables-table {
+  width: 100%;
+  min-width: 500px;
+  border-collapse: collapse;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Opportunity lists
+   ════════════════════════════════════════════════════════════ */
+.opportunity-grid,
+.opp-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Badges / Chips / Tabs
+   ════════════════════════════════════════════════════════════ */
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip,
+.tab {
+  padding: 8px 16px;
+  min-height: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Suburb detail page — 2-col grid
+   ════════════════════════════════════════════════════════════ */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.score-hero {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Modal
+   ════════════════════════════════════════════════════════════ */
+.modal-content {
+  max-width: calc(100vw - 32px);
+  max-height: 85vh;
+  overflow-y: auto;
+  margin: 16px auto;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Map — Leaflet
+   ════════════════════════════════════════════════════════════ */
+.leaflet-container {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Upload / PDF
+   ════════════════════════════════════════════════════════════ */
+.upload-area {
+  width: 100%;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Footer
+   ════════════════════════════════════════════════════════════ */
+.footer {
+  text-align: center;
+  padding: 40px 20px;
+  color: #8a9b93;
+  font-size: 0.85rem;
+  border-top: 1px solid #dbe2de;
+  margin-top: 48px;
+}
+
+.foot-links,
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.foot-links a {
+  color: #4a5650;
+  font-size: 0.85rem;
+  min-height: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Reduced motion
+   ════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   768px+
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 768px) {
+  .search-panel {
+    grid-template-columns: minmax(220px, 0.7fr) minmax(300px, 1.3fr);
+  }
+  .summary-main {
+    grid-template-columns: 1fr 1fr;
+  }
+  .results-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .opportunity-grid,
+  .opp-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+  .topbar-row {
+    gap: 16px;
+  }
+  .topbar-nav {
+    gap: 6px;
+  }
+  .score-hero {
+    flex-direction: row;
+    align-items: center;
+  }
+  .page-body,
+  .page-container {
+    max-width: var(--container-max);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   1024px+
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 1024px) {
+  .opportunity-grid,
+  .opp-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .comparables-table-wrapper {
+    overflow-x: visible;
+  }
+  .comparables-table {
+    min-width: 0;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   1440px+
+   ════════════════════════════════════════════════════════════ */
+@media (min-width: 1440px) {
+  .opportunity-grid,
+  .opp-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   Landscape phone
+   ════════════════════════════════════════════════════════════ */
+@media (orientation: landscape) and (max-height: 500px) {
+  .topbar {
+    padding: 6px var(--topbar-pad-h);
+  }
+  .topbar h1 { font-size: 16px; }
+  main { padding-top: 8px; }
+  .search-panel { gap: 12px; }
+}
+
+/* ── Breadcrumb & inline nav links ── */
+.breadcrumb a,
+.container a[href="/"] {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: 8px 6px;
+}
+
+/* ── Already registered / unlock links ── */
+.existing-unlock a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: 8px 4px;
+}
+
+/* ── Footer links (already styled via .foot-links a) ── */
+.foot-links a {
+  min-height: var(--touch-min);
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 8px;
+}
+
+/* ── Rank list suburb links ── */
+.rank-body h3 a {
+  display: inline-block;
+  padding: 8px 4px;
+  min-height: var(--touch-min);
+}
+
+/* ── "Learn about our methodology" links ── */
+.rank-info a,
+.tab + a[href*="methodology"] {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: 8px 4px;
+}
+
+/* ── ← Back to all opportunities link on opp pages ── */
+.container a[href*="/opportunities/"]:not(.tab):not(.touch-target) {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: 8px 4px;
+}
+
+/* ── Opportunity suburb links ── */
+.opp-table a[href*="/suburb/"],
+.opp-list a[href*="/suburb/"],
+.opp-card a[href*="/suburb/"] {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: 8px 4px;
+}
+
+/* ── Opportunity card suburb links (h2 > a) ── */
+.card h2 a[href*="/suburb/"] {
+  display: inline-block;
+  padding: 8px 4px;
+  min-height: var(--touch-min);
+}
+
+/* ── Form inputs: ensure 44px touch height ── */
+.search-row input,
+.location-row input,
+.land-row input,
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="number"],
+input[type="search"],
+input[type="password"],
+select,
+textarea {
+  min-height: 44px;
+  padding: 8px 12px;
+  box-sizing: border-box;
+}
+
+/* ── Suburb suggestion links (auto-generated) ── */
+.suggestion-li a,
+.suggestion-item a,
+.autocomplete-item a {
+  display: block;
+  padding: 8px 12px;
+  min-height: var(--touch-min);
+}
+
+/* ── Homepage opportunity preview items ── */
+.opp-preview-item {
+  min-height: var(--touch-min);
+  display: flex;
+  align-items: center;
+  padding: 8px 4px;
+}
+
+/* ── Homepage "View full ranking" CTA links ── */
+.opp-preview-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: 8px 4px;
+}
+
+/* ── Research links (external resource links) ── */
+.research-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding: 8px 4px;
+}

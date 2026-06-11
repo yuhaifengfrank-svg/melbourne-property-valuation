@@ -14,24 +14,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/shared-responsive.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Inter, system-ui, -apple-system, sans-serif;
-      background: #f4f6f5; color: #17211d; line-height: 1.6;
-    }
-    a { color: #0d6b57; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .topbar {
-      background: linear-gradient(135deg, #0d6b57 0%, #0a8f6e 100%);
-      color: white; padding: 14px 24px; position: sticky; top: 0; z-index: 100;
-    }
-    .topbar a { color: white; font-weight: 600; font-size: 1.1rem; }
-    .topbar .back { opacity: 0.85; }
-    .topbar .back:hover { opacity: 1; text-decoration: none; }
-    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
     h1 { font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
     .page-desc { color: #4a5650; font-size: 1rem; max-width: 720px; margin-bottom: 32px; line-height: 1.7; }
+    .breadcrumb { font-size: 0.85rem; color: #66736d; margin-bottom: 20px; }
+    .breadcrumb a { color: #0d6b57; }
     .tabs {
       display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 28px;
     }
@@ -81,20 +69,6 @@
       padding-left: 16px; position: relative; margin-bottom: 2px;
     }
     .explain-list li::before { content: '→'; position: absolute; left: 0; color: #0d6b57; }
-    .footer {
-      text-align: center; padding: 40px 20px; color: #8a9b93; font-size: 0.85rem;
-      border-top: 1px solid #dbe2de; margin-top: 48px;
-    }
-    .foot-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
-    .foot-links a { color: #4a5650; font-size: 0.85rem; }
-    .breadcrumb { font-size: 0.85rem; color: #66736d; margin-bottom: 20px; }
-    .breadcrumb a { color: #0d6b57; }
-    @media (max-width: 640px) {
-      .container { padding: 20px 14px; }
-      .rank-card { flex-direction: column; padding: 14px; }
-      .rank-number { width: 32px; height: 32px; font-size: 0.9rem; }
-      .rank-stats { gap: 12px; }
-    }
   </style>
   <script src="/opportunity-gate.js" defer></script>
   <script type="application/ld+json">
@@ -122,24 +96,24 @@
     <h1>Top 100 Rental Yield Suburbs in Victoria</h1>
     <p class="page-desc">The top 100 suburbs delivering the strongest gross rental yields across Victoria. These areas offer compelling cash flow for investors, combining strong tenant demand with affordable purchase prices.</p>
     <div class="tabs">
-      
-    <a href="/top-growth-suburbs-victoria.html" class="tab ">
+
+    <a href="/top-growth-suburbs-victoria.html" class="tab touch-target ">
       📈 Growth
     </a>
-          
-    <a href="/top-value-suburbs-victoria.html" class="tab ">
+
+    <a href="/top-value-suburbs-victoria.html" class="tab touch-target ">
       💎 Value
     </a>
-          
-    <a href="/top-yield-suburbs-victoria.html" class="tab tab-active">
+
+    <a href="/top-yield-suburbs-victoria.html" class="tab touch-target tab-active">
       💰 Yield
     </a>
-          
-    <a href="/top-school-zone-suburbs-victoria.html" class="tab ">
+
+    <a href="/top-school-zone-suburbs-victoria.html" class="tab touch-target ">
       🏫 Schools
     </a>
-          
-    <a href="/top-supply-constrained-suburbs-victoria.html" class="tab ">
+
+    <a href="/top-supply-constrained-suburbs-victoria.html" class="tab touch-target ">
       🏗️ Supply
     </a>
     </div>
@@ -149,7 +123,7 @@
       <a href="/methodology.html">Learn about our methodology →</a>
     </p>
     <div class="rank-list">
-      
+
     <div class="rank-card" data-rank="1">
       <div class="rank-number">1</div>
       <div class="rank-body">
@@ -936,7 +910,7 @@
     <div class="rank-card" data-rank="30">
       <div class="rank-number">30</div>
       <div class="rank-body">
-        <h3><a href="/suburb/barwon-heads-vic.html">barwon heads</a></h3>
+        <h3><a href="/suburb/brunswick-west-vic.html">Brunswick West</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
           <span class="tag tag-opp">Opp 4</span>
@@ -944,1268 +918,80 @@
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">34%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">44.2%</span>
+            <span class="stat-value">79.8%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
             <span class="stat-type">Balanced Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 3.23% is adequate</li></ul>
       </div>
     </div>
 
     <div class="rank-card" data-rank="31">
       <div class="rank-number">31</div>
       <div class="rank-body">
-        <h3><a href="/suburb/mckinnon-vic.html">Mckinnon</a></h3>
+        <h3><a href="/suburb/truganina-vic.html">Truganina</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
+          <span class="tag tag-opp">Opp 28</span>
         </div>
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">34%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">44.1%</span>
+            <span class="stat-value">79.6%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
+            <span class="stat-type">Cashflow Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 3.18% is adequate</li></ul>
       </div>
     </div>
 
     <div class="rank-card" data-rank="32">
       <div class="rank-number">32</div>
       <div class="rank-body">
-        <h3><a href="/suburb/queenscliff-vic.html">queenscliff</a></h3>
+        <h3><a href="/suburb/mickleham-vic.html">Mickleham</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
+          <span class="tag tag-opp">Opp 23</span>
         </div>
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">34%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">43.6%</span>
+            <span class="stat-value">78.4%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
             <span class="stat-type">Balanced Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 3.18% is adequate</li></ul>
       </div>
     </div>
 
     <div class="rank-card" data-rank="33">
       <div class="rank-number">33</div>
       <div class="rank-body">
-        <h3><a href="/suburb/point-lonsdale-vic.html">point lonsdale</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">43.6%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="34">
-      <div class="rank-number">34</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/anglesea-vic.html">anglesea</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">43.6%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="35">
-      <div class="rank-number">35</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/lorne-vic.html">lorne</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 5</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">43.6%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="36">
-      <div class="rank-number">36</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/aireys-inlet-vic.html">aireys inlet</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 5</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">43.6%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="37">
-      <div class="rank-number">37</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/sorrento-vic.html">sorrento</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 5</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">43.6%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="38">
-      <div class="rank-number">38</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/mccrae-vic.html">Mccrae</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">40.1%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="39">
-      <div class="rank-number">39</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/portsea-vic.html">portsea</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">40.1%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="40">
-      <div class="rank-number">40</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/mckinnon-vic.html">mckinnon</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="41">
-      <div class="rank-number">41</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/malvern-east-vic.html">malvern east</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 17</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">School Zone Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="42">
-      <div class="rank-number">42</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/kew-vic.html">kew</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 19</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">School Zone Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="43">
-      <div class="rank-number">43</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/lysterfield-vic.html">lysterfield</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 33</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="44">
-      <div class="rank-number">44</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/newtown-vic.html">newtown</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 19</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">School Zone Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="45">
-      <div class="rank-number">45</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/hawthorn-east-vic.html">hawthorn east</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 25</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">School Zone Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="46">
-      <div class="rank-number">46</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/glenroy-vic.html">glenroy</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 16</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="47">
-      <div class="rank-number">47</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/doncaster-east-vic.html">doncaster east</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 19</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">School Zone Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="48">
-      <div class="rank-number">48</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/heathmont-vic.html">heathmont</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 30</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="49">
-      <div class="rank-number">49</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/altona-north-vic.html">altona north</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 20</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="50">
-      <div class="rank-number">50</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/albert-park-vic.html">albert park</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="51">
-      <div class="rank-number">51</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/ballarat-vic.html">ballarat</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 20</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="52">
-      <div class="rank-number">52</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/mooroolbark-vic.html">mooroolbark</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 25</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="53">
-      <div class="rank-number">53</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/burwood-east-vic.html">burwood east</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="54">
-      <div class="rank-number">54</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/epping-vic.html">epping</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="55">
-      <div class="rank-number">55</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/beaconsfield-vic.html">beaconsfield</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="56">
-      <div class="rank-number">56</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/broadmeadows-vic.html">broadmeadows</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="57">
-      <div class="rank-number">57</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/braybrook-vic.html">braybrook</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="58">
-      <div class="rank-number">58</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/coburg-vic.html">coburg</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="59">
-      <div class="rank-number">59</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/blackburn-south-vic.html">blackburn south</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 26</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="60">
-      <div class="rank-number">60</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/clayton-vic.html">clayton</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 18</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="61">
-      <div class="rank-number">61</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/essendon-vic.html">essendon</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 20</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">School Zone Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="62">
-      <div class="rank-number">62</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/blairgowrie-vic.html">blairgowrie</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="63">
-      <div class="rank-number">63</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/eaglemont-vic.html">eaglemont</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="64">
-      <div class="rank-number">64</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/balwyn-vic.html">balwyn</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="65">
-      <div class="rank-number">65</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/bendigo-vic.html">bendigo</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="66">
-      <div class="rank-number">66</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/gowanbrae-vic.html">gowanbrae</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="67">
-      <div class="rank-number">67</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/heatherton-vic.html">heatherton</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="68">
-      <div class="rank-number">68</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/heidelberg-heights-vic.html">heidelberg heights</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="69">
-      <div class="rank-number">69</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/huntingdale-vic.html">huntingdale</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="70">
-      <div class="rank-number">70</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/keilor-park-vic.html">keilor park</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="71">
-      <div class="rank-number">71</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/mccrae-vic.html">mccrae</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="72">
-      <div class="rank-number">72</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/narre-warren-east-vic.html">narre warren east</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="73">
-      <div class="rank-number">73</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/notting-hill-vic.html">notting hill</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="74">
-      <div class="rank-number">74</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/officer-south-vic.html">officer south</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="75">
-      <div class="rank-number">75</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/south-yarra-vic.html">south yarra</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 30</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="76">
-      <div class="rank-number">76</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/thornbury-vic.html">thornbury</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 14</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="77">
-      <div class="rank-number">77</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/sunbury-vic.html">sunbury</a></h3>
+        <h3><a href="/suburb/wyndham-vale-vic.html">Wyndham Vale</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
           <span class="tag tag-opp">Opp 27</span>
@@ -2213,26 +999,26 @@
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">33%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
+            <span class="stat-value">79.6%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
+            <span class="stat-type">Cashflow Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 3.10% is adequate</li></ul>
       </div>
     </div>
 
-    <div class="rank-card" data-rank="78">
-      <div class="rank-number">78</div>
+    <div class="rank-card" data-rank="34">
+      <div class="rank-number">34</div>
       <div class="rank-body">
-        <h3><a href="/suburb/vermont-vic.html">vermont</a></h3>
+        <h3><a href="/suburb/mont-albert-vic.html">Mont Albert</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
           <span class="tag tag-opp">Opp 24</span>
@@ -2240,26 +1026,80 @@
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">33%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
+            <span class="stat-value">79.4%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
             <span class="stat-type">School Zone Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 3.14% is adequate</li></ul>
       </div>
     </div>
 
-    <div class="rank-card" data-rank="79">
-      <div class="rank-number">79</div>
+    <div class="rank-card" data-rank="35">
+      <div class="rank-number">35</div>
       <div class="rank-body">
-        <h3><a href="/suburb/scoresby-vic.html">scoresby</a></h3>
+        <h3><a href="/suburb/tarneit-vic.html">Tarneit</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 21</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">32%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.8%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 3.03% is adequate</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="36">
+      <div class="rank-number">36</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/laverton-vic.html">Laverton</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 19</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">32%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.7%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 3.09% is adequate</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="37">
+      <div class="rank-number">37</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/manor-lakes-vic.html">Manor Lakes</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
           <span class="tag tag-opp">Opp 31</span>
@@ -2267,134 +1107,26 @@
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">31%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="80">
-      <div class="rank-number">80</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/rye-vic.html">rye</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 17</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
+            <span class="stat-value">79.9%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
             <span class="stat-type">Balanced Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 2.94% is below 3% — yield-focused investors may look elsewhere</li></ul>
       </div>
     </div>
 
-    <div class="rank-card" data-rank="81">
-      <div class="rank-number">81</div>
+    <div class="rank-card" data-rank="38">
+      <div class="rank-number">38</div>
       <div class="rank-body">
-        <h3><a href="/suburb/south-morang-vic.html">south morang</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 35</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="82">
-      <div class="rank-number">82</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/rosebud-vic.html">rosebud</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 23</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="83">
-      <div class="rank-number">83</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/somerville-vic.html">somerville</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 30</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="84">
-      <div class="rank-number">84</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/surrey-hills-vic.html">surrey hills</a></h3>
+        <h3><a href="/suburb/donnybrook-vic.html">Donnybrook</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
           <span class="tag tag-opp">Opp 24</span>
@@ -2402,53 +1134,755 @@
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">31%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
+            <span class="stat-value">79.1%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
+            <span class="stat-type">Balanced Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 3.01% is adequate</li></ul>
       </div>
     </div>
 
-    <div class="rank-card" data-rank="85">
-      <div class="rank-number">85</div>
+    <div class="rank-card" data-rank="39">
+      <div class="rank-number">39</div>
       <div class="rank-body">
-        <h3><a href="/suburb/yarraville-vic.html">yarraville</a></h3>
+        <h3><a href="/suburb/ivanhoe-vic.html">Ivanhoe</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 27</span>
+          <span class="tag tag-opp">Opp 22</span>
         </div>
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
+            <span class="stat-value">31%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">School Zone Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.94% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="40">
+      <div class="rank-number">40</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/wollert-vic.html">Wollert</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 25</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.90% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="41">
+      <div class="rank-number">41</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/craigieburn-vic.html">Craigieburn</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 25</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.89% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="42">
+      <div class="rank-number">42</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/heatherton-vic.html">Heatherton</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
             <span class="stat-tier">D</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
+            <span class="stat-value">60.8%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="43">
+      <div class="rank-number">43</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/eaglemont-vic.html">Eaglemont</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">60.8%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="44">
+      <div class="rank-number">44</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/narre-warren-east-vic.html">Narre Warren East</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">60.1%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="45">
+      <div class="rank-number">45</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/aireys-inlet-vic.html">Aireys Inlet</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 5</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">58.8%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="46">
+      <div class="rank-number">46</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/barwon-heads-vic.html">Barwon Heads</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">58.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="47">
+      <div class="rank-number">47</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/safety-beach-vic.html">Safety Beach</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">58.2%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="48">
+      <div class="rank-number">48</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/mccrae-vic.html">McCrae</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">58.2%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="49">
+      <div class="rank-number">49</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/sorrento-vic.html">Sorrento</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 5</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">57.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="50">
+      <div class="rank-number">50</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/lorne-vic.html">Lorne</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 5</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">57.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="51">
+      <div class="rank-number">51</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/queenscliff-vic.html">Queenscliff</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">57.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="52">
+      <div class="rank-number">52</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/anglesea-vic.html">Anglesea</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">57.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="53">
+      <div class="rank-number">53</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/point-lonsdale-vic.html">Point Lonsdale</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">57.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="54">
+      <div class="rank-number">54</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/blairgowrie-vic.html">Blairgowrie</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">57.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="55">
+      <div class="rank-number">55</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/portsea-vic.html">Portsea</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">30%</span>
+            <span class="stat-tier">D</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">54.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="56">
+      <div class="rank-number">56</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/clyde-vic.html">Clyde</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 35</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">29%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
             <span class="stat-type">Growth Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 2.83% is below 3% — yield-focused investors may look elsewhere</li></ul>
       </div>
     </div>
 
-    <div class="rank-card" data-rank="86">
-      <div class="rank-number">86</div>
+    <div class="rank-card" data-rank="57">
+      <div class="rank-number">57</div>
       <div class="rank-body">
-        <h3><a href="/suburb/st-albans-vic.html">st albans</a></h3>
+        <h3><a href="/suburb/cranbourne-east-vic.html">Cranbourne East</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 35</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">29%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.79% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="58">
+      <div class="rank-number">58</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/keysborough-vic.html">Keysborough</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 35</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">29%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.83% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="59">
+      <div class="rank-number">59</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/deer-park-vic.html">Deer Park</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 36</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">29%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.85% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="60">
+      <div class="rank-number">60</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/highett-vic.html">Highett</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 24</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">29%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.7%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">School Zone Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.82% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="61">
+      <div class="rank-number">61</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/skye-vic.html">Skye</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 35</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">28%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.78% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="62">
+      <div class="rank-number">62</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/clyde-north-vic.html">Clyde North</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 36</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">28%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.77% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="63">
+      <div class="rank-number">63</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/pakenham-vic.html">Pakenham</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 33</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">28%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.71% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="64">
+      <div class="rank-number">64</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/officer-vic.html">Officer</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 28</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">28%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.8%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.73% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="65">
+      <div class="rank-number">65</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/malvern-vic.html">Malvern</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 21</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">28%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">School Zone Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.70% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="66">
+      <div class="rank-number">66</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/bentleigh-vic.html">Bentleigh</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
           <span class="tag tag-opp">Opp 26</span>
@@ -2456,188 +1890,161 @@
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">27%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="87">
-      <div class="rank-number">87</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/safety-beach-vic.html">safety beach</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="88">
-      <div class="rank-number">88</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/williamstown-vic.html">williamstown</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="89">
-      <div class="rank-number">89</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/sandringham-vic.html">sandringham</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="90">
-      <div class="rank-number">90</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/werribee-south-vic.html">werribee south</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="91">
-      <div class="rank-number">91</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/thomastown-vic.html">thomastown</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 4</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Balanced Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="92">
-      <div class="rank-number">92</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/torquay-vic.html">torquay</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 19</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
+            <span class="stat-value">79.7%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
             <span class="stat-type">School Zone Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 2.65% is below 3% — yield-focused investors may look elsewhere</li></ul>
       </div>
     </div>
 
-    <div class="rank-card" data-rank="93">
-      <div class="rank-number">93</div>
+    <div class="rank-card" data-rank="67">
+      <div class="rank-number">67</div>
       <div class="rank-body">
-        <h3><a href="/suburb/werribee-vic.html">werribee</a></h3>
+        <h3><a href="/suburb/hawthorn-vic.html">Hawthorn</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">27%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.67% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="68">
+      <div class="rank-number">68</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/port-melbourne-vic.html">Port Melbourne</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">27%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.66% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="69">
+      <div class="rank-number">69</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/bendigo-vic.html">Bendigo</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">27%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.67% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="70">
+      <div class="rank-number">70</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/leopold-vic.html">Leopold</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 26</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">27%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.8%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.66% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="71">
+      <div class="rank-number">71</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/footscray-vic.html">Footscray</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 21</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">26%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">School Zone Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.60% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="72">
+      <div class="rank-number">72</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/carnegie-vic.html">Carnegie</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
           <span class="tag tag-opp">Opp 27</span>
@@ -2645,161 +2052,53 @@
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">26%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
+            <span class="stat-value">79.8%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
             <span class="stat-type">Growth Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 2.56% is below 3% — yield-focused investors may look elsewhere</li></ul>
       </div>
     </div>
 
-    <div class="rank-card" data-rank="94">
-      <div class="rank-number">94</div>
+    <div class="rank-card" data-rank="73">
+      <div class="rank-number">73</div>
       <div class="rank-body">
-        <h3><a href="/suburb/toorak-vic.html">toorak</a></h3>
+        <h3><a href="/suburb/brighton-east-vic.html">Brighton East</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 20</span>
+          <span class="tag tag-opp">Opp 25</span>
         </div>
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">26%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
+            <span class="stat-value">79.7%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
             <span class="stat-type">School Zone Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 2.55% is below 3% — yield-focused investors may look elsewhere</li><li>Low yield is typical for premium suburbs — capital growth is the primary return driver here</li></ul>
       </div>
     </div>
 
-    <div class="rank-card" data-rank="95">
-      <div class="rank-number">95</div>
+    <div class="rank-card" data-rank="74">
+      <div class="rank-number">74</div>
       <div class="rank-body">
-        <h3><a href="/suburb/sunshine-vic.html">sunshine</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 23</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="96">
-      <div class="rank-number">96</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/watsonia-vic.html">watsonia</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 30</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="97">
-      <div class="rank-number">97</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/skye-vic.html">skye</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 35</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">Growth Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="98">
-      <div class="rank-number">98</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/highett-vic.html">highett</a></h3>
-        <div class="rank-meta">
-          <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 24</span>
-        </div>
-        <div class="rank-stats">
-          <div class="stat">
-            <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
-          </div>
-          <div class="stat">
-            <span class="stat-label">Type</span>
-            <span class="stat-type">School Zone Opportunity</span>
-          </div>
-        </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
-      </div>
-    </div>
-
-    <div class="rank-card" data-rank="99">
-      <div class="rank-number">99</div>
-      <div class="rank-body">
-        <h3><a href="/suburb/burwood-vic.html">burwood</a></h3>
+        <h3><a href="/suburb/coburg-vic.html">Coburg</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
           <span class="tag tag-opp">Opp 4</span>
@@ -2807,46 +2106,721 @@
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">26%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
+            <span class="stat-value">79.7%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
             <span class="stat-type">Balanced Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 2.58% is below 3% — yield-focused investors may look elsewhere</li></ul>
       </div>
     </div>
 
-    <div class="rank-card" data-rank="100">
-      <div class="rank-number">100</div>
+    <div class="rank-card" data-rank="75">
+      <div class="rank-number">75</div>
       <div class="rank-body">
-        <h3><a href="/suburb/caulfield-south-vic.html">caulfield south</a></h3>
+        <h3><a href="/suburb/caroline-springs-vic.html">Caroline Springs</a></h3>
         <div class="rank-meta">
           <span class="tag tag-yield">💰 Yield</span>
-          <span class="tag tag-opp">Opp 32</span>
+          <span class="tag tag-opp">Opp 25</span>
         </div>
         <div class="rank-stats">
           <div class="stat">
             <span class="stat-label">Yield</span>
-            <span class="stat-value">35%</span>
-            <span class="stat-tier">D</span>
+            <span class="stat-value">26%</span>
+            <span class="stat-tier">C</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
-            <span class="stat-value">0%</span>
+            <span class="stat-value">79.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.57% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="76">
+      <div class="rank-number">76</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/narre-warren-south-vic.html">Narre Warren South</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 28</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">26%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.60% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="77">
+      <div class="rank-number">77</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/lara-vic.html">Lara</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">26%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.59% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="78">
+      <div class="rank-number">78</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/sunbury-vic.html">Sunbury</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 27</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">26%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.8%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.61% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="79">
+      <div class="rank-number">79</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/ocean-grove-vic.html">Ocean Grove</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">26%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">73.1%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.60% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="80">
+      <div class="rank-number">80</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/hallam-vic.html">Hallam</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 31</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">25%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
           </div>
           <div class="stat">
             <span class="stat-label">Type</span>
             <span class="stat-type">Growth Opportunity</span>
           </div>
         </div>
-        <ul class="explain-list"><li>Gross yield of 0.00% is below 3% — yield-focused investors may look elsewhere</li></ul>
+        <ul class="explain-list"><li>Gross yield of 2.47% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="81">
+      <div class="rank-number">81</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/hampton-park-vic.html">Hampton Park</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 33</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">25%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.47% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="82">
+      <div class="rank-number">82</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/epping-vic.html">Epping</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">25%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.4%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.50% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="83">
+      <div class="rank-number">83</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/mernda-vic.html">Mernda</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 28</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">25%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.49% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="84">
+      <div class="rank-number">84</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/greenvale-vic.html">Greenvale</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 27</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">25%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.50% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="85">
+      <div class="rank-number">85</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/broadmeadows-vic.html">Broadmeadows</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">25%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">78.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.51% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="86">
+      <div class="rank-number">86</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/rosebud-vic.html">Rosebud</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 23</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">25%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">73.1%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.48% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="87">
+      <div class="rank-number">87</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/knoxfield-vic.html">Knoxfield</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 31</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.41% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="88">
+      <div class="rank-number">88</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/south-morang-vic.html">South Morang</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 35</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.43% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="89">
+      <div class="rank-number">89</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/lalor-vic.html">Lalor</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 31</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.5%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.45% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="90">
+      <div class="rank-number">90</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/thomastown-vic.html">Thomastown</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">80.3%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.40% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="91">
+      <div class="rank-number">91</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/chirnside-park-vic.html">Chirnside Park</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 26</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.9%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.38% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="92">
+      <div class="rank-number">92</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/clayton-south-vic.html">Clayton South</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 24</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.8%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.42% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="93">
+      <div class="rank-number">93</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/lynbrook-vic.html">Lynbrook</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 28</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.8%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.44% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="94">
+      <div class="rank-number">94</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/kilsyth-vic.html">Kilsyth</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 24</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.7%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.45% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="95">
+      <div class="rank-number">95</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/bundoora-vic.html">Bundoora</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 4</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.7%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.43% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="96">
+      <div class="rank-number">96</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/altona-north-vic.html">Altona North</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 20</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.44% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="97">
+      <div class="rank-number">97</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/point-cook-vic.html">Point Cook</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 25</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.6%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.45% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="98">
+      <div class="rank-number">98</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/hoppers-crossing-vic.html">Hoppers Crossing</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 23</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.3%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.43% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="99">
+      <div class="rank-number">99</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/narre-warren-vic.html">Narre Warren</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 25</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">79.1%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Balanced Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.42% is below 3% — yield-focused investors may look elsewhere</li></ul>
+      </div>
+    </div>
+
+    <div class="rank-card" data-rank="100">
+      <div class="rank-number">100</div>
+      <div class="rank-body">
+        <h3><a href="/suburb/dromana-vic.html">Dromana</a></h3>
+        <div class="rank-meta">
+          <span class="tag tag-yield">💰 Yield</span>
+          <span class="tag tag-opp">Opp 23</span>
+        </div>
+        <div class="rank-stats">
+          <div class="stat">
+            <span class="stat-label">Yield</span>
+            <span class="stat-value">24%</span>
+            <span class="stat-tier">C</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Confidence</span>
+            <span class="stat-value">73.1%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Type</span>
+            <span class="stat-type">Growth Opportunity</span>
+          </div>
+        </div>
+        <ul class="explain-list"><li>Gross yield of 2.39% is below 3% — yield-focused investors may look elsewhere</li></ul>
       </div>
     </div>
     </div>

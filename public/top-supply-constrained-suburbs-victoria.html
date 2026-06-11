@@ -14,24 +14,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/shared-responsive.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Inter, system-ui, -apple-system, sans-serif;
-      background: #f4f6f5; color: #17211d; line-height: 1.6;
-    }
-    a { color: #0d6b57; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .topbar {
-      background: linear-gradient(135deg, #0d6b57 0%, #0a8f6e 100%);
-      color: white; padding: 14px 24px; position: sticky; top: 0; z-index: 100;
-    }
-    .topbar a { color: white; font-weight: 600; font-size: 1.1rem; }
-    .topbar .back { opacity: 0.85; }
-    .topbar .back:hover { opacity: 1; text-decoration: none; }
-    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
     h1 { font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
     .page-desc { color: #4a5650; font-size: 1rem; max-width: 720px; margin-bottom: 32px; line-height: 1.7; }
+    .breadcrumb { font-size: 0.85rem; color: #66736d; margin-bottom: 20px; }
+    .breadcrumb a { color: #0d6b57; }
     .tabs {
       display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 28px;
     }
@@ -81,20 +69,6 @@
       padding-left: 16px; position: relative; margin-bottom: 2px;
     }
     .explain-list li::before { content: '→'; position: absolute; left: 0; color: #0d6b57; }
-    .footer {
-      text-align: center; padding: 40px 20px; color: #8a9b93; font-size: 0.85rem;
-      border-top: 1px solid #dbe2de; margin-top: 48px;
-    }
-    .foot-links { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 8px; }
-    .foot-links a { color: #4a5650; font-size: 0.85rem; }
-    .breadcrumb { font-size: 0.85rem; color: #66736d; margin-bottom: 20px; }
-    .breadcrumb a { color: #0d6b57; }
-    @media (max-width: 640px) {
-      .container { padding: 20px 14px; }
-      .rank-card { flex-direction: column; padding: 14px; }
-      .rank-number { width: 32px; height: 32px; font-size: 0.9rem; }
-      .rank-stats { gap: 12px; }
-    }
   </style>
   <script src="/opportunity-gate.js" defer></script>
   <script type="application/ld+json">
@@ -122,24 +96,24 @@
     <h1>Top 100 Supply-Constrained Suburbs in Victoria</h1>
     <p class="page-desc">The top 100 most supply-constrained suburbs in Victoria. These areas have limited developable land, high occupancy rates, and strong housing demand relative to stock — driving price support for investors.</p>
     <div class="tabs">
-      
-    <a href="/top-growth-suburbs-victoria.html" class="tab ">
+
+    <a href="/top-growth-suburbs-victoria.html" class="tab touch-target ">
       📈 Growth
     </a>
-          
-    <a href="/top-value-suburbs-victoria.html" class="tab ">
+
+    <a href="/top-value-suburbs-victoria.html" class="tab touch-target ">
       💎 Value
     </a>
-          
-    <a href="/top-yield-suburbs-victoria.html" class="tab ">
+
+    <a href="/top-yield-suburbs-victoria.html" class="tab touch-target ">
       💰 Yield
     </a>
-          
-    <a href="/top-school-zone-suburbs-victoria.html" class="tab ">
+
+    <a href="/top-school-zone-suburbs-victoria.html" class="tab touch-target ">
       🏫 Schools
     </a>
-          
-    <a href="/top-supply-constrained-suburbs-victoria.html" class="tab tab-active">
+
+    <a href="/top-supply-constrained-suburbs-victoria.html" class="tab touch-target tab-active">
       🏗️ Supply
     </a>
     </div>
@@ -149,7 +123,7 @@
       <a href="/methodology.html">Learn about our methodology →</a>
     </p>
     <div class="rank-list">
-      
+
     <div class="rank-card" data-rank="1">
       <div class="rank-number">1</div>
       <div class="rank-body">
