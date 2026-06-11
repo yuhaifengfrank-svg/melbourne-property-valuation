@@ -261,14 +261,7 @@ export default async function handler(req, res) {
     if (hasSessionConflict()) {
       return res.status(409).json({
         ok: false,
-        error: "Session already bound to a different contact. Please start fresh or use the original registration session.",
-        _debug: {
-          existingBindingCount: existingBinding.length,
-          existingBindingCid: existingBinding.length > 0 ? existingBinding[0].lead_contact_id : null,
-          existingContactCount: existingContact.length,
-          existingContactId: existingContact.length > 0 ? existingContact[0].id : null,
-          email: email
-        }
+        error: "Session already bound to a different contact. Please start fresh or use the original registration session."
       });
     }
 
@@ -292,25 +285,34 @@ export default async function handler(req, res) {
       cid = newContact[0].id;
     }
 
-    // Step 3: Session binding — DO NOTHING on conflict, then verify
-    // MUST be before all data writes (preferences/consent/events) so a conflict
-    // returns 409 without side effects
-    await sql`
-      INSERT INTO lead_session_contacts (session_id, lead_contact_id)
-      VALUES (${activeSessionId}, ${cid})
-      ON CONFLICT (session_id) DO NOTHING
+    // Step 3: Session binding — application-level conflict check
+    // We check before INSERT because production DB may lack the PRIMARY KEY constraint.
+    const existingBind = await sql`
+      SELECT lead_contact_id FROM lead_session_contacts WHERE session_id = ${activeSessionId} LIMIT 1
     `;
-
-    const bound = await sql`
-      SELECT lead_contact_id FROM lead_session_contacts
-      WHERE session_id = ${activeSessionId}
-    `;
-    if (bound.length === 0 || bound[0].lead_contact_id !== cid) {
-      return res.status(409).json({
-        ok: false,
-        error: "Session already bound to a different contact. Please start fresh or use the original registration session.",
-        _debug: { cid, boundCid: bound.length > 0 ? bound[0].lead_contact_id : null }
-      });
+    if (existingBind.length > 0) {
+      if (existingBind[0].lead_contact_id !== cid) {
+        return res.status(409).json({
+          ok: false,
+          error: "Session already bound to a different contact. Please start fresh or use the original registration session."
+        });
+      }
+    } else {
+      await sql`
+        INSERT INTO lead_session_contacts (session_id, lead_contact_id)
+        VALUES (${activeSessionId}, ${cid})
+        ON CONFLICT (session_id) DO NOTHING
+      `;
+      const bound = await sql`
+        SELECT lead_contact_id FROM lead_session_contacts
+        WHERE session_id = ${activeSessionId}
+      `;
+      if (bound.length === 0 || bound[0].lead_contact_id !== cid) {
+        return res.status(409).json({
+          ok: false,
+          error: "Session already bound to a different contact. Please start fresh or use the original registration session."
+        });
+      }
     }
 
     // Step 4: Upsert lead_preferences
@@ -365,7 +367,6 @@ export default async function handler(req, res) {
     // ── Fetch raw opportunities with strategy=smart, then re-rank ──
     // Cookie is set AFTER successful data fetch (FIX 6)
     let top10 = [];
-    let top10Status = "ok";
     try {
       const raw = await fetchRawOpportunities({
         goal,
@@ -414,6 +415,6 @@ export default async function handler(req, res) {
     console.error("[unlock-opportunity]", error.message);
     return res
       .status(500)
-      .json({ ok: false, error: "Service temporarily unavailable", _debug: { message: error.message, stack: error.stack ? error.stack.split('\n').slice(0,3).join('|') : null } });
+      .json({ ok: false, error: "Service temporarily unavailable" });
   }
 }
