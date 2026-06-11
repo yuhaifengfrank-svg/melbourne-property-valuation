@@ -1,7 +1,7 @@
 # Video Template Library
 
-**Date:** 2026-06-11  
-**Version:** V2  
+**Date:** 2026-06-11 (V3 update)  
+**Version:** V3  
 **Format:** 5 video templates for short-form social (Douyin, TikTok, Reels, Kuaishou)
 
 ---
@@ -326,376 +326,284 @@ Same as 30s
 
 ---
 
-## Template C: Top 3 Value Suburbs
+## Template C: Top 3 Value Suburbs (V3)
 
-**Use when:** Highlighting the most affordable suburbs with upside potential. Great for first-home buyer series.
+**Use when:** Highlighting the most affordable suburbs with upside potential. **V3: Don't just pitch cheap + growth. Show why they're cheap, what the trade-off is.**
 
-**Title:**
+**Title (V3):**
 ```
-最便宜但最有潜力的 {N} 个区
+最便宜的 3 个区，涨得也不错。但便宜有便宜的原因
 ```
-Example: *"最便宜但最有潜力的 3 个区"*
+Example: *"最便宜的 3 个区，涨得也不错。但便宜有便宜的原因"*
 
 **Thumbnail:**
 ```
-"最便宜 TOP 3"  |  "💰 ${price_start}"  |  "#1 {suburb}"
-"最便宜 TOP 3"  |  "💰 41.7万起"        |  "#1 Caulfield East"
+"💰 最便宜"  |  "{price_low}起"  |  "涨幅 +{growth_min}% ✅"
+"💰 最便宜"  |  "41.7万起"      |  "但？"
 ```
 
-### 30s Script
+### V3 30s Script
 
 ```
-[0-3s — Hook]
-🎬 Quick montage of low prices flashing on screen
-🎙 "墨尔本最便宜但涨得不错的 3 个区，猜猜最低多少钱？"
-📝 "💰 最便宜 TOP 3"
+[0-3s — Hook with caveat]
+🎬 低价快速闪过，最后定格在 "但？"
+🎙 "墨尔本最便宜的 3 个区，涨得也不错。但便宜有便宜的原因。"
+📝 "💰 最便宜 | 但？"
 
-[3-13s — #3 Suburb]
-🎬 Value ranking page screenshot, #3 highlighted
-🎙 "第 3 名：{suburb_3}。中位价 {price_3}，不到 {price_3_rounded}。"
-📝 "🥉 {suburb_3} | 💰 {price_3}"
+[3-10s — #3 with benchmark + risk]
+🎬 #3 卡片 + 风险标注
+🎙 "第 3 名：{suburb_3}。中位价 {price_3}，涨了 {growth_1y_3}，跑赢大盘。但 {risk_3_short}。"
+📝 "🥉 {suburb_3} | 💰 {price_3} | ⚠️ {risk_3_short}"
 
-[13-23s — #2 Suburb]
-🎬 #2 highlighted on ranking page
-🎙 "第 2 名：{suburb_2}。中位价 {price_2}。涨得怎么样？{growth_note_2}。"
-📝 "🥈 {suburb_2} | 💰 {price_2}"
+[10-17s — #2 with benchmark + risk]
+🎬 #2 卡片 + 风险标注
+🎙 "第 2 名：{suburb_2}。中位价 {price_2}。价格低，但 {risk_2_short}。"
+📝 "🥈 {suburb_2} | 💰 {price_2} | ⚠️ {risk_2_short}"
 
-[23-28s — #1 Suburb]
-🎬 #1 zoom in, price callout big
-🎙 "第 1 名：{suburb_1}。中位价只要 {price_1}。这是墨尔本 100 个区里性价比最高的。"
-📝 "🥇 {suburb_1} | 💰 {price_1} 🏆"
+[17-24s — #1 balanced]
+🎬 #1 放大 + price callout + 风险
+🎙 "第 1 名：{suburb_1}。中位价只 要 {price_1}。涨了 {growth_1y_1}。但学区（{school_1}）偏低。"
+📝 "🥇 {suburb_1} | 💰 {price_1} | 📈 +{growth_1y_1} | ⚠️ 学区 {school_1}"
 
-[28-30s — CTA]
-🎬 Value ranking page full screen
-🎙 "完整榜单在官网，主页有链接。"
+[24-27s — Caveat]
+🎬 "过去 ≠ 未来" + "便宜 ≠ 好投资"
+🎙 "便宜有便宜的逻辑。价格低不一定 是价值洼地，可能是基本面弱。"
+📝 "便宜 ≠ 价值洼地"
+
+[27-30s — CTA]
+🎬 官网截图
+🎙 "去官网输地址，查每个区的估值和风险。"
 📝 "aushomevalue.com.au"
 ```
-
-### 60s Script (Add growth + school context to each)
-
-```
-[0-3s — Hook]
-Same as 30s - extend to 5s with slower reveal
-
-[3-18s — #3]
-🎬 #3 suburb card + their detail page price section
-🎙 "第 3 名：{suburb_3}。中位价 {price_3}。你觉得便宜没好货？数据告诉你——3 年涨了 {growth_3y_3}。"
-📝 "🥉 {suburb_3} | 💰 {price_3} | 📈 +{growth_3y_3}"
-
-[18-33s — #2]
-🎬 #2 suburb card + school score callout
-🎙 "第 2 名：{suburb_2}。中位价 {price_2}。学区评分 {school_2}，在这个价位段算不错的。"
-📝 "🥈 {suburb_2} | 💰 {price_2} | 🏫 {school_2}"
-
-[33-48s — #1]
-🎬 #1 suburb card full-screen + value badge
-🎙 "第 1 名：{suburb_1}。中位价 {price_1}，全维州性价比最高的区。一年涨 {growth_1y_1}。"
-📝 "🥇 {suburb_1} | 💰 {price_1} | 📈 +{growth_1y_1}"
-
-[48-55s — Takeaway]
-🎬 All 3 cards tiled
-🎙 "3 个区，最低 40 多万就能入手。不是所有便宜区都没有增长。"
-📝 "便宜 ≠ 没增长 🏠"
-
-[55-60s — CTA]
-🎬 Website screenshot
-🎙 "输任何地址，免费查价值排名。"
-📝 "aushomevalue.com.au"
-```
-
-### Screenshots Needed
-
-| Screenshot | Source |
-|------------|--------|
-| Value ranking page top | `/top-value-suburbs-victoria.html` |
-| #3 suburb card | Same page |
-| #2 suburb card | Same page |
-| #1 suburb card | Same page |
-| (60s) Detail page price section | `/suburb/{slug}-vic.html` |
-| (60s) School score section | Same detail page |
 
 ---
 
-### Demo Rewrite — Top 3 Value (30s)
+### V3 Demo Rewrite — Top 3 Value (30s)
 
 > ```
-> [Title: "最便宜但最有潜力的 3 个区"]
-> [Thumbnail: 最便宜 TOP 3 | 💰 41.7万起 | #1 Caulfield East]
+> [Title: "最便宜的 3 个区，涨得也不错。但便宜有便宜的原因"]
+> [Thumbnail: 💰 最便宜 | 41.7万起 | 但？]
 >
 > [0-3s]
-> 🎬 低价快速闪过：$446K → $490K → $417K
-> 🎙 "墨尔本最便宜但涨得不错的 3 个区，猜猜最低多少钱？"
-> 📝 "💰 最便宜 TOP 3"
+> 🎬 低价闪过：$500K → $490K → $417K → 定格 "但？"
+> 🎙 "墨尔本最便宜的 3 个区，涨得也不错。但便宜有便宜的原因。"
+> 📝 "💰 最便宜 | 但？"
 >
-> [3-13s]
-> 🎬 #3 Murrumbeena 价值排名截图
-> 🎙 "第 3 名：Murrumbeena。中位价 $500K，不到 50 万。"
-> 📝 "🥉 Murrumbeena | 💰 $500K"
+> [3-10s]
+> 🎬 #3 Murrumbeena + 风险标注
+> 🎙 "第 3 名：Murrumbeena。中位价 $500K，涨了约 20%，跑赢大盘。但学区只有 40+，不算好。"
+> 📝 "🥉 Murrumbeena | 💰 $500K | ⚠️ 学区 40+"
 >
-> [13-23s]
-> 🎬 #2 West Melbourne 截图
-> 🎙 "第 2 名：West Melbourne。中位价 $490K。靠近市区，这个价格很难得。"
-> 📝 "🥈 West Melbourne | 💰 $490K"
+> [10-17s]
+> 🎬 #2 West Melbourne + 风险标注
+> 🎙 "第 2 名：West Melbourne。中位价 $490K。靠近市区，但涨幅主要靠 CBD 外溢，自身基本面不强。"
+> 📝 "🥈 West Melbourne | 💰 $490K | ⚠️ 基本面弱"
 >
-> [23-28s]
+> [17-24s]
 > 🎬 #1 Caulfield East 放大
-> 🎙 "第 1 名：Caulfield East。中位价只要 $417,500，这是 100 个区里性价比最高的。"
-> 📝 "🥇 Caulfield East | 💰 $417K 🏆"
+> 🎙 "第 1 名：Caulfield East。中位价只要 $417K。涨了 20%+，但学区评分低。"
+> 📝 "🥇 Caulfield East | 💰 $417K | ⚠️ 学区偏低"
 >
-> [28-30s]
-> 🎬 价值排名页全屏
-> 🎙 "完整榜单在官网，主页有链接。"
-> 📝 "aushomevalue.com.au"
-> ```
-
----
-
-## Template D: Top School Zone Suburbs Under $1M
-
-**Use when:** Targeting families or buyers who prioritize school zones. Underscore that good schools don't require million-dollar entry.
-
-**Title:**
-```
-好学区不一定要花 100 万
-```
-Example: *"好学区不一定要花 100 万，这 3 个区值得看"*
-
-**Thumbnail:**
-```
-"🏫 好学区"  |  "💰 <$1M"  |  "评分 {school_score}+"
-"🏫 好学区"  |  "💰 54万起"  |  "评分 80+"
-```
-
-### 30s Script
-
-```
-[0-3s — Hook]
-🎬 School score badge zoom in quickly
-🎙 "好学区不一定要花 100 万。给你 3 个数据。"
-📝 "🏫 好学区 <$1M"
-
-[3-13s — #3]
-🎬 #3 suburb card from school ranking page
-🎙 "{suburb_3}，学区评分 {school_3}，中位价 {price_3}，不到 {price_3_rounded} 万。"
-📝 "🥉 {suburb_3} | 🏫 {school_3} | 💰 {price_3}"
-
-[13-23s — #2]
-🎬 #2 suburb card with school score highlighted
-🎙 "{suburb_2}，评分 {school_2}。价格 {price_2}，在这个学区水平里算便宜的了。"
-📝 "🥈 {suburb_2} | 🏫 {school_2} | 💰 {price_2}"
-
-[23-28s — #1]
-🎬 #1 suburb card zoom in, school score big
-🎙 "{suburb_1}，评分 {school_1}，中位价 {price_1}。评分高，价格还不到 100 万。"
-📝 "🥇 {suburb_1} | 🏫 {school_1} | 💰 {price_1}"
-
-[28-30s — CTA]
-🎬 School ranking page full screen
-🎙 "完整榜单在官网，主页有链接。"
-📝 "aushomevalue.com.au"
-```
-
-### 60s Script (More school + price analysis)
-
-```
-[0-5s — Hook]
-🎬 School score badge + price tag side by side
-🎙 "好学区一定要花 100 万以上吗？数据告诉我们不是。"
-📝 "🏫 好学区 <$1M ❓"
-
-[5-18s — #3 — School + Price]
-🎬 #3 suburb card + detail page school section
-🎙 "第 3 名：{suburb_3}。评分 {school_3}/100，这是维州 top-tier 的学区水平。中位价只要 {price_3}。"
-📝 "🥉 {suburb_3} | 🏫 {school_3} | 💰 {price_3}"
-
-[18-33s — #2 — School + Growth Angle]
-🎬 #2 suburb + map showing location
-🎙 "第 2 名：{suburb_2}。学区 {school_2}。增长怎么样？一年涨了 {growth_1y_2}。学区又保值，又有增长空间。"
-📝 "🥈 {suburb_2} | 🏫 {school_2} | 📈 +{growth_1y_2}"
-
-[33-48s — #1 — Best Combo]
-🎬 #1 suburb full detail page
-🎙 "第 1 名：{suburb_1}。评分 {school_1}，中位价 {price_1}。在 top 10 学区里，这个价格是最低的之一。"
-📝 "🥇 {suburb_1} | 🏫 {school_1} | 💰 {price_1}"
-
-[48-55s — Takeaway]
-🎬 Tiled view: school scores vs prices
-🎙 "好学区不一定要高价。关键是找到评分和价格的平衡点。"
-📝 "评分 ↔ 价格 如何选？👇"
-
-[55-60s — CTA]
-🎬 Website screenshot
-🎙 "去官网查你家附近的学区排名。"
-📝 "aushomevalue.com.au"
-```
-
-### Screenshots Needed
-
-| Screenshot | Source |
-|------------|--------|
-| School ranking page top | `/top-school-zone-suburbs-victoria.html` |
-| #3 suburb card (school highlighted) | Same page |
-| #2 suburb card | Same page |
-| #1 suburb card | Same page |
-| (60s) Detail page school section | `/suburb/{slug}-vic.html` |
-| (60s) Suburb location map | Google Maps |
-
----
-
-### Demo Rewrite — Top School Zones Under $1M (30s)
-
-> ```
-> [Title: "好学区不一定要花 100 万"]
-> [Thumbnail: 🏫 好学区 | 💰 54万起 | 评分 80+]
+> [24-27s]
+> 🎬 "过去 ≠ 未来"
+> 🎙 "便宜有便宜的逻辑。价格低不一定 是价值洼地，可能是基本面弱。"
+> 📝 "便宜 ≠ 价值洼地"
 >
-> [0-3s]
-> 🎬 学区评分 82 的徽章放大
-> 🎙 "好学区不一定要花 100 万。给你 3 个数据。"
-> 📝 "🏫 好学区 <$1M"
->
-> [3-13s]
-> 🎬 #3 Ivanhoe 学区排名截图
-> 🎙 "Ivanhoe，学区评分 80.1，中位价不到 100 万。80 以上的区里它算便宜的。"
-> 📝 "🥉 Ivanhoe | 🏫 80.1 | 💰 $???"
->
-> [13-23s]
-> 🎬 #2 Burwood 学区截图
-> 🎙 "Burwood，评分 80.6。华人喜欢的区之一，价格在好学区的范围里算友好。"
-> 📝 "🥈 Burwood | 🏫 80.6"
->
-> [23-28s]
-> 🎬 #1 Fairfield 放大
-> 🎙 "Fairfield，评分 82.2，维州学区最好的区之一，中位价 $542K。"
-> 📝 "🥇 Fairfield | 🏫 82.2 | 💰 $542K"
->
-> [28-30s]
-> 🎬 学区排名页全屏
-> 🎙 "完整 100 名在官网，主页有链接。"
-> 📝 "aushomevalue.com.au"
-> ```
-
----
-
-## Template E: Best First Home Buyer Suburbs
-
-**Use when:** Targeting first-home buyers — balance affordability + growth + school in one package. Don't just chase the cheapest; show the best value combo.
-
-**Title:**
-```
-首次置业，这 {N} 个区最值得看
-```
-Example: *"首次置业，这 3 个区最值得看"*
-
-**Thumbnail:**
-```
-"🏡 首次置业"  |  "💰 {price_low}-{price_high}"  |  "+{growth_min}% ↗️"
-"🏡 首次置业"  |  "💰 44万-58万"  |  "+25% ↗️"
-```
-
-### 30s Script
-
-```
-[0-3s — Hook]
-🎬 Multiple suburb cards flash on screen
-🎙 "第一次买房，看这 3 个区就够了。不贵，还在涨。"
-📝 "🏡 首次置业 TOP 3"
-
-[3-13s — #3 — Affordability Focus]
-🎬 #3 suburb card from value ranking page
-🎙 "{suburb_3}，中位价 {price_3}。第一次上车，这个价格压力小。"
-📝 "🥉 {suburb_3} | 💰 {price_3}"
-
-[13-23s — #2 — Growth + Affordability Balance]
-🎬 #2 suburb card + growth section
-🎙 "{suburb_2}，中位价 {price_2}。价格靠谱，过去 3 年还涨了 {growth_3y_2}。"
-📝 "🥈 {suburb_2} | 💰 {price_2} | 📈 +{growth_3y_2}"
-
-[23-28s — #1 — Best All-Rounder]
-🎬 #1 suburb card with all 3 badges (value + growth + school)
-🎙 "{suburb_1}，中位价 {price_1}。价格好，有增长，学区也说得过去。三个条件都满足。"
-📝 "🥇 {suburb_1} | 💰 {price_1} | 🏆 三项达标"
-
-[28-30s — CTA]
-🎬 Website screenshot, URL highlighted
-🎙 "输预算，我们帮你筛。链接在简介。"
-📝 "aushomevalue.com.au"
-```
-
-### 60s Script (More context for each pick)
-
-```
-[0-5s — Hook]
-🎬 Slow pan across 3 suburb cards
-🎙 "第一次买房，选择比努力重要。这 3 个区，我们从 3 个维度帮你筛出来的。"
-📝 "🏡 首次置业 | 3 个维度筛选"
-
-[5-20s — #3 — Price as Primary]
-🎬 #3 suburb card + value ranking page
-🎙 "第 3 名：{suburb_3}。首要注意的是价格——中位价 {price_3}，首次置业攒几年就能付首付。"
-📝 "🥉 {suburb_3} | 💰 {price_3} | 🏠 价格友好"
-
-[20-35s — #2 — Price + Growth]
-🎬 #2 suburb card + growth ranking mention
-🎙 "第 2 名：{suburb_2}。中位价 {price_2}，一年涨 {growth_1y_2}。买得起 + 在涨，这是首次置业最舒服的配置。"
-📝 "🥈 {suburb_2} | 💰 {price_2} | 📈 +{growth_1y_2}"
-
-[35-50s — #1 — The Balanced Pick]
-🎬 All 3 ranking pages (value + growth + school) shown
-🎙 "第 1 名：{suburb_1}。价值排名靠前，增长排名靠前，学区排名也不差。三个维度最平衡的选择。"
-📝 "🥇 {suburb_1} | 🏆 三榜全中"
-
-[50-55s — Decision Framework]
-🎬 3 comparison metrics displayed: price, growth, school
-🎙 "不适合？没关系。每个人条件不同。但方向比速度重要——选对的区，比选便宜的区更重要。"
-📝 "选对的区，不是选便宜的区 👇"
-
-[55-60s — CTA]
-🎬 Website screenshot with CTA overlay
-🎙 "去官网输你的地址和预算，系统帮你匹配。"
-📝 "aushomevalue.com.au"
-```
-
-### Screenshots Needed
-
-| Screenshot | Source |
-|------------|--------|
-| Value ranking page (for affordability) | `/top-value-suburbs-victoria.html` |
-| Growth ranking page (for upside) | `/top-growth-suburbs-victoria.html` |
-| School ranking page (for school balance) | `/top-school-zone-suburbs-victoria.html` |
-| Each suburb's detail page price section | `/suburb/{slug}-vic.html` |
-| (60s only) Triple ranking comparison | Composite 3 screenshots |
-
----
-
-### Demo Rewrite — Best First Home Buyer (30s, using Rockbank + Dandenong + Sunshine)
-
-> ```
-> [Title: "首次置业，这 3 个区最值得看"]
-> [Thumbnail: 🏡 首次置业 | 💰 44万-58万 | +25% ↗️]
->
-> [0-3s]
-> 🎬 房子卡片快闪
-> 🎙 "第一次买房，看这 3 个区就够了。不贵，还在涨。"
-> 📝 "🏡 首次置业 TOP 3"
->
-> [3-13s]
-> 🎬 Rockbank 价值排名截图
-> 🎙 "Rockbank，中位价 $583K。这个价格在墨尔本买独立屋，压力小多了。"
-> 📝 "🥉 Rockbank | 💰 $583K"
->
-> [13-23s]
-> 🎬 Dandenong 增长截图
-> 🎙 "Dandenong，中位价 $446K，不到 45 万。而且 3 年涨了 25%。买得起还在涨。"
-> 📝 "🥈 Dandenong | 💰 $446K | 📈 +25%"
->
-> [23-28s]
-> 🎬 Sunshine 三合一卡片
-> 🎙 "Sunshine，中位价 $780K。价格偏高但有学区（47/100）有增长（+30%）。三个条件平衡。"
-> 📝 "🥇 Sunshine | 💰 $780K | 🏆 三项达标"
->
-> [28-30s]
+> [27-30s]
 > 🎬 官网截图
-> 🎙 "输预算，我们帮你筛。链接在简介。"
+> 🎙 "去官网输地址，查每个区的估值和风险。"
+> 📝 "aushomevalue.com.au"
+> ```
+
+---
+
+## Template D: Top School Zone Suburbs Under $1M (V3)
+
+**Use when:** Targeting families or buyers who prioritize school zones. **V3: Don't just pitch cheap + good school. Show the trade-off — good school zones often have lower growth.**
+
+**Title (V3):**
+```
+好学区不一定要花 100 万，但便宜学区房一定有代价
+```
+Example: *"好学区不一定要花 100 万，但便宜学区房一定有代价"*
+
+**Thumbnail:**
+```
+"🏫 好学区"  |  "💰 <$1M"  |  "代价？"
+"🏫 好学区"  |  "💰 54万起"  |  "⚠️"
+```
+
+### V3 30s Script
+
+```
+[0-3s — Hook with twist]
+🎬 学区徽章 + 价格标签并排，
+🎙 "好学区不一定要花 100 万。但便宜学区房一定有代价。"
+📝 "🏫 好学区 <$1M | 代价？"
+
+[3-8s — Benchmark]
+🎬 排名页 + 大盘对比
+🎙 "这些区学区评分 80+，远高于墨尔本平均的 50 分。价格都在 100 万以下。"
+📝 "🏫 80+ vs 平均 50"
+
+[8-15s — #3 & #2 with risk]
+🎬 #3 和 #2 并排
+🎙 "Ivanhoe 评分 80.1，Burwood 评分 80.6。价格友好，学区优秀。"
+📝 "🥉 Ivanhoe 🏫 80.1 | 🥈 Burwood 🏫 80.6"
+
+[15-20s — #1 balanced]
+🎬 #1 Fairfield 放大
+🎙 "第 1 名：Fairfield。评分 82.2，中位价 $542K。看起来完美。"
+📝 "🥇 Fairfield 🏫 82.2 | 💰 $542K"
+
+[20-25s — Risk]
+🎬 增长数据低亮
+🎙 "但 Fairfield 过去一年涨幅一般。好学区 ≠ 高增长。有时候两者不可兼得。"
+📝 "⚠️ 涨幅一般"
+
+[25-27s — Caveat]
+🎬 "学区 vs 增长 你怎么选？"
+🎙 "想清楚你更看重什么——上学方便还是房价增值。两者都好很难同时出现。"
+📝 "学区 ↔ 增长"
+
+[27-30s — CTA]
+🎬 官网截图
+🎙 "去官网输地址，看每个区的数据和对比。"
+📝 "aushomevalue.com.au"
+```
+
+---
+
+### V3 Demo Rewrite — Top School Zones Under $1M (30s)
+
+> ```
+> [Title: "好学区不一定要花 100 万，但便宜学区房一定有代价"]
+> [Thumbnail: 🏫 好学区 | 💰 54万起 | ⚠️]
+>
+> [0-3s]
+> 🎬 学区评分 82 + 价格 $542K 并排
+> 🎙 "好学区不一定要花 100 万。但便宜学区房一定有代价。"
+> 📝 "🏫 好学区 <$1M | 代价？"
+>
+> [3-8s]
+> 🎬 学区排名页 + 大盘标注
+> 🎙 "这些区评分 80+，远高于墨尔本平均 50 分。价格都在 100 万以下。"
+> 📝 "🏫 80+ vs 平均 50"
+>
+> [8-15s]
+> 🎬 Ivanhoe + Burwood 并排
+> 🎙 "Ivanhoe 评分 80.1，Burwood 评分 80.6。价格友好，学区优秀。"
+> 📝 "🥉 Ivanhoe 80.1 | 🥈 Burwood 80.6"
+>
+> [15-20s]
+> 🎬 Fairfield 放大
+> 🎙 "第 1 名：Fairfield。评分 82.2，中位价 $542K。看起来完美。"
+> 📝 "🥇 Fairfield 🏫 82.2 | 💰 $542K"
+>
+> [20-25s]
+> 🎬 Fairfield 涨幅灰色标注
+> 🎙 "但它的涨幅一般。好学区 ≠ 高增长。"
+> 📝 "⚠️ 涨幅一般"
+>
+> [25-27s]
+> 🎬 "学区 vs 增长"
+> 🎙 "上学方便还是房价涨？想清楚你更看重什么。"
+> 📝 "学区 ↔ 增长"
+>
+> [27-30s]
+> 🎬 官网截图
+> 🎙 "去官网输地址，看每个区的数据和对比。"
+> 📝 "aushomevalue.com.au"
+> ```
+
+---
+
+## Template E: Best First Home Buyer Suburbs (V3)
+
+**Use when:** Targeting first-home buyers. **V3: Don't just pitch "affordable + growing."  First-home buyers need to know what they're trading off. Every cheap option has a weakness.**
+
+**Title (V3):**
+```
+首次置业 3 个区——价格友好、也在涨，但每个都有代价
+```
+Example: *"首次置业 3 个区——价格友好、也在涨，但每个都有代价"*
+
+**Thumbnail:**
+```
+"🏡 首次置业"  |  "💰 {price_low}起"  |  "代价？"
+"🏡 首次置业"  |  "💰 44万起"      |  "⚠️"
+```
+
+### V3 30s Script
+
+```
+[0-3s — Hook with twist]
+🎬 三张卡片快速闪过，文字 "代价？"
+🎙 "第一次买房的 3 个区——价格友好、也在涨。但每个都有代价。"
+📝 "🏡 首次置业 | 代价？"
+
+[3-8s — Benchmark overview]
+🎬 三区价格对比大盘
+🎙 "3 个区中位价都在 40-60 万左右，远低于墨尔本均价。"
+📝 "💰 40-60万 vs 墨尔本均价"
+
+[8-15s — #3 with risk]
+🎬 #3 卡片 + 风险标注
+🎙 "{suburb_3}，中位价 {price_3}。便宜。但 {risk_3_short}。"
+📝 "🥉 {suburb_3} | 💰 {price_3} | ⚠️ {risk_3_short}"
+
+[15-22s — #2 with risk]
+🎬 #2 卡片 + 风险标注
+🎙 "{suburb_2}，中位价 {price_2}。涨了 {growth_1y_2}，跑赢大盘。不过 {risk_2_short}。"
+📝 "🥈 {suburb_2} | 💰 {price_2} | ⚠️ {risk_2_short}"
+
+[22-27s — #1 balanced]
+🎬 #1 卡片 + 驱动 vs 风险
+🎙 "第 1 名：{suburb_1}。{price_1}。驱动：{driver_1_short}。风险：{risk_1_short}。"
+📝 "🥇 {suburb_1} | 💰 {price_1} | 🚇 {driver_short} | ⚠️ {risk_short}"
+
+[27-30s — CTA]
+🎬 官网截图
+🎙 "去官网输你的预算，看数据自己判断。"
+📝 "aushomevalue.com.au"
+```
+
+---
+
+### V3 Demo Rewrite — Best First Home Buyer (30s, using Rockbank + Dandenong + Sunshine)
+
+> ```
+> [Title: "首次置业 3 个区——价格友好、也在涨，但每个都有代价"]
+> [Thumbnail: 🏡 首次置业 | 💰 44万起 | ⚠️]
+>
+> [0-3s]
+> 🎬 三张卡片闪过 + "代价？"
+> 🎙 "第一次买房的 3 个区——价格友好、也在涨。但每个都有代价。"
+> 📝 "🏡 首次置业 | 代价？"
+>
+> [3-8s]
+> 🎬 三区价格 vs 墨尔本均价
+> 🎙 "3 个区中位价在 44-58 万，远低于墨尔本均价。"
+> 📝 "💰 44-58万 vs 均价"
+>
+> [8-15s]
+> 🎬 #3 Rockbank + 风险标注
+> 🎙 "Rockbank，中位价 $583K。西边独立屋，价格友好。但位置偏，配套还在建设中。"
+> 📝 "🥉 Rockbank | 💰 $583K | ⚠️ 位置偏"
+>
+> [15-22s]
+> 🎬 #2 Dandenong + 风险标注
+> 🎙 "Dandenong，中位价 $446K。涨了 25%，跑赢大盘。但学区评分只有 33/100。"
+> 📝 "🥈 Dandenong | 💰 $446K | ⚠️ 学区 33"
+>
+> [22-27s]
+> 🎬 #1 Sunshine 驱动 vs 风险
+> 🎙 "Sunshine，$780K。偏贵但学区 47 有增长 +30%。驱动：人口外溢。风险：已经涨了不少。"
+> 📝 "🥇 Sunshine | 💰 $780K | 🚇 人口外溢 | ⚠️ 已涨"
+>
+> [27-30s]
+> 🎬 官网截图
+> 🎙 "去官网输你的预算，看数据自己判断。"
 > 📝 "aushomevalue.com.au"
 > ```
 
@@ -723,10 +631,18 @@ Example: *"首次置业，这 3 个区最值得看"*
 | `{growth_3y}` | 25% | A, C, E |
 | `{school}` / `{school_score}` | 49 / 82.2 | A, D, E |
 | `{vacancy}` | 2.44% | A, B |
-| `{location_reason}` | "靠 M1，30 分钟到市区" | A |
-| `{confidence_level}` | "数据可信度高" | A (60s) |
-| `{key_diff_2}` | "Dandenong 价格更低" | B (60s) |
+
+### V3 Additional Insertion Fields
+
+| Key | Example | Notes |
+|-----|---------|-------|
+| `{benchmark}` | 15% | Melbourne/regional benchmark growth |
+| `{driver}` | 人口往西走，M1 通勤 | Why growth may continue |
+| `{driver_short}` | 人口+基建 | Short overlay text |
+| `{risk}` / `{risk_1/2/3}` | 学区评分只有 49 | Why growth may NOT continue |
+| `{risk_short}` / `{risk_1_short}` | 学区 49 | Short overlay risk text |
+| `{key_watch}` | 学区和基建配套 | What to monitor over next 12-24m |
 
 ---
 
-*Template Library V2 — Ready for use by editors and integration into scripts/generate-content.mjs*
+*Template Library V3 — Growth + Opportunity Framework*
