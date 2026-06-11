@@ -28,6 +28,17 @@ export default async function handler(request, response) {
   const minScore = Number(request.query.minScore || 0);
   const maxResults = Math.min(Number(request.query.maxResults || 50), 200);
   const strategy = request.query.strategy || 'smart';
+  const VALID_STRATEGIES = ['smart'];
+  if (!VALID_STRATEGIES.includes(strategy)) {
+    response.status(400).json({
+      ok: false,
+      error: 'unsupported_strategy',
+      message: `Strategy "${strategy}" is not yet implemented. Only "smart" is supported at this time. Future Growth strategies are under development.`,
+      supportedStrategies: ['smart'],
+      opportunities: []
+    });
+    return;
+  }
   const minPrice = request.query.minPrice ? Number(request.query.minPrice) : null;
   const maxPrice = request.query.maxPrice ? Number(request.query.maxPrice) : null;
 
@@ -84,6 +95,8 @@ export default async function handler(request, response) {
       meta: {
         totalFound: rows.length,
         strategy,
+        scoreType: 'Beta composite indicator',
+        disclaimer: 'The Opportunity Score is a Beta composite of recent price trends, school quality, rental yield, vacancy and affordability. It is not a calibrated future price forecast. A dedicated Future Growth model is under development.',
         collectedAt: new Date().toISOString()
       }
     });

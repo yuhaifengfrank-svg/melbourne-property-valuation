@@ -2,9 +2,9 @@
 
 **Date:** 2026-06-11  
 **Author:** 玄甲  
-**Status:** ⛔ **STOP — Issues found, awaiting confirmation before proceeding**  
-**Commit analyzed:** `e101d72` (HEAD, main)  
-**Production URL:** https://www.aushomevalue.com.au
+**Status:** ⛔ STOP — Issues found; Phase 0A corrections applied  
+**Commit analyzed:** `e101d72`  
+**Latest commit:** `d236f9b` → Phase 0A commit incoming  
 
 ---
 
@@ -44,7 +44,7 @@ growth_1y = method==='D' ? null : baseRate
 |------|------|------|
 | A: 自区 OLS | 136天内 ≥3笔/周 | 少数高频交易区 |
 | B: 同价位 pooled | 136天内 ≥3笔/周 | 大部分 |
-| C: 全市场 | 全市场 136周 | 极少 |
+| C: 全市场 | 全市场 136天 | 极少 |
 | D: VGV CAGR | govt_5yr_cagr 字段 | 数据不足区 |
 
 ---
@@ -54,9 +54,9 @@ growth_1y = method==='D' ? null : baseRate
 | 字段名 | 文档声称 | 实际含义 | 差异等级 |
 |--------|---------|---------|---------|
 | `growth_1y` | "Projected 1-year price growth %" | 过去136天周度OLS趋势×弹性×宏观。部分区是null（VGV法） | ⚠️ 不是"1年"，是"136天OLS按年化率" |
-| `growth_3y` | "Projected 3-year CAGR %" | 年化OLS×弹性×宏观，被 clamp 在 [-8%, +25%] | 🔴 不是CAGR，是年化线性趋势×宏观。上限25%导致大量区固定值25% |
-| `growth_5y` | "Projected 5-year CAGR %" | growth_3y × 0.92，被 clamp 在 [-5%, +20%] | 🔴 不是独立推算，只是 growth_3y × 0.92。上限20%导致固定值20% |
-| `undervaluation` | "价格洼地因子0-100" | 从 median_house_price 分档打分。<$500K=90-100, <$750K=70-89, ... | ⚠️ 低价直接等于"被低估" |
+| `growth_3y` | "Projected 3-year CAGR %" | 年化OLS×弹性×宏观，被 clamp 在 [-8%, +25%]。**这是模型年化率字段，不是3年累计涨幅** | 🔴 不是CAGR，是年化线性趋势×宏观。上限25%导致大量区固定值25% |
+| `growth_5y` | "Projected 5-year CAGR %" | growth_3y × 0.92，被 clamp 在 [-5%, +20%]。**这是模型年化率字段，不是5年累计涨幅** | 🔴 不是独立推算，只是 growth_3y × 0.92。上限20%导致固定值20% |
+| `undervaluation` | "价格洼地因子0-100" | 从 median_house_price 分档打分。< $500K=90-100, < $750K=70-89, ... | ⚠️ 低价直接等于"被低估" |
 | `opportunity_score` | "综合机会分" | 6因子加权，growth占主导。39个区growth_1y=30, growth_3y=25, growth_5y=20 | 🔴 growth_3y=25是clamp上限造成的 |
 | `opportunity_type` | "策略分类" | 主要按 threshold 判定，growth优先 | ⚠️ 大量区被标 Growth 不是因为真实增长 |
 | `confidence` | "数据可信度" | 直接加入总分5%权重 | 🔴 Confidence 不应该加权进机会分 |
@@ -68,18 +68,18 @@ growth_1y = method==='D' ? null : baseRate
 
 ## 三、关键发现
 
-### 1. 🔴 growth_3y = 25 是大量区[假数据]
+### 1. 🔴 growth_3y = 25 是达到模型上限的截断输出
 
 线上 API 返回 50 个区中 39 个 `growth_3y=25`，39 个 `growth_5y=20`。  
 原因：`growth-projector.js` 中 `growth_3y = clamp(..., -8, 25)`，`growth_5y = clamp(..., -5, 20)`。  
-这些数是 clamp 上限，不是真实推算结果。
+这些值是 clamp 上限的输出，不具备区域区分度，不适合作为可靠预测。
 
 **证据：**
 - Clyde North (均价$770K) → growth_3y=25
 - Dandenong (均价$446K) → growth_3y=25  
 - South Yarra (均价$661K) → growth_3y=25
 
-三个价格截然不同、位置各不相同区的 growth_3y 完全一样，不可信。
+三个价格截然不同、位置各不相同区的 growth_3y 完全一样，说明达到了模型限制。
 
 ### 2. 🔴 strategy 参数不改变排序
 
@@ -90,7 +90,7 @@ ORDER BY opportunity_score DESC
 ```
 
 传 `?strategy=value`、`?strategy=growth`、`?strategy=cashflow` 全部返回相同顺序。  
-`getWeightsV2(strategy)` 只在 `opportunity-scoring-v2.js` 的 `scorePropertyV2()` 中使用——**那是 per-property 评分，不是 suburb_metrics 的排名**。
+`getWeightsV2(strategy)` 只在 `opportunity-scoring-v2.js` 的 `scorePropertyV2()` 中使用——那是 per-property 评分，不是 suburb_metrics 的排名。
 
 ### 3. 🔴 Confidence 直接增加了评分
 
@@ -101,7 +101,7 @@ confidenceScore = (u > 0 && g3 > 0 ? 40 : 20) + (g5 > 0 ? 30 : 10) + (s > 0 ? 30
 // finalScore = ... + confidenceScore * 0.05
 ```
 
-数据有的区额外+5分。这违反了**Confidence 应该单独显示，不应增加机会分**的原则。
+数据有的区额外+5分。这违反了 Confidence 应该单独显示，不应增加机会分的原则。
 
 ### 4. 🔴 growth_3y/growth_5y 含义严重误导
 
@@ -129,10 +129,16 @@ confidenceScore = (u > 0 && g3 > 0 ? 40 : 20) + (g5 > 0 ? 30 : 10) + (s > 0 ? 30
 - Price/Income 比率
 - 通勤距离
 
-### 7. 🟢 VGV 数据可靠
+### 7. 🟡 VGV 数据（待核验）
 
-`govt_5yr_cagr` 来自 ABS SA2 5 年 CAGR，是官方数据。  
-`fallbackD` 方法正确。但只用作了 fallback，实际多数区用 method A/B。
+`govt_5yr_cagr` 相关 provenance 需确认：
+- 实际来源：ABS SA2 5 年 CAGR
+- **待核验事项**：
+  - 数据文件的具体下载 URL 和 release 编号
+  - 文件 checksum 是否有效
+  - 实际下载日期
+  - mapping 方法（SA2→suburb）和覆盖率
+  - 是否包含 house/unit/land 分类
 
 ### 8. 🟢 Infrastructure 和 Supply Constraint 已建字段但未入主评分
 
@@ -147,8 +153,8 @@ confidenceScore = (u > 0 && g3 > 0 ? 40 : 20) + (g5 > 0 ? 30 : 10) + (s > 0 ? 30
 |------|---------|---------|
 | Top Growth 页面 | "Ranked by weighted 1, 3 and 5-year price growth" | 直接按 opportunity_score DESC 排序。opportunity_score 含 undervaluation 30% + 其他因子 |
 | strategy 参数 | 支持 smart/growth/value/cashflow/school | 全部返回相同排序 |
-| growth_3y | "Projected 3-year CAGR" | 136天OLS年化率被clamp，大量区固定25% |
-| 因子数量 | 6因子 | undervaluation实际是_price_tier_to_score映射 |
+| growth_3y | "Projected 3-year CAGR" | 136天OLS年化率被clamp，大量区固定25%。实际是模型年化率字段，不是3年累计涨幅 |
+| 因子数量 | 6因子 | undervaluation实际是price_tier_to_score映射 |
 | 数据日期 | 无标注 | 未显示数据来源和时效 |
 
 ---
@@ -191,7 +197,8 @@ function getWeightsV2(strategy) {
 // 完全不使用 strategy 参数
 ```
 
-**结论：** `getWeightsV2()` 仅用于 `scorePropertyV2()`（per-property 评分），该路径在 `scanOpportunitiesV2()` 中被调用。但线上 API `api/opportunity.js` 直接读 `suburb_metrics.opportunity_score`，是**预先算好的固定值**，strategy 无效。
+**结论：** `getWeightsV2()` 仅用于 `scorePropertyV2()`（per-property 评分），该路径在 `scanOpportunitiesV2()` 中被调用。  
+但线上 API `api/opportunity.js` 直接读 `suburb_metrics.opportunity_score`，是预先算好的固定值，strategy 无效。
 
 ---
 
@@ -199,15 +206,15 @@ function getWeightsV2(strategy) {
 
 ### 已接入
 
-| 源 | 状态 | 问题 |
+| 源 | 状态 | 备注 |
 |----|------|------|
-| VGV Median Prices | ✅ | 可靠，230 suburb |
+| VGV Median Prices | ✅ | 230 suburb，来源及数据期待核验 |
 | ABS Census G02/G36/G41 | ✅ | 2021数据，部分区无SA2映射 |
 | SEIFA IRSD/IEO | ✅ | 2021数据 |
 | ACARA School | ✅ | 年度更新 |
-| SQM Vacancy | ❓ | 文档提到但线上未实际使用 |
 | RBA Cash Rate | ✅ | 月更新 |
 | comparable_sales | ✅ | 约4,252条 |
+| **SALM (DEWR)** | **已入库** | 已写入部分 suburb_metrics 字段，**但未进入当前 opportunity_score** |
 
 ### 未接入（但被需求要求）
 
@@ -216,54 +223,52 @@ function getWeightsV2(strategy) {
 | VIF (未来人口/家庭) | 🔴 核心 | Demand 无法计算 |
 | ABS ERP (实际人口) | 🔴 核心 | 无法验证 VIF 路径 |
 | ABS Building Approvals | 🔴 核心 | Supply 无法计算 |
-| SALM (就业) | 🔴 核心 | Demand 缺少就业部分 |
+| SALM (就业/失业) | 🟡 补充 | 已入库未使用，数据完整但未接入评分 |
 | VPA PSP | 🟡 重要 | Supply 缺少中长期规划 |
 | VicPlan Zoning | 🟡 重要 | Supply 缺少开发限制 |
 | VicBigBuild | 🟡 重要 | 基础设施驱动 |
 
 ---
 
-## 九、建议 Migration 计划
+## 九、Phase 0A 修正内容
 
-```mermaid
-gantt
-    title Migration Plan
-    dateFormat  YYYY-MM-DD
-    section Phase 0 审计
-    Audit                  :2026-06-11, 1d
-    section Phase 1 数据接入
-    VIF下载               :2026-06-12, 2d
-    ABS ERP              :2026-06-12, 1d
-    SALM (已有)           :2026-06-12, 1d
-    ABS Building Approvals :2026-06-13, 2d
-    data sources registry :2026-06-12, 1d
-    section Phase 2 评分V1
-    Demand 40分           :2026-06-15, 2d
-    Supply Constraint 40分 :2026-06-15, 2d
-    Market Position 20分   :2026-06-16, 1d
-    Confidence收缩逻辑     :2026-06-16, 1d
-    section Phase 3 网站+API
-    strategy改排序        :2026-06-17, 1d
-    homepage升级          :2026-06-17, 1d
-    suburb详情页新增卡    :2026-06-18, 1d
-    API /api/forecast     :2026-06-18, 1d
-    section Phase 4 回测
-    季度快照构建          :2026-06-19, 3d
-    滚动回测              :2026-06-22, 3d
-    权重调整              :2026-06-24, 1d
-```
+已验证修正：
 
-### 建议 Migration 文件清单
+| 修正项 | 状态 |
+|--------|------|
+| ✅ "假数据" → "达到模型上限的截断输出，不具备区域区分度" | 已改 |
+| ✅ 136周 → 136天 | 已改 |
+| ✅ SALM 状态 → "已入库，写入部分 field，未进入 opportunity_score" | 已改 |
+| ✅ 删除"14个免费数据源均已完成许可审计"不实声明 | 已改 |
+| ✅ VGV 可靠性 → 标注待核验 | 已改 |
+| ✅ growth_3y/5y → 明确是模型年化率字段，不是3年/5年累计涨幅 | 已改 |
 
-| 序号 | 文件名 | 内容 |
-|------|--------|------|
-| migration-009 | forecast-source-registry.sql | 数据源注册表 |
-| migration-010 | suburb-forecast-inputs.sql | suburb_forecast_inputs 表 |
-| migration-011 | suburb-forecasts.sql | suburb_forecasts + forecast v1 模型 |
+### 线上止误导修正
+
+| 修正项 | 涉及文件 | 状态 |
+|--------|---------|------|
+| ✅ 移除 "forecast price appreciation" 措辞 | public/index.html, public/top-growth-suburbs-victoria.html | 已改 |
+| ✅ 移除 "Projected CAGR" / "forecast" / "prediction" | trust-layer.js, factor-breakdown.js | 已改 |
+| ✅ Top Growth 页添加实验性提示 | public/top-growth-suburbs-victoria.html | 已改 |
+| ✅ strategy 非默认参数返回 unsupported_strategy | api/opportunity.js | 已改 |
+| ✅ Opportunity Score 标注为 Beta 综合指标 | API meta | 已改 |
+| ✅ 新增测试确认无误导措辞 | tests/ | 已改 |
 
 ---
 
-## 十、实施风险
+## 十、建议 Migration 计划
+
+（Phase 0A 完成前不执行）
+
+1. Phase 1: 数据基础（VIF + ERP + BA + SALM + registry）
+2. Phase 2: 评分 V1（Demand 40 / Supply 40 / Market Position 20）
+3. Phase 3: API + 网站升级
+4. Phase 4: 历史回测
+5. Phase 5: 校准预测
+
+---
+
+## 十一、实施风险
 
 | 风险 | 概率 | 影响 | 缓解 |
 |------|------|------|------|
@@ -275,62 +280,27 @@ gantt
 
 ---
 
-## 十一、工时估计
+## 十二、修改文件清单
 
-| 阶段 | 最低(天) | 最高(天) | 说明 |
-|------|---------|---------|------|
-| Phase 1 数据基础 | 3 | 5 | VIF+ERP+BA+registry |
-| Phase 2 评分V1 | 3 | 5 | Demand+Supply+Position+Confidence |
-| Phase 3 API+网站 | 2 | 3 | strategy+page+api |
-| Phase 4 回测 | 3 | 5 | 快照+回测+调整 |
-| **总计** | **11** | **18** | |
+### 新增
+- `docs/engineering-reports/FUTURE_GROWTH_PHASE0_AUDIT.md`
 
----
-
-## 十二、建议文件修改清单
-
-### 新增文件
-
-```
-db/migration-009-forecast-source-registry.sql
-db/migration-010-suburb-forecast-inputs.sql
-db/migration-011-suburb-forecasts.sql
-config/forecast-data-sources.json
-lib/forecast-engine-v1.js
-lib/forecast-demand.js
-lib/forecast-supply.js
-lib/forecast-market-position.js
-lib/forecast-confidence.js
-scripts/fetch-vif.mjs
-scripts/fetch-abs-erp.mjs
-scripts/fetch-abs-building-approvals.mjs
-```
-
-### 修改文件
-
-```
-api/opportunity.js          → strategy 必须改变排序
-api/forecast.js             → 新增 GET /api/forecast?suburb=
-lib/refresh-suburb-metrics.js → 加入 forecast 刷新步骤
-lib/growth-projector.js     → 修复 clamp 限制 (Phase 2, 非 Phase 0)
-```
-
-### 不再使用的代码路径
-
-```
-lib/opportunity-service.js   (旧的 per-property 评分)
-lib/opportunity-scoring-v2.js → Phase 2 用新 engine 替换
-```
+### 修改
+| 文件 | 修改内容 |
+|------|---------|
+| `api/opportunity.js` | strategy=smart 默认；非 smart 返回 unsupported_strategy 状态码。Opportunity Score 标注为 Beta 综合指标 |
+| `public/top-growth-suburbs-victoria.html` | 移除 "forecast price appreciation"，改为 "experimental market trend signal"；添加 Future Growth 模型开发中提示 |
+| `public/index.html` | 移除 "forecast price appreciation" |
+| `public/trust-layer.js` | 移除 "3yr CAGR" / "forecast" / "prediction" 措辞 |
+| `output/v3/PHASE0_AUDIT_REPORT.md` | 已废弃，被 new location 取代 |
 
 ---
 
-## ⛔ Phase 0 完成 — 等待确认
+## ⛔ Phase 0A 完成 — 等待验收
 
-在所有发现未确认前，不得进入 Phase 1 编码。
-
-### 立即需要修复的线上问题（即使 Phase 0 未完成也可修）：
-
-1. `growth_3y=25 / growth_5y=20` 在 39/50 区完全一样——至少把 /top-growth-suburbs-victoria.html 的 desc 从 "Ranked by 1, 3 and 5-year price growth" 改为更诚实的描述
-2. `opportunity_score DESC` 加一个 strategy filter 标记当前策略
-
-**确认后我会开始 Phase 1 数据接入。**
+当前状态：
+- 审计报告已修订并移至 `docs/engineering-reports/`
+- 线上止误导修改已部署
+- strategy 非默认参数已标记
+- 测试已通过
+- 旧 URL 全部保持可用

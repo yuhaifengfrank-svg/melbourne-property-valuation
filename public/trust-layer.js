@@ -41,7 +41,7 @@
         <div class="trust-factor-bar">
           <span class="trust-factor-label">Growth Potential <em>20%</em></span>
           <span class="trust-bar-fill" style="width:20%"></span>
-          <span class="trust-bar-desc">1yr/3yr/5yr weighted CAGR</span>
+          <span class="trust-bar-desc">1yr/3yr/5yr weighted price trend</span>
         </div>
         <div class="trust-factor-bar">
           <span class="trust-factor-label">Cashflow Yield <em>12%</em></span>
@@ -84,7 +84,7 @@
         </div>
         <div class="trust-source-item">
           <strong>Vic Valuer General</strong>
-          <span>SA2 median prices, CAGR trends</span>
+          <span>SA2 median prices, weighted trend</span>
           <span class="trust-source-freq">Annual</span>
         </div>
         <div class="trust-source-item">
@@ -409,7 +409,7 @@
         test: function() {
           var gv = (g3 != null) ? Number(g3).toFixed(1) : '—';
           if (gScore >= 55 || (g3 != null && g3 >= 15))
-            return { v: 'yes', r: isZh ? '3年复合增长率' + gv + '% — 强劲资本增值潜力' : gv + '% 3yr CAGR — strong capital growth trajectory' };
+            return { v: 'yes', r: isZh ? '3年趋势' + gv + '% — 市场信号较强' : gv + '% 3yr trend signal — moderate capital growth' };
           if (gScore >= 40 || (g3 != null && g3 >= 5))
             return { v: 'maybe', r: isZh ? '增长' + gScore + '分 — 中等，供应约束可支撑价格' : 'Growth score ' + gScore + ' — moderate, supply may support pricing' };
           return { v: 'no', r: isZh ? '增长率低 — 资本增值空间有限' : 'Low growth trajectory — limited appreciation potential' };
