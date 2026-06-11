@@ -235,119 +235,123 @@ export default async function handler(req, res) {
     // Generate session ID if not provided
     const activeSessionId = sessionId;
 
-    // BEGIN transaction — all DB writes atomic
-    let txResult;
-    try {
-      txResult = await sql.begin(async (tx) => {
-      // Step 1: SESSION CONFLICT CHECK FIRST — before any contact/preference/consent/event write
-      const existingBinding = await tx`
-        SELECT lead_contact_id FROM lead_session_contacts WHERE session_id = ${activeSessionId} LIMIT 1
-      `;
+    // ── Sequential DB writes (no real transaction — idempotent upserts) ──
+    // Session conflict check FIRST before any writes
+    const existingBinding = await sql`
+      SELECT lead_contact_id FROM lead_session_contacts WHERE session_id = ${activeSessionId} LIMIT 1
+    `;
+    const existingContact = await sql`
+      SELECT id, name, phone FROM lead_contacts WHERE email_lower = ${email} LIMIT 1
+    `;
 
-      // Step 2: Upsert lead_contacts
-      const existingContact = await tx`
-        SELECT id, name, phone FROM lead_contacts WHERE email_lower = ${email} LIMIT 1
-      `;
-
-      // FIX 10: Helper to abort transaction and signal conflict
-      function abortTx() { throw new Error('SESSION_CONFLICT'); }
-
-      let cid;
-      if (existingContact.length > 0) {
-        // Re-check session conflict now that we have contactId
-        if (existingBinding.length > 0 && existingBinding[0].lead_contact_id !== existingContact[0].id) {
-          abortTx();
-        }
-
-        const updateFields = [];
-        if (name) updateFields.push(tx`name = ${name}`);
-        if (phone) updateFields.push(tx`phone = ${phone}`);
-        updateFields.push(tx`updated_at = NOW()`);
-
-        await tx`
-          UPDATE lead_contacts SET ${tx.join(updateFields, tx`, `)} WHERE id = ${existingContact[0].id}
-        `;
-        cid = existingContact[0].id;
-      } else {
-        // Check conflict after potential insert too
-        if (existingBinding.length > 0) {
-          abortTx();
-        }
-        const newContact = await tx`
-          INSERT INTO lead_contacts (email, email_lower, name, phone)
-          VALUES (${email}, ${email}, ${name || null}, ${phone || null})
-          RETURNING id
-        `;
-        cid = newContact[0].id;
+    // Session conflict detection
+    function hasSessionConflict() {
+      if (existingBinding.length > 0 && existingContact.length > 0) {
+        return existingBinding[0].lead_contact_id !== existingContact[0].id;
       }
-
-      // Step 3: Upsert lead_preferences
-      const existingPrefs = await tx`
-        SELECT id FROM lead_preferences WHERE lead_contact_id = ${cid} LIMIT 1
-      `;
-
-      if (existingPrefs.length > 0) {
-        await tx`
-          UPDATE lead_preferences SET
-            session_id = ${activeSessionId},
-            budget_min = COALESCE(${budgetMin}, budget_min),
-            budget_max = COALESCE(${budgetMax}, budget_max),
-            state = ${state},
-            goal = ${goal},
-            property_type = ${propertyType || null},
-            updated_at = NOW()
-          WHERE id = ${existingPrefs[0].id}
-        `;
-      } else {
-        await tx`
-          INSERT INTO lead_preferences (lead_contact_id, session_id, budget_min, budget_max, state, goal, property_type)
-          VALUES (${cid}, ${activeSessionId}, ${budgetMin}, ${budgetMax}, ${state}, ${goal}, ${propertyType || null})
-        `;
+      // If session is bound to someone else and we're creating a new contact — conflict
+      if (existingBinding.length > 0 && existingContact.length === 0) {
+        return true;
       }
-
-      // Step 4: Write consent_records
-      if (serviceConsent) {
-        await tx`
-          INSERT INTO consent_records (lead_contact_id, consent_type, granted, ip_hash, source_reference)
-          VALUES (${cid}, 'service_processing', TRUE, ${ip || null}, 'unlock-opportunity-form')
-        `;
-      }
-      if (marketingConsent) {
-        await tx`
-          INSERT INTO consent_records (lead_contact_id, consent_type, granted, ip_hash, source_reference)
-          VALUES (${cid}, 'marketing', TRUE, ${ip || null}, 'unlock-opportunity-form')
-        `;
-      }
-
-      // Step 5: Write lead_events
-      await tx`
-        INSERT INTO lead_events (lead_contact_id, session_id, event_type, event_data)
-        VALUES (${cid}, ${activeSessionId}, 'opportunity_unlock', ${JSON.stringify(
-        { goal, state, propertyType, budgetMin, budgetMax }
-      )})
-      `;
-
-      // Step 6: Upsert session binding (safe — only here if no conflict)
-      await tx`
-        INSERT INTO lead_session_contacts (session_id, lead_contact_id)
-        VALUES (${activeSessionId}, ${cid})
-        ON CONFLICT (session_id) DO UPDATE SET lead_contact_id = ${cid}
-      `;
-
-      return { conflict: false, contactId: cid };
-    });
-    } catch (txErr) {
-      // FIX: SESSION_CONFLICT must return 409, not 500
-      if (txErr.message === 'SESSION_CONFLICT') {
-        return res.status(409).json({
-          ok: false,
-          error: "Session already bound to a different contact. Please start fresh or use the original registration session."
-        });
-      }
-      throw txErr; // re-throw other transaction errors to outer catch
+      return false;
     }
 
-    const contactId = txResult.contactId;
+    if (hasSessionConflict()) {
+      return res.status(409).json({
+        ok: false,
+        error: "Session already bound to a different contact. Please start fresh or use the original registration session."
+      });
+    }
+
+    // Step 2: Upsert lead_contacts
+    let cid;
+    if (existingContact.length > 0) {
+      await sql`
+        UPDATE lead_contacts SET
+          name = COALESCE(${name || null}, name),
+          phone = COALESCE(${phone || null}, phone),
+          updated_at = NOW()
+        WHERE id = ${existingContact[0].id}
+      `;
+      cid = existingContact[0].id;
+    } else {
+      const newContact = await sql`
+        INSERT INTO lead_contacts (email, email_lower, name, phone)
+        VALUES (${email}, ${email}, ${name || null}, ${phone || null})
+        RETURNING id
+      `;
+      cid = newContact[0].id;
+    }
+
+    // Step 3: Upsert lead_preferences using ON CONFLICT on unique (lead_contact_id)
+    // Note: lead_preferences has no explicit UNIQUE on lead_contact_id, so we use a manual upsert
+    // Since lead_contact_id has an index but not a UNIQUE constraint, we use SELECT-then-INSERT/UPDATE
+    const existingPrefs = await sql`
+      SELECT id FROM lead_preferences WHERE lead_contact_id = ${cid} LIMIT 1
+    `;
+
+    if (existingPrefs.length > 0) {
+      await sql`
+        UPDATE lead_preferences SET
+          session_id = ${activeSessionId},
+          budget_min = COALESCE(${budgetMin}, budget_min),
+          budget_max = COALESCE(${budgetMax}, budget_max),
+          state = ${state},
+          goal = ${goal},
+          property_type = ${propertyType || null},
+          updated_at = NOW()
+        WHERE id = ${existingPrefs[0].id}
+      `;
+    } else {
+      await sql`
+        INSERT INTO lead_preferences (lead_contact_id, session_id, budget_min, budget_max, state, goal, property_type)
+        VALUES (${cid}, ${activeSessionId}, ${budgetMin}, ${budgetMax}, ${state}, ${goal}, ${propertyType || null})
+      `;
+    }
+
+    // Step 4: Write consent_records
+    if (serviceConsent) {
+      await sql`
+        INSERT INTO consent_records (lead_contact_id, consent_type, granted, ip_hash, source_reference)
+        VALUES (${cid}, 'service_processing', TRUE, ${ip || null}, 'unlock-opportunity-form')
+      `;
+    }
+    if (marketingConsent) {
+      await sql`
+        INSERT INTO consent_records (lead_contact_id, consent_type, granted, ip_hash, source_reference)
+        VALUES (${cid}, 'marketing', TRUE, ${ip || null}, 'unlock-opportunity-form')
+      `;
+    }
+
+    // Step 5: Write lead_events
+    await sql`
+      INSERT INTO lead_events (lead_contact_id, session_id, event_type, event_data)
+      VALUES (${cid}, ${activeSessionId}, 'opportunity_unlock', ${JSON.stringify(
+      { goal, state, propertyType, budgetMin, budgetMax }
+    )})
+    `;
+
+    // Step 6: Session binding — DO NOTHING on conflict, then verify
+    await sql`
+      INSERT INTO lead_session_contacts (session_id, lead_contact_id)
+      VALUES (${activeSessionId}, ${cid})
+      ON CONFLICT (session_id) DO NOTHING
+    `;
+
+    // Verify the binding matches our contact (safety check for concurrent insert)
+    const bound = await sql`
+      SELECT lead_contact_id FROM lead_session_contacts
+      WHERE session_id = ${activeSessionId}
+    `;
+    if (bound.length === 0 || bound[0].lead_contact_id !== cid) {
+      // Session already bound to a different contact — return 409
+      return res.status(409).json({
+        ok: false,
+        error: "Session already bound to a different contact. Please start fresh or use the original registration session."
+      });
+    }
+
+    const contactId = cid;
 
     // ── Fetch raw opportunities with strategy=smart, then re-rank ──
     // Cookie is set AFTER successful data fetch (FIX 6)
