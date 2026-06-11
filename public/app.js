@@ -1783,7 +1783,7 @@ function applyLanguage() {
   byId("lead-phone").placeholder = language === "zh" ? "下载 PDF 时需要" : "For PDF download";
   var existingLink = byId("existing-unlock-link");
   if (existingLink) {
-    existingLink.textContent = language === "zh" ? "已注册？输入邮箱直接解锁" : "Already registered? Enter your email to unlock";
+    existingLink.textContent = language === "zh" ? "完整报告即将推出..." : "Full report -- Coming Soon...";
   }
   byId("manual-data-notes").placeholder =
     language === "zh"
@@ -2414,46 +2414,17 @@ byId("language-toggle").addEventListener("click", () => {
 
 const unlockBtn = byId("unlock-report");
 if (unlockBtn) {
-  unlockBtn.addEventListener("click", async () => {
-    if (!(await saveLead())) return;
-    unlocked = true;
-    renderLockState();
-    renderComparables(currentValuation.comparables);
-    showReportGuideModal();
+  unlockBtn.addEventListener("click", async function () {
+    alert(language === "zh" ? "完整报告即将推出，敬请期待。" : "Full report coming soon.");
   });
 }
 
-/* Already registered — just enter email to re-unlock */
+/* Full report and PDF — Coming Soon only */
 const existingLink = byId("existing-unlock-link");
 if (existingLink) {
   existingLink.addEventListener("click", async (e) => {
     e.preventDefault();
-    var contact = prompt(language === "zh" ? "输入注册时使用的邮箱或手机号：" : "Enter the email or phone you registered with:");
-    if (!contact || contact.trim().length < 2) return;
-    contact = contact.trim();
-    var isEmail = contact.includes("@");
-    var url = isEmail
-      ? "/api/opportunity-unlock?email=" + encodeURIComponent(contact)
-      : "/api/opportunity-unlock?phone=" + encodeURIComponent(contact);
-    try {
-      var res = await fetch(url);
-      if (!res.ok) { alert(language === "zh" ? "验证失败，请稍后再试。" : "Verification failed, please try again."); return; }
-      var data = await res.json();
-      if (!data.ok || data.status !== "full") {
-        alert(language === "zh" ? "该联系方式尚未注册，请先填写上方表格。" : "This contact is not registered. Please fill in the form above.");
-        return;
-      }
-      /* Restore unlocked state */
-      if (isEmail) {
-        try { localStorage.setItem("aushomevalue.reg.email", JSON.stringify(contact)); } catch(e) {}
-      }
-      unlocked = true;
-      renderLockState();
-      renderComparables(currentValuation.comparables);
-      showReportGuideModal();
-    } catch(e) {
-      alert(language === "zh" ? "网络错误，请稍后再试。" : "Network error, please try again.");
-    }
+    alert(language === "zh" ? "完整报告即将推出，敬请期待。" : "Full report coming soon.");
   });
 }
 
@@ -2595,25 +2566,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 applyLanguage();
 
-/* Restore unlocked state from previous registration */
-(function restoreUnlockedSession() {
-  async function checkServer() {
-    try {
-      var stored = localStorage.getItem("aushomevalue.reg.email");
-      if (!stored) return;
-      var email = JSON.parse(stored);
-      if (!email || !email.includes("@")) return;
-      var res = await fetch("/api/opportunity-unlock?email=" + encodeURIComponent(email));
-      if (!res.ok) return;
-      var data = await res.json();
-      if (data.ok && data.status === "full") {
-        unlocked = true;
-        renderLockState();
-      }
-    } catch(e) {}
-  }
-  setTimeout(checkServer, 500);
-})();
+/* Phase 1B: Full report Coming Soon — no localStorage restore allowed */
+/* Remove restoreReportUnlock(); valuation report unlock not available in Phase 1B */
 
 /* ── Home Page Top Opportunities Snippet (live from API) ── */
 async function loadHomeOpportunities() {
@@ -2639,7 +2593,7 @@ async function loadHomeOpportunities() {
       'Smart Buy':    { label: 'Top Value',     color: '#0d6b57', desc: o => `${o.opportunityType} · Improving fundamentals` },
       'Growth':       { label: 'Top Growth',    color: '#065f46', desc: o => `Strong growth indicators` },
       'School Zone':  { label: 'Top School',    color: '#1e40af', desc: o => `School score ${(o.schoolScore || 0).toFixed(0)}/100` },
-      'Balanced':     { label: 'Top Balanced',  color: '#0d6b57', desc: o => `${o.opportunityType} · ${(o.growth3y||0) > 20 ? 'High Growth' : 'Developing'}` }
+      'Balanced':     { label: 'Top Balanced',  color: '#0d6b57', desc: o => `${o.opportunityType} · Balanced fundamentals` }
     };
 
     let html = `<div id="top-opportunities" style="max-width:960px;margin:40px auto;padding:0 20px;">
@@ -2677,10 +2631,58 @@ const oppSearchBtn = document.getElementById("opp-search-btn");
 const oppResults = document.getElementById("opp-results");
 const oppLoading = document.getElementById("opp-loading");
 
+/**
+ * Render personalised Top 10 cards.
+ * Shows: suburb, baseScore, personalisedScore, reason, risk, confidence, dataUpdated.
+ * NO growth3y, NO High Growth, NO "Growth: x%".
+ * When API data is unavailable, show "Data unavailable" — never fall back to generic rankings.
+ */
+function renderPersonalisedTop10(top10) {
+  oppLoading.classList.add("hidden");
+  oppSearchBtn.disabled = false;
+  if (!top10 || !Array.isArray(top10) || top10.length === 0) {
+    oppResults.innerHTML = '<div class="opp-placeholder"><p>Data unavailable. No personalised rankings available at this time.</p></div>';
+    return;
+  }
+  var html = '<p class="opp-meta">Personalised Top ' + top10.length + ' — ranked for your preferences</p>';
+  top10.forEach(function (o) {
+    var suburb = o.suburb || 'Unknown';
+    var baseScore = o.baseScore != null ? o.baseScore.toFixed(1) : 'N/A';
+    var persScore = o.personalisedScore != null ? o.personalisedScore.toFixed(1) : 'N/A';
+    var reason = o.reason || 'Data unavailable';
+    var risk = o.risk || 'Standard market risk profile';
+    var confidence = o.confidence || 'Low';
+    var updated = o.dataUpdated || '-';
+    var slug = suburb.toLowerCase().replace(/\s+/g, '-') + '-' + (o.state||'vic').toLowerCase();
+    if (reason === 'Data unavailable') {
+      // data truly unavailable — don't pretend
+      html += '\n<div class="opp-result-card opp-card-unavailable">';
+      html += '<div class="opp-result-main"><div class="address">' + suburb + '</div>';
+      html += '<div style="color:#999;font-size:0.85rem;margin-top:6px;">Data unavailable</div></div>';
+      html += '</div>';
+    } else {
+      html += '\n<div class="opp-result-card">';
+      html += '<div class="opp-result-main">';
+      html += '<div class="address"><a href="/suburb/' + slug + '.html">' + suburb + '</a></div>';
+      html += '<div class="opp-scores">';
+      html += '<span>Score: ' + baseScore + ' → ' + persScore + '</span>';
+      html += '<span>Confidence: ' + confidence + '</span>';
+      html += '<span>Updated: ' + updated + '</span>';
+      html += '</div>';
+      html += '<div class="opp-reason" style="margin-top:6px;font-size:0.85rem;color:#17211d;">' + reason + '</div>';
+      html += '<div class="opp-risk" style="margin-top:4px;font-size:0.8rem;color:#66736d;">Risk: ' + risk + '</div>';
+      html += '</div>';
+      html += '<div class="opp-score-badge">' + persScore + '</div>';
+      html += '</div>';
+    }
+  });
+  oppResults.innerHTML = html;
+}
+
 async function runOpportunityScan() {
-  // Registration gate: requires server-confirmed full registration (name+email+phone+consent)
-  // Versioned localStorage key prevents old key bypass
-  if (window.opportunityGate && !window.opportunityGate.isUnlocked()) {
+  // Registration gate: always delegate to server-verified opportunityGate.run()
+  // Do not use synchronous isUnlocked check — gate.run() handles it
+  if (window.opportunityGate) {
     oppLoading.classList.add("hidden");
     const strategy = document.getElementById("opp-strategy").value;
     const ptype = document.getElementById("opp-type").value;
@@ -2695,84 +2697,44 @@ async function runOpportunityScan() {
       budgetMin: minP && Number(minP) > 0 ? Number(minP) : null,
       budgetMax: maxP && Number(maxP) < 99999999 ? Number(maxP) : null,
       state: state
-    }, async function () {
-      await runOpportunityScan();
+    }, async function (d) {
+      // Registration success — render personalised top10 directly
+      if (d && d.top10) {
+        renderPersonalisedTop10(d.top10);
+      } else {
+        oppResults.innerHTML = '<div class="opp-placeholder"><p>Data unavailable. Please try again later.</p></div>';
+      }
     });
     if (waitForGate) return; // gate was shown
   }
 
-  const strategy = document.getElementById("opp-strategy").value;
-  const ptype = document.getElementById("opp-type").value;
-  const minP = document.getElementById("opp-min-price").value;
-  const maxP = document.getElementById("opp-max-price").value;
-  const params = new URLSearchParams({ strategy, maxResults: "50" });
-  if (ptype) params.set("propertyType", ptype);
-  if (minP && Number(minP) > 0) params.set("minPrice", minP);
-  if (maxP && Number(maxP) < 99999999) params.set("maxPrice", maxP);
+  // Already authenticated — fetch personalised top 10 from server re-rank endpoint
+  // FIX: Only send re_rank=1 with no filters; server loads stored DB preferences
   oppLoading.classList.remove("hidden");
-  oppLoading.textContent = "Ranking suburbs...";
+  oppLoading.textContent = "Personalising your rankings...";
   oppSearchBtn.disabled = true;
   oppResults.innerHTML = "";
-  const oldTrust = document.getElementById("opp-trust-layer");
-  if (oldTrust) oldTrust.remove();
-  const snippetEl = document.getElementById('home-snippet');
+  var snippetEl = document.getElementById('home-snippet');
   if (snippetEl) snippetEl.style.display = 'none';
-  const coldTimer = setTimeout(() => {
+  var coldTimer = setTimeout(function () {
     oppLoading.textContent = "Still scanning — this may take a moment on first run.";
   }, 15000);
   try {
-    const res = await fetch("/api/opportunity?" + params.toString());
-    const data = await res.json();
+    var res = await fetch("/api/unlock-opportunity?re_rank=1");
+    var data = await res.json();
     clearTimeout(coldTimer);
     oppLoading.classList.add("hidden");
     oppSearchBtn.disabled = false;
-    if (!data.ok || !data.opportunities || data.opportunities.length === 0) {
-      oppResults.innerHTML = '<div class="opp-placeholder"><p>No opportunities found. Try adjusting the filters.</p></div>';
-      return;
-    }
-    let html = `<p class="opp-meta">Found ${data.meta.totalFound} suburbs &middot; Strategy: ${data.meta.strategy}</p>`;
-    data.opportunities.forEach(o => {
-      const score = o.opportunityScore;
-      const hp = o.medianHousePrice ? `$${(o.medianHousePrice / 1000).toFixed(0)}K` : 'N/A';
-      const g3 = o.growth3y != null ? `${o.growth3y.toFixed(1)}%` : '-';
-      const sch = o.schoolScore != null ? o.schoolScore.toFixed(1) : '-';
-      const vac = o.vacancyRate != null ? `${o.vacancyRate.toFixed(1)}%` : '-';
-      const otype = o.opportunityType || 'Balanced';
-      const suburbSlug = o.suburb.toLowerCase().replace(/\s+/g, '-') + '-' + (o.state||'vic').toLowerCase();
-      html += `
-        <div class="opp-result-card">
-          <div class="opp-result-main">
-            <div class="address"><a href="/suburb/${suburbSlug}.html">${o.suburb}</a></div>
-            <div class="detail">${otype} &middot; Median $${hp}</div>
-            <div class="opp-scores">
-              <span>Growth: ${g3}</span>
-              <span>School: ${sch}</span>
-              <span>Vacancy: ${vac}</span>
-            </div>
-          </div>
-          <div class="opp-score-badge">${score}</div>
-        </div>`;
-    });
-    oppResults.innerHTML = html;
-    // ── Trust Layer: methodology + confidence for first result ──
-    const trustContainer = document.createElement("div");
-    trustContainer.id = "opp-trust-layer";
-    oppResults.parentNode.insertBefore(trustContainer, oppResults.nextSibling);
-    if (typeof TrustLayer !== "undefined") {
-      const first = data.opportunities[0];
-      TrustLayer.render(trustContainer, {
-        suburb: first ? first.suburb : "",
-        language: (typeof language !== "undefined") ? language : "en",
-        showMethodology: true,
-        showConfidence: true,
-        showWhySuburb: true,
-      });
+    if (data.ok && data.status === "active" && data.top10 && data.top10.length > 0) {
+      renderPersonalisedTop10(data.top10);
+    } else {
+      oppResults.innerHTML = '<div class="opp-placeholder"><p>Data unavailable. Please try again later or adjust your preferences.</p></div>';
     }
   } catch (err) {
     clearTimeout(coldTimer);
     oppLoading.classList.add("hidden");
     oppSearchBtn.disabled = false;
-    oppResults.innerHTML = `<div class="opp-error">Failed to load opportunities: ${err.message}</div>`;
+    oppResults.innerHTML = '<div class="opp-error">Failed to load opportunities: ' + err.message + '</div>';
   }
 }
 

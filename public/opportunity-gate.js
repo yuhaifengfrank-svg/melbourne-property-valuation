@@ -422,9 +422,10 @@
   window.opportunityGate = {
     run: runGate,
     isUnlocked: function () {
-      // Check token silently on server — returns promise
-      // Call .then() to get boolean
-      return false;
+      // Async check — returns a promise resolving to boolean
+      return checkTokenOnServer().then(function (status) {
+        return !!(status && status.status === "active");
+      });
     },
     check: checkTokenOnServer,
     protectPage: function () {

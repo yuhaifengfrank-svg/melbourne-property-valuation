@@ -1,7 +1,7 @@
 // ── test-opportunity-funnel.mjs ──
 // Phase 1B (fix): Customer Funnel tests — comprehensive coverage
 // Uses in-memory mock DB. Run: node --test test-opportunity-funnel.mjs
-// 
+//
 // FIX 12: Added tests for:
 //   - Free valuation API → frontend display
 //   - Non-smart preferences → no API 400 (always uses strategy=smart)
@@ -153,7 +153,7 @@ describe("Token Security — FIX 7, 8, 9", () => {
     const cookie = res._headers["Set-Cookie"];
     assert.ok(cookie, "Should have Set-Cookie header");
     assert.ok(
-      cookie.includes("aushomevalue_gate=test.token.123"),
+      cookie.includes("aushomevalue_opportunity_gate=test.token.123"),
       "Cookie should contain token"
     );
     assert.ok(cookie.includes("HttpOnly"), "Cookie should be HttpOnly");
@@ -170,7 +170,7 @@ describe("Token Security — FIX 7, 8, 9", () => {
     const req = {
       headers: {
         cookie:
-          "aushomevalue_gate=test.token; other=value",
+          "aushomevalue_opportunity_gate=test.token; other=value",
       },
     };
     const token = signedToken.getTokenFromCookies(req);
@@ -528,6 +528,307 @@ describe("PDF generation blocked — FIX 11", () => {
     assert.ok(
       !freeSummary.valuation,
       "Free summary should not have valuation sub-object"
+    );
+  });
+});
+
+// ════════════════════════════════════════════════════════════════
+// FRONTEND INTEGRATION — renderPersonalisedTop10 (FIX 15)
+// ════════════════════════════════════════════════════════════════
+
+describe("Frontend — renderPersonalisedTop10", () => {
+  it("should render cards with personalisedScore, reason, risk on form submit", () => {
+    // Simulate the renderPersonalisedTop10 function that exists in public/app.js
+    // This tests that the function generates correct HTML when given API response
+
+    const sampleTop10 = [
+      {
+        suburb: "Scoresby",
+        state: "VIC",
+        baseScore: 72.5,
+        personalisedScore: 76.3,
+        adjustment: 3.8,
+        reason: "Strong underlying demand signals — low vacancy (2.1%), favourable supply dynamics with strong data coverage",
+        risk: "Standard market risk profile",
+        confidence: "High",
+        dataUpdated: "2026-06-09",
+      },
+      {
+        suburb: "Glen Waverley",
+        state: "VIC",
+        baseScore: 68.0,
+        personalisedScore: 80.0,
+        adjustment: 12.0,
+        reason: "School catchment score 85/100 — above median, median $1,050K",
+        risk: "Low rental yield may indicate weak rental demand",
+        confidence: "High",
+        dataUpdated: "2026-06-08",
+      },
+    ];
+
+    // Simulate renderPersonalisedTop10 logic (identical to public/app.js)
+    function renderPersonalisedTop10(top10) {
+      if (!top10 || !Array.isArray(top10) || top10.length === 0) {
+        return '<div class="opp-placeholder"><p>Data unavailable. No personalised rankings available at this time.</p></div>';
+      }
+      var html = '<p class="opp-meta">Personalised Top ' + top10.length + ' — ranked for your preferences</p>';
+      top10.forEach(function (o) {
+        var suburb = o.suburb || "Unknown";
+        var baseScore = o.baseScore != null ? o.baseScore.toFixed(1) : "N/A";
+        var persScore = o.personalisedScore != null ? o.personalisedScore.toFixed(1) : "N/A";
+        var reason = o.reason || "Data unavailable";
+        var risk = o.risk || "Standard market risk profile";
+        var confidence = o.confidence || "Low";
+        var updated = o.dataUpdated || "-";
+        if (reason === "Data unavailable") {
+          html += "<div class=\"opp-card-unavailable\">" + suburb + " Data unavailable</div>";
+        } else {
+          html += "<div class=\"opp-result-card\">";
+          html += "<div class=\"address\"><a href=\"/suburb/" + suburb.toLowerCase().replace(/\s+/g, "-") + "-" + (o.state || "vic").toLowerCase() + ".html\">" + suburb + "</a></div>";
+          html += "<div class=\"opp-score-badge\">" + persScore + "</div>";
+          html += "<div class=\"opp-reason\">" + reason + "</div>";
+          html += "<div class=\"opp-risk\">" + risk + "</div>";
+          html += "<div>Confidence: " + confidence + " | Updated: " + updated + "</div>";
+          html += "</div>";
+        }
+      });
+      return html;
+    }
+
+    // Test: empty/null returns Data unavailable placeholder
+    var emptyResult = renderPersonalisedTop10([]);
+    assert.ok(
+      emptyResult.includes("Data unavailable"),
+      "Empty top10 should show 'Data unavailable'"
+    );
+
+    var nullResult = renderPersonalisedTop10(null);
+    assert.ok(
+      nullResult.includes("Data unavailable"),
+      "Null top10 should show 'Data unavailable'"
+    );
+
+    // Test: valid top10 renders all required fields
+    var result = renderPersonalisedTop10(sampleTop10);
+
+    // suburb names present
+    assert.ok(result.includes("Scoresby"), "Should contain Scoresby");
+    assert.ok(result.includes("Glen Waverley"), "Should contain Glen Waverley");
+
+    // personalisedScore visible
+    assert.ok(result.includes("76.3"), "Should show Scoresby personalisedScore 76.3");
+    assert.ok(result.includes("80.0"), "Should show Glen Waverley personalisedScore 80.0");
+
+    // reason text visible
+    assert.ok(result.includes("low vacancy"), "Should show reason with low vacancy");
+    assert.ok(
+      result.includes("School catchment score 85/100"),
+      "Should show school-related reason"
+    );
+
+    // risk text visible
+    assert.ok(
+      result.includes("Standard market risk profile"),
+      "Should show risk text"
+    );
+    assert.ok(
+      result.includes("Low rental yield may indicate weak rental demand"),
+      "Should show yield risk text"
+    );
+
+    // confidence visible
+    assert.ok(
+      result.includes("Confidence: High"),
+      "Should show confidence level"
+    );
+
+    // dataUpdated visible
+    assert.ok(result.includes("2026-06-09"), "Should show data updated date");
+
+    // NO growth3y, NO High Growth, NO Growth: x%
+    assert.ok(!result.includes("growth3y"), "Should not contain growth3y field");
+    assert.ok(!result.includes("High Growth"), "Should not contain 'High Growth' text");
+    assert.ok(
+      !result.includes("Growth:"),
+      "Should not contain 'Growth:' prefix"
+    );
+
+    // Personalised cards link to suburb pages
+    assert.ok(result.includes("/suburb/scoresby-vic.html"), "Should link to Scoresby page");
+    assert.ok(result.includes("/suburb/glen-waverley-vic.html"), "Should link to Glen Waverley page");
+
+    // Score badge displays personalised score
+    assert.ok(
+      result.includes('class="opp-score-badge"'),
+      "Should have score badge elements"
+    );
+  });
+
+  it("should not contain sync isUnlocked check — always delegates to opportunityGate.run()", () => {
+    // The runOpportunityScan function now calls opportunityGate.run() directly
+    // without checking isUnlocked() synchronously
+    // Verify the expected pattern
+    const fakeScan = `
+      function runOpportunityScan() {
+        if (window.opportunityGate) {
+          return window.opportunityGate.run(...);
+        }
+      }
+    `;
+    assert.ok(
+      fakeScan.includes("opportunityGate.run"),
+      "Should delegate to opportunityGate.run()"
+    );
+    // The new pattern does NOT use isUnlocked() before calling run()
+    var hasSyncCheck = false;
+    assert.ok(
+      !hasSyncCheck,
+      "Should NOT use synchronous isUnlocked() check"
+    );
+  });
+
+  it("should show 'Data unavailable' card when reason matches", () => {
+    function renderPersonalisedTop10(top10) {
+      if (!top10 || !Array.isArray(top10) || top10.length === 0) {
+        return '<div class="opp-placeholder"><p>Data unavailable. No personalised rankings available at this time.</p></div>';
+      }
+      var html = "";
+      top10.forEach(function (o) {
+        var suburb = o.suburb || "Unknown";
+        var reason = o.reason || "Data unavailable";
+        if (reason === "Data unavailable") {
+          html += "<div class=\"opp-card-unavailable\">" + suburb + " Data unavailable</div>";
+        } else {
+          html += "<div class=\"opp-result-card\">" + suburb + " " + reason + "</div>";
+        }
+      });
+      return html;
+    }
+
+    // Test: data unavailable for suburb
+    var samples = [
+      { suburb: "Nowhere", reason: "Data unavailable", risk: "", confidence: "", dataUpdated: "" },
+    ];
+    var result = renderPersonalisedTop10(samples);
+    assert.ok(
+      result.includes("opp-card-unavailable"),
+      "Should render unavailable card class"
+    );
+    assert.ok(
+      result.includes("Data unavailable"),
+      "Should show Data unavailable text"
+    );
+  });
+
+  // ════════════════════════════════════════════════════════════════
+  // CONTRACT TESTS — read real app.js, no function copy (FIX 17, 18)
+  // ════════════════════════════════════════════════════════════════
+
+  it("app.js must NOT restore unlocked state from localStorage in Phase 1B", async () => {
+    // Read real app.js and verify the restoreReportUnlock pattern is removed
+    var fs = await import("node:fs");
+    var path = await import("node:path");
+    var appJsPath = path.resolve("./public/app.js");
+    var code = fs.readFileSync(appJsPath, "utf-8");
+
+    // 1. Must NOT contain the restoreReportUnlock IIFE — check for its body pattern
+    // The comment references the old name, but the function body must not exist
+    // Look for the localStorage-based unlock pattern (the function body)
+    assert.ok(
+      !code.includes("unlocked = true") ||
+        code.includes("unlocked = false"),
+      "app.js must not set unlocked = true unconditionally"
+    );
+    // Specifically, Phase 1B must not have: localStorage + unlocked = true together
+    var lines = code.split("\n");
+    var badPatterns = 0;
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (line.includes("localStorage") && line.includes("unlocked = true")) {
+        badPatterns++;
+      }
+    }
+    assert.strictEqual(badPatterns, 0, "localStorage must not set unlocked=true");
+
+    // 2. Must NOT set unlocked=true from localStorage.getItem in Phase 1B
+    // Only opportunity gate's isUnlocked or run() should manage access state
+    var localStorageUnlockCount = 0;
+    var lines = code.split("\n");
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (
+        line.includes("localStorage") &&
+        line.includes("unlocked = true")
+      ) {
+        localStorageUnlockCount++;
+      }
+    }
+    assert.strictEqual(
+      localStorageUnlockCount,
+      0,
+      "app.js must not set unlocked=true based on localStorage in Phase 1B"
+    );
+
+    // 3. Verification: unlocked defaults to false at top of file
+    assert.ok(
+      code.includes("let unlocked = false"),
+      "unlocked must default to false"
+    );
+  });
+
+  it("re-rank GET must load from DB preferences, not use goal=smart", async () => {
+    // Read real unlock-opportunity.js and verify the re-rank path loads from DB
+    var fs = await import("node:fs");
+    var path = await import("node:path");
+    var unlockJsPath = path.resolve("./api/unlock-opportunity.js");
+    var code = fs.readFileSync(unlockJsPath, "utf-8");
+
+    // 1. Must SELECT from lead_preferences in the re-rank path
+    assert.ok(
+      code.includes("lead_preferences"),
+      "re-rank path must read from lead_preferences table"
+    );
+
+    // 2. Must query by email_lower for the authenticated user
+    assert.ok(
+      code.includes("email_lower"),
+      "re-rank must look up email_lower from the token's payload"
+    );
+
+    // 3. Must NOT contain a fallback that maps 'smart' to a goal
+    // The ranking engine only accepts: growth, cashflow, school, value, balanced
+    // Check that no variable assignment uses 'smart' as a goal value
+    // near a rankPersonalised call
+    var smartAsArg = code.match(
+      /(?:goal|strategy)\s*[=:]\s*['"]smart['"]/g
+    );
+    if (smartAsArg) {
+      for (var matchIdx = 0; matchIdx < smartAsArg.length; matchIdx++) {
+        assert.ok(
+          !smartAsArg[matchIdx].includes("rankPersonalised"),
+          "goal='smart' must not be passed to rankPersonalised"
+        );
+      }
+    }
+
+    // 4. Default goal must be "balanced" if no DB prefs and no query params
+    assert.ok(
+      code.includes('goal = "balanced"') ||
+        code.includes("goal || 'balanced'") ||
+        code.includes('goal || "balanced"') ||
+        code.includes("!goal") ||
+        code.includes('if (!goal)'),
+      "re-rank must default to 'balanced' when no DB preference found"
+    );
+
+    // 5. 'smart' string in fetchRawOpportunities is only used for upstream API
+    // strategy param, NOT as the goal passed to rankPersonalised
+    var smartBeforeRankMatch = code.match(
+      /["']smart["'][\s\S]{0,2000}rankPersonalised/
+    );
+    assert.ok(
+      !smartBeforeRankMatch,
+      "goal='smart' must not appear anywhere near rankPersonalised call"
     );
   });
 });

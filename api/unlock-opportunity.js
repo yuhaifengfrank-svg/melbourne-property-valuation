@@ -9,11 +9,11 @@
 import crypto from "node:crypto";
 import { ensureCustomerFunnelSchema, getSql } from "./_db.js";
 import {
+  clearTokenCookie,
   createToken,
   generateSessionId,
   verifyToken,
   setTokenCookie,
-  clearTokenCookie,
   getTokenFromCookies,
 } from "../lib/signed-token.js";
 import { rankPersonalised } from "../lib/personalised-opportunity-ranking.js";
@@ -73,6 +73,7 @@ async function fetchRawOpportunities(preferences) {
   }
 
   // Defensive sanitize — ensure numeric fields are numbers (FIX 6)
+  // FIX 13: Use supplyConstraintScore (from DB), not supplyRatio/comparableCount
   return data.opportunities.map((o) => ({
     suburb: String(o.suburb || ""),
     state: String(o.state || ""),
@@ -80,8 +81,8 @@ async function fetchRawOpportunities(preferences) {
     rentalYield: safeNumber(o.rentalYield),
     schoolScore: safeNumber(o.schoolScore),
     vacancyRate: safeNumber(o.vacancyRate),
-    supplyRatio: safeNumber(o.supplyRatio),
-    comparableCount: safeNumber(o.comparableCount),
+    supplyConstraintScore: safeNumber(o.supplyConstraintScore),
+    overallConfidence: safeNumber(o.overallConfidence),
     dataUpdated: String(o.dataUpdated || ""),
     medianHousePrice: safeNumber(o.medianHousePrice),
     medianUnitPrice: safeNumber(o.medianUnitPrice),
@@ -106,7 +107,7 @@ export default async function handler(req, res) {
     const sql = getSql();
     await ensureCustomerFunnelSchema(sql);
 
-    // ── GET: Check session status from cookie ──
+    // ── GET: Check session status from cookie, optionally re-rank ──
     if (req.method === "GET") {
       const token = getTokenFromCookies(req);
       let status = "none";
@@ -117,6 +118,61 @@ export default async function handler(req, res) {
         if (payload && payload.gate_level === "opportunity") {
           status = "active";
           email = payload.email;
+        }
+      }
+
+      // FIX: If authenticated and re_rank=1 provided, load from DB prefs or use query params
+      if (status === "active" && req.query && req.query.re_rank === "1") {
+        try {
+          // When no explicit filter params are set (only re_rank=1), load from stored DB preferences
+          var storedGoal = req.query.goal;
+          var storedPropertyType = req.query.propertyType;
+          var storedState = req.query.state;
+          var storedBudgetMin = req.query.budgetMin;
+          var storedBudgetMax = req.query.budgetMax;
+
+          var hasActiveFilters = storedGoal || storedPropertyType || storedState || storedBudgetMin || storedBudgetMax;
+
+          if (!hasActiveFilters && email) {
+            // Load stored preferences from DB — join through lead_contacts for email_lower
+            var prefs = await sql`
+              SELECT lp.goal, lp.property_type, lp.state, lp.budget_min, lp.budget_max
+              FROM lead_preferences lp
+              JOIN lead_contacts lc ON lc.id = lp.lead_contact_id
+              WHERE lc.email_lower = ${email}
+              ORDER BY lp.updated_at DESC
+              LIMIT 1
+            `;
+            if (prefs && prefs.length > 0) {
+              storedGoal = prefs[0].goal || "balanced";
+              storedPropertyType = prefs[0].property_type || null;
+              storedState = prefs[0].state || "vic";
+              storedBudgetMin = prefs[0].budget_min != null ? String(prefs[0].budget_min) : null;
+              storedBudgetMax = prefs[0].budget_max != null ? String(prefs[0].budget_max) : null;
+            }
+          }
+
+          if (!storedGoal) storedGoal = "balanced";
+          if (!storedState) storedState = "vic";
+
+          const raw = await fetchRawOpportunities({
+            goal: storedGoal,
+            property_type: storedPropertyType || null,
+            state: storedState,
+            budget_min: Number(storedBudgetMin) || 0,
+            budget_max: Number(storedBudgetMax) || 99999999,
+          });
+          const top10 = rankPersonalised(raw, {
+            goal: storedGoal,
+            property_type: storedPropertyType || null,
+            state: storedState,
+            budget_min: Number(storedBudgetMin) || 0,
+            budget_max: Number(storedBudgetMax) || 99999999,
+          });
+          return res.status(200).json({ ok: true, status: "active", email, top10, top10Count: top10.length });
+        } catch (err) {
+          console.error("[unlock-opportunity GET] re-rank error:", err.message);
+          return res.status(200).json({ ok: true, status: "active", email, top10: [], top10Count: 0 });
         }
       }
 
@@ -175,102 +231,123 @@ export default async function handler(req, res) {
         .json({ ok: false, error: "Investment goal is required" });
     }
 
-    // ── Write to database ──
+    // ── Write to database (wrapped in transaction, session check FIRST) ──
+    // Generate session ID if not provided
+    const activeSessionId = sessionId;
 
-    // 1. Upsert lead_contacts
-    const existingContact = await sql`
-      SELECT id, name, phone FROM lead_contacts WHERE email_lower = ${email} LIMIT 1
-    `;
-
-    let contactId;
-    if (existingContact.length > 0) {
-      const updateFields = [];
-      if (name) updateFields.push(sql`name = ${name}`);
-      if (phone) updateFields.push(sql`phone = ${phone}`);
-      updateFields.push(sql`updated_at = NOW()`);
-
-      await sql`
-        UPDATE lead_contacts SET ${sql.join(
-          updateFields,
-          sql`, `
-        )} WHERE id = ${existingContact[0].id}
+    // BEGIN transaction — all DB writes atomic
+    let txResult;
+    try {
+      txResult = await sql.begin(async (tx) => {
+      // Step 1: SESSION CONFLICT CHECK FIRST — before any contact/preference/consent/event write
+      const existingBinding = await tx`
+        SELECT lead_contact_id FROM lead_session_contacts WHERE session_id = ${activeSessionId} LIMIT 1
       `;
-      contactId = existingContact[0].id;
-    } else {
-      const newContact = await sql`
-        INSERT INTO lead_contacts (email, email_lower, name, phone)
-        VALUES (${email}, ${email}, ${name || null}, ${phone || null})
-        RETURNING id
+
+      // Step 2: Upsert lead_contacts
+      const existingContact = await tx`
+        SELECT id, name, phone FROM lead_contacts WHERE email_lower = ${email} LIMIT 1
       `;
-      contactId = newContact[0].id;
+
+      // FIX 10: Helper to abort transaction and signal conflict
+      function abortTx() { throw new Error('SESSION_CONFLICT'); }
+
+      let cid;
+      if (existingContact.length > 0) {
+        // Re-check session conflict now that we have contactId
+        if (existingBinding.length > 0 && existingBinding[0].lead_contact_id !== existingContact[0].id) {
+          abortTx();
+        }
+
+        const updateFields = [];
+        if (name) updateFields.push(tx`name = ${name}`);
+        if (phone) updateFields.push(tx`phone = ${phone}`);
+        updateFields.push(tx`updated_at = NOW()`);
+
+        await tx`
+          UPDATE lead_contacts SET ${tx.join(updateFields, tx`, `)} WHERE id = ${existingContact[0].id}
+        `;
+        cid = existingContact[0].id;
+      } else {
+        // Check conflict after potential insert too
+        if (existingBinding.length > 0) {
+          abortTx();
+        }
+        const newContact = await tx`
+          INSERT INTO lead_contacts (email, email_lower, name, phone)
+          VALUES (${email}, ${email}, ${name || null}, ${phone || null})
+          RETURNING id
+        `;
+        cid = newContact[0].id;
+      }
+
+      // Step 3: Upsert lead_preferences
+      const existingPrefs = await tx`
+        SELECT id FROM lead_preferences WHERE lead_contact_id = ${cid} LIMIT 1
+      `;
+
+      if (existingPrefs.length > 0) {
+        await tx`
+          UPDATE lead_preferences SET
+            session_id = ${activeSessionId},
+            budget_min = COALESCE(${budgetMin}, budget_min),
+            budget_max = COALESCE(${budgetMax}, budget_max),
+            state = ${state},
+            goal = ${goal},
+            property_type = ${propertyType || null},
+            updated_at = NOW()
+          WHERE id = ${existingPrefs[0].id}
+        `;
+      } else {
+        await tx`
+          INSERT INTO lead_preferences (lead_contact_id, session_id, budget_min, budget_max, state, goal, property_type)
+          VALUES (${cid}, ${activeSessionId}, ${budgetMin}, ${budgetMax}, ${state}, ${goal}, ${propertyType || null})
+        `;
+      }
+
+      // Step 4: Write consent_records
+      if (serviceConsent) {
+        await tx`
+          INSERT INTO consent_records (lead_contact_id, consent_type, granted, ip_hash, source_reference)
+          VALUES (${cid}, 'service_processing', TRUE, ${ip || null}, 'unlock-opportunity-form')
+        `;
+      }
+      if (marketingConsent) {
+        await tx`
+          INSERT INTO consent_records (lead_contact_id, consent_type, granted, ip_hash, source_reference)
+          VALUES (${cid}, 'marketing', TRUE, ${ip || null}, 'unlock-opportunity-form')
+        `;
+      }
+
+      // Step 5: Write lead_events
+      await tx`
+        INSERT INTO lead_events (lead_contact_id, session_id, event_type, event_data)
+        VALUES (${cid}, ${activeSessionId}, 'opportunity_unlock', ${JSON.stringify(
+        { goal, state, propertyType, budgetMin, budgetMax }
+      )})
+      `;
+
+      // Step 6: Upsert session binding (safe — only here if no conflict)
+      await tx`
+        INSERT INTO lead_session_contacts (session_id, lead_contact_id)
+        VALUES (${activeSessionId}, ${cid})
+        ON CONFLICT (session_id) DO UPDATE SET lead_contact_id = ${cid}
+      `;
+
+      return { conflict: false, contactId: cid };
+    });
+    } catch (txErr) {
+      // FIX: SESSION_CONFLICT must return 409, not 500
+      if (txErr.message === 'SESSION_CONFLICT') {
+        return res.status(409).json({
+          ok: false,
+          error: "Session already bound to a different contact. Please start fresh or use the original registration session."
+        });
+      }
+      throw txErr; // re-throw other transaction errors to outer catch
     }
 
-    // 2. Upsert lead_preferences
-    const existingPrefs = await sql`
-      SELECT id FROM lead_preferences WHERE lead_contact_id = ${contactId} LIMIT 1
-    `;
-
-    if (existingPrefs.length > 0) {
-      await sql`
-        UPDATE lead_preferences SET
-          session_id = ${sessionId},
-          budget_min = COALESCE(${budgetMin}, budget_min),
-          budget_max = COALESCE(${budgetMax}, budget_max),
-          state = ${state},
-          goal = ${goal},
-          property_type = ${propertyType || null},
-          updated_at = NOW()
-        WHERE id = ${existingPrefs[0].id}
-      `;
-    } else {
-      await sql`
-        INSERT INTO lead_preferences (lead_contact_id, session_id, budget_min, budget_max, state, goal, property_type)
-        VALUES (${contactId}, ${sessionId}, ${budgetMin}, ${budgetMax}, ${state}, ${goal}, ${propertyType || null})
-      `;
-    }
-
-    // 3. Write consent_records
-    if (serviceConsent) {
-      await sql`
-        INSERT INTO consent_records (lead_contact_id, consent_type, granted, ip_hash, source_reference)
-        VALUES (${contactId}, 'service_processing', TRUE, ${ip || null}, 'unlock-opportunity-form')
-      `;
-    }
-    if (marketingConsent) {
-      await sql`
-        INSERT INTO consent_records (lead_contact_id, consent_type, granted, ip_hash, source_reference)
-        VALUES (${contactId}, 'marketing', TRUE, ${ip || null}, 'unlock-opportunity-form')
-      `;
-    }
-
-    // 4. Write lead_events
-    await sql`
-      INSERT INTO lead_events (lead_contact_id, session_id, event_type, event_data)
-      VALUES (${contactId}, ${sessionId}, 'opportunity_unlock', ${JSON.stringify(
-      { goal, state, propertyType, budgetMin, budgetMax }
-    )})
-    `;
-
-    // ── FIX 10: Session binding — return 409 if conflict ──
-    const existingBinding = await sql`
-      SELECT lead_contact_id FROM lead_session_contacts WHERE session_id = ${sessionId} LIMIT 1
-    `;
-    if (
-      existingBinding.length > 0 &&
-      existingBinding[0].lead_contact_id !== contactId
-    ) {
-      return res.status(409).json({
-        ok: false,
-        error:
-          "Session already bound to a different contact. Please start fresh or use the original registration session.",
-      });
-    }
-
-    await sql`
-      INSERT INTO lead_session_contacts (session_id, lead_contact_id)
-      VALUES (${sessionId}, ${contactId})
-      ON CONFLICT (session_id) DO UPDATE SET lead_contact_id = ${contactId}
-    `;
+    const contactId = txResult.contactId;
 
     // ── Fetch raw opportunities with strategy=smart, then re-rank ──
     // Cookie is set AFTER successful data fetch (FIX 6)
