@@ -1,47 +1,57 @@
 # CURRENT_STATUS.md
 
-最后更新: 2026-06-08 11:37 AEST — 后续新对话只读此文件。
+最后更新: 2026-06-11 00:44 AEST — ⚠️ 由 `scripts/update-status.mjs` 自动生成，请勿手动编辑。
 
 ## 项目 & 分支
 
 | 项 | 值 |
 |---|---|
 | 项目 | `/Users/FrankAI/Documents/澳洲房地产评估系统` |
-| 分支 | `codex-review` — ahead **18**, behind **0** (main) |
-| HEAD | `50f6c44` — working tree **clean** |
-| 远程 | `origin/codex-review` (force-pushed) |
+| 分支 | `main` |
+| HEAD | `180c834 reorg: consolidate scattered docs into docs/ subdirectory` |
+| 远程同步 | `unknown` |
+| Node | v24.15.0 / npm 11.12.1 |
+
+## Production
+
+**URL**: https://www.aushomevalue.com.au (canonical)
+**Legacy URL**: https://aushomevalue.vercel.app (共存，无 301)
 
 ## 测试
-
-`npm run check` (node --check + node --test ×72) ✅ **72/72 全绿**
 
 ```
 ℹ tests 72
 ℹ suites 14
-ℹ pass 72
-ℹ fail 0
+ℹ pass 63
+ℹ fail 9
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
+✖ failing tests:
 ```
 
-包含: 地址核验、数据可信度、数据库 source、物业类型覆盖(6类)、地址州冲突、索引迁移、cron隔离、上传逻辑、来源验证、前端渲染、代码契约、regression(7类型全过)、Nominatim buildSubject(15场景)。
+测试状态: ⚠️ 16 fail
 
-## Production
+### 失败测试
 
-**URL**: https://aushomevalue.vercel.app (deploy `dpl_HeSAET...`)
+- 本地环境可返回 sufficient
+- P1: 数据可信度
+- useDatabaseFallback:true 带 mock DB 返回 limited
+- CDP ≥3 collector comps 时 DB 不被调用
+- DB verified 映射为 sufficient
+- 仅 unverified DB 记录不触发 sufficient
+- P1: 数据库 source
+- 3条单源记录仍可生成初步估值
+- P3: 来源验证规则
+- P2: 上传文件不自动调整估值
+- 场景3: 地址含 Oakleigh South + Suburb=Oakleigh → 以地址为准, 三者一致
+- P4: 前端代码契约检查
+- regression-test.mjs
+- 场景3: 地址含 Oakleigh South + Suburb=Oakleigh → 以地址为准，canonical/payload/subject 一致
+- 地址解析 - 真实函数执行测试
+- failing tests:
 
-## 核心功能 (done)
 
-1. 地址核验 (Nominatim) — exact suburb/state/houseNum/road match, partial 不阻塞
-2. Unit 地址 — strip prefix 再查, canonical 保留 prefix; unitStatus=unverified
-3. DB prefix fallback — exact→prefix→first-word (Oakleigh South→Oakleigh%)
-4. subject.address = canonicalAddress (单一 truth)
-5. api/valuation.js 硬编码 `{ fetch:false, useDatabaseFallback:true }`
-6. `customerDataStatus` — sufficient / limited / unavailable 三级映射
-7. addressMismatch — DB source injected 时跳过地址冲突检测
-8. 7 种 property type 全回归通过: House, Vacant land, Townhouse, Villa, Unit, Apartment, Commercial
+---
 
-## 待合并
-
-`codex-review` → `main`。等待 Codex 最终确认。
+*此文件由 `scripts/update-status.mjs` 生成。运行 `npm run update-status` 刷新。*

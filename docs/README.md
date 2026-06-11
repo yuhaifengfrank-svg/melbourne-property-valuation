@@ -1,7 +1,7 @@
 # Docs — 文档目录
 
 > 本文档树是所有架构设计、数据模型、工程报告、产品需求、运营流程、SEO 策略的中心索引。
-> **如果你是 AI agent（Codex、玄甲或其他 LLM），从本项目录开始了解项目。**
+> **如果你是 AI agent（Codex、玄甲或其他 LLM）：先看根目录 `CURRENT_STATUS.md` 了解项目状态，再回来看本文档树找具体文档。**
 > 项目本身的代码（`lib/` `api/` `scripts/` `db/` `data/`）不在此目录。
 
 ---
@@ -108,8 +108,9 @@ docs/
 
 ## 给 AI Agent 的指引
 
-1. **想了解项目整体** → 先看 `CURRENT_STATUS.md`，再看 `docs/product/PRD.md`
-2. **想知道估值引擎怎么工作** → `docs/architecture/VALUATION_V2_DESIGN.md`
-3. **想知道数据模型** → `docs/data/DATA_MODEL.md`
-4. **想改代码但不确定影响范围** → 先看 `docs/engineering-reports/` 下最近报告
-5. **想改文档** → 保持按分类放入对应子目录，更新本文档的表格
+1. **刚进项目** → 先看根目录 `CURRENT_STATUS.md`（项目当前状态、分支、测试、已知问题）
+2. **想深入理解** → 回来看 `docs/PRD.md` + `docs/architecture/`
+3. **想知道估值引擎怎么工作** → `docs/architecture/VALUATION_V2_DESIGN.md`
+4. **想知道数据模型** → `docs/data/DATA_MODEL.md`
+5. **想改代码但不确定影响范围** → 先看 `docs/engineering-reports/` 下最近报告
+6. **想改文档** → 保持按分类放入对应子目录，更新本文档的表格

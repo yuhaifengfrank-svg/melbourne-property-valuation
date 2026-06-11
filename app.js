@@ -250,14 +250,14 @@ function buildEnteredAddress() {
   const addressState = explicitStateFromAddress(streetAddress);
   const state = addressState || getSelectedState();
 
-  // 确定有效 suburb：下拉框显式输入的优先，其次地址中内嵌的 suburb
+  // 确定有效 suburb：地址中内嵌的 suburb 优先（更精确），其次下拉框
   // 注意：suburbFromAddress 对 "12 Joelson Av"（无 suburb）可能误将街道名当作 suburb
-  // 所以取 enteredSuburb 优先；若用户没填下拉框才尝试从地址解析
+  // 所以取 inlineSuburb 优先；若地址没有内嵌 suburb 才 fallback 到 enteredSuburb
   let effectiveSuburb = "";
-  if (enteredSuburb) {
-    effectiveSuburb = enteredSuburb;
-  } else if (inlineSuburb && !looksLikeStreetOnly(inlineSuburb)) {
+  if (inlineSuburb && !looksLikeStreetOnly(inlineSuburb)) {
     effectiveSuburb = inlineSuburb;
+  } else if (enteredSuburb) {
+    effectiveSuburb = enteredSuburb;
   }
 
   // 构建 canonical address
