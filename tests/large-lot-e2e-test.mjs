@@ -158,7 +158,7 @@ describe("Large-Lot E2E: full runValuation chain", () => {
 
   it("should produce experimental flag with only 1 large-lot comp", async () => {
     const { valueProperty } = await import("../lib/valuation-engine.js");
-    
+
     const subject = {
       address: "5-7 Old Warrandyte Road, Donvale VIC 3111",
       propertyType: "House",
@@ -195,7 +195,7 @@ describe("Large-Lot E2E: full runValuation chain", () => {
 
     assert.ok(result.largeLotResult, "largeLotResult should exist");
     assert.equal(result.valuationMode, "large_lot_house", "mode should be large_lot_house");
-    assert.ok(result.largeLotResult.experimental, 
+    assert.ok(result.largeLotResult.experimental,
       "should have experimental flag with 1 comp");
     assert.ok(result.largeLotResult.experimental.includes("实验"),
       "experimental flag should be in Chinese");
@@ -203,7 +203,7 @@ describe("Large-Lot E2E: full runValuation chain", () => {
 
   it("should not produce experimental flag with 3 large-lot comps", async () => {
     const { valueProperty } = await import("../lib/valuation-engine.js");
-    
+
     const subject = {
       address: "5-7 Old Warrandyte Road, Donvale VIC 3111",
       propertyType: "House",

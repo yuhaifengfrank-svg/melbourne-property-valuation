@@ -1451,31 +1451,6 @@ function applyEvidenceSources(sources, sourceLabel) {
   };
   renderValuation(revisedValuation);
   renderEvidenceReview(evidenceSummary);
-  // 估值模式标签（大块地/标准）
-  const modeBadge = byId("valuation-mode-badge");
-  const mobileModeBadge = byId("mobile-valuation-mode-badge");
-  if (data.valuationMode && data.valuationMode !== "standard_house") {
-    const modeLabel = language === "zh"
-      ? "🏡 大块地估值模式 (" + data.valuationMode + ")"
-      : "🏡 Large-lot mode (" + data.valuationMode + ")";
-    if (modeBadge) { modeBadge.style.display = "block"; modeBadge.textContent = modeLabel; }
-    if (mobileModeBadge) { mobileModeBadge.style.display = "block"; mobileModeBadge.textContent = modeLabel; }
-  } else {
-    if (modeBadge) modeBadge.style.display = "none";
-    if (mobileModeBadge) mobileModeBadge.style.display = "none";
-  }
-
-  // 实验性结果标签
-  const expBadge = byId("experimental-badge");
-  const mobileExpBadge = byId("mobile-experimental-badge");
-  if (data.experimentalLabel) {
-    const expText = data.experimentalLabel;
-    if (expBadge) { expBadge.style.display = "block"; expBadge.textContent = expText; }
-    if (mobileExpBadge) { mobileExpBadge.style.display = "block"; mobileExpBadge.textContent = expText; }
-  } else {
-    if (expBadge) expBadge.style.display = "none";
-    if (mobileExpBadge) mobileExpBadge.style.display = "none";
-  }
   byId("upload-message").textContent =
     language === "zh"
       ? fileList.length + " 项资料已收到，待进一步复核。"

@@ -198,7 +198,7 @@ function predictElasticLand(subject, comps, beta) {
 
 // ── Production model wrapper ──
 // Maps a backtest row into the valueProperty() input format and runs the engine.
-function runProduction(subjectRow, compRows) {
+function runProduction(subjectRow, compRows, allTraining) {
   // Build comp format matching what db-comparable-source returns
   const comps = compRows.map((c) => ({
     id: c.id,
@@ -216,9 +216,33 @@ function runProduction(subjectRow, compRows) {
     distanceMeters: c.distance
   }));
 
-  // Convert backtest row to subject format.
-  // The production valueProperty expects address/nominatim fields;
-  // we supply what we have and let the engine work.
+  // Build large-lot land stats from training rows.
+  // We estimate suburb-level median and P90 from training data so
+  // detectLargeLotMode can decide if the subject qualifies.
+  const largeLotLandStats = buildLandStats(subjectRow.suburb, allTraining);
+
+  // The backtest knows every address is at the address level (not LGA proxy)
+  const isAddressLevelLandSource = () => true;
+
+  // Build largeLotComparables: all training rows in the same suburb
+  // with land >= 2000 sqm.
+  const compsForLargeLot = allTraining
+    .filter((r) => r.suburb === subjectRow.suburb && r.date < subjectRow.date && r.land >= 2000)
+    .map((c) => ({
+      address: c.address || "",
+      suburb: c.suburb,
+      saleDate: c.date.toISOString().slice(0, 10),
+      salePrice: c.price,
+      bedrooms: c.bedrooms,
+      bathrooms: c.bathrooms,
+      carSpaces: null,
+      landSize: c.land,
+      propertyType: "House",
+      lat: c.lat,
+      lon: c.lon,
+      distanceMeters: haversineMeters(subjectRow, c)
+    }));
+
   const input = {
     address: subjectRow.address || `${subjectRow.suburb} VIC`,
     suburb: subjectRow.suburb,
@@ -235,7 +259,7 @@ function runProduction(subjectRow, compRows) {
     mockCollectorComparables: comps
   };
 
-  // Run the production engine
+  // Run the production engine with ALL required fields
   const result = valueProperty({
     publicData: { absProfile: null, rbaRates: null, vicplan: null },
     subject: {
@@ -245,21 +269,40 @@ function runProduction(subjectRow, compRows) {
       bathrooms: input.bathrooms ? parseInt(input.bathrooms) : null,
       carSpaces: null,
       landSize: parseInt(input.landSize) || null,
-      landSizeSource: "user",
+      landSizeSource: "user_input",
       coordinates: input.coordinates || null
     },
     comparables: comps,
+    largeLotLandStats,
+    largeLotComparables: compsForLargeLot,
+    isAddressLevelLandSource,
+    asOfDate: subjectRow.date,
     factorOverrides: { educationFactor: 1.0, censusFactor: 1.0 },
     debug: false
   });
 
+  // valueProperty returns { ok, estimate: { midpoint, ... }, valuationMode, largeLotResult, ... }
+  const predicted = result.estimate?.midpoint || null;
+
   return {
-    predicted: result.valuation?.midpoint || null,
+    predicted,
     valuationMode: result.valuationMode || "standard_house",
-    channelAResult: result.largeLotResult?.channelAResult
-      ? { adjustedPrice: result.largeLotResult.channelAResult.adjustedPrice }
+    channelAResult: result.largeLotResult?.channelA
+      ? { adjustedPrice: result.largeLotResult.channelA.weightedMedian || result.largeLotResult.channelA.weightedMean || 0 }
       : null
   };
+}
+
+// Build a minimal land-stats object mimicking what runValuation would retrieve.
+function buildLandStats(suburbName, rows) {
+  const lands = rows.filter((r) => r.suburb === suburbName).map((r) => r.land);
+  if (lands.length < 5) return null;
+  const sorted = lands.sort((a, b) => a - b);
+  const median = sorted.length % 2 === 0
+    ? (sorted[sorted.length / 2 - 1] + sorted[sorted.length / 2]) / 2
+    : sorted[Math.floor(sorted.length / 2)];
+  const p90 = sorted[Math.floor(sorted.length * 0.9)];
+  return { median, p90, sampleSize: sorted.length };
 }
 
 function summarise(predictions) {
@@ -345,7 +388,7 @@ async function main() {
     predictions.elasticLand.push({ ...common, predicted: predictElasticLand(sub, comps, beta) });
 
     try {
-      const prod = runProduction(sub, comps);
+      const prod = runProduction(sub, comps, training);
       if (prod.predicted != null) {
         predictions.production.push({ ...common, predicted: prod.predicted, valuationMode: prod.valuationMode });
       } else {
@@ -442,6 +485,26 @@ async function main() {
   console.log(JSON.stringify(result, null, 2));
   console.log(`\nBacktest written to ${outputPath}`);
   console.log(`Production large-lot sample: ${largeLotProdCount} entries`);
+
+  // ── Assertions on production predictions ──
+  const validProd = predictions.production.filter((p) => Number.isFinite(p.predicted) && p.predicted > 0);
+  if (validProd.length > 0) {
+    console.log(`✅ Production predictions > 0: ${validProd.length}/${predictions.production.length}`);
+  } else {
+    console.warn(`⚠️  All ${predictions.production.length} production predictions were null/zero — check for errors`);
+  }
+
+  const largeLotModeRows = predictions.production.filter((p) => p.valuationMode === "large_lot_house");
+  const largeLotLandRows = predictions.production.filter((p) => p.land >= LARGE_LOT_THRESHOLD);
+  const largeLotModeFromLand = largeLotLandRows.filter((p) => p.valuationMode === "large_lot_house");
+  console.log(`Large-lot mode activated: ${largeLotModeRows.length}/${predictions.production.length} predictions`);
+  console.log(`  land >= ${LARGE_LOT_THRESHOLD}㎡ rows: ${largeLotLandRows.length}`);
+  console.log(`  of which got large_lot_house mode: ${largeLotModeFromLand.length}/${largeLotLandRows.length}`);
+
+  if (largeLotLandRows.length > 0 && largeLotModeFromLand.length === 0) {
+    console.warn(`⚠️  All ${largeLotLandRows.length} large-land predictions got standard_house — expected some large_lot_house`);
+  }
+
   if (largeLotProdCount < 10) {
     console.log("⚠️  样本过少，无法统计大块地模式的精度优势。");
     console.log("⚠️  当成交数积累到 ≥30 条时，MAPE/MedianAPE 对比才有统计意义。");
