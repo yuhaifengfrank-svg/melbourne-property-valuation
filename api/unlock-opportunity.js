@@ -58,7 +58,9 @@ async function fetchRawOpportunities(preferences) {
   if (budgetMin !== null) params.set("minPrice", String(budgetMin));
   if (budgetMax !== null) params.set("maxPrice", String(budgetMax));
 
-  const baseUrl = process.env.VERCEL_URL
+  const baseUrl = process.env.PRODUCTION_URL
+    ? `https://${process.env.PRODUCTION_URL}`
+    : process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : "http://127.0.0.1:3000";
   const url = `${baseUrl}/api/opportunity?${params.toString()}`;
