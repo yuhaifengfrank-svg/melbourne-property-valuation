@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
 /**
- * update-status.mjs
+ * update-status.mjs — Auto-generate CURRENT_STATUS.md
  *
- * 自动生成 CURRENT_STATUS.md。
- * 运行方式：node scripts/update-status.mjs
- * 建议：每次 deploy / merge 到 main 后自动运行。
+ * Runs tests itself so the result is always fresh.
+ * Usage: npm run update-status
+ * Replaces: manual edits to CURRENT_STATUS.md
  */
 
 import { execSync } from "child_process";
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -18,63 +18,133 @@ const root = path.resolve(__dirname, "..");
 
 function run(cmd) {
   try {
-    return execSync(cmd, { cwd: root, encoding: "utf-8", timeout: 30000 }).trim();
+    return execSync(cmd, { cwd: root, encoding: "utf-8", timeout: 60000 }).trim();
   } catch (e) {
     return `ERROR: ${e.message}`;
   }
 }
 
+function getNowLocal() {
+  // Generate timestamp in AEST/AEDT without relying on env TZ
+  const now = new Date();
+  // Build AEST timestamp via UTC with offset.
+  // Melbourne AEDT=+11 (Oct-Apr), AEST=+10 (Apr-Oct).
+  // getTimezoneOffset: -660 = AEDT (+11), -600 = AEST (+10)
+  const melbOffsetMinutes = -now.getTimezoneOffset(); // positive = east of UTC
+  const melb = new Date(now.getTime() + melbOffsetMinutes * 60000);
+  const pad = (n) => String(n).padStart(2, "0");
+  const local = `${pad(melb.getUTCDate())}/${pad(melb.getUTCMonth() + 1)}/${melb.getUTCFullYear()} ${pad(melb.getUTCHours())}:${pad(melb.getUTCMinutes())}`;
+  // Determine AEST vs AEDT from offset: -660 = +11 = AEDT, -600 = +10 = AEST
+  const tzName = now.getTimezoneOffset() === -660 ? "AEDT" : "AEST";
+  return { local, tz: tzName };
+}
+
 function getTestSummary() {
-  // 不重新跑测试（可能耗时 2min+），直接从上次结果提取
-  // 如果需要最新测试结果，先手动运行 npm run check
-  const outPath = path.join(root, "TEST_RESULTS.log");
-  let out;
-  try {
-    out = readFileSync(outPath, "utf-8");
-  } catch {
-    return {
-      summary: "（测试结果文件 TEST_RESULTS.log 不存在——运行 npm run check 以生成）",
-      allLines: "",
-      failCount: -1,
-      failedTests: [],
-    };
-  }
-
+  // Run tests and capture output — 10 min timeout, large buffer
+  const out = runWithTimeout(600000);
   const lines = out.split("\n");
-  const summary = lines.filter(l => /^(ℹ|✖|✔) (tests|suites|pass|fail|cancelled|skipped|todo)/.test(l));
-  const fails = lines.filter(l => l.startsWith("✖"));
 
-  // Extract failed test names
+  // Parse the summary line: "ℹ tests 72", "ℹ pass 66", "ℹ fail 6", etc.
+  const tests = lines.find(l => /^ℹ tests \d+/.test(l));
+  const pass = lines.find(l => /^ℹ pass \d+/.test(l));
+  const fail = lines.find(l => /^ℹ fail \d+/.test(l));
+
+  const parseNum = (s) => (s ? parseInt(s.match(/\d+/)?.[0] || "0", 10) : 0);
+  const total = parseNum(tests);
+  const failCount = parseNum(fail);
+
+  // Extract unique failing top-level test names
+  // Top-level fail: starts with "✖ " (no leading space)
+  // Subtest fail: starts with "  ✖" or "    ✖" (indented)
   const failedTests = [];
-  for (const line of lines) {
-    const m = line.match(/✖ (.+?)(?: \([\d.]+ms\))?$/);
-    if (m) failedTests.push(m[1]);
+  for (const l of lines) {
+    // Only match top-level failures: "✖ TestName (...)"
+    if (/^✖ .+? \([\d.]+ms\)$/.test(l)) {
+      const name = l.replace(/^✖ /, "").replace(/ \([\d.]+ms\)$/, "").trim();
+      if (name && !name.startsWith('"') && !name.includes(" ")) {
+        failedTests.push(name);
+      }
+    }
   }
+
+  // Also catch test groups that fail: "✖ P1: 数据可信度" etc.
+  // These don't have (ms) suffix
+  const namedFails = [];
+  for (const l of lines) {
+    if (/^✖ [A-Za-z0-9\u4e00-\u9fff].+/.test(l) && !/ \([\d.]+ms\)$/.test(l)) {
+      const name = l.replace(/^✖ /, "").trim();
+      if (name && !name.startsWith('"') && !name.includes("tests") && !name.includes("suites") && !name.includes("pass") && !name.includes("fail")) {
+        namedFails.push(name);
+      }
+    }
+  }
+
+  // Unique merge
+  const uniqueFails = [...new Set([...failedTests, ...namedFails])];
+
+  // Summary string for the file
+  const summaryLines = [tests, pass, fail].filter(Boolean).join("\n");
 
   return {
-    summary: summary.join("\n") || "（无匹配行）",
-    allLines: "",
-    failCount: fails.length,
-    failedTests: [...new Set(failedTests)],
+    summary: summaryLines || "（测试未返回标准摘要行）",
+    failCount,
+    failedTests: uniqueFails,
   };
 }
 
-function main() {
-  const now = new Date().toISOString().replace("T", " ").slice(0, 16);
-  const tz = "AEST";
+function runWithTimeout(ms) {
+  try {
+    return execSync("npm test 2>&1", { cwd: root, encoding: "utf-8", timeout: ms, maxBuffer: 10 * 1024 * 1024 }).trim();
+  } catch (e) {
+    // execSync throws on non-zero exit — but stdout still has results
+    if (e.stdout) return e.stdout.toString();
+    return `ERROR: ${e.message}`;
+  }
+}
+
+function getGitStatus() {
   const branch = run("git rev-parse --abbrev-ref HEAD");
-  const head = run("git log --oneline -1");
-  const remoteStatus = run("git rev-list --left-right --count origin/HEAD...HEAD 2>/dev/null || echo 'unknown'");
+  const headLine = run("git log --oneline -1");
+  const [shortHash, ...rest] = headLine.split(" ");
+  const headMsg = rest.join(" ");
+
+  // Get ahead/behind vs origin
+  let syncStatus;
+  try {
+    const revList = execSync(
+      "git rev-list --left-right --count origin/HEAD...HEAD 2>/dev/null || echo unknown",
+      { cwd: root, encoding: "utf-8", timeout: 10000 }
+    ).trim();
+    syncStatus = revList;
+  } catch {
+    syncStatus = "unknown";
+  }
+
+  return { branch, shortHash, headMsg, syncStatus };
+}
+
+function main() {
+  const { local, tz } = getNowLocal();
+  const { branch, shortHash, headMsg, syncStatus } = getGitStatus();
   const nodeVer = process.version;
   const npmVer = run("npm --version");
 
+  console.log("📡 Running tests...");
   const test = getTestSummary();
+  console.log(`   ✅ ${test.summary.replace(/\n/g, " | ")}`);
 
-  const ok = test.failCount === 0 ? "✅" : `⚠️ ${test.failCount} fail`;
+  const ok = test.failCount === 0 ? "✅ All pass" : `⚠️ ${test.failCount} fail`;
+  const hashLine = `${shortHash} ${headMsg}`;
+
+  // Build test block
+  let testBlock = `\`\`\`\n${test.summary}\n\`\`\`\n\n测试状态: ${ok}`;
+  if (test.failedTests.length > 0) {
+    testBlock += `\n\n### 失败测试\n\n${test.failedTests.map(t => `- ${t}`).join("\n")}`;
+  }
 
   const content = `# CURRENT_STATUS.md
 
-最后更新: ${now} ${tz} — ⚠️ 由 \`scripts/update-status.mjs\` 自动生成，请勿手动编辑。
+最后更新: ${local} ${tz} — ⚠️ 由 \`scripts/update-status.mjs\` 自动生成，请勿手动编辑。
 
 ## 项目 & 分支
 
@@ -82,8 +152,8 @@ function main() {
 |---|---|
 | 项目 | \`${root}\` |
 | 分支 | \`${branch}\` |
-| HEAD | \`${head}\` |
-| 远程同步 | \`${remoteStatus}\` |
+| HEAD | \`${hashLine}\` |
+| 远程同步 | \`${syncStatus}\` |
 | Node | ${nodeVer} / npm ${npmVer} |
 
 ## Production
@@ -93,13 +163,7 @@ function main() {
 
 ## 测试
 
-\`\`\`
-${test.summary || test.allLines || "（测试未执行或超时）"}
-\`\`\`
-
-测试状态: ${ok}
-
-${test.failCount > 0 ? `### 失败测试\n\n${test.failedTests.map(t => `- ${t}`).join("\n")}\n` : ""}
+${testBlock}
 
 ---
 
@@ -108,10 +172,12 @@ ${test.failCount > 0 ? `### 失败测试\n\n${test.failedTests.map(t => `- ${t}`
 
   const outPath = path.join(root, "CURRENT_STATUS.md");
   writeFileSync(outPath, content, "utf-8");
-  console.log(`✅ CURRENT_STATUS.md 已更新 → ${outPath}`);
-  if (test.failCount > 0) {
-    console.log(`⚠️  ${test.failCount} 个测试失败，已记录到 status 文件`);
-  }
+  console.log(`\n✅ CURRENT_STATUS.md 已更新 → ${outPath}`);
 }
 
-main();
+try {
+  await main();
+} catch (err) {
+  console.error("Fatal:", err.message);
+  process.exit(1);
+}

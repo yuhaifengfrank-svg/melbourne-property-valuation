@@ -109,7 +109,7 @@ docs/
 ## 给 AI Agent 的指引
 
 1. **刚进项目** → 先看根目录 `CURRENT_STATUS.md`（项目当前状态、分支、测试、已知问题）
-2. **想深入理解** → 回来看 `docs/PRD.md` + `docs/architecture/`
+2. **想深入理解** → 回来看 `docs/product/PRD.md` + `docs/architecture/`
 3. **想知道估值引擎怎么工作** → `docs/architecture/VALUATION_V2_DESIGN.md`
 4. **想知道数据模型** → `docs/data/DATA_MODEL.md`
 5. **想改代码但不确定影响范围** → 先看 `docs/engineering-reports/` 下最近报告
