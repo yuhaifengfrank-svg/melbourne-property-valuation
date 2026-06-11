@@ -1,0 +1,43 @@
+{
+  "topics": [
+    {
+      "name": "Why Werribee Scores Highly",
+      "slug": "werribee",
+      "suburb": "werribee-vic",
+      "hasRanking": false,
+      "sections": ["confidence", "factors", "strengths", "risks"]
+    },
+    {
+      "name": "Top Growth Suburbs",
+      "slug": "top-growth",
+      "ranking": "/top-growth-suburbs-victoria.html",
+      "hasRanking": true,
+      "sections": ["confidence", "factors"],
+      "topSuburbs": ["werribee-vic", "sunshine-vic", "dandenong-vic"]
+    },
+    {
+      "name": "Top Value Suburbs",
+      "slug": "top-value",
+      "ranking": "/top-value-suburbs-victoria.html",
+      "hasRanking": true,
+      "sections": ["confidence", "factors"],
+      "topSuburbs": ["dandenong-vic", "west-melbourne-vic", "murrumbeena-vic"]
+    },
+    {
+      "name": "Top School Zone Suburbs",
+      "slug": "top-school",
+      "ranking": "/top-school-zone-suburbs-victoria.html",
+      "hasRanking": true,
+      "sections": ["confidence", "factors"],
+      "topSuburbs": ["fairfield-vic", "burwood-vic", "canterbury-vic"]
+    },
+    {
+      "name": "Best First Home Buyer Suburbs",
+      "slug": "first-home",
+      "ranking": "/top-value-suburbs-victoria.html",
+      "hasRanking": true,
+      "sections": ["confidence", "factors"],
+      "topSuburbs": ["dandenong-vic", "werribee-vic", "sunshine-vic"]
+    }
+  ]
+}
