@@ -1,0 +1,44 @@
+[
+  {
+    "segmentId": 1,
+    "startTime": 0,
+    "endTime": 3,
+    "duration": 3,
+    "text": "Werribee 涨了百分之三十——但涨得快不代表适合你。"
+  },
+  {
+    "segmentId": 2,
+    "startTime": 3,
+    "endTime": 8,
+    "duration": 5,
+    "text": "第一，一年涨了百分之三十。墨尔本同期约百分之十五，跑赢一倍。"
+  },
+  {
+    "segmentId": 3,
+    "startTime": 8,
+    "endTime": 15,
+    "duration": 7,
+    "text": "涨的逻辑：人口往西走。M1 通勤三十分钟，基建在跟进。不是虚涨，背后有支撑。"
+  },
+  {
+    "segmentId": 4,
+    "startTime": 15,
+    "endTime": 20,
+    "duration": 5,
+    "text": "但短板也很清楚：学区评分四十九。涨得快说明需求硬，但不是靠学区拉起来的。"
+  },
+  {
+    "segmentId": 5,
+    "startTime": 20,
+    "endTime": 25,
+    "duration": 5,
+    "text": "过去涨了不等于未来也涨。关键看人口流入能不能持续，学区配套跟不跟得上。"
+  },
+  {
+    "segmentId": 6,
+    "startTime": 25,
+    "endTime": 30,
+    "duration": 5,
+    "text": "去官网输地址，看完整数据自己判断。链接在主页简介。"
+  }
+]

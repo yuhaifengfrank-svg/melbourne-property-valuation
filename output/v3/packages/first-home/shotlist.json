@@ -1,0 +1,44 @@
+[
+  {
+    "segmentId": 1,
+    "startTime": 0,
+    "endTime": 3,
+    "duration": 3,
+    "text": "第一次买房的三个区——价格友好，也在涨。但每个都有代价。"
+  },
+  {
+    "segmentId": 2,
+    "startTime": 3,
+    "endTime": 8,
+    "duration": 5,
+    "text": "三个区中位价都在 44 到 58 万之间。远低于墨尔本均价。"
+  },
+  {
+    "segmentId": 3,
+    "startTime": 8,
+    "endTime": 15,
+    "duration": 7,
+    "text": "Rockbank。中位价五十八万三。西边独立屋，价格友好。但位置偏，配套还在建设中。"
+  },
+  {
+    "segmentId": 4,
+    "startTime": 15,
+    "endTime": 22,
+    "duration": 7,
+    "text": "Dandenong。中位价四十四万六。涨了百分之二十五，跑赢大盘。但学区评分只有三十三。"
+  },
+  {
+    "segmentId": 5,
+    "startTime": 22,
+    "endTime": 29,
+    "duration": 7,
+    "text": "Sunshine。七十八万。偏贵但学区 47 有增长。驱动是人口外溢，风险是已经涨了不少。"
+  },
+  {
+    "segmentId": 6,
+    "startTime": 29,
+    "endTime": 32,
+    "duration": 3,
+    "text": "去官网输你的预算，看数据自己判断。"
+  }
+]

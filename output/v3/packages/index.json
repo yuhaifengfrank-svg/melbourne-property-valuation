@@ -1,0 +1,27 @@
+[
+  {
+    "slug": "werribee",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "segments": 6
+  },
+  {
+    "slug": "top-growth",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "segments": 6
+  },
+  {
+    "slug": "top-value",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "segments": 6
+  },
+  {
+    "slug": "top-school",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "segments": 6
+  },
+  {
+    "slug": "first-home",
+    "voice": "zh-CN-XiaoxiaoNeural",
+    "segments": 6
+  }
+]

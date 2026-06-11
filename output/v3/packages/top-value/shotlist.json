@@ -1,0 +1,44 @@
+[
+  {
+    "segmentId": 1,
+    "startTime": 0,
+    "endTime": 3,
+    "duration": 3,
+    "text": "墨尔本最便宜的三个区，涨得也不错。但便宜有便宜的原因。"
+  },
+  {
+    "segmentId": 2,
+    "startTime": 3,
+    "endTime": 10,
+    "duration": 7,
+    "text": "第 3 名：Murrumbeena。中位价五十万，涨了约百分之二十，跑赢大盘。但学区评分偏低。"
+  },
+  {
+    "segmentId": 3,
+    "startTime": 10,
+    "endTime": 17,
+    "duration": 7,
+    "text": "第 2 名：West Melbourne。中位价四十九万。靠近市区，但涨幅主要靠 CBD 外溢，自身基本面不强。"
+  },
+  {
+    "segmentId": 4,
+    "startTime": 17,
+    "endTime": 24,
+    "duration": 7,
+    "text": "第 1 名：Caulfield East。中位价只要四十一万七千五。涨了百分之二十以上。但学区评分低。"
+  },
+  {
+    "segmentId": 5,
+    "startTime": 24,
+    "endTime": 27,
+    "duration": 3,
+    "text": "便宜有便宜的逻辑。价格低不一定是价值洼地，可能是基本面弱。"
+  },
+  {
+    "segmentId": 6,
+    "startTime": 27,
+    "endTime": 30,
+    "duration": 3,
+    "text": "去官网输地址，查每个区的估值和风险。"
+  }
+]

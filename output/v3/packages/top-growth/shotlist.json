@@ -1,0 +1,44 @@
+[
+  {
+    "segmentId": 1,
+    "startTime": 0,
+    "endTime": 3,
+    "duration": 3,
+    "text": "墨尔本涨最快的三个区——但涨得快不一定是你的菜。"
+  },
+  {
+    "segmentId": 2,
+    "startTime": 3,
+    "endTime": 10,
+    "duration": 7,
+    "text": "第 3 名：Sunshine。中位价七十八万，涨百分之三十。但已经是三个里最贵的。"
+  },
+  {
+    "segmentId": 3,
+    "startTime": 10,
+    "endTime": 17,
+    "duration": 7,
+    "text": "第 2 名：Dandenong。中位价四十四万六，不到四十五万。但学区评分只有三十三。"
+  },
+  {
+    "segmentId": 4,
+    "startTime": 17,
+    "endTime": 24,
+    "duration": 7,
+    "text": "第 1 名：Werribee。涨百分之三十，跑赢大盘。驱动是人口加基建，但学区评分四十九。"
+  },
+  {
+    "segmentId": 5,
+    "startTime": 24,
+    "endTime": 27,
+    "duration": 3,
+    "text": "过去涨了不代表未来一定涨。三个区各有各的逻辑和代价。"
+  },
+  {
+    "segmentId": 6,
+    "startTime": 27,
+    "endTime": 30,
+    "duration": 3,
+    "text": "去官网输地址，看哪个区的数据适合你。"
+  }
+]
