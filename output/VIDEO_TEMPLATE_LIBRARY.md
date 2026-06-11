@@ -8,8 +8,30 @@
 
 ## Core Guidelines (All Templates)
 
+### V3 Upgrade — Growth + Opportunity Framework
+
+Every template now requires the **4 mandatory elements**:
+
+1. **Benchmark Growth** — every growth stat must include a comparison
+   > ❌ "一年涨了 25%"  
+   > ✅ "一年涨了 25%，同期墨尔本约 15%，跑赢大盘"
+
+2. **Future Driver** — why growth may continue (pop/infra/price gap)
+   > "人口还在外流，基建持续落地"
+
+3. **Risk Factor** — why growth may NOT continue (mandatory per suburb)
+   > "学区评分只有 45" / "已经涨了 25%，短期可能放缓"
+
+4. **Past ≠ Future** — never imply past growth = future return
+   > ❌ "连续 3 年涨，值得入手"  
+   > ✅ "过去涨了不代表未来一定涨，关键是..."
+
+### Base Rules
+
 - **NO Opportunity Score as lead.** Lead with: growth %, price, school score, vacancy rate, yield %.
-- **Hook-first.** First 3 seconds must contain a number or question. No "大家好，今天我们来聊聊…"
+- **Hook-first but with a twist.** First 3 seconds must contain a number AND a caveat signal.
+  > V2: "涨了 30%！"  
+  > V3: "涨了 30%——但涨得快不代表适合你"
 - **Conversational Chinese.** Write like a friend explaining a finding. Not like a research report.
 - **One suburb per video** (except rankings). Deep-focus visuals prevent cognitive overload.
 - **Text overlay** every segment: suburb name always visible in first 5 seconds.
@@ -33,39 +55,50 @@ Example: *"Werribee 凭什么是高分？3 个数据告诉你"*
 "Werribee"     |  "+30%"      |  "数据力证 ✅"
 ```
 
-### 30s Script
+### V3 30s Script
 
 ```
-[0-3s — Hook]
-🎬 Freeze frame on suburb ranking card (ranking page), red circle on suburb name
-🎙 "{suburb} 凭什么数据这么好看？就 3 个数字。"
-📝 "{suburb} 🔥 3 个数字"
+[0-3s — Hook with twist]
+🎬 Freeze frame on suburb ranking card, red circle on suburb name
+🎙 "{suburb} 凭什么数据这么好看——但数据好看不代表适合你。"
+📝 "{suburb} 🔥 但？"
 
-[3-8s — Top Strength Reveal]
-🎬 Screenshot of confidence card / data quality badge
-🎙 "第一，一年涨了 {growth_1y}。连续 3 年涨 {growth_3y}，不是虚涨。"
-📝 "📈 +{growth_1y}（1年）"
+[3-8s — Benchmark reveal]
+🎬 Screenshot of growth section with benchmark overlay
+🎙 "第一，一年涨了 {growth_1y}。墨尔本同期约 {benchmark}，跑赢大盘。"
+📝 "📈 +{growth_1y} vs 大盘 +{benchmark}"
 
-[8-15s — Risk / Counterpoint]
-🎬 Screenshot of risk section or vacancy data
-🎙 "第二，空置率 {vacancy}。100 套房子不到 3 套空着，说明啥？需求够硬。"
-📝 "🏠 空置率 {vacancy}"
+[8-15s — Driver]
+🎬 Map / infrastructure screenshot
+🎙 "涨的逻辑：{driver}。不是虚涨，背后有支撑。"
+📝 "🚇 {driver_short}"
 
-[15-20s — Engagement Question]
-🎬 Black screen, white text
-🎙 "那它的短板是什么？自己查。第三组数字留给你自己判断。"
-📝 "你能找到短板吗？👇"
+[15-20s — Risk]
+🎬 Screenshot of risk section / weakness data
+🎙 "但短板也很清楚：{risk}。"
+📝 "⚠️ {risk_short}"
 
-[20-25s — Nuance / Second Dimension]
-🎬 Screenshot of strength section with school or transport data
-🎙 "第三，它的 {third_metric} 也不差。但值不值得买，看你要什么。"
-📝 "{third_metric_label}: {third_metric_value}"
+[20-25s — Balanced takeaway]
+🎬 Black screen, white text: "过去 ≠ 未来"
+🎙 "过去涨了不等于未来一定涨。关键看 {key_watch}。"
+📝 "过去 ≠ 未来"
 
 [25-30s — CTA]
 🎬 Website screenshot, URL highlighted
-🎙 "去官网输入地址，看完整数据。链接在主页简介。"
+🎙 "去官网输入地址，看完整数据自己判断。链接在主页简介。"
 📝 "aushomevalue.com.au"
 ```
+
+### V3 Data Insertion (additional fields)
+
+| Slot | Example | Notes |
+|------|---------|-------|
+| `{benchmark}` | 15% | Melbourne/regional benchmark |
+| `{driver}` | 人口往西走，M1 通勤 | Why growth continues |
+| `{driver_short}` | 人口+基建 | Short overlay text |
+| `{risk}` | 学区评分只有 49/100 | Why growth may stop |
+| `{risk_short}` | 学区 49/100 | Short overlay text |
+| `{key_watch}` | 学区和基建配套 | What to monitor |
 
 ### 60s Script (Adds more context + second strength)
 
@@ -121,87 +154,92 @@ Same as 30s
 
 ---
 
-### Demo Rewrite — Werribee (30s)
+### V3 Demo Rewrite — Werribee (30s)
 
 > ```
-> [Title: "Werribee 凭什么是高分？3 个数据告诉你"]
-> [Thumbnail: Werribee | +30% | ✅]
+> [Title: "Werribee 涨了 30%，跑赢大盘。但不一定适合你"]
+> [Thumbnail: Werribee | +30% vs +15% | ⚠️]
 >
 > [0-3s]
-> 🎬 Werribee 排名卡片，第 1 名红圈
-> 🎙 "Werribee 凭什么数据这么好看？就 3 个数字。"
-> 📝 "Werribee 🔥 3 个数字"
+> 🎬 Werribee 排名卡片 + 文字 "但？"
+> 🎙 "Werribee 涨了 30%——但涨得快不代表适合你。"
+> 📝 "Werribee +30% | 但？"
 >
 > [3-8s]
-> 🎬 增长数据高亮截图
-> 🎙 "第一，一年涨了 30%。连续 3 年涨 25%，不是虚涨。"
-> 📝 "📈 +30%（1年）"
+> 🎬 增长数据 vs 大盘对比
+> 🎙 "第一，一年涨了 30%，墨尔本同期约 15%，跑赢一倍。"
+> 📝 "📈 +30% vs 大盘 +15%"
 >
 > [8-15s]
-> 🎬 空置率数据截图
-> 🎙 "第二，空置率 2.44%。100 套房子不到 3 套空着。"
-> 📝 "🏠 空置率 2.44%"
+> 🎬 M1 高速 + 西区基建图
+> 🎙 "涨的逻辑：人口往西走 + M1 通勤 30 分钟，基建在跟进。"
+> 📝 "🚇 人口 + 基建"
 >
 > [15-20s]
-> 🎬 黑底白字
-> 🎙 "短板在哪里？你猜猜看。"
-> 📝 "短板是什么？👇"
+> 🎬 学区评分截图
+> 🎙 "但短板：学区 49/100。涨得快说明需求硬，但不是靠学区拉起来的。"
+> 📝 "⚠️ 学区 49/100"
 >
 > [20-25s]
-> 🎬 学区评分截图
-> 🎙 "第三，学区评分 49/100，不算高。但没学区溢价还能涨，说明什么？"
-> 📝 "🏫 学区 49/100"
+> 🎬 黑底白字 "过去 ≠ 未来"
+> 🎙 "过去涨了不等于未来也涨。关键看人口流入能不能持续、学区配套跟不跟得上。"
+> 📝 "过去 ≠ 未来"
 >
 > [25-30s]
 > 🎬 官网截图
-> 🎙 "去官网输地址看完整报告，链接在简介。"
+> 🎙 "去官网输地址，看完整数据自己判断。"
 > 📝 "aushomevalue.com.au"
 > ```
 
 ---
 
-## Template B: Top 3 Growth Suburbs
+## Template B: Growth + Opportunity Suburbs (V3)
 
-**Use when:** A ranking refresh or quarter-end roundup of fastest-growing suburbs.
+**Use when:** A ranking refresh or quarter-end roundup. Now framed as "Growth + Opportunity" not just "Top Growth".
 
-**Title:**
+**Title (V3):**
 ```
-墨尔本过去一年涨最猛的 {N} 个区
+墨尔本涨最快的 {N} 个区——但不是每个都适合你
 ```
-Example: *"墨尔本过去一年涨最猛的 3 个区"*
+Example: *"墨尔本涨最快的 3 个区——但不是每个都适合你"*
 
 **Thumbnail:**
 ```
-"TOP 3 GROWTH"  |  "#1 {suburb}"  |  "+{growth_1y}"
-"TOP 3 涨幅"    |  "#1 Werribee"  |  "+30%"
+"Growth + Opp"  |  "#1 {suburb}"  |  "+{growth_1y} vs +15%"
+"涨+机会"       |  "#1 Werribee"  |  "+30% vs +15%"
 ```
 
-### 30s Script
+### V3 30s Script
 
 ```
-[0-3s — Hook]
-🎬 Ranking page title zoom in, fast cuts
-🎙 "墨尔本过去一年涨最猛的 3 个区，看看有没有你家。"
-📝 "TOP 3 上涨"
+[0-3s — Hook with twist]
+🎬 Ranking page title zoom in + "但？" overlay
+🎙 "墨尔本涨最快的 3 个区——但涨得快不一定是你的菜。"
+📝 "TOP 3 上涨 | 但？"
 
-[3-13s — #1 Suburb]
-🎬 Suburb card screenshot with highlight
-🎙 "第 3 名：{suburb_3}。中位价 {price_3}，涨 {growth_1y_3}。"
-📝 "🥉 {suburb_3} +{growth_1y_3}"
+[3-10s — #3 with risk]
+🎬 Suburb card + risk callout
+🎙 "第 3 名：{suburb_3}。中位价 {price_3}，涨 {growth_1y_3}。但 {risk_3_short}。"
+📝 "🥉 {suburb_3} +{growth_1y_3} | ⚠️ {risk_3_short}"
 
-[13-23s — #2 Suburb]
-🎬 Second suburb card screenshot
-🎙 "第 2 名：{suburb_2}。中位价 {price_2}，涨 {growth_1y_2}。"
-📝 "🥈 {suburb_2} +{growth_1y_2}"
+[10-17s — #2 with risk]
+🎬 Second suburb card + risk callout
+🎙 "第 2 名：{suburb_2}。中位价 {price_2}，涨 {growth_1y_2}。不过 {risk_2_short}。"
+📝 "🥈 {suburb_2} +{growth_1y_2} | ⚠️ {risk_2_short}"
 
-[23-28s — #1 Suburb Reveal]
-🎬 First place card zoom in + star animation
-🎙 "第 1 名：{suburb_1}。中位价 {price_1}，涨 {growth_1y_1}。3 年涨了 {growth_3y_1}。"
-📝 "🥇 {suburb_1} +{growth_1y_1}"
+[17-24s — #1 balanced]
+🎬 First place card + 2 text lines (driver vs risk)
+🎙 "第 1 名：{suburb_1}。涨 {growth_1y_1}，跑赢大盘。驱动：{driver_1}。风险：{risk_1}。"
+📝 "🥇 {suburb_1} | 🚇 {driver_short} | ⚠️ {risk_short}"
 
-[28-30s — CTA]
+[24-27s — Caveat]
+🎬 "过去 ≠ 未来" white text on black
+🎙 "过去涨了不代表未来一定涨。三个区各有各的逻辑和代价。"
+📝 "过去 ≠ 未来"
+
+[27-30s — CTA]
 🎬 Website screenshot
-🎙 "完整 100 名榜单在官网，主页有链接。"
+🎙 "去官网输地址，看哪个区的数据适合你。"
 📝 "aushomevalue.com.au"
 ```
 
@@ -249,35 +287,40 @@ Same as 30s
 
 ---
 
-### Demo Rewrite — Top 3 Growth (30s)
+### V3 Demo Rewrite — Top 3 Growth (30s)
 
 > ```
-> [Title: "墨尔本过去一年涨最猛的 3 个区"]
-> [Thumbnail: TOP 3 涨幅 | #1 Werribee | +30%]
+> [Title: "墨尔本涨最快的 3 个区——但不是每个都适合你"]
+> [Thumbnail: 涨+机会 | #1 Werribee | +30% vs +15%]
 >
 > [0-3s]
-> 🎬 排名页标题放大
-> 🎙 "墨尔本过去一年涨最猛的 3 个区，看看有没有你家。"
-> 📝 "TOP 3 上涨"
+> 🎬 排名页标题放大 + "但？"
+> 🎙 "墨尔本涨最快的 3 个区——但涨得快不一定是你的菜。"
+> 📝 "TOP 3 上涨 | 但？"
 >
-> [3-13s]
-> 🎬 #3 Sunshine 卡片截图
-> 🎙 "第 3 名：Sunshine。中位价 $780K，涨 30%。"
-> 📝 "🥉 Sunshine +30%"
+> [3-10s]
+> 🎬 #3 Sunshine + 风险标注
+> 🎙 "第 3 名：Sunshine。中位价 $780K，涨 30%。但已经是三个里最贵的。"
+> 📝 "🥉 Sunshine +30% | ⚠️ 最贵"
 >
-> [13-23s]
-> 🎬 #2 Dandenong 卡片截图
-> 🎙 "第 2 名：Dandenong。中位价 $446K，涨 30%。注意这个价格——不到 45 万。"
-> 📝 "🥈 Dandenong +30%"
+> [10-17s]
+> 🎬 #2 Dandenong + 风险标注
+> 🎙 "第 2 名：Dandenong。中位价 $446K，不到 45 万。但学区评分只有 33。"
+> 📝 "🥈 Dandenong +30% | ⚠️ 学区 33"
 >
-> [23-28s]
-> 🎬 #1 Werribee 卡片放大 + 星星动画
-> 🎙 "第 1 名：Werribee。中位价 $692K，涨 30%，3 年涨了 25%。"
-> 📝 "🥇 Werribee +30%"
+> [17-24s]
+> 🎬 #1 Werribee 驱动 vs 风险
+> 🎙 "第 1 名：Werribee。涨 30%，跑赢大盘。驱动：人口+基建。风险：学区 49。"
+> 📝 "🥇 Werribee | 🚇 人口+基建 | ⚠️ 学区 49"
 >
-> [28-30s]
+> [24-27s]
+> 🎬 "过去 ≠ 未来"
+> 🎙 "过去涨了不代表未来一定涨。三个区各有各的逻辑和代价。"
+> 📝 "过去 ≠ 未来"
+>
+> [27-30s]
 > 🎬 官网截图
-> 🎙 "完整 100 名榜单在官网，主页有链接。"
+> 🎙 "去官网输地址，看哪个区的数据适合你。"
 > 📝 "aushomevalue.com.au"
 > ```
 
