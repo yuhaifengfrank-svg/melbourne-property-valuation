@@ -310,6 +310,20 @@ async function main() {
     });
   }
 
+  // ── Large-Lot Group Reporting ──
+  const largeLotPredictions = {
+    currentStyle: predictions.currentStyle.filter(p => p.land >= 2000),
+    naiveLandUnit: predictions.naiveLandUnit.filter(p => p.land >= 2000),
+    elasticLand: predictions.elasticLand.filter(p => p.land >= 2000)
+  };
+
+  // Large-lot definitions:
+  const largeLotTiers = {
+    "size_2000plus": predictions.currentStyle.filter(p => p.land >= 2000),
+    "size_3000plus": predictions.currentStyle.filter(p => p.land >= 3000),
+    "size_4000plus": predictions.currentStyle.filter(p => p.land >= 4000),
+  };
+
   const result = {
     generatedAt: new Date().toISOString(),
     methodology: {
@@ -328,21 +342,38 @@ async function main() {
       skippedForSparseHistory
     },
     learnedElasticities: beta,
+    largeLotCoverage: {
+      size2000Plus: largeLotPredictions.currentStyle.filter(p => p.land >= 2000).length,
+      size3000Plus: largeLotPredictions.currentStyle.filter(p => p.land >= 3000).length,
+      size4000Plus: largeLotPredictions.currentStyle.filter(p => p.land >= 4000).length,
+    },
     models: {
       currentStyle: {
         description: "Total-price comparable anchor with capped land/bedroom adjustments",
         metrics: summarise(predictions.currentStyle),
-        byLandQuartile: summariseByLandQuartile(predictions.currentStyle)
+        byLandQuartile: summariseByLandQuartile(predictions.currentStyle),
+        largeLot: {
+          describe: "Subset of test set where subject.land >= 2000㎡",
+          size2000Plus: largeLotPredictions.currentStyle.length ? summarise(largeLotPredictions.currentStyle) : null,
+          size3000Plus: largeLotTiers.size_3000plus.length ? summarise(largeLotTiers.size_3000plus) : null,
+          size4000Plus: largeLotTiers.size_4000plus.length ? summarise(largeLotTiers.size_4000plus) : null
+        }
       },
       naiveLandUnit: {
         description: "Weighted median improved-sale price per land sqm multiplied by subject land",
         metrics: summarise(predictions.naiveLandUnit),
-        byLandQuartile: summariseByLandQuartile(predictions.naiveLandUnit)
+        byLandQuartile: summariseByLandQuartile(predictions.naiveLandUnit),
+        largeLot: {
+          size2000Plus: largeLotPredictions.naiveLandUnit.length ? summarise(largeLotPredictions.naiveLandUnit) : null
+        }
       },
       elasticLand: {
         description: "Distance/recency weighted comparable prices adjusted by learned nonlinear land elasticity",
         metrics: summarise(predictions.elasticLand),
-        byLandQuartile: summariseByLandQuartile(predictions.elasticLand)
+        byLandQuartile: summariseByLandQuartile(predictions.elasticLand),
+        largeLot: {
+          size2000Plus: largeLotPredictions.elasticLand.length ? summarise(largeLotPredictions.elasticLand) : null
+        }
       }
     }
   };
