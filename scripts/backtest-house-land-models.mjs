@@ -3,7 +3,16 @@
 import "dotenv/config";
 import fs from "node:fs";
 import { getSql } from "../api/_db.js";
+import {
+  valueProperty,
+  channelAEstimate,
+  channelBEstimate,
+  detectLargeLotMode,
+  selectLargeLotComparables,
+  largeLotConfidence
+} from "../lib/valuation-engine.js";
 
+// ── Config ──
 const MIN_PRICE = 200_000;
 const MAX_PRICE = 12_000_000;
 const MIN_LAND = 80;
@@ -12,7 +21,10 @@ const MIN_PRIOR_COMPS = 5;
 const MAX_COMPS = 12;
 const TRAIN_FRACTION = 0.7;
 const DAY_MS = 86_400_000;
+const LARGE_LOT_THRESHOLD = 2000;     // proxy for suburb P90
+const PRODUCTION_MAP_MAX_COMPS = 8;
 
+// ── Helpers ──
 function median(values) {
   const sorted = values.filter(Number.isFinite).sort((a, b) => a - b);
   if (!sorted.length) return null;
@@ -86,33 +98,24 @@ function selectComparables(subject, trainingRows) {
     .slice(0, MAX_COMPS);
 }
 
-// Approximation of the production architecture: total-price anchor, then tightly
-// capped land and bedroom adjustments.
+// ── Legacy models (keeping for baseline comparison) ──
 function predictCurrentStyle(subject, comps) {
   const weighted = comps.map((comp) => ({
-    ...comp,
-    weight: comparableWeight(subject, comp, true),
-    value: comp.price
+    ...comp, weight: comparableWeight(subject, comp, true), value: comp.price
   }));
   const anchor = weightedMedian(weighted, "value");
-  const compLandMedian = median(comps.map((comp) => comp.land));
-  const compBedMedian = median(comps.map((comp) => comp.bedrooms));
-  const landAdjustment = Math.max(
-    -0.05,
-    Math.min(0.05, Math.log(subject.land / compLandMedian) * 0.08)
-  );
+  const compLandMedian = median(comps.map((c) => c.land));
+  const compBedMedian = median(comps.map((c) => c.bedrooms));
+  const landAdjustment = Math.max(-0.05, Math.min(0.05, Math.log(subject.land / compLandMedian) * 0.08));
   const bedroomAdjustment = Number.isFinite(compBedMedian)
     ? Math.max(-0.05, Math.min(0.05, (subject.bedrooms - compBedMedian) * 0.02))
     : 0;
   return anchor * (1 + landAdjustment + bedroomAdjustment);
 }
 
-// The literal proposal: treat the whole improved sale price as land value per sqm.
 function predictNaiveLandUnit(subject, comps) {
   const weighted = comps.map((comp) => ({
-    ...comp,
-    weight: comparableWeight(subject, comp, false),
-    value: comp.price / comp.land
+    ...comp, weight: comparableWeight(subject, comp, false), value: comp.price / comp.land
   }));
   return weightedMedian(weighted, "value") * subject.land;
 }
@@ -138,104 +141,153 @@ function solveLinearSystem(matrix, vector) {
   return augmented.map((row) => row[n]);
 }
 
-// Fit elasticities after removing suburb means. This estimates how price changes
-// with land and accommodation within the same suburb, instead of confusing cheap
-// suburbs with small blocks.
 function fitWithinSuburbElasticities(trainingRows) {
   const groups = Map.groupBy(trainingRows, (row) => row.suburb);
   const observations = [];
   for (const rows of groups.values()) {
     if (rows.length < MIN_PRIOR_COMPS) continue;
     const features = rows.map((row) => [
-      Math.log(row.land),
-      row.bedrooms,
+      Math.log(row.land), row.bedrooms,
       Number.isFinite(row.bathrooms) ? row.bathrooms : 1,
       row.date.getTime() / DAY_MS / 365.25
     ]);
     const targets = rows.map((row) => Math.log(row.price));
-    const featureMeans = features[0].map((_, column) =>
-      features.reduce((sum, row) => sum + row[column], 0) / features.length
-    );
-    const targetMean = targets.reduce((sum, value) => sum + value, 0) / targets.length;
+    const featureMeans = features[0].map((_, col) => features.reduce((s, r) => s + r[col], 0) / features.length);
+    const targetMean = targets.reduce((s, v) => s + v, 0) / targets.length;
     for (let i = 0; i < rows.length; i++) {
       observations.push({
-        x: features[i].map((value, column) => value - featureMeans[column]),
+        x: features[i].map((v, col) => v - featureMeans[col]),
         y: targets[i] - targetMean
       });
     }
   }
-
-  const dimensions = 4;
-  const xtx = Array.from({ length: dimensions }, () => Array(dimensions).fill(0));
-  const xty = Array(dimensions).fill(0);
-  for (const observation of observations) {
-    for (let i = 0; i < dimensions; i++) {
-      xty[i] += observation.x[i] * observation.y;
-      for (let j = 0; j < dimensions; j++) {
-        xtx[i][j] += observation.x[i] * observation.x[j];
-      }
+  const dim = 4;
+  const xtx = Array.from({ length: dim }, () => Array(dim).fill(0));
+  const xty = Array(dim).fill(0);
+  for (const obs of observations) {
+    for (let i = 0; i < dim; i++) {
+      xty[i] += obs.x[i] * obs.y;
+      for (let j = 0; j < dim; j++) xtx[i][j] += obs.x[i] * obs.x[j];
     }
   }
-  const ridge = 0.01;
-  for (let i = 0; i < dimensions; i++) xtx[i][i] += ridge;
+  for (let i = 0; i < dim; i++) xtx[i][i] += 0.01;
   const beta = solveLinearSystem(xtx, xty);
-  if (!beta) throw new Error("Could not fit land elasticities");
-  return {
-    land: Math.max(0, Math.min(1, beta[0])),
+  if (!beta) throw new Error("Could not fit elasticities");
+  return { land: Math.max(0, Math.min(1, beta[0])),
     bedroom: Math.max(-0.1, Math.min(0.3, beta[1])),
     bathroom: Math.max(-0.1, Math.min(0.3, beta[2])),
     annualTime: Math.max(-0.2, Math.min(0.2, beta[3])),
-    observations: observations.length
-  };
+    observations: observations.length };
 }
 
 function predictElasticLand(subject, comps, beta) {
   const weighted = comps.map((comp) => {
-    const yearDifference = (subject.date - comp.date) / DAY_MS / 365.25;
-    const adjustedPrice = comp.price
+    const yrDiff = (subject.date - comp.date) / DAY_MS / 365.25;
+    const ap = comp.price
       * (subject.land / comp.land) ** beta.land
       * Math.exp(beta.bedroom * (subject.bedrooms - comp.bedrooms))
       * Math.exp(beta.bathroom * (
         (Number.isFinite(subject.bathrooms) ? subject.bathrooms : 1)
         - (Number.isFinite(comp.bathrooms) ? comp.bathrooms : 1)
       ))
-      * Math.exp(beta.annualTime * yearDifference);
-    return {
-      ...comp,
-      weight: comparableWeight(subject, comp, false),
-      value: adjustedPrice
-    };
+      * Math.exp(beta.annualTime * yrDiff);
+    return { ...comp, weight: comparableWeight(subject, comp, false), value: ap };
   });
   return weightedMedian(weighted, "value");
 }
 
+// ── Production model wrapper ──
+// Maps a backtest row into the valueProperty() input format and runs the engine.
+function runProduction(subjectRow, compRows) {
+  // Build comp format matching what db-comparable-source returns
+  const comps = compRows.map((c) => ({
+    id: c.id,
+    address: c.address || "",
+    suburb: c.suburb,
+    saleDate: c.date.toISOString().slice(0, 10),
+    salePrice: c.price,
+    bedrooms: c.bedrooms,
+    bathrooms: c.bathrooms,
+    carSpaces: null,
+    landSize: c.land,
+    propertyType: "House",
+    lat: c.lat,
+    lon: c.lon,
+    distanceMeters: c.distance
+  }));
+
+  // Convert backtest row to subject format.
+  // The production valueProperty expects address/nominatim fields;
+  // we supply what we have and let the engine work.
+  const input = {
+    address: subjectRow.address || `${subjectRow.suburb} VIC`,
+    suburb: subjectRow.suburb,
+    state: "VIC",
+    propertyType: "House",
+    bedrooms: String(subjectRow.bedrooms),
+    bathrooms: subjectRow.bathrooms != null ? String(subjectRow.bathrooms) : undefined,
+    landSize: String(subjectRow.land),
+    coordinates: (subjectRow.lat != null && subjectRow.lon != null)
+      ? { lat: subjectRow.lat, lon: subjectRow.lon }
+      : undefined,
+    fetch: false,
+    useDatabaseFallback: true,
+    mockCollectorComparables: comps
+  };
+
+  // Run the production engine
+  const result = valueProperty({
+    publicData: { absProfile: null, rbaRates: null, vicplan: null },
+    subject: {
+      address: input.address,
+      propertyType: "House",
+      bedrooms: parseInt(input.bedrooms) || null,
+      bathrooms: input.bathrooms ? parseInt(input.bathrooms) : null,
+      carSpaces: null,
+      landSize: parseInt(input.landSize) || null,
+      landSizeSource: "user",
+      coordinates: input.coordinates || null
+    },
+    comparables: comps,
+    factorOverrides: { educationFactor: 1.0, censusFactor: 1.0 },
+    debug: false
+  });
+
+  return {
+    predicted: result.valuation?.midpoint || null,
+    valuationMode: result.valuationMode || "standard_house",
+    channelAResult: result.largeLotResult?.channelAResult
+      ? { adjustedPrice: result.largeLotResult.channelAResult.adjustedPrice }
+      : null
+  };
+}
+
 function summarise(predictions) {
-  const valid = predictions.filter((row) => Number.isFinite(row.predicted) && row.predicted > 0);
-  const errors = valid.map((row) => {
-    const signed = (row.predicted - row.actual) / row.actual;
-    return { ...row, signed, absolute: Math.abs(signed), squared: (row.predicted - row.actual) ** 2 };
+  const valid = predictions.filter((p) => Number.isFinite(p.predicted) && p.predicted > 0);
+  const errors = valid.map((p) => {
+    const signed = (p.predicted - p.actual) / p.actual;
+    return { ...p, signed, absolute: Math.abs(signed), squared: (p.predicted - p.actual) ** 2 };
   });
   return {
     n: errors.length,
-    mapePct: errors.reduce((sum, row) => sum + row.absolute, 0) / errors.length * 100,
-    medianApePct: median(errors.map((row) => row.absolute)) * 100,
-    rmse: Math.sqrt(errors.reduce((sum, row) => sum + row.squared, 0) / errors.length),
-    biasPct: errors.reduce((sum, row) => sum + row.signed, 0) / errors.length * 100,
-    within10Pct: errors.filter((row) => row.absolute <= 0.10).length / errors.length * 100,
-    within15Pct: errors.filter((row) => row.absolute <= 0.15).length / errors.length * 100,
-    within20Pct: errors.filter((row) => row.absolute <= 0.20).length / errors.length * 100
+    mapePct: errors.reduce((s, r) => s + r.absolute, 0) / errors.length * 100,
+    medianApePct: median(errors.map((r) => r.absolute)) * 100,
+    rmse: Math.sqrt(errors.reduce((s, r) => s + r.squared, 0) / errors.length),
+    biasPct: errors.reduce((s, r) => s + r.signed, 0) / errors.length * 100,
+    within10Pct: errors.filter((r) => r.absolute <= 0.10).length / errors.length * 100,
+    within15Pct: errors.filter((r) => r.absolute <= 0.15).length / errors.length * 100,
+    within20Pct: errors.filter((r) => r.absolute <= 0.20).length / errors.length * 100
   };
 }
 
 function summariseByLandQuartile(predictions) {
-  const lands = predictions.map((row) => row.land).sort((a, b) => a - b);
-  const cutoffs = [0.25, 0.5, 0.75].map((fraction) => lands[Math.floor(lands.length * fraction)]);
-  const bucket = (land) => land <= cutoffs[0] ? "small"
-    : land <= cutoffs[1] ? "medium-small"
-      : land <= cutoffs[2] ? "medium-large"
-        : "large";
+  const lands = predictions.map((p) => p.land).sort((a, b) => a - b);
+  const cutoffs = [0.25, 0.5, 0.75].map((f) => lands[Math.floor(lands.length * f)]);
+  const bucket = (l) => l <= cutoffs[0] ? "small"
+    : l <= cutoffs[1] ? "medium-small"
+      : l <= cutoffs[2] ? "medium-large" : "large";
   return Object.fromEntries(
-    [...Map.groupBy(predictions, (row) => bucket(row.land))]
+    [...Map.groupBy(predictions, (p) => bucket(p.land))]
       .map(([name, rows]) => [name, summarise(rows)])
   );
 }
@@ -253,97 +305,66 @@ async function loadRows() {
       AND sale_date IS NOT NULL
     ORDER BY sale_date, id
   `, [MIN_PRICE, MAX_PRICE, MIN_LAND, MAX_LAND]);
-  return rows.map((row) => ({
-    id: row.id,
-    address: row.sale_address,
-    suburb: row.suburb,
-    date: new Date(row.sale_date),
-    price: Number(row.sale_price),
-    bedrooms: Number(row.bedrooms),
-    bathrooms: row.bathrooms == null ? null : Number(row.bathrooms),
-    land: Number(row.land_size_sqm),
-    lat: row.lat == null ? null : Number(row.lat),
+  const out = rows.map((row) => ({
+    id: row.id, address: row.sale_address, suburb: row.suburb,
+    date: new Date(row.sale_date), price: Number(row.sale_price),
+    bedrooms: Number(row.bedrooms), bathrooms: row.bathrooms == null ? null : Number(row.bathrooms),
+    land: Number(row.land_size_sqm), lat: row.lat == null ? null : Number(row.lat),
     lon: row.lon == null ? null : Number(row.lon)
   }));
+  console.log(`[loadRows] loaded ${out.length} House records`);
+  return out;
 }
 
+// ── Main ──
 async function main() {
   const rows = await loadRows();
-  const sortedDates = rows.map((row) => row.date.getTime()).sort((a, b) => a - b);
-  const cutoff = new Date(sortedDates[Math.floor(sortedDates.length * TRAIN_FRACTION)]);
-  const trainingRows = rows.filter((row) => row.date <= cutoff);
-  const testRows = rows.filter((row) => row.date > cutoff);
-  const beta = fitWithinSuburbElasticities(trainingRows);
+  const sorted = rows.map((r) => r.date.getTime()).sort((a, b) => a - b);
+  const cutoff = new Date(sorted[Math.floor(sorted.length * TRAIN_FRACTION)]);
+  const training = rows.filter((r) => r.date <= cutoff);
+  const testRows = rows.filter((r) => r.date > cutoff);
+  const beta = fitWithinSuburbElasticities(training);
 
-  const predictions = {
-    currentStyle: [],
-    naiveLandUnit: [],
-    elasticLand: []
-  };
-  let skippedForSparseHistory = 0;
+  console.log(`[backtest] training=${training.length} test=${testRows.length} cutoff=${cutoff.toISOString().slice(0,10)}`);
 
-  for (const subject of testRows) {
-    const comps = selectComparables(subject, trainingRows);
+  const predictions = { currentStyle: [], naiveLandUnit: [], elasticLand: [], production: [] };
+  let skipped = 0, skippedProduction = 0;
+
+  for (let i = 0; i < testRows.length; i++) {
+    const sub = testRows[i];
+    const comps = selectComparables(sub, training);
     if (comps.length < MIN_PRIOR_COMPS) {
-      skippedForSparseHistory++;
+      skipped++;
       continue;
     }
-    const common = {
-      id: subject.id,
-      suburb: subject.suburb,
-      date: subject.date.toISOString().slice(0, 10),
-      actual: subject.price,
-      land: subject.land,
-      comparableCount: comps.length
-    };
-    predictions.currentStyle.push({
-      ...common,
-      predicted: predictCurrentStyle(subject, comps)
-    });
-    predictions.naiveLandUnit.push({
-      ...common,
-      predicted: predictNaiveLandUnit(subject, comps)
-    });
-    predictions.elasticLand.push({
-      ...common,
-      predicted: predictElasticLand(subject, comps, beta)
-    });
+    const common = { id: sub.id, suburb: sub.suburb, date: sub.date.toISOString().slice(0, 10),
+      actual: sub.price, land: sub.land, comparableCount: comps.length };
+
+    predictions.currentStyle.push({ ...common, predicted: predictCurrentStyle(sub, comps) });
+    predictions.naiveLandUnit.push({ ...common, predicted: predictNaiveLandUnit(sub, comps) });
+    predictions.elasticLand.push({ ...common, predicted: predictElasticLand(sub, comps, beta) });
+
+    try {
+      const prod = runProduction(sub, comps);
+      if (prod.predicted != null) {
+        predictions.production.push({ ...common, predicted: prod.predicted, valuationMode: prod.valuationMode });
+      } else {
+        skippedProduction++;
+      }
+    } catch (err) {
+      skippedProduction++;
+      console.warn(`[production] skip row ${sub.id}: ${err.message}`);
+    }
+
+    if ((i + 1) % 500 === 0 || i === testRows.length - 1) {
+      console.log(`[progress] ${i + 1}/${testRows.length} — legacy ${predictions.currentStyle.length} production ${predictions.production.length}`);
+    }
   }
 
-  // ── Large-Lot Group Reporting ──
-  // Use land >= 2000 as proxy for production detectLargeLotMode (which uses
-  // suburb P90 + user-provided landSize). The backtest does not have per-suburb
-  // land stats, so 2000㎡ is the standard large-lot threshold for Melbourne.
-  const LARGE_LOT_THRESHOLD = 2000;
-
-  const largeLotPredictions = {
-    currentStyle: predictions.currentStyle.filter(p => p.land >= LARGE_LOT_THRESHOLD),
-    naiveLandUnit: predictions.naiveLandUnit.filter(p => p.land >= LARGE_LOT_THRESHOLD),
-    elasticLand: predictions.elasticLand.filter(p => p.land >= LARGE_LOT_THRESHOLD)
-  };
-
-  // Large-lot definitions by tier
-  const largeLotTiers = {
-    "size_2000plus": predictions.currentStyle.filter(p => p.land >= 2000),
-    "size_3000plus": predictions.currentStyle.filter(p => p.land >= 3000),
-    "size_4000plus": predictions.currentStyle.filter(p => p.land >= 4000),
-  };
-
-  // Per-model large-lot summary (matches production large_lot_house mode)
-  const largeLotModels = {};
-  for (const [modelName, preds] of Object.entries(largeLotPredictions)) {
-    const standardPreds = predictions[modelName];
-    if (!standardPreds) continue;
-    const regularPreds = standardPreds.filter(p => p.land < LARGE_LOT_THRESHOLD);
-    largeLotModels[modelName] = {
-      standard: regularPreds.length
-        ? { meanLandSize: regularPreds.reduce((s, p) => s + p.land, 0) / regularPreds.length, ...summarise(regularPreds) }
-        : null,
-      largeLotHouse: preds.length
-        ? { meanLandSize: preds.reduce((s, p) => s + p.land, 0) / preds.length, ...summarise(preds) }
-        : null
-    };
-  }
+  // ── Summarise ──
+  const largeLotLegacy = predictions.currentStyle.filter((p) => p.land >= LARGE_LOT_THRESHOLD);
+  const largeLotProd = predictions.production.filter((p) => p.land >= LARGE_LOT_THRESHOLD);
+  const largeLotProdCount = largeLotProd.length;
 
   const result = {
     generatedAt: new Date().toISOString(),
@@ -353,64 +374,78 @@ async function main() {
       cutoffDate: cutoff.toISOString().slice(0, 10),
       minimumPriorComparables: MIN_PRIOR_COMPS,
       maximumComparables: MAX_COMPS,
-      leakageControl: "Every prediction uses only rows in the fixed training period"
+      note: "production model runs via valueProperty() from lib/valuation-engine.js — same code path as live API"
     },
     coverage: {
-      eligibleRows: rows.length,
-      trainingRows: trainingRows.length,
-      testRows: testRows.length,
-      evaluatedRows: predictions.currentStyle.length,
-      skippedForSparseHistory
+      eligibleRows: rows.length, trainingRows: training.length,
+      testRows: testRows.length, evaluatedLegacy: predictions.currentStyle.length,
+      evaluatedProduction: predictions.production.length,
+      skippedForSparseHistory: skipped,
+      skippedProductionErrors: skippedProduction
     },
     learnedElasticities: beta,
     largeLotCoverage: {
-      size2000Plus: largeLotPredictions.currentStyle.filter(p => p.land >= 2000).length,
-      size3000Plus: largeLotPredictions.currentStyle.filter(p => p.land >= 3000).length,
-      size4000Plus: largeLotPredictions.currentStyle.filter(p => p.land >= 4000).length,
+      legacy: { size2000Plus: largeLotLegacy.length },
+      production: { size2000Plus: largeLotProdCount }
     },
     models: {
       currentStyle: {
-        description: "Total-price comparable anchor with capped land/bedroom adjustments",
+        description: "Legacy: anchored median with capped land/bedroom adjustments (NOT the production engine)",
         metrics: summarise(predictions.currentStyle),
         byLandQuartile: summariseByLandQuartile(predictions.currentStyle),
         largeLot: {
-          describe: "Subset of test set where subject.land >= 2000㎡",
-          size2000Plus: largeLotPredictions.currentStyle.length ? summarise(largeLotPredictions.currentStyle) : null,
-          size3000Plus: largeLotTiers.size_3000plus.length ? summarise(largeLotTiers.size_3000plus) : null,
-          size4000Plus: largeLotTiers.size_4000plus.length ? summarise(largeLotTiers.size_4000plus) : null
+          note: `Subset where subject.land >= ${LARGE_LOT_THRESHOLD}㎡ (proxy for large_lot_house mode)`,
+          size2000Plus: largeLotLegacy.length ? summarise(largeLotLegacy) : null
         }
       },
       naiveLandUnit: {
-        description: "Weighted median improved-sale price per land sqm multiplied by subject land",
+        description: "Legacy: weighted median price/㎡ × subject land (NOT the production engine)",
         metrics: summarise(predictions.naiveLandUnit),
         byLandQuartile: summariseByLandQuartile(predictions.naiveLandUnit),
         largeLot: {
-          size2000Plus: largeLotPredictions.naiveLandUnit.length ? summarise(largeLotPredictions.naiveLandUnit) : null
+          size2000Plus: predictions.naiveLandUnit.filter((p) => p.land >= LARGE_LOT_THRESHOLD).length
+            ? summarise(predictions.naiveLandUnit.filter((p) => p.land >= LARGE_LOT_THRESHOLD))
+            : null
         }
       },
       elasticLand: {
-        description: "Distance/recency weighted comparable prices adjusted by learned nonlinear land elasticity",
+        description: "Legacy: suburb-within elasticity model (NOT the production engine)",
         metrics: summarise(predictions.elasticLand),
         byLandQuartile: summariseByLandQuartile(predictions.elasticLand),
         largeLot: {
-          size2000Plus: largeLotPredictions.elasticLand.length ? summarise(largeLotPredictions.elasticLand) : null
+          size2000Plus: predictions.elasticLand.filter((p) => p.land >= LARGE_LOT_THRESHOLD).length
+            ? summarise(predictions.elasticLand.filter((p) => p.land >= LARGE_LOT_THRESHOLD))
+            : null
+        }
+      },
+      productionValueProperty: {
+        description: "PRODUCTION: runs valueProperty() direct — IDENTICAL to live API estimate path",
+        metrics: summarise(predictions.production),
+        byLandQuartile: summariseByLandQuartile(predictions.production),
+        largeLot: {
+          note: "These predictions use the same production detectLargeLotMode & channelAEstimate code as the live website",
+          size2000Plus: largeLotProdCount
+            ? summarise(largeLotProd)
+            : {
+                n: 0,
+                mapePct: null, medianApePct: null, rmse: null, biasPct: null,
+                within10Pct: null, within15Pct: null, within20Pct: null,
+                _disclaimer: "样本不足，尚不能证明精度改善。 欢迎提供成交数据以改进模型。 Insufficient sample — cannot yet demonstrate accuracy improvement from the production large-lot mode."
+              }
         }
       }
-    },
-    largeLotHouseReport: {
-      description: `Per-model breakdown: standard vs large-lot (≥${LARGE_LOT_THRESHOLD}㎡) — proxy for production large_lot_house mode`,
-      threshold: LARGE_LOT_THRESHOLD,
-      models: largeLotModels
     }
   };
 
   const outputPath = "/tmp/aushomevalue-house-land-backtest.json";
   fs.writeFileSync(outputPath, JSON.stringify(result, null, 2));
   console.log(JSON.stringify(result, null, 2));
-  console.log(`\nFull result written to ${outputPath}`);
+  console.log(`\nBacktest written to ${outputPath}`);
+  console.log(`Production large-lot sample: ${largeLotProdCount} entries`);
+  if (largeLotProdCount < 10) {
+    console.log("⚠️  样本过少，无法统计大块地模式的精度优势。");
+    console.log("⚠️  当成交数积累到 ≥30 条时，MAPE/MedianAPE 对比才有统计意义。");
+  }
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main().catch((err) => { console.error(err); process.exitCode = 1; });

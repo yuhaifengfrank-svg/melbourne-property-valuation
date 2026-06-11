@@ -1,9 +1,9 @@
 # Codex Review Briefing — Phase 0A Fixes
 
-**Date:** 2026-06-11  
-**Commit:** `6086794` — `main`  
-**Parent:** `9b3c6d6`  
-**Branch:** `main` (already pushed)  
+**Date:** 2026-06-11
+**Commit:** `6086794` — `main`
+**Parent:** `9b3c6d6`
+**Branch:** `main` (already pushed)
 **Scope:** Phase 0A only — online misdirection language + scoring engine alignment
 
 ---
