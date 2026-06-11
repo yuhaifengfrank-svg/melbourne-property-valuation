@@ -13,6 +13,7 @@ import {
   generateSessionId,
   verifyToken,
   setTokenCookie,
+  clearTokenCookie,
   getTokenFromCookies,
 } from "../lib/signed-token.js";
 import { rankPersonalised } from "../lib/personalised-opportunity-ranking.js";
@@ -271,13 +272,8 @@ export default async function handler(req, res) {
       ON CONFLICT (session_id) DO UPDATE SET lead_contact_id = ${contactId}
     `;
 
-    // ── Issue signed token ──
-    const token = createToken({ email, gate_level: "opportunity" });
-
-    // ── Set HttpOnly cookie (FIX 7) ──
-    setTokenCookie(res, token);
-
     // ── Fetch raw opportunities with strategy=smart, then re-rank ──
+    // Cookie is set AFTER successful data fetch (FIX 6)
     let top10 = [];
     let top10Status = "ok";
     try {
@@ -301,6 +297,7 @@ export default async function handler(req, res) {
         err.message
       );
       // FIX 5: No fallback — return 503
+      clearTokenCookie(res);
       return res.status(503).json({
         ok: false,
         status: "data_unavailable",
@@ -309,7 +306,10 @@ export default async function handler(req, res) {
       });
     }
 
-    // ── Do NOT return the token in JSON body (FIX 7) ──
+    // ── Only set cookie after successful data fetch (FIX 6) ──
+    const token = createToken({ email, gate_level: "opportunity" });
+    setTokenCookie(res, token);
+
     return res.status(200).json({
       ok: true,
       status: "active",

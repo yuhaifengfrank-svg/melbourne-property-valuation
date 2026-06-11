@@ -64,8 +64,10 @@ export default async function handler(request, response) {
       SELECT suburb, state,
              median_house_price, median_unit_price,
              growth_1y, growth_3y, growth_5y,
-             school_score, vacancy_rate,
-             opportunity_score, opportunity_type
+             gross_yield, school_score, vacancy_rate,
+             supply_constraint_score, infrastructure_score,
+             overall_confidence, opportunity_score, opportunity_type,
+             conf_school, conf_yield, conf_vacancy, updated_at
       FROM suburb_metrics
       WHERE ${where.join(' AND ')}
       ORDER BY opportunity_score DESC
@@ -80,13 +82,16 @@ export default async function handler(request, response) {
       state: r.state || 'VIC',
       medianHousePrice: Number(r.median_house_price) || null,
       medianUnitPrice: Number(r.median_unit_price) || null,
-      growth1y: Number(r.growth_1y) || null,
-      growth3y: Number(r.growth_3y) || null,
-      growth5y: Number(r.growth_5y) || null,
+      grossYield: Number(r.gross_yield) || null,
+      rentalYield: Number(r.gross_yield) || null,
       schoolScore: Number(r.school_score) || null,
       vacancyRate: Number(r.vacancy_rate) || null,
+      supplyConstraintScore: Number(r.supply_constraint_score) || null,
+      infrastructureScore: Number(r.infrastructure_score) || null,
+      overallConfidence: Number(r.overall_confidence) || null,
       opportunityScore: Number(r.opportunity_score),
-      opportunityType: r.opportunity_type || 'Balanced'
+      opportunityType: r.opportunity_type || 'Balanced',
+      dataUpdated: r.updated_at ? new Date(r.updated_at).toISOString().split('T')[0] : '',
     }));
 
     response.status(200).json({

@@ -129,14 +129,14 @@
       ' <span style="color:#dc2626;">*</span></label>' +
       '<select id="opp-gate-state" ' +
       'style="width:100%;padding:12px 14px;border:1px solid #dbe2de;border-radius:8px;font-size:0.95rem;box-sizing:border-box;background:white;">' +
-      '<option value="vic">VIC</option>' +
-      '<option value="nsw">NSW</option>' +
-      '<option value="qld">QLD</option>' +
-      '<option value="wa">WA</option>' +
-      '<option value="sa">SA</option>' +
-      '<option value="act">ACT</option>' +
-      '<option value="tas">TAS</option>' +
-      '<option value="nt">NT</option>' +
+      '<option value="vic" selected>VIC</option>' +
+      '<option value="nsw" disabled>NSW — Coming Soon</option>' +
+      '<option value="qld" disabled>QLD — Coming Soon</option>' +
+      '<option value="wa" disabled>WA — Coming Soon</option>' +
+      '<option value="sa" disabled>SA — Coming Soon</option>' +
+      '<option value="act" disabled>ACT — Coming Soon</option>' +
+      '<option value="tas" disabled>TAS — Coming Soon</option>' +
+      '<option value="nt" disabled>NT — Coming Soon</option>' +
       "</select>" +
       "</div>" +
       /* Investment goal dropdown */
@@ -421,6 +421,11 @@
   /* Export globally — no localStorage methods exposed */
   window.opportunityGate = {
     run: runGate,
+    isUnlocked: function () {
+      // Check token silently on server — returns promise
+      // Call .then() to get boolean
+      return false;
+    },
     check: checkTokenOnServer,
     protectPage: function () {
       // Must verify with server — no client-side shortcut
