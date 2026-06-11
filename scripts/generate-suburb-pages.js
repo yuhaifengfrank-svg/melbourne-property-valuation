@@ -49,6 +49,7 @@ function suburbPageHTML(data) {
   const growthStr = data.growth3y != null
     ? `${data.growth3y >= 0 ? '+' : ''}${data.growth3y}%`
     : 'Limited data';
+  // Note: growth3y is an experimental model-derived annualized rate, not a 3-year CAGR or future prediction
   const schools = data.schoolScore != null
     ? `${Math.round(data.schoolScore)}/100`
     : 'Limited data';
@@ -59,7 +60,7 @@ function suburbPageHTML(data) {
   const drivers = [
     score >= 60 ? 'Metric-supported opportunity ranking' : 'Developing market indicators',
     data.schoolScore >= 60 ? 'Quality school zone present' : 'Standard school zone performance',
-    data.growth3y >= 5 ? 'Positive 3-year price trend' : 'Moderate price movement',
+    data.growth3y >= 5 ? 'Experimental short-term price trend signal' : 'Moderate price movement',
     data.medianHousePrice ? 'Median price available for comparison' : 'Price data developing',
   ];
 
@@ -78,7 +79,7 @@ function suburbPageHTML(data) {
   <link rel="canonical" href="https://www.aushomevalue.com.au/suburb/${s}" />
   <meta name="robots" content="index, follow" />
   <meta property="og:title" content="${data.suburb} Property Market Analysis | AusHomeValue" />
-  <meta property="og:description" content="Opportunity Score ${score}/100 — ${topOpt}. Median house price ${priceStr}. ${growthStr} 3-year growth." />
+  <meta property="og:description" content="Opportunity Score ${score}/100 — ${topOpt}. Median house price ${priceStr}. Experimental trend signal." />
   <meta property="og:url" content="https://www.aushomevalue.com.au/suburb/${s}" />
   <script type="application/ld+json">
   {
@@ -147,7 +148,7 @@ function suburbPageHTML(data) {
       <div class="faq-q">What is the median house price in ${data.suburb}?</div>
       <div class="faq-a">The median house price is approximately ${priceStr}, based on recent comparable sales data.</div>
       <div class="faq-q">Is ${data.suburb} a good area for property investment?</div>
-      <div class="faq-a">With an opportunity score of ${score}/100 and ${growthStr} 3-year growth, ${data.suburb} presents a ${score >= 60 ? 'stronger' : 'developing'} opportunity for property investment.</div>
+      <div class="faq-a">With an opportunity score of ${score}/100 and an experimental annualized price trend signal of ${growthStr}, ${data.suburb} presents a ${score >= 60 ? 'stronger' : 'developing'} composite indicator for property analysis. This is not a calibrated price forecast.</div>
       <div class="faq-q">What are the schools like in ${data.suburb}?</div>
       <div class="faq-a">The school quality score for ${data.suburb} is ${schools}, based on ICSEA data from ACARA school profiles in the area.</div>
     </div>
@@ -163,7 +164,7 @@ function opportunitiesIndexHTML(top, categories) {
     return `<div class="card">
         <div>
           <h2><a href="/suburb/${slugName}.html" style="color:#0d6b57;text-decoration:none;">${s.suburb}, ${s.state}</a></h2>
-          <div class="meta">${s.opportunityType || 'Balanced'} · Median $${(s.medianHousePrice / 1000).toFixed(0)}K · ${pctGrowth} 3yr</div>
+          <div class="meta">${s.opportunityType || 'Balanced'} · Median $${(s.medianHousePrice / 1000).toFixed(0)}K · ${pctGrowth} trend signal</div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;"><span class="badge">${s.opportunityScore}</span><span class="badge-sub">${s.opportunityType || 'Balanced'}</span></div>
       </div>`;
@@ -290,7 +291,7 @@ async function generateAll() {
 
   // Category definitions
   const categories = [
-    { file: 'growth.html', title: 'Growth Opportunities', desc: 'Suburbs with the strongest price growth trajectory.', filter: s => (s.growth3y || 0) >= 5 },
+    { file: 'growth.html', title: 'Growth Opportunities', desc: 'Suburbs with the strongest experimental market trend signal.', filter: s => (s.growth3y || 0) >= 5 },
     { file: 'school-zone.html', title: 'School Zone Opportunities', desc: 'Top-ranked suburbs for school quality based on ICSEA scores from ACARA.', filter: s => s.schoolScore >= 65 },
     { file: 'cashflow.html', title: 'Cashflow Opportunities', desc: 'Suburbs with strong rental yield potential and rental demand indicators.', filter: s => (s.schoolScore || 0) >= 60 && (s.opportunityScore || 0) >= 60 },
     { file: 'infrastructure.html', title: 'Infrastructure Opportunities', desc: 'Growth corridors and suburbs near major infrastructure developments.', filter: s => (s.opportunityScore || 0) >= 65 },
