@@ -1,0 +1,5391 @@
+{
+  "203021043": {
+    "sa2_name": "Lara",
+    "median_area_m2": 1782.0,
+    "mean_area_m2": 1300.0,
+    "q25_area_m2": 420.0,
+    "q75_area_m2": 2024.0,
+    "p10_area_m2": 259.0,
+    "p90_area_m2": 2026.0,
+    "min_area_m2": 107.0,
+    "max_area_m2": 2360.0,
+    "parcel_count": 19,
+    "lga_codes": [
+      "327"
+    ]
+  },
+  "203031052": {
+    "sa2_name": "Point Lonsdale - Queenscliff",
+    "median_area_m2": 613.0,
+    "mean_area_m2": 625.0,
+    "q25_area_m2": 431.0,
+    "q75_area_m2": 738.0,
+    "p10_area_m2": 286.0,
+    "p90_area_m2": 911.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2818.0,
+    "parcel_count": 4207,
+    "lga_codes": [
+      "327",
+      "360"
+    ]
+  },
+  "203031490": {
+    "sa2_name": "Ocean Grove",
+    "median_area_m2": 567.0,
+    "mean_area_m2": 568.0,
+    "q25_area_m2": 510.0,
+    "q75_area_m2": 613.0,
+    "p10_area_m2": 378.0,
+    "p90_area_m2": 694.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2904.0,
+    "parcel_count": 1129,
+    "lga_codes": [
+      "327"
+    ]
+  },
+  "205031088": {
+    "sa2_name": "French Island",
+    "median_area_m2": 534.0,
+    "mean_area_m2": 541.0,
+    "q25_area_m2": 534.0,
+    "q75_area_m2": 535.0,
+    "p10_area_m2": 531.0,
+    "p90_area_m2": 537.0,
+    "min_area_m2": 457.0,
+    "max_area_m2": 2778.0,
+    "parcel_count": 704,
+    "lga_codes": [
+      "379"
+    ]
+  },
+  "205031091": {
+    "sa2_name": "Phillip Island",
+    "median_area_m2": 675.0,
+    "mean_area_m2": 750.0,
+    "q25_area_m2": 462.0,
+    "q75_area_m2": 843.0,
+    "p10_area_m2": 242.0,
+    "p90_area_m2": 1215.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2966.0,
+    "parcel_count": 3063,
+    "lga_codes": [
+      "304"
+    ]
+  },
+  "206011106": {
+    "sa2_name": "Brunswick East",
+    "median_area_m2": 502.0,
+    "mean_area_m2": 846.0,
+    "q25_area_m2": 249.0,
+    "q75_area_m2": 1476.0,
+    "p10_area_m2": 153.0,
+    "p90_area_m2": 1970.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2979.0,
+    "parcel_count": 6221,
+    "lga_codes": [
+      "316",
+      "351"
+    ]
+  },
+  "206011107": {
+    "sa2_name": "Brunswick West",
+    "median_area_m2": 571.0,
+    "mean_area_m2": 681.0,
+    "q25_area_m2": 396.0,
+    "q75_area_m2": 887.0,
+    "p10_area_m2": 184.0,
+    "p90_area_m2": 1376.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2952.0,
+    "parcel_count": 7666,
+    "lga_codes": [
+      "349",
+      "351"
+    ]
+  },
+  "206011109": {
+    "sa2_name": "Pascoe Vale South",
+    "median_area_m2": 479.0,
+    "mean_area_m2": 471.0,
+    "q25_area_m2": 319.0,
+    "q75_area_m2": 568.0,
+    "p10_area_m2": 187.0,
+    "p90_area_m2": 655.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2991.0,
+    "parcel_count": 4599,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "206011495": {
+    "sa2_name": "Brunswick - North",
+    "median_area_m2": 431.0,
+    "mean_area_m2": 600.0,
+    "q25_area_m2": 248.0,
+    "q75_area_m2": 805.0,
+    "p10_area_m2": 166.0,
+    "p90_area_m2": 1187.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2995.0,
+    "parcel_count": 7190,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "206011496": {
+    "sa2_name": "Brunswick - South",
+    "median_area_m2": 426.0,
+    "mean_area_m2": 633.0,
+    "q25_area_m2": 232.0,
+    "q75_area_m2": 916.0,
+    "p10_area_m2": 155.0,
+    "p90_area_m2": 1505.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2969.0,
+    "parcel_count": 7135,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "206011497": {
+    "sa2_name": "Coburg - East",
+    "median_area_m2": 445.0,
+    "mean_area_m2": 699.0,
+    "q25_area_m2": 261.0,
+    "q75_area_m2": 775.0,
+    "p10_area_m2": 168.0,
+    "p90_area_m2": 2213.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2987.0,
+    "parcel_count": 6521,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "206011498": {
+    "sa2_name": "Coburg - West",
+    "median_area_m2": 403.0,
+    "mean_area_m2": 457.0,
+    "q25_area_m2": 249.0,
+    "q75_area_m2": 502.0,
+    "p10_area_m2": 185.0,
+    "p90_area_m2": 661.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2491.0,
+    "parcel_count": 6466,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "206021110": {
+    "sa2_name": "Alphington - Fairfield",
+    "median_area_m2": 601.0,
+    "mean_area_m2": 633.0,
+    "q25_area_m2": 384.0,
+    "q75_area_m2": 809.0,
+    "p10_area_m2": 202.0,
+    "p90_area_m2": 918.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2836.0,
+    "parcel_count": 5334,
+    "lga_codes": [
+      "316"
+    ]
+  },
+  "206021112": {
+    "sa2_name": "Thornbury",
+    "median_area_m2": 497.0,
+    "mean_area_m2": 584.0,
+    "q25_area_m2": 334.0,
+    "q75_area_m2": 756.0,
+    "p10_area_m2": 191.0,
+    "p90_area_m2": 1002.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 10098,
+    "lga_codes": [
+      "316"
+    ]
+  },
+  "206021499": {
+    "sa2_name": "Northcote - East",
+    "median_area_m2": 462.0,
+    "mean_area_m2": 570.0,
+    "q25_area_m2": 282.0,
+    "q75_area_m2": 735.0,
+    "p10_area_m2": 184.0,
+    "p90_area_m2": 1047.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2985.0,
+    "parcel_count": 7106,
+    "lga_codes": [
+      "316"
+    ]
+  },
+  "206021500": {
+    "sa2_name": "Northcote - West",
+    "median_area_m2": 424.0,
+    "mean_area_m2": 671.0,
+    "q25_area_m2": 242.0,
+    "q75_area_m2": 743.0,
+    "p10_area_m2": 180.0,
+    "p90_area_m2": 1759.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2961.0,
+    "parcel_count": 5441,
+    "lga_codes": [
+      "316",
+      "351"
+    ]
+  },
+  "206031113": {
+    "sa2_name": "Ascot Vale",
+    "median_area_m2": 540.0,
+    "mean_area_m2": 657.0,
+    "q25_area_m2": 234.0,
+    "q75_area_m2": 971.0,
+    "p10_area_m2": 155.0,
+    "p90_area_m2": 1385.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2851.0,
+    "parcel_count": 1945,
+    "lga_codes": [
+      "349",
+      "351"
+    ]
+  },
+  "206031115": {
+    "sa2_name": "Flemington",
+    "median_area_m2": 610.0,
+    "mean_area_m2": 693.0,
+    "q25_area_m2": 332.0,
+    "q75_area_m2": 814.0,
+    "p10_area_m2": 204.0,
+    "p90_area_m2": 1309.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2981.0,
+    "parcel_count": 902,
+    "lga_codes": [
+      "343",
+      "349"
+    ]
+  },
+  "206031116": {
+    "sa2_name": "Moonee Ponds",
+    "median_area_m2": 517.0,
+    "mean_area_m2": 663.0,
+    "q25_area_m2": 286.0,
+    "q75_area_m2": 797.0,
+    "p10_area_m2": 199.0,
+    "p90_area_m2": 1459.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2903.0,
+    "parcel_count": 6658,
+    "lga_codes": [
+      "349",
+      "351"
+    ]
+  },
+  "206031501": {
+    "sa2_name": "Essendon (West) - Aberfeldie",
+    "median_area_m2": 613.0,
+    "mean_area_m2": 837.0,
+    "q25_area_m2": 279.0,
+    "q75_area_m2": 1208.0,
+    "p10_area_m2": 180.0,
+    "p90_area_m2": 2016.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2821.0,
+    "parcel_count": 3208,
+    "lga_codes": [
+      "349"
+    ]
+  },
+  "206031502": {
+    "sa2_name": "Essendon - East",
+    "median_area_m2": 1030.0,
+    "mean_area_m2": 1206.0,
+    "q25_area_m2": 679.0,
+    "q75_area_m2": 1863.0,
+    "p10_area_m2": 244.0,
+    "p90_area_m2": 2180.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2973.0,
+    "parcel_count": 2775,
+    "lga_codes": [
+      "349"
+    ]
+  },
+  "206041117": {
+    "sa2_name": "Carlton",
+    "median_area_m2": 1049.0,
+    "mean_area_m2": 1352.0,
+    "q25_area_m2": 472.0,
+    "q75_area_m2": 2289.0,
+    "p10_area_m2": 166.0,
+    "p90_area_m2": 2927.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2976.0,
+    "parcel_count": 9975,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041118": {
+    "sa2_name": "Docklands",
+    "median_area_m2": 2413.0,
+    "mean_area_m2": 2230.0,
+    "q25_area_m2": 2355.0,
+    "q75_area_m2": 2662.0,
+    "p10_area_m2": 1397.0,
+    "p90_area_m2": 2664.0,
+    "min_area_m2": 105.0,
+    "max_area_m2": 2974.0,
+    "parcel_count": 3121,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041119": {
+    "sa2_name": "East Melbourne",
+    "median_area_m2": 955.0,
+    "mean_area_m2": 981.0,
+    "q25_area_m2": 466.0,
+    "q75_area_m2": 1319.0,
+    "p10_area_m2": 218.0,
+    "p90_area_m2": 2076.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2978.0,
+    "parcel_count": 3314,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041120": {
+    "sa2_name": "Flemington Racecourse",
+    "median_area_m2": 331.0,
+    "mean_area_m2": 439.0,
+    "q25_area_m2": 166.0,
+    "q75_area_m2": 423.0,
+    "p10_area_m2": 109.0,
+    "p90_area_m2": 1173.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 1503.0,
+    "parcel_count": 13,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041121": {
+    "sa2_name": "Kensington (Vic.)",
+    "median_area_m2": 240.0,
+    "mean_area_m2": 544.0,
+    "q25_area_m2": 164.0,
+    "q75_area_m2": 586.0,
+    "p10_area_m2": 130.0,
+    "p90_area_m2": 1552.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2957.0,
+    "parcel_count": 4327,
+    "lga_codes": [
+      "343",
+      "349"
+    ]
+  },
+  "206041124": {
+    "sa2_name": "Parkville",
+    "median_area_m2": 1587.0,
+    "mean_area_m2": 1515.0,
+    "q25_area_m2": 458.0,
+    "q75_area_m2": 2434.0,
+    "p10_area_m2": 189.0,
+    "p90_area_m2": 2462.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2850.0,
+    "parcel_count": 2719,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041125": {
+    "sa2_name": "South Yarra - West",
+    "median_area_m2": 804.0,
+    "mean_area_m2": 966.0,
+    "q25_area_m2": 503.0,
+    "q75_area_m2": 1309.0,
+    "p10_area_m2": 322.0,
+    "p90_area_m2": 2026.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2862.0,
+    "parcel_count": 3868,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041127": {
+    "sa2_name": "West Melbourne - Industrial",
+    "median_area_m2": 846.0,
+    "mean_area_m2": 1011.0,
+    "q25_area_m2": 336.0,
+    "q75_area_m2": 1531.0,
+    "p10_area_m2": 230.0,
+    "p90_area_m2": 2274.0,
+    "min_area_m2": 106.0,
+    "max_area_m2": 2722.0,
+    "parcel_count": 100,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041503": {
+    "sa2_name": "Melbourne CBD - East",
+    "median_area_m2": 937.0,
+    "mean_area_m2": 1032.0,
+    "q25_area_m2": 550.0,
+    "q75_area_m2": 1562.0,
+    "p10_area_m2": 342.0,
+    "p90_area_m2": 1943.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2963.0,
+    "parcel_count": 9693,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041504": {
+    "sa2_name": "Melbourne CBD - North",
+    "median_area_m2": 1298.0,
+    "mean_area_m2": 1457.0,
+    "q25_area_m2": 938.0,
+    "q75_area_m2": 1911.0,
+    "p10_area_m2": 538.0,
+    "p90_area_m2": 2832.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2920.0,
+    "parcel_count": 14582,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041505": {
+    "sa2_name": "Melbourne CBD - West",
+    "median_area_m2": 1254.0,
+    "mean_area_m2": 1337.0,
+    "q25_area_m2": 953.0,
+    "q75_area_m2": 1830.0,
+    "p10_area_m2": 488.0,
+    "p90_area_m2": 1979.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2949.0,
+    "parcel_count": 16899,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041506": {
+    "sa2_name": "North Melbourne",
+    "median_area_m2": 790.0,
+    "mean_area_m2": 965.0,
+    "q25_area_m2": 381.0,
+    "q75_area_m2": 1434.0,
+    "p10_area_m2": 155.0,
+    "p90_area_m2": 2014.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2998.0,
+    "parcel_count": 8280,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041507": {
+    "sa2_name": "Royal Botanic Gardens Victoria",
+    "median_area_m2": 473.0,
+    "mean_area_m2": 675.0,
+    "q25_area_m2": 266.0,
+    "q75_area_m2": 625.0,
+    "p10_area_m2": 188.0,
+    "p90_area_m2": 1744.0,
+    "min_area_m2": 143.0,
+    "max_area_m2": 2553.0,
+    "parcel_count": 14,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041508": {
+    "sa2_name": "Southbank (West) - South Wharf",
+    "median_area_m2": 2102.0,
+    "mean_area_m2": 2035.0,
+    "q25_area_m2": 1230.0,
+    "q75_area_m2": 2759.0,
+    "p10_area_m2": 865.0,
+    "p90_area_m2": 2759.0,
+    "min_area_m2": 128.0,
+    "max_area_m2": 2950.0,
+    "parcel_count": 5724,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041509": {
+    "sa2_name": "Southbank - East",
+    "median_area_m2": 2122.0,
+    "mean_area_m2": 1944.0,
+    "q25_area_m2": 1383.0,
+    "q75_area_m2": 2523.0,
+    "p10_area_m2": 1170.0,
+    "p90_area_m2": 2660.0,
+    "min_area_m2": 105.0,
+    "max_area_m2": 2956.0,
+    "parcel_count": 15556,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206041510": {
+    "sa2_name": "West Melbourne - Residential",
+    "median_area_m2": 1306.0,
+    "mean_area_m2": 1401.0,
+    "q25_area_m2": 679.0,
+    "q75_area_m2": 2259.0,
+    "p10_area_m2": 220.0,
+    "p90_area_m2": 2542.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2860.0,
+    "parcel_count": 4705,
+    "lga_codes": [
+      "343"
+    ]
+  },
+  "206051128": {
+    "sa2_name": "Albert Park",
+    "median_area_m2": 970.0,
+    "mean_area_m2": 1230.0,
+    "q25_area_m2": 217.0,
+    "q75_area_m2": 2323.0,
+    "p10_area_m2": 151.0,
+    "p90_area_m2": 2332.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2733.0,
+    "parcel_count": 10305,
+    "lga_codes": [
+      "358"
+    ]
+  },
+  "206051129": {
+    "sa2_name": "Elwood",
+    "median_area_m2": 643.0,
+    "mean_area_m2": 771.0,
+    "q25_area_m2": 490.0,
+    "q75_area_m2": 962.0,
+    "p10_area_m2": 287.0,
+    "p90_area_m2": 1407.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2934.0,
+    "parcel_count": 10148,
+    "lga_codes": [
+      "358"
+    ]
+  },
+  "206051130": {
+    "sa2_name": "Port Melbourne",
+    "median_area_m2": 333.0,
+    "mean_area_m2": 681.0,
+    "q25_area_m2": 183.0,
+    "q75_area_m2": 994.0,
+    "p10_area_m2": 131.0,
+    "p90_area_m2": 1929.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2917.0,
+    "parcel_count": 6178,
+    "lga_codes": [
+      "358"
+    ]
+  },
+  "206051134": {
+    "sa2_name": "St Kilda East",
+    "median_area_m2": 693.0,
+    "mean_area_m2": 866.0,
+    "q25_area_m2": 482.0,
+    "q75_area_m2": 1107.0,
+    "p10_area_m2": 240.0,
+    "p90_area_m2": 1758.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2964.0,
+    "parcel_count": 10783,
+    "lga_codes": [
+      "358"
+    ]
+  },
+  "206051511": {
+    "sa2_name": "Port Melbourne Industrial",
+    "median_area_m2": 1008.0,
+    "mean_area_m2": 1080.0,
+    "q25_area_m2": 507.0,
+    "q75_area_m2": 1466.0,
+    "p10_area_m2": 167.0,
+    "p90_area_m2": 2332.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 1330,
+    "lga_codes": [
+      "343",
+      "358"
+    ]
+  },
+  "206051512": {
+    "sa2_name": "South Melbourne",
+    "median_area_m2": 507.0,
+    "mean_area_m2": 738.0,
+    "q25_area_m2": 168.0,
+    "q75_area_m2": 1200.0,
+    "p10_area_m2": 122.0,
+    "p90_area_m2": 1643.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2795.0,
+    "parcel_count": 6467,
+    "lga_codes": [
+      "343",
+      "358"
+    ]
+  },
+  "206051513": {
+    "sa2_name": "St Kilda - Central",
+    "median_area_m2": 941.0,
+    "mean_area_m2": 1120.0,
+    "q25_area_m2": 580.0,
+    "q75_area_m2": 1603.0,
+    "p10_area_m2": 328.0,
+    "p90_area_m2": 2314.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2891.0,
+    "parcel_count": 8612,
+    "lga_codes": [
+      "358"
+    ]
+  },
+  "206051514": {
+    "sa2_name": "St Kilda - West",
+    "median_area_m2": 1105.0,
+    "mean_area_m2": 1309.0,
+    "q25_area_m2": 608.0,
+    "q75_area_m2": 2096.0,
+    "p10_area_m2": 342.0,
+    "p90_area_m2": 2343.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2895.0,
+    "parcel_count": 10592,
+    "lga_codes": [
+      "358"
+    ]
+  },
+  "206061135": {
+    "sa2_name": "Armadale",
+    "median_area_m2": 779.0,
+    "mean_area_m2": 871.0,
+    "q25_area_m2": 395.0,
+    "q75_area_m2": 1141.0,
+    "p10_area_m2": 213.0,
+    "p90_area_m2": 1774.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2816.0,
+    "parcel_count": 6539,
+    "lga_codes": [
+      "363"
+    ]
+  },
+  "206061136": {
+    "sa2_name": "Prahran - Windsor",
+    "median_area_m2": 691.0,
+    "mean_area_m2": 826.0,
+    "q25_area_m2": 280.0,
+    "q75_area_m2": 1187.0,
+    "p10_area_m2": 168.0,
+    "p90_area_m2": 1755.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2976.0,
+    "parcel_count": 13901,
+    "lga_codes": [
+      "363"
+    ]
+  },
+  "206061138": {
+    "sa2_name": "Toorak",
+    "median_area_m2": 953.0,
+    "mean_area_m2": 1064.0,
+    "q25_area_m2": 623.0,
+    "q75_area_m2": 1386.0,
+    "p10_area_m2": 323.0,
+    "p90_area_m2": 2018.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2973.0,
+    "parcel_count": 8892,
+    "lga_codes": [
+      "363",
+      "376"
+    ]
+  },
+  "206061515": {
+    "sa2_name": "South Yarra - North",
+    "median_area_m2": 1146.0,
+    "mean_area_m2": 1247.0,
+    "q25_area_m2": 824.0,
+    "q75_area_m2": 1760.0,
+    "p10_area_m2": 589.0,
+    "p90_area_m2": 2121.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2928.0,
+    "parcel_count": 9606,
+    "lga_codes": [
+      "363"
+    ]
+  },
+  "206061516": {
+    "sa2_name": "South Yarra - South",
+    "median_area_m2": 561.0,
+    "mean_area_m2": 695.0,
+    "q25_area_m2": 246.0,
+    "q75_area_m2": 921.0,
+    "p10_area_m2": 157.0,
+    "p90_area_m2": 1629.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2979.0,
+    "parcel_count": 6738,
+    "lga_codes": [
+      "363"
+    ]
+  },
+  "206071139": {
+    "sa2_name": "Abbotsford",
+    "median_area_m2": 342.0,
+    "mean_area_m2": 720.0,
+    "q25_area_m2": 180.0,
+    "q75_area_m2": 877.0,
+    "p10_area_m2": 135.0,
+    "p90_area_m2": 2345.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2932.0,
+    "parcel_count": 3243,
+    "lga_codes": [
+      "376"
+    ]
+  },
+  "206071140": {
+    "sa2_name": "Carlton North - Princes Hill",
+    "median_area_m2": 201.0,
+    "mean_area_m2": 401.0,
+    "q25_area_m2": 153.0,
+    "q75_area_m2": 495.0,
+    "p10_area_m2": 124.0,
+    "p90_area_m2": 1020.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2693.0,
+    "parcel_count": 4459,
+    "lga_codes": [
+      "343",
+      "376"
+    ]
+  },
+  "206071141": {
+    "sa2_name": "Collingwood",
+    "median_area_m2": 511.0,
+    "mean_area_m2": 865.0,
+    "q25_area_m2": 213.0,
+    "q75_area_m2": 1266.0,
+    "p10_area_m2": 141.0,
+    "p90_area_m2": 2003.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2945.0,
+    "parcel_count": 4800,
+    "lga_codes": [
+      "376"
+    ]
+  },
+  "206071142": {
+    "sa2_name": "Fitzroy",
+    "median_area_m2": 552.0,
+    "mean_area_m2": 883.0,
+    "q25_area_m2": 192.0,
+    "q75_area_m2": 1426.0,
+    "p10_area_m2": 133.0,
+    "p90_area_m2": 2142.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2859.0,
+    "parcel_count": 5627,
+    "lga_codes": [
+      "376"
+    ]
+  },
+  "206071143": {
+    "sa2_name": "Fitzroy North",
+    "median_area_m2": 315.0,
+    "mean_area_m2": 542.0,
+    "q25_area_m2": 174.0,
+    "q75_area_m2": 690.0,
+    "p10_area_m2": 137.0,
+    "p90_area_m2": 1359.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2915.0,
+    "parcel_count": 6241,
+    "lga_codes": [
+      "351",
+      "376"
+    ]
+  },
+  "206071145": {
+    "sa2_name": "Clifton Hill - Alphington",
+    "median_area_m2": 390.0,
+    "mean_area_m2": 582.0,
+    "q25_area_m2": 200.0,
+    "q75_area_m2": 809.0,
+    "p10_area_m2": 147.0,
+    "p90_area_m2": 1274.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2924.0,
+    "parcel_count": 4687,
+    "lga_codes": [
+      "307",
+      "376"
+    ]
+  },
+  "206071517": {
+    "sa2_name": "Richmond (South) - Cremorne",
+    "median_area_m2": 343.0,
+    "mean_area_m2": 616.0,
+    "q25_area_m2": 178.0,
+    "q75_area_m2": 835.0,
+    "p10_area_m2": 135.0,
+    "p90_area_m2": 1509.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2945.0,
+    "parcel_count": 10627,
+    "lga_codes": [
+      "376"
+    ]
+  },
+  "206071518": {
+    "sa2_name": "Richmond - North",
+    "median_area_m2": 572.0,
+    "mean_area_m2": 845.0,
+    "q25_area_m2": 227.0,
+    "q75_area_m2": 1154.0,
+    "p10_area_m2": 150.0,
+    "p90_area_m2": 2314.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2933.0,
+    "parcel_count": 6572,
+    "lga_codes": [
+      "376"
+    ]
+  },
+  "207011146": {
+    "sa2_name": "Ashburton (Vic.)",
+    "median_area_m2": 627.0,
+    "mean_area_m2": 611.0,
+    "q25_area_m2": 362.0,
+    "q75_area_m2": 700.0,
+    "p10_area_m2": 234.0,
+    "p90_area_m2": 853.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2928.0,
+    "parcel_count": 3165,
+    "lga_codes": [
+      "307"
+    ]
+  },
+  "207011147": {
+    "sa2_name": "Balwyn",
+    "median_area_m2": 666.0,
+    "mean_area_m2": 695.0,
+    "q25_area_m2": 353.0,
+    "q75_area_m2": 828.0,
+    "p10_area_m2": 218.0,
+    "p90_area_m2": 1204.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2968.0,
+    "parcel_count": 7315,
+    "lga_codes": [
+      "307"
+    ]
+  },
+  "207011148": {
+    "sa2_name": "Balwyn North",
+    "median_area_m2": 692.0,
+    "mean_area_m2": 694.0,
+    "q25_area_m2": 587.0,
+    "q75_area_m2": 835.0,
+    "p10_area_m2": 283.0,
+    "p90_area_m2": 1011.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2917.0,
+    "parcel_count": 8795,
+    "lga_codes": [
+      "307",
+      "340"
+    ]
+  },
+  "207011149": {
+    "sa2_name": "Camberwell",
+    "median_area_m2": 662.0,
+    "mean_area_m2": 703.0,
+    "q25_area_m2": 352.0,
+    "q75_area_m2": 839.0,
+    "p10_area_m2": 200.0,
+    "p90_area_m2": 1247.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2963.0,
+    "parcel_count": 9460,
+    "lga_codes": [
+      "307"
+    ]
+  },
+  "207011150": {
+    "sa2_name": "Glen Iris - East",
+    "median_area_m2": 650.0,
+    "mean_area_m2": 648.0,
+    "q25_area_m2": 446.0,
+    "q75_area_m2": 755.0,
+    "p10_area_m2": 233.0,
+    "p90_area_m2": 937.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2787.0,
+    "parcel_count": 6658,
+    "lga_codes": [
+      "307"
+    ]
+  },
+  "207011152": {
+    "sa2_name": "Hawthorn East",
+    "median_area_m2": 829.0,
+    "mean_area_m2": 975.0,
+    "q25_area_m2": 477.0,
+    "q75_area_m2": 1245.0,
+    "p10_area_m2": 249.0,
+    "p90_area_m2": 2006.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2915.0,
+    "parcel_count": 9481,
+    "lga_codes": [
+      "307"
+    ]
+  },
+  "207011154": {
+    "sa2_name": "Kew East",
+    "median_area_m2": 684.0,
+    "mean_area_m2": 658.0,
+    "q25_area_m2": 578.0,
+    "q75_area_m2": 814.0,
+    "p10_area_m2": 270.0,
+    "p90_area_m2": 882.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2946.0,
+    "parcel_count": 3099,
+    "lga_codes": [
+      "307",
+      "376"
+    ]
+  },
+  "207011155": {
+    "sa2_name": "Surrey Hills (West) - Canterbury",
+    "median_area_m2": 661.0,
+    "mean_area_m2": 696.0,
+    "q25_area_m2": 393.0,
+    "q75_area_m2": 853.0,
+    "p10_area_m2": 210.0,
+    "p90_area_m2": 1178.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2969.0,
+    "parcel_count": 7243,
+    "lga_codes": [
+      "307"
+    ]
+  },
+  "207011519": {
+    "sa2_name": "Hawthorn - North",
+    "median_area_m2": 734.0,
+    "mean_area_m2": 825.0,
+    "q25_area_m2": 373.0,
+    "q75_area_m2": 1076.0,
+    "p10_area_m2": 218.0,
+    "p90_area_m2": 1572.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2993.0,
+    "parcel_count": 5986,
+    "lga_codes": [
+      "307"
+    ]
+  },
+  "207011520": {
+    "sa2_name": "Hawthorn - South",
+    "median_area_m2": 1038.0,
+    "mean_area_m2": 1112.0,
+    "q25_area_m2": 653.0,
+    "q75_area_m2": 1520.0,
+    "p10_area_m2": 308.0,
+    "p90_area_m2": 2007.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2967.0,
+    "parcel_count": 8085,
+    "lga_codes": [
+      "307",
+      "363"
+    ]
+  },
+  "207011521": {
+    "sa2_name": "Kew - South",
+    "median_area_m2": 707.0,
+    "mean_area_m2": 834.0,
+    "q25_area_m2": 429.0,
+    "q75_area_m2": 1023.0,
+    "p10_area_m2": 252.0,
+    "p90_area_m2": 1723.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2989.0,
+    "parcel_count": 5643,
+    "lga_codes": [
+      "307"
+    ]
+  },
+  "207011522": {
+    "sa2_name": "Kew - West",
+    "median_area_m2": 783.0,
+    "mean_area_m2": 883.0,
+    "q25_area_m2": 495.0,
+    "q75_area_m2": 1122.0,
+    "p10_area_m2": 286.0,
+    "p90_area_m2": 1592.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2957.0,
+    "parcel_count": 7034,
+    "lga_codes": [
+      "307",
+      "376"
+    ]
+  },
+  "207021156": {
+    "sa2_name": "Bulleen",
+    "median_area_m2": 609.0,
+    "mean_area_m2": 642.0,
+    "q25_area_m2": 427.0,
+    "q75_area_m2": 725.0,
+    "p10_area_m2": 253.0,
+    "p90_area_m2": 855.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2965.0,
+    "parcel_count": 4958,
+    "lga_codes": [
+      "303",
+      "340"
+    ]
+  },
+  "207021157": {
+    "sa2_name": "Doncaster",
+    "median_area_m2": 660.0,
+    "mean_area_m2": 774.0,
+    "q25_area_m2": 363.0,
+    "q75_area_m2": 794.0,
+    "p10_area_m2": 211.0,
+    "p90_area_m2": 1901.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2968.0,
+    "parcel_count": 10196,
+    "lga_codes": [
+      "307",
+      "340",
+      "372"
+    ]
+  },
+  "207021159": {
+    "sa2_name": "Templestowe",
+    "median_area_m2": 739.0,
+    "mean_area_m2": 754.0,
+    "q25_area_m2": 444.0,
+    "q75_area_m2": 837.0,
+    "p10_area_m2": 242.0,
+    "p90_area_m2": 1080.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 5624,
+    "lga_codes": [
+      "340"
+    ]
+  },
+  "207021160": {
+    "sa2_name": "Templestowe Lower",
+    "median_area_m2": 659.0,
+    "mean_area_m2": 611.0,
+    "q25_area_m2": 377.0,
+    "q75_area_m2": 728.0,
+    "p10_area_m2": 223.0,
+    "p90_area_m2": 814.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2655.0,
+    "parcel_count": 5766,
+    "lga_codes": [
+      "340"
+    ]
+  },
+  "207021424": {
+    "sa2_name": "Doncaster East - North",
+    "median_area_m2": 714.0,
+    "mean_area_m2": 732.0,
+    "q25_area_m2": 650.0,
+    "q75_area_m2": 805.0,
+    "p10_area_m2": 277.0,
+    "p90_area_m2": 967.0,
+    "min_area_m2": 105.0,
+    "max_area_m2": 2997.0,
+    "parcel_count": 5547,
+    "lga_codes": [
+      "340"
+    ]
+  },
+  "207021425": {
+    "sa2_name": "Doncaster East - South",
+    "median_area_m2": 433.0,
+    "mean_area_m2": 587.0,
+    "q25_area_m2": 258.0,
+    "q75_area_m2": 729.0,
+    "p10_area_m2": 188.0,
+    "p90_area_m2": 943.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2881.0,
+    "parcel_count": 7092,
+    "lga_codes": [
+      "340",
+      "372"
+    ]
+  },
+  "207031161": {
+    "sa2_name": "Blackburn",
+    "median_area_m2": 612.0,
+    "mean_area_m2": 671.0,
+    "q25_area_m2": 338.0,
+    "q75_area_m2": 766.0,
+    "p10_area_m2": 208.0,
+    "p90_area_m2": 1240.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2967.0,
+    "parcel_count": 10514,
+    "lga_codes": [
+      "340",
+      "372"
+    ]
+  },
+  "207031162": {
+    "sa2_name": "Blackburn South",
+    "median_area_m2": 592.0,
+    "mean_area_m2": 582.0,
+    "q25_area_m2": 406.0,
+    "q75_area_m2": 669.0,
+    "p10_area_m2": 223.0,
+    "p90_area_m2": 770.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2785.0,
+    "parcel_count": 4347,
+    "lga_codes": [
+      "372"
+    ]
+  },
+  "207031163": {
+    "sa2_name": "Box Hill",
+    "median_area_m2": 746.0,
+    "mean_area_m2": 994.0,
+    "q25_area_m2": 399.0,
+    "q75_area_m2": 1485.0,
+    "p10_area_m2": 190.0,
+    "p90_area_m2": 2255.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 12758,
+    "lga_codes": [
+      "372"
+    ]
+  },
+  "207031164": {
+    "sa2_name": "Box Hill North",
+    "median_area_m2": 569.0,
+    "mean_area_m2": 539.0,
+    "q25_area_m2": 262.0,
+    "q75_area_m2": 680.0,
+    "p10_area_m2": 178.0,
+    "p90_area_m2": 889.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2977.0,
+    "parcel_count": 8102,
+    "lga_codes": [
+      "340",
+      "372"
+    ]
+  },
+  "207031165": {
+    "sa2_name": "Burwood (Vic.)",
+    "median_area_m2": 585.0,
+    "mean_area_m2": 679.0,
+    "q25_area_m2": 257.0,
+    "q75_area_m2": 729.0,
+    "p10_area_m2": 182.0,
+    "p90_area_m2": 1585.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2923.0,
+    "parcel_count": 5760,
+    "lga_codes": [
+      "372"
+    ]
+  },
+  "207031166": {
+    "sa2_name": "Burwood East",
+    "median_area_m2": 584.0,
+    "mean_area_m2": 566.0,
+    "q25_area_m2": 511.0,
+    "q75_area_m2": 612.0,
+    "p10_area_m2": 251.0,
+    "p90_area_m2": 721.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2975.0,
+    "parcel_count": 4467,
+    "lga_codes": [
+      "372"
+    ]
+  },
+  "207031167": {
+    "sa2_name": "Surrey Hills (East) - Mont Albert",
+    "median_area_m2": 580.0,
+    "mean_area_m2": 620.0,
+    "q25_area_m2": 270.0,
+    "q75_area_m2": 823.0,
+    "p10_area_m2": 158.0,
+    "p90_area_m2": 1100.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2986.0,
+    "parcel_count": 4798,
+    "lga_codes": [
+      "372"
+    ]
+  },
+  "208011168": {
+    "sa2_name": "Beaumaris",
+    "median_area_m2": 624.0,
+    "mean_area_m2": 604.0,
+    "q25_area_m2": 383.0,
+    "q75_area_m2": 729.0,
+    "p10_area_m2": 238.0,
+    "p90_area_m2": 843.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2788.0,
+    "parcel_count": 5938,
+    "lga_codes": [
+      "306"
+    ]
+  },
+  "208011169": {
+    "sa2_name": "Brighton (Vic.)",
+    "median_area_m2": 642.0,
+    "mean_area_m2": 809.0,
+    "q25_area_m2": 372.0,
+    "q75_area_m2": 1027.0,
+    "p10_area_m2": 222.0,
+    "p90_area_m2": 1642.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2972.0,
+    "parcel_count": 11500,
+    "lga_codes": [
+      "306"
+    ]
+  },
+  "208011170": {
+    "sa2_name": "Brighton East",
+    "median_area_m2": 604.0,
+    "mean_area_m2": 548.0,
+    "q25_area_m2": 320.0,
+    "q75_area_m2": 675.0,
+    "p10_area_m2": 217.0,
+    "p90_area_m2": 800.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2920.0,
+    "parcel_count": 6685,
+    "lga_codes": [
+      "306"
+    ]
+  },
+  "208011171": {
+    "sa2_name": "Highett (West) - Cheltenham",
+    "median_area_m2": 584.0,
+    "mean_area_m2": 623.0,
+    "q25_area_m2": 294.0,
+    "q75_area_m2": 688.0,
+    "p10_area_m2": 190.0,
+    "p90_area_m2": 1234.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2927.0,
+    "parcel_count": 5627,
+    "lga_codes": [
+      "306",
+      "335"
+    ]
+  },
+  "208011172": {
+    "sa2_name": "Hampton",
+    "median_area_m2": 603.0,
+    "mean_area_m2": 629.0,
+    "q25_area_m2": 319.0,
+    "q75_area_m2": 754.0,
+    "p10_area_m2": 195.0,
+    "p90_area_m2": 1093.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2993.0,
+    "parcel_count": 8054,
+    "lga_codes": [
+      "306"
+    ]
+  },
+  "208011173": {
+    "sa2_name": "Sandringham - Black Rock",
+    "median_area_m2": 559.0,
+    "mean_area_m2": 626.0,
+    "q25_area_m2": 323.0,
+    "q75_area_m2": 774.0,
+    "p10_area_m2": 187.0,
+    "p90_area_m2": 1115.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2918.0,
+    "parcel_count": 7895,
+    "lga_codes": [
+      "306"
+    ]
+  },
+  "208021174": {
+    "sa2_name": "Bentleigh - McKinnon",
+    "median_area_m2": 587.0,
+    "mean_area_m2": 633.0,
+    "q25_area_m2": 318.0,
+    "q75_area_m2": 734.0,
+    "p10_area_m2": 213.0,
+    "p90_area_m2": 1249.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2917.0,
+    "parcel_count": 11198,
+    "lga_codes": [
+      "322"
+    ]
+  },
+  "208021176": {
+    "sa2_name": "Carnegie",
+    "median_area_m2": 714.0,
+    "mean_area_m2": 860.0,
+    "q25_area_m2": 414.0,
+    "q75_area_m2": 1077.0,
+    "p10_area_m2": 212.0,
+    "p90_area_m2": 1816.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2955.0,
+    "parcel_count": 11425,
+    "lga_codes": [
+      "322"
+    ]
+  },
+  "208021177": {
+    "sa2_name": "Caulfield - North",
+    "median_area_m2": 780.0,
+    "mean_area_m2": 885.0,
+    "q25_area_m2": 535.0,
+    "q75_area_m2": 1093.0,
+    "p10_area_m2": 285.0,
+    "p90_area_m2": 1574.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2868.0,
+    "parcel_count": 11452,
+    "lga_codes": [
+      "322"
+    ]
+  },
+  "208021178": {
+    "sa2_name": "Caulfield - South",
+    "median_area_m2": 581.0,
+    "mean_area_m2": 620.0,
+    "q25_area_m2": 332.0,
+    "q75_area_m2": 736.0,
+    "p10_area_m2": 230.0,
+    "p90_area_m2": 1125.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2973.0,
+    "parcel_count": 8609,
+    "lga_codes": [
+      "322"
+    ]
+  },
+  "208021179": {
+    "sa2_name": "Elsternwick",
+    "median_area_m2": 785.0,
+    "mean_area_m2": 942.0,
+    "q25_area_m2": 476.0,
+    "q75_area_m2": 1250.0,
+    "p10_area_m2": 253.0,
+    "p90_area_m2": 1830.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2981.0,
+    "parcel_count": 7094,
+    "lga_codes": [
+      "322"
+    ]
+  },
+  "208021180": {
+    "sa2_name": "Hughesdale",
+    "median_area_m2": 599.0,
+    "mean_area_m2": 657.0,
+    "q25_area_m2": 248.0,
+    "q75_area_m2": 758.0,
+    "p10_area_m2": 163.0,
+    "p90_area_m2": 1216.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2923.0,
+    "parcel_count": 3711,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "208021181": {
+    "sa2_name": "Murrumbeena",
+    "median_area_m2": 672.0,
+    "mean_area_m2": 694.0,
+    "q25_area_m2": 422.0,
+    "q75_area_m2": 864.0,
+    "p10_area_m2": 224.0,
+    "p90_area_m2": 1208.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2744.0,
+    "parcel_count": 5186,
+    "lga_codes": [
+      "322"
+    ]
+  },
+  "208021182": {
+    "sa2_name": "Ormond - Glen Huntly",
+    "median_area_m2": 736.0,
+    "mean_area_m2": 826.0,
+    "q25_area_m2": 405.0,
+    "q75_area_m2": 1030.0,
+    "p10_area_m2": 208.0,
+    "p90_area_m2": 1457.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2977.0,
+    "parcel_count": 7955,
+    "lga_codes": [
+      "322"
+    ]
+  },
+  "208021426": {
+    "sa2_name": "Bentleigh East - North",
+    "median_area_m2": 555.0,
+    "mean_area_m2": 500.0,
+    "q25_area_m2": 300.0,
+    "q75_area_m2": 632.0,
+    "p10_area_m2": 210.0,
+    "p90_area_m2": 736.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2946.0,
+    "parcel_count": 6680,
+    "lga_codes": [
+      "322"
+    ]
+  },
+  "208021427": {
+    "sa2_name": "Bentleigh East - South",
+    "median_area_m2": 580.0,
+    "mean_area_m2": 531.0,
+    "q25_area_m2": 311.0,
+    "q75_area_m2": 629.0,
+    "p10_area_m2": 227.0,
+    "p90_area_m2": 744.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2479.0,
+    "parcel_count": 5922,
+    "lga_codes": [
+      "322"
+    ]
+  },
+  "208031183": {
+    "sa2_name": "Aspendale Gardens - Waterways",
+    "median_area_m2": 580.0,
+    "mean_area_m2": 600.0,
+    "q25_area_m2": 531.0,
+    "q75_area_m2": 650.0,
+    "p10_area_m2": 348.0,
+    "p90_area_m2": 753.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2998.0,
+    "parcel_count": 2909,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "208031184": {
+    "sa2_name": "Braeside",
+    "median_area_m2": 850.0,
+    "mean_area_m2": 929.0,
+    "q25_area_m2": 334.0,
+    "q75_area_m2": 1245.0,
+    "p10_area_m2": 225.0,
+    "p90_area_m2": 2009.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2985.0,
+    "parcel_count": 971,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "208031185": {
+    "sa2_name": "Carrum - Patterson Lakes",
+    "median_area_m2": 530.0,
+    "mean_area_m2": 541.0,
+    "q25_area_m2": 261.0,
+    "q75_area_m2": 674.0,
+    "p10_area_m2": 182.0,
+    "p90_area_m2": 843.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2975.0,
+    "parcel_count": 5239,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "208031186": {
+    "sa2_name": "Chelsea - Bonbeach",
+    "median_area_m2": 402.0,
+    "mean_area_m2": 613.0,
+    "q25_area_m2": 240.0,
+    "q75_area_m2": 718.0,
+    "p10_area_m2": 179.0,
+    "p90_area_m2": 1442.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2991.0,
+    "parcel_count": 7697,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "208031187": {
+    "sa2_name": "Chelsea Heights",
+    "median_area_m2": 544.0,
+    "mean_area_m2": 541.0,
+    "q25_area_m2": 531.0,
+    "q75_area_m2": 609.0,
+    "p10_area_m2": 257.0,
+    "p90_area_m2": 651.0,
+    "min_area_m2": 112.0,
+    "max_area_m2": 2870.0,
+    "parcel_count": 2026,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "208031188": {
+    "sa2_name": "Highett (East) - Cheltenham",
+    "median_area_m2": 567.0,
+    "mean_area_m2": 701.0,
+    "q25_area_m2": 293.0,
+    "q75_area_m2": 762.0,
+    "p10_area_m2": 182.0,
+    "p90_area_m2": 1535.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2984.0,
+    "parcel_count": 12362,
+    "lga_codes": [
+      "306",
+      "335"
+    ]
+  },
+  "208031189": {
+    "sa2_name": "Edithvale - Aspendale",
+    "median_area_m2": 534.0,
+    "mean_area_m2": 578.0,
+    "q25_area_m2": 286.0,
+    "q75_area_m2": 693.0,
+    "p10_area_m2": 193.0,
+    "p90_area_m2": 861.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2895.0,
+    "parcel_count": 5821,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "208031190": {
+    "sa2_name": "Mentone",
+    "median_area_m2": 597.0,
+    "mean_area_m2": 722.0,
+    "q25_area_m2": 287.0,
+    "q75_area_m2": 828.0,
+    "p10_area_m2": 167.0,
+    "p90_area_m2": 1588.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2935.0,
+    "parcel_count": 7020,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "208031191": {
+    "sa2_name": "Moorabbin - Heatherton",
+    "median_area_m2": 588.0,
+    "mean_area_m2": 667.0,
+    "q25_area_m2": 313.0,
+    "q75_area_m2": 736.0,
+    "p10_area_m2": 216.0,
+    "p90_area_m2": 1379.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2929.0,
+    "parcel_count": 5071,
+    "lga_codes": [
+      "306",
+      "335"
+    ]
+  },
+  "208031193": {
+    "sa2_name": "Mordialloc - Parkdale",
+    "median_area_m2": 536.0,
+    "mean_area_m2": 582.0,
+    "q25_area_m2": 266.0,
+    "q75_area_m2": 699.0,
+    "p10_area_m2": 161.0,
+    "p90_area_m2": 1051.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2992.0,
+    "parcel_count": 9993,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "208041194": {
+    "sa2_name": "Malvern - Glen Iris",
+    "median_area_m2": 763.0,
+    "mean_area_m2": 847.0,
+    "q25_area_m2": 453.0,
+    "q75_area_m2": 1066.0,
+    "p10_area_m2": 254.0,
+    "p90_area_m2": 1487.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2942.0,
+    "parcel_count": 12180,
+    "lga_codes": [
+      "307",
+      "363"
+    ]
+  },
+  "208041195": {
+    "sa2_name": "Malvern East",
+    "median_area_m2": 672.0,
+    "mean_area_m2": 746.0,
+    "q25_area_m2": 421.0,
+    "q75_area_m2": 899.0,
+    "p10_area_m2": 235.0,
+    "p90_area_m2": 1378.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2883.0,
+    "parcel_count": 10521,
+    "lga_codes": [
+      "307",
+      "363"
+    ]
+  },
+  "209011196": {
+    "sa2_name": "Bundoora - East",
+    "median_area_m2": 605.0,
+    "mean_area_m2": 618.0,
+    "q25_area_m2": 367.0,
+    "q75_area_m2": 749.0,
+    "p10_area_m2": 195.0,
+    "p90_area_m2": 990.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2727.0,
+    "parcel_count": 1456,
+    "lga_codes": [
+      "303"
+    ]
+  },
+  "209011197": {
+    "sa2_name": "Greensborough",
+    "median_area_m2": 653.0,
+    "mean_area_m2": 671.0,
+    "q25_area_m2": 449.0,
+    "q75_area_m2": 812.0,
+    "p10_area_m2": 217.0,
+    "p90_area_m2": 1012.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2948.0,
+    "parcel_count": 8642,
+    "lga_codes": [
+      "303"
+    ]
+  },
+  "209011198": {
+    "sa2_name": "Heidelberg - Rosanna",
+    "median_area_m2": 634.0,
+    "mean_area_m2": 815.0,
+    "q25_area_m2": 270.0,
+    "q75_area_m2": 958.0,
+    "p10_area_m2": 172.0,
+    "p90_area_m2": 2032.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2988.0,
+    "parcel_count": 5586,
+    "lga_codes": [
+      "303"
+    ]
+  },
+  "209011199": {
+    "sa2_name": "Heidelberg West",
+    "median_area_m2": 388.0,
+    "mean_area_m2": 467.0,
+    "q25_area_m2": 209.0,
+    "q75_area_m2": 624.0,
+    "p10_area_m2": 147.0,
+    "p90_area_m2": 737.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2963.0,
+    "parcel_count": 6214,
+    "lga_codes": [
+      "303"
+    ]
+  },
+  "209011200": {
+    "sa2_name": "Ivanhoe",
+    "median_area_m2": 596.0,
+    "mean_area_m2": 732.0,
+    "q25_area_m2": 252.0,
+    "q75_area_m2": 1047.0,
+    "p10_area_m2": 163.0,
+    "p90_area_m2": 1513.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2837.0,
+    "parcel_count": 3438,
+    "lga_codes": [
+      "303",
+      "316"
+    ]
+  },
+  "209011201": {
+    "sa2_name": "Ivanhoe East - Eaglemont",
+    "median_area_m2": 790.0,
+    "mean_area_m2": 868.0,
+    "q25_area_m2": 476.0,
+    "q75_area_m2": 1115.0,
+    "p10_area_m2": 234.0,
+    "p90_area_m2": 1520.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2952.0,
+    "parcel_count": 2411,
+    "lga_codes": [
+      "303"
+    ]
+  },
+  "209011202": {
+    "sa2_name": "Montmorency - Briar Hill",
+    "median_area_m2": 649.0,
+    "mean_area_m2": 637.0,
+    "q25_area_m2": 302.0,
+    "q75_area_m2": 854.0,
+    "p10_area_m2": 191.0,
+    "p90_area_m2": 1055.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2971.0,
+    "parcel_count": 7046,
+    "lga_codes": [
+      "303"
+    ]
+  },
+  "209011203": {
+    "sa2_name": "Viewbank - Yallambie",
+    "median_area_m2": 590.0,
+    "mean_area_m2": 578.0,
+    "q25_area_m2": 460.0,
+    "q75_area_m2": 682.0,
+    "p10_area_m2": 227.0,
+    "p90_area_m2": 793.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2958.0,
+    "parcel_count": 6982,
+    "lga_codes": [
+      "303"
+    ]
+  },
+  "209011204": {
+    "sa2_name": "Watsonia",
+    "median_area_m2": 580.0,
+    "mean_area_m2": 553.0,
+    "q25_area_m2": 455.0,
+    "q75_area_m2": 660.0,
+    "p10_area_m2": 223.0,
+    "p90_area_m2": 745.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2693.0,
+    "parcel_count": 3577,
+    "lga_codes": [
+      "303"
+    ]
+  },
+  "209021205": {
+    "sa2_name": "Kingsbury",
+    "median_area_m2": 491.0,
+    "mean_area_m2": 509.0,
+    "q25_area_m2": 309.0,
+    "q75_area_m2": 584.0,
+    "p10_area_m2": 165.0,
+    "p90_area_m2": 766.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2910.0,
+    "parcel_count": 3524,
+    "lga_codes": [
+      "316"
+    ]
+  },
+  "209021428": {
+    "sa2_name": "Preston - East",
+    "median_area_m2": 501.0,
+    "mean_area_m2": 679.0,
+    "q25_area_m2": 302.0,
+    "q75_area_m2": 696.0,
+    "p10_area_m2": 171.0,
+    "p90_area_m2": 1551.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2950.0,
+    "parcel_count": 10473,
+    "lga_codes": [
+      "316"
+    ]
+  },
+  "209021429": {
+    "sa2_name": "Preston - West",
+    "median_area_m2": 484.0,
+    "mean_area_m2": 510.0,
+    "q25_area_m2": 269.0,
+    "q75_area_m2": 589.0,
+    "p10_area_m2": 157.0,
+    "p90_area_m2": 784.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2827.0,
+    "parcel_count": 5551,
+    "lga_codes": [
+      "316"
+    ]
+  },
+  "209021523": {
+    "sa2_name": "Reservoir - North East",
+    "median_area_m2": 316.0,
+    "mean_area_m2": 441.0,
+    "q25_area_m2": 179.0,
+    "q75_area_m2": 643.0,
+    "p10_area_m2": 137.0,
+    "p90_area_m2": 798.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2844.0,
+    "parcel_count": 7646,
+    "lga_codes": [
+      "316"
+    ]
+  },
+  "209021524": {
+    "sa2_name": "Reservoir - North West",
+    "median_area_m2": 767.0,
+    "mean_area_m2": 692.0,
+    "q25_area_m2": 534.0,
+    "q75_area_m2": 873.0,
+    "p10_area_m2": 221.0,
+    "p90_area_m2": 952.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2891.0,
+    "parcel_count": 4071,
+    "lga_codes": [
+      "316"
+    ]
+  },
+  "209021525": {
+    "sa2_name": "Reservoir - South East",
+    "median_area_m2": 481.0,
+    "mean_area_m2": 453.0,
+    "q25_area_m2": 180.0,
+    "q75_area_m2": 650.0,
+    "p10_area_m2": 132.0,
+    "p90_area_m2": 729.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2903.0,
+    "parcel_count": 5684,
+    "lga_codes": [
+      "316"
+    ]
+  },
+  "209021526": {
+    "sa2_name": "Reservoir - South West",
+    "median_area_m2": 473.0,
+    "mean_area_m2": 473.0,
+    "q25_area_m2": 185.0,
+    "q75_area_m2": 613.0,
+    "p10_area_m2": 134.0,
+    "p90_area_m2": 836.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2972.0,
+    "parcel_count": 7335,
+    "lga_codes": [
+      "316"
+    ]
+  },
+  "209031209": {
+    "sa2_name": "Eltham",
+    "median_area_m2": 857.0,
+    "mean_area_m2": 975.0,
+    "q25_area_m2": 536.0,
+    "q75_area_m2": 1301.0,
+    "p10_area_m2": 247.0,
+    "p90_area_m2": 1920.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2993.0,
+    "parcel_count": 3398,
+    "lga_codes": [
+      "356"
+    ]
+  },
+  "209031210": {
+    "sa2_name": "Hurstbridge",
+    "median_area_m2": 967.0,
+    "mean_area_m2": 1088.0,
+    "q25_area_m2": 736.0,
+    "q75_area_m2": 1305.0,
+    "p10_area_m2": 471.0,
+    "p90_area_m2": 1981.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2998.0,
+    "parcel_count": 1089,
+    "lga_codes": [
+      "356"
+    ]
+  },
+  "209031212": {
+    "sa2_name": "Panton Hill - St Andrews",
+    "median_area_m2": 1483.0,
+    "mean_area_m2": 1549.0,
+    "q25_area_m2": 1011.0,
+    "q75_area_m2": 2023.0,
+    "p10_area_m2": 619.0,
+    "p90_area_m2": 2612.0,
+    "min_area_m2": 108.0,
+    "max_area_m2": 2958.0,
+    "parcel_count": 277,
+    "lga_codes": [
+      "356"
+    ]
+  },
+  "209031213": {
+    "sa2_name": "Plenty - Yarrambat",
+    "median_area_m2": 709.0,
+    "mean_area_m2": 788.0,
+    "q25_area_m2": 616.0,
+    "q75_area_m2": 1000.0,
+    "p10_area_m2": 533.0,
+    "p90_area_m2": 1084.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2888.0,
+    "parcel_count": 2397,
+    "lga_codes": [
+      "356"
+    ]
+  },
+  "209031214": {
+    "sa2_name": "Research - North Warrandyte",
+    "median_area_m2": 1155.0,
+    "mean_area_m2": 1282.0,
+    "q25_area_m2": 806.0,
+    "q75_area_m2": 1778.0,
+    "p10_area_m2": 332.0,
+    "p90_area_m2": 2305.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 1135,
+    "lga_codes": [
+      "356"
+    ]
+  },
+  "209031215": {
+    "sa2_name": "Wattle Glen - Diamond Creek",
+    "median_area_m2": 789.0,
+    "mean_area_m2": 813.0,
+    "q25_area_m2": 488.0,
+    "q75_area_m2": 1012.0,
+    "p10_area_m2": 261.0,
+    "p90_area_m2": 1326.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2994.0,
+    "parcel_count": 1517,
+    "lga_codes": [
+      "356"
+    ]
+  },
+  "209041216": {
+    "sa2_name": "Bundoora - North",
+    "median_area_m2": 548.0,
+    "mean_area_m2": 607.0,
+    "q25_area_m2": 269.0,
+    "q75_area_m2": 648.0,
+    "p10_area_m2": 175.0,
+    "p90_area_m2": 796.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 2572,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041217": {
+    "sa2_name": "Bundoora - West",
+    "median_area_m2": 541.0,
+    "mean_area_m2": 565.0,
+    "q25_area_m2": 402.0,
+    "q75_area_m2": 593.0,
+    "p10_area_m2": 189.0,
+    "p90_area_m2": 709.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2941.0,
+    "parcel_count": 2811,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041220": {
+    "sa2_name": "Mill Park - North",
+    "median_area_m2": 604.0,
+    "mean_area_m2": 597.0,
+    "q25_area_m2": 540.0,
+    "q75_area_m2": 654.0,
+    "p10_area_m2": 279.0,
+    "p90_area_m2": 746.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2780.0,
+    "parcel_count": 6449,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041221": {
+    "sa2_name": "Mill Park - South",
+    "median_area_m2": 601.0,
+    "mean_area_m2": 580.0,
+    "q25_area_m2": 540.0,
+    "q75_area_m2": 646.0,
+    "p10_area_m2": 320.0,
+    "p90_area_m2": 721.0,
+    "min_area_m2": 103.0,
+    "max_area_m2": 2815.0,
+    "parcel_count": 4350,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041223": {
+    "sa2_name": "Thomastown",
+    "median_area_m2": 542.0,
+    "mean_area_m2": 585.0,
+    "q25_area_m2": 398.0,
+    "q75_area_m2": 651.0,
+    "p10_area_m2": 177.0,
+    "p90_area_m2": 873.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 10458,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041224": {
+    "sa2_name": "Wallan",
+    "median_area_m2": 443.0,
+    "mean_area_m2": 463.0,
+    "q25_area_m2": 372.0,
+    "q75_area_m2": 542.0,
+    "p10_area_m2": 313.0,
+    "p90_area_m2": 639.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2992.0,
+    "parcel_count": 3616,
+    "lga_codes": [
+      "346"
+    ]
+  },
+  "209041225": {
+    "sa2_name": "Whittlesea",
+    "median_area_m2": 400.0,
+    "mean_area_m2": 499.0,
+    "q25_area_m2": 312.0,
+    "q75_area_m2": 576.0,
+    "p10_area_m2": 231.0,
+    "p90_area_m2": 812.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2986.0,
+    "parcel_count": 5275,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041431": {
+    "sa2_name": "Epping - East",
+    "median_area_m2": 546.0,
+    "mean_area_m2": 561.0,
+    "q25_area_m2": 394.0,
+    "q75_area_m2": 612.0,
+    "p10_area_m2": 221.0,
+    "p90_area_m2": 731.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2982.0,
+    "parcel_count": 4753,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041432": {
+    "sa2_name": "Epping - South",
+    "median_area_m2": 538.0,
+    "mean_area_m2": 563.0,
+    "q25_area_m2": 300.0,
+    "q75_area_m2": 612.0,
+    "p10_area_m2": 189.0,
+    "p90_area_m2": 823.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 3741,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041433": {
+    "sa2_name": "Epping (Vic.) - West",
+    "median_area_m2": 409.0,
+    "mean_area_m2": 475.0,
+    "q25_area_m2": 278.0,
+    "q75_area_m2": 515.0,
+    "p10_area_m2": 174.0,
+    "p90_area_m2": 662.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2986.0,
+    "parcel_count": 4424,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041435": {
+    "sa2_name": "South Morang - North",
+    "median_area_m2": 512.0,
+    "mean_area_m2": 523.0,
+    "q25_area_m2": 380.0,
+    "q75_area_m2": 619.0,
+    "p10_area_m2": 291.0,
+    "p90_area_m2": 720.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2933.0,
+    "parcel_count": 4351,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041436": {
+    "sa2_name": "South Morang - South",
+    "median_area_m2": 521.0,
+    "mean_area_m2": 508.0,
+    "q25_area_m2": 327.0,
+    "q75_area_m2": 613.0,
+    "p10_area_m2": 186.0,
+    "p90_area_m2": 715.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2998.0,
+    "parcel_count": 4522,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041437": {
+    "sa2_name": "Wollert",
+    "median_area_m2": 392.0,
+    "mean_area_m2": 390.0,
+    "q25_area_m2": 300.0,
+    "q75_area_m2": 448.0,
+    "p10_area_m2": 181.0,
+    "p90_area_m2": 520.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2939.0,
+    "parcel_count": 10271,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041527": {
+    "sa2_name": "Doreen - North",
+    "median_area_m2": 519.0,
+    "mean_area_m2": 611.0,
+    "q25_area_m2": 400.0,
+    "q75_area_m2": 712.0,
+    "p10_area_m2": 328.0,
+    "p90_area_m2": 915.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2972.0,
+    "parcel_count": 5767,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041528": {
+    "sa2_name": "Doreen - South",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 478.0,
+    "q25_area_m2": 379.0,
+    "q75_area_m2": 543.0,
+    "p10_area_m2": 294.0,
+    "p90_area_m2": 669.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2953.0,
+    "parcel_count": 4080,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041529": {
+    "sa2_name": "Lalor - East",
+    "median_area_m2": 536.0,
+    "mean_area_m2": 514.0,
+    "q25_area_m2": 332.0,
+    "q75_area_m2": 650.0,
+    "p10_area_m2": 172.0,
+    "p90_area_m2": 712.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2879.0,
+    "parcel_count": 4311,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041530": {
+    "sa2_name": "Lalor - West",
+    "median_area_m2": 534.0,
+    "mean_area_m2": 531.0,
+    "q25_area_m2": 482.0,
+    "q75_area_m2": 570.0,
+    "p10_area_m2": 257.0,
+    "p90_area_m2": 639.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2944.0,
+    "parcel_count": 4978,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041531": {
+    "sa2_name": "Mernda - North",
+    "median_area_m2": 425.0,
+    "mean_area_m2": 464.0,
+    "q25_area_m2": 346.0,
+    "q75_area_m2": 537.0,
+    "p10_area_m2": 225.0,
+    "p90_area_m2": 664.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2458.0,
+    "parcel_count": 3908,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "209041532": {
+    "sa2_name": "Mernda - South",
+    "median_area_m2": 424.0,
+    "mean_area_m2": 445.0,
+    "q25_area_m2": 350.0,
+    "q75_area_m2": 512.0,
+    "p10_area_m2": 293.0,
+    "p90_area_m2": 586.0,
+    "min_area_m2": 117.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 4582,
+    "lga_codes": [
+      "373"
+    ]
+  },
+  "210011226": {
+    "sa2_name": "Airport West",
+    "median_area_m2": 239.0,
+    "mean_area_m2": 353.0,
+    "q25_area_m2": 167.0,
+    "q75_area_m2": 325.0,
+    "p10_area_m2": 136.0,
+    "p90_area_m2": 697.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2940.0,
+    "parcel_count": 1798,
+    "lga_codes": [
+      "308",
+      "349"
+    ]
+  },
+  "210011228": {
+    "sa2_name": "Keilor",
+    "median_area_m2": 624.0,
+    "mean_area_m2": 721.0,
+    "q25_area_m2": 515.0,
+    "q75_area_m2": 779.0,
+    "p10_area_m2": 212.0,
+    "p90_area_m2": 1272.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 4885,
+    "lga_codes": [
+      "308",
+      "333",
+      "349"
+    ]
+  },
+  "210011230": {
+    "sa2_name": "Niddrie - Essendon West",
+    "median_area_m2": 381.0,
+    "mean_area_m2": 463.0,
+    "q25_area_m2": 240.0,
+    "q75_area_m2": 650.0,
+    "p10_area_m2": 162.0,
+    "p90_area_m2": 730.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2911.0,
+    "parcel_count": 3362,
+    "lga_codes": [
+      "349"
+    ]
+  },
+  "210011231": {
+    "sa2_name": "Strathmore",
+    "median_area_m2": 609.0,
+    "mean_area_m2": 607.0,
+    "q25_area_m2": 347.0,
+    "q75_area_m2": 697.0,
+    "p10_area_m2": 216.0,
+    "p90_area_m2": 836.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2998.0,
+    "parcel_count": 4069,
+    "lga_codes": [
+      "349",
+      "351"
+    ]
+  },
+  "210011533": {
+    "sa2_name": "Avondale Heights",
+    "median_area_m2": 267.0,
+    "mean_area_m2": 313.0,
+    "q25_area_m2": 182.0,
+    "q75_area_m2": 317.0,
+    "p10_area_m2": 142.0,
+    "p90_area_m2": 480.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2805.0,
+    "parcel_count": 841,
+    "lga_codes": [
+      "349"
+    ]
+  },
+  "210011534": {
+    "sa2_name": "Keilor East",
+    "median_area_m2": 289.0,
+    "mean_area_m2": 312.0,
+    "q25_area_m2": 191.0,
+    "q75_area_m2": 334.0,
+    "p10_area_m2": 134.0,
+    "p90_area_m2": 527.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2934.0,
+    "parcel_count": 1181,
+    "lga_codes": [
+      "349"
+    ]
+  },
+  "210031236": {
+    "sa2_name": "Coburg North",
+    "median_area_m2": 501.0,
+    "mean_area_m2": 530.0,
+    "q25_area_m2": 311.0,
+    "q75_area_m2": 610.0,
+    "p10_area_m2": 168.0,
+    "p90_area_m2": 793.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2954.0,
+    "parcel_count": 4609,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "210031237": {
+    "sa2_name": "Fawkner",
+    "median_area_m2": 585.0,
+    "mean_area_m2": 507.0,
+    "q25_area_m2": 275.0,
+    "q75_area_m2": 634.0,
+    "p10_area_m2": 162.0,
+    "p90_area_m2": 697.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2977.0,
+    "parcel_count": 5689,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "210031439": {
+    "sa2_name": "Gowanbrae",
+    "median_area_m2": 450.0,
+    "mean_area_m2": 422.0,
+    "q25_area_m2": 235.0,
+    "q75_area_m2": 571.0,
+    "p10_area_m2": 183.0,
+    "p90_area_m2": 690.0,
+    "min_area_m2": 106.0,
+    "max_area_m2": 2319.0,
+    "parcel_count": 1229,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "210031440": {
+    "sa2_name": "Hadfield",
+    "median_area_m2": 573.0,
+    "mean_area_m2": 451.0,
+    "q25_area_m2": 202.0,
+    "q75_area_m2": 613.0,
+    "p10_area_m2": 145.0,
+    "p90_area_m2": 697.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2582.0,
+    "parcel_count": 2761,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "210031535": {
+    "sa2_name": "Glenroy - East",
+    "median_area_m2": 326.0,
+    "mean_area_m2": 433.0,
+    "q25_area_m2": 179.0,
+    "q75_area_m2": 674.0,
+    "p10_area_m2": 140.0,
+    "p90_area_m2": 730.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2905.0,
+    "parcel_count": 6772,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "210031536": {
+    "sa2_name": "Glenroy - West",
+    "median_area_m2": 322.0,
+    "mean_area_m2": 523.0,
+    "q25_area_m2": 183.0,
+    "q75_area_m2": 663.0,
+    "p10_area_m2": 139.0,
+    "p90_area_m2": 1011.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2865.0,
+    "parcel_count": 4068,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "210031537": {
+    "sa2_name": "Oak Park",
+    "median_area_m2": 371.0,
+    "mean_area_m2": 454.0,
+    "q25_area_m2": 188.0,
+    "q75_area_m2": 697.0,
+    "p10_area_m2": 141.0,
+    "p90_area_m2": 822.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2785.0,
+    "parcel_count": 3746,
+    "lga_codes": [
+      "349",
+      "351"
+    ]
+  },
+  "210031538": {
+    "sa2_name": "Pascoe Vale",
+    "median_area_m2": 317.0,
+    "mean_area_m2": 456.0,
+    "q25_area_m2": 179.0,
+    "q75_area_m2": 603.0,
+    "p10_area_m2": 136.0,
+    "p90_area_m2": 845.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2927.0,
+    "parcel_count": 7925,
+    "lga_codes": [
+      "351"
+    ]
+  },
+  "210041240": {
+    "sa2_name": "Sunbury",
+    "median_area_m2": 685.0,
+    "mean_area_m2": 761.0,
+    "q25_area_m2": 575.0,
+    "q75_area_m2": 841.0,
+    "p10_area_m2": 392.0,
+    "p90_area_m2": 1249.0,
+    "min_area_m2": 105.0,
+    "max_area_m2": 2997.0,
+    "parcel_count": 3880,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210041539": {
+    "sa2_name": "Diggers Rest",
+    "median_area_m2": 439.0,
+    "mean_area_m2": 474.0,
+    "q25_area_m2": 350.0,
+    "q75_area_m2": 583.0,
+    "p10_area_m2": 256.0,
+    "p90_area_m2": 593.0,
+    "min_area_m2": 105.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 2807,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "210041540": {
+    "sa2_name": "Sunbury - South",
+    "median_area_m2": 544.0,
+    "mean_area_m2": 582.0,
+    "q25_area_m2": 330.0,
+    "q75_area_m2": 699.0,
+    "p10_area_m2": 210.0,
+    "p90_area_m2": 968.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2984.0,
+    "parcel_count": 7607,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210041541": {
+    "sa2_name": "Sunbury - West",
+    "median_area_m2": 650.0,
+    "mean_area_m2": 644.0,
+    "q25_area_m2": 585.0,
+    "q75_area_m2": 696.0,
+    "p10_area_m2": 332.0,
+    "p90_area_m2": 816.0,
+    "min_area_m2": 112.0,
+    "max_area_m2": 2705.0,
+    "parcel_count": 2243,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051242": {
+    "sa2_name": "Broadmeadows",
+    "median_area_m2": 218.0,
+    "mean_area_m2": 365.0,
+    "q25_area_m2": 155.0,
+    "q75_area_m2": 603.0,
+    "p10_area_m2": 128.0,
+    "p90_area_m2": 697.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2914.0,
+    "parcel_count": 2737,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051243": {
+    "sa2_name": "Campbellfield - Coolaroo",
+    "median_area_m2": 590.0,
+    "mean_area_m2": 789.0,
+    "q25_area_m2": 306.0,
+    "q75_area_m2": 1055.0,
+    "p10_area_m2": 173.0,
+    "p90_area_m2": 1800.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2978.0,
+    "parcel_count": 2322,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051245": {
+    "sa2_name": "Gladstone Park - Westmeadows",
+    "median_area_m2": 550.0,
+    "mean_area_m2": 548.0,
+    "q25_area_m2": 335.0,
+    "q75_area_m2": 637.0,
+    "p10_area_m2": 195.0,
+    "p90_area_m2": 789.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2996.0,
+    "parcel_count": 4053,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051246": {
+    "sa2_name": "Greenvale - Bulla",
+    "median_area_m2": 514.0,
+    "mean_area_m2": 640.0,
+    "q25_area_m2": 400.0,
+    "q75_area_m2": 765.0,
+    "p10_area_m2": 313.0,
+    "p90_area_m2": 1002.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2991.0,
+    "parcel_count": 8075,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051247": {
+    "sa2_name": "Meadow Heights",
+    "median_area_m2": 570.0,
+    "mean_area_m2": 541.0,
+    "q25_area_m2": 392.0,
+    "q75_area_m2": 645.0,
+    "p10_area_m2": 239.0,
+    "p90_area_m2": 736.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2899.0,
+    "parcel_count": 4843,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051248": {
+    "sa2_name": "Melbourne Airport",
+    "median_area_m2": 1129.0,
+    "mean_area_m2": 1276.0,
+    "q25_area_m2": 1055.0,
+    "q75_area_m2": 1300.0,
+    "p10_area_m2": 691.0,
+    "p90_area_m2": 2202.0,
+    "min_area_m2": 691.0,
+    "max_area_m2": 2202.0,
+    "parcel_count": 5,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051250": {
+    "sa2_name": "Tullamarine",
+    "median_area_m2": 534.0,
+    "mean_area_m2": 500.0,
+    "q25_area_m2": 212.0,
+    "q75_area_m2": 601.0,
+    "p10_area_m2": 157.0,
+    "p90_area_m2": 780.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2976.0,
+    "parcel_count": 3703,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051441": {
+    "sa2_name": "Craigieburn - Central",
+    "median_area_m2": 312.0,
+    "mean_area_m2": 385.0,
+    "q25_area_m2": 200.0,
+    "q75_area_m2": 489.0,
+    "p10_area_m2": 147.0,
+    "p90_area_m2": 675.0,
+    "min_area_m2": 109.0,
+    "max_area_m2": 2989.0,
+    "parcel_count": 531,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051442": {
+    "sa2_name": "Craigieburn - North",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 467.0,
+    "q25_area_m2": 350.0,
+    "q75_area_m2": 571.0,
+    "p10_area_m2": 262.0,
+    "p90_area_m2": 678.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2896.0,
+    "parcel_count": 3341,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051443": {
+    "sa2_name": "Craigieburn - South",
+    "median_area_m2": 436.0,
+    "mean_area_m2": 467.0,
+    "q25_area_m2": 325.0,
+    "q75_area_m2": 513.0,
+    "p10_area_m2": 200.0,
+    "p90_area_m2": 669.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2967.0,
+    "parcel_count": 4816,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051445": {
+    "sa2_name": "Mickleham - Yuroke",
+    "median_area_m2": 392.0,
+    "mean_area_m2": 414.0,
+    "q25_area_m2": 294.0,
+    "q75_area_m2": 466.0,
+    "p10_area_m2": 238.0,
+    "p90_area_m2": 558.0,
+    "min_area_m2": 111.0,
+    "max_area_m2": 2984.0,
+    "parcel_count": 11103,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051542": {
+    "sa2_name": "Craigieburn - North West",
+    "median_area_m2": 350.0,
+    "mean_area_m2": 361.0,
+    "q25_area_m2": 269.0,
+    "q75_area_m2": 415.0,
+    "p10_area_m2": 212.0,
+    "p90_area_m2": 499.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2592.0,
+    "parcel_count": 3128,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051543": {
+    "sa2_name": "Craigieburn - West",
+    "median_area_m2": 366.0,
+    "mean_area_m2": 401.0,
+    "q25_area_m2": 262.0,
+    "q75_area_m2": 448.0,
+    "p10_area_m2": 168.0,
+    "p90_area_m2": 572.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2976.0,
+    "parcel_count": 4109,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "210051544": {
+    "sa2_name": "Roxburgh Park (South) - Somerton",
+    "median_area_m2": 539.0,
+    "mean_area_m2": 618.0,
+    "q25_area_m2": 432.0,
+    "q75_area_m2": 633.0,
+    "p10_area_m2": 300.0,
+    "p90_area_m2": 900.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 3457,
+    "lga_codes": [
+      "333",
+      "373"
+    ]
+  },
+  "210051545": {
+    "sa2_name": "Roxburgh Park - North",
+    "median_area_m2": 476.0,
+    "mean_area_m2": 456.0,
+    "q25_area_m2": 383.0,
+    "q75_area_m2": 537.0,
+    "p10_area_m2": 245.0,
+    "p90_area_m2": 595.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 4096,
+    "lga_codes": [
+      "333"
+    ]
+  },
+  "211011251": {
+    "sa2_name": "Bayswater",
+    "median_area_m2": 720.0,
+    "mean_area_m2": 662.0,
+    "q25_area_m2": 278.0,
+    "q75_area_m2": 831.0,
+    "p10_area_m2": 187.0,
+    "p90_area_m2": 1101.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2974.0,
+    "parcel_count": 7543,
+    "lga_codes": [
+      "336"
+    ]
+  },
+  "211011254": {
+    "sa2_name": "Knoxfield - Scoresby",
+    "median_area_m2": 666.0,
+    "mean_area_m2": 621.0,
+    "q25_area_m2": 347.0,
+    "q75_area_m2": 741.0,
+    "p10_area_m2": 220.0,
+    "p90_area_m2": 975.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2997.0,
+    "parcel_count": 7044,
+    "lga_codes": [
+      "336"
+    ]
+  },
+  "211011255": {
+    "sa2_name": "Lysterfield",
+    "median_area_m2": 738.0,
+    "mean_area_m2": 964.0,
+    "q25_area_m2": 650.0,
+    "q75_area_m2": 1317.0,
+    "p10_area_m2": 601.0,
+    "p90_area_m2": 1687.0,
+    "min_area_m2": 119.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 2132,
+    "lga_codes": [
+      "336",
+      "377"
+    ]
+  },
+  "211011256": {
+    "sa2_name": "Rowville - Central",
+    "median_area_m2": 720.0,
+    "mean_area_m2": 671.0,
+    "q25_area_m2": 627.0,
+    "q75_area_m2": 759.0,
+    "p10_area_m2": 235.0,
+    "p90_area_m2": 865.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2976.0,
+    "parcel_count": 5926,
+    "lga_codes": [
+      "336"
+    ]
+  },
+  "211011257": {
+    "sa2_name": "Rowville - North",
+    "median_area_m2": 665.0,
+    "mean_area_m2": 686.0,
+    "q25_area_m2": 597.0,
+    "q75_area_m2": 739.0,
+    "p10_area_m2": 366.0,
+    "p90_area_m2": 870.0,
+    "min_area_m2": 104.0,
+    "max_area_m2": 2989.0,
+    "parcel_count": 2829,
+    "lga_codes": [
+      "336"
+    ]
+  },
+  "211011258": {
+    "sa2_name": "Rowville - South",
+    "median_area_m2": 657.0,
+    "mean_area_m2": 688.0,
+    "q25_area_m2": 550.0,
+    "q75_area_m2": 742.0,
+    "p10_area_m2": 399.0,
+    "p90_area_m2": 953.0,
+    "min_area_m2": 110.0,
+    "max_area_m2": 2893.0,
+    "parcel_count": 3680,
+    "lga_codes": [
+      "336",
+      "348"
+    ]
+  },
+  "211011259": {
+    "sa2_name": "Wantirna",
+    "median_area_m2": 686.0,
+    "mean_area_m2": 657.0,
+    "q25_area_m2": 539.0,
+    "q75_area_m2": 754.0,
+    "p10_area_m2": 265.0,
+    "p90_area_m2": 864.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2891.0,
+    "parcel_count": 5370,
+    "lga_codes": [
+      "336"
+    ]
+  },
+  "211011260": {
+    "sa2_name": "Wantirna South",
+    "median_area_m2": 721.0,
+    "mean_area_m2": 676.0,
+    "q25_area_m2": 600.0,
+    "q75_area_m2": 765.0,
+    "p10_area_m2": 242.0,
+    "p90_area_m2": 854.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2969.0,
+    "parcel_count": 6513,
+    "lga_codes": [
+      "336",
+      "348"
+    ]
+  },
+  "211011446": {
+    "sa2_name": "Boronia",
+    "median_area_m2": 721.0,
+    "mean_area_m2": 648.0,
+    "q25_area_m2": 289.0,
+    "q75_area_m2": 840.0,
+    "p10_area_m2": 193.0,
+    "p90_area_m2": 1048.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2985.0,
+    "parcel_count": 11267,
+    "lga_codes": [
+      "336"
+    ]
+  },
+  "211011447": {
+    "sa2_name": "Ferntree Gully - North",
+    "median_area_m2": 725.0,
+    "mean_area_m2": 708.0,
+    "q25_area_m2": 336.0,
+    "q75_area_m2": 954.0,
+    "p10_area_m2": 208.0,
+    "p90_area_m2": 1167.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2980.0,
+    "parcel_count": 6381,
+    "lga_codes": [
+      "336"
+    ]
+  },
+  "211011448": {
+    "sa2_name": "Ferntree Gully (South) - Upper Ferntree Gully",
+    "median_area_m2": 726.0,
+    "mean_area_m2": 740.0,
+    "q25_area_m2": 599.0,
+    "q75_area_m2": 845.0,
+    "p10_area_m2": 235.0,
+    "p90_area_m2": 1073.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2986.0,
+    "parcel_count": 6597,
+    "lga_codes": [
+      "336"
+    ]
+  },
+  "211011449": {
+    "sa2_name": "The Basin",
+    "median_area_m2": 995.0,
+    "mean_area_m2": 985.0,
+    "q25_area_m2": 736.0,
+    "q75_area_m2": 1069.0,
+    "p10_area_m2": 538.0,
+    "p90_area_m2": 1533.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2996.0,
+    "parcel_count": 1703,
+    "lga_codes": [
+      "336"
+    ]
+  },
+  "211021261": {
+    "sa2_name": "Donvale - Park Orchards",
+    "median_area_m2": 688.0,
+    "mean_area_m2": 843.0,
+    "q25_area_m2": 326.0,
+    "q75_area_m2": 920.0,
+    "p10_area_m2": 190.0,
+    "p90_area_m2": 2044.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2997.0,
+    "parcel_count": 4462,
+    "lga_codes": [
+      "340",
+      "372"
+    ]
+  },
+  "211021262": {
+    "sa2_name": "Warrandyte - Wonga Park",
+    "median_area_m2": 1031.0,
+    "mean_area_m2": 1196.0,
+    "q25_area_m2": 839.0,
+    "q75_area_m2": 1460.0,
+    "p10_area_m2": 621.0,
+    "p90_area_m2": 2029.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 1967,
+    "lga_codes": [
+      "340",
+      "356",
+      "377"
+    ]
+  },
+  "211031263": {
+    "sa2_name": "Bayswater North",
+    "median_area_m2": 790.0,
+    "mean_area_m2": 694.0,
+    "q25_area_m2": 301.0,
+    "q75_area_m2": 898.0,
+    "p10_area_m2": 186.0,
+    "p90_area_m2": 1063.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2990.0,
+    "parcel_count": 5416,
+    "lga_codes": [
+      "336",
+      "342"
+    ]
+  },
+  "211031265": {
+    "sa2_name": "Croydon Hills - Warranwood",
+    "median_area_m2": 748.0,
+    "mean_area_m2": 797.0,
+    "q25_area_m2": 643.0,
+    "q75_area_m2": 903.0,
+    "p10_area_m2": 306.0,
+    "p90_area_m2": 1179.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2976.0,
+    "parcel_count": 6611,
+    "lga_codes": [
+      "342"
+    ]
+  },
+  "211031266": {
+    "sa2_name": "Ringwood",
+    "median_area_m2": 613.0,
+    "mean_area_m2": 623.0,
+    "q25_area_m2": 247.0,
+    "q75_area_m2": 802.0,
+    "p10_area_m2": 159.0,
+    "p90_area_m2": 1293.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2951.0,
+    "parcel_count": 9244,
+    "lga_codes": [
+      "336",
+      "342"
+    ]
+  },
+  "211031267": {
+    "sa2_name": "Ringwood East",
+    "median_area_m2": 650.0,
+    "mean_area_m2": 604.0,
+    "q25_area_m2": 292.0,
+    "q75_area_m2": 835.0,
+    "p10_area_m2": 192.0,
+    "p90_area_m2": 975.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2982.0,
+    "parcel_count": 9207,
+    "lga_codes": [
+      "342"
+    ]
+  },
+  "211031268": {
+    "sa2_name": "Ringwood North",
+    "median_area_m2": 762.0,
+    "mean_area_m2": 773.0,
+    "q25_area_m2": 650.0,
+    "q75_area_m2": 879.0,
+    "p10_area_m2": 332.0,
+    "p90_area_m2": 1091.0,
+    "min_area_m2": 105.0,
+    "max_area_m2": 2993.0,
+    "parcel_count": 3690,
+    "lga_codes": [
+      "342"
+    ]
+  },
+  "211031450": {
+    "sa2_name": "Croydon - East",
+    "median_area_m2": 434.0,
+    "mean_area_m2": 616.0,
+    "q25_area_m2": 254.0,
+    "q75_area_m2": 871.0,
+    "p10_area_m2": 185.0,
+    "p90_area_m2": 1137.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 8162,
+    "lga_codes": [
+      "342"
+    ]
+  },
+  "211031451": {
+    "sa2_name": "Croydon - West",
+    "median_area_m2": 514.0,
+    "mean_area_m2": 643.0,
+    "q25_area_m2": 273.0,
+    "q75_area_m2": 867.0,
+    "p10_area_m2": 186.0,
+    "p90_area_m2": 1126.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 6273,
+    "lga_codes": [
+      "342"
+    ]
+  },
+  "211031452": {
+    "sa2_name": "Croydon South",
+    "median_area_m2": 648.0,
+    "mean_area_m2": 676.0,
+    "q25_area_m2": 384.0,
+    "q75_area_m2": 873.0,
+    "p10_area_m2": 224.0,
+    "p90_area_m2": 1007.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2923.0,
+    "parcel_count": 2225,
+    "lga_codes": [
+      "342"
+    ]
+  },
+  "211041269": {
+    "sa2_name": "Forest Hill",
+    "median_area_m2": 585.0,
+    "mean_area_m2": 541.0,
+    "q25_area_m2": 312.0,
+    "q75_area_m2": 646.0,
+    "p10_area_m2": 201.0,
+    "p90_area_m2": 762.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2875.0,
+    "parcel_count": 4610,
+    "lga_codes": [
+      "372"
+    ]
+  },
+  "211041270": {
+    "sa2_name": "Mitcham (Vic.)",
+    "median_area_m2": 537.0,
+    "mean_area_m2": 576.0,
+    "q25_area_m2": 269.0,
+    "q75_area_m2": 703.0,
+    "p10_area_m2": 187.0,
+    "p90_area_m2": 996.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2876.0,
+    "parcel_count": 8015,
+    "lga_codes": [
+      "372"
+    ]
+  },
+  "211041271": {
+    "sa2_name": "Nunawading",
+    "median_area_m2": 588.0,
+    "mean_area_m2": 582.0,
+    "q25_area_m2": 272.0,
+    "q75_area_m2": 706.0,
+    "p10_area_m2": 174.0,
+    "p90_area_m2": 936.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2930.0,
+    "parcel_count": 5755,
+    "lga_codes": [
+      "340",
+      "372"
+    ]
+  },
+  "211041272": {
+    "sa2_name": "Vermont",
+    "median_area_m2": 592.0,
+    "mean_area_m2": 611.0,
+    "q25_area_m2": 403.0,
+    "q75_area_m2": 698.0,
+    "p10_area_m2": 239.0,
+    "p90_area_m2": 920.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2979.0,
+    "parcel_count": 4447,
+    "lga_codes": [
+      "342",
+      "372"
+    ]
+  },
+  "211041273": {
+    "sa2_name": "Vermont South",
+    "median_area_m2": 684.0,
+    "mean_area_m2": 718.0,
+    "q25_area_m2": 652.0,
+    "q75_area_m2": 792.0,
+    "p10_area_m2": 442.0,
+    "p90_area_m2": 870.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 4126,
+    "lga_codes": [
+      "372"
+    ]
+  },
+  "211051274": {
+    "sa2_name": "Belgrave - Selby",
+    "median_area_m2": 1183.0,
+    "mean_area_m2": 1351.0,
+    "q25_area_m2": 1011.0,
+    "q75_area_m2": 1683.0,
+    "p10_area_m2": 820.0,
+    "p90_area_m2": 2200.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 3299,
+    "lga_codes": [
+      "311",
+      "377"
+    ]
+  },
+  "211051275": {
+    "sa2_name": "Chirnside Park",
+    "median_area_m2": 463.0,
+    "mean_area_m2": 503.0,
+    "q25_area_m2": 305.0,
+    "q75_area_m2": 645.0,
+    "p10_area_m2": 193.0,
+    "p90_area_m2": 804.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2806.0,
+    "parcel_count": 2524,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "211051276": {
+    "sa2_name": "Healesville - Yarra Glen",
+    "median_area_m2": 806.0,
+    "mean_area_m2": 843.0,
+    "q25_area_m2": 500.0,
+    "q75_area_m2": 1012.0,
+    "p10_area_m2": 258.0,
+    "p90_area_m2": 1499.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2950.0,
+    "parcel_count": 1100,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "211051277": {
+    "sa2_name": "Kilsyth",
+    "median_area_m2": 511.0,
+    "mean_area_m2": 607.0,
+    "q25_area_m2": 264.0,
+    "q75_area_m2": 870.0,
+    "p10_area_m2": 171.0,
+    "p90_area_m2": 992.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2990.0,
+    "parcel_count": 4528,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "211051278": {
+    "sa2_name": "Lilydale - Coldstream",
+    "median_area_m2": 600.0,
+    "mean_area_m2": 624.0,
+    "q25_area_m2": 290.0,
+    "q75_area_m2": 758.0,
+    "p10_area_m2": 181.0,
+    "p90_area_m2": 1012.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 4733,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "211051279": {
+    "sa2_name": "Monbulk - Silvan",
+    "median_area_m2": 1125.0,
+    "mean_area_m2": 1232.0,
+    "q25_area_m2": 975.0,
+    "q75_area_m2": 1565.0,
+    "p10_area_m2": 325.0,
+    "p90_area_m2": 2067.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2982.0,
+    "parcel_count": 748,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "211051280": {
+    "sa2_name": "Montrose",
+    "median_area_m2": 939.0,
+    "mean_area_m2": 1060.0,
+    "q25_area_m2": 864.0,
+    "q75_area_m2": 1198.0,
+    "p10_area_m2": 462.0,
+    "p90_area_m2": 1804.0,
+    "min_area_m2": 119.0,
+    "max_area_m2": 2978.0,
+    "parcel_count": 2036,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "211051281": {
+    "sa2_name": "Mooroolbark",
+    "median_area_m2": 864.0,
+    "mean_area_m2": 743.0,
+    "q25_area_m2": 415.0,
+    "q75_area_m2": 894.0,
+    "p10_area_m2": 232.0,
+    "p90_area_m2": 1048.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2993.0,
+    "parcel_count": 9073,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "211051282": {
+    "sa2_name": "Mount Dandenong - Olinda",
+    "median_area_m2": 1375.0,
+    "mean_area_m2": 1496.0,
+    "q25_area_m2": 1017.0,
+    "q75_area_m2": 1982.0,
+    "p10_area_m2": 864.0,
+    "p90_area_m2": 2403.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 3475,
+    "lga_codes": [
+      "336",
+      "377"
+    ]
+  },
+  "211051283": {
+    "sa2_name": "Mount Evelyn",
+    "median_area_m2": 898.0,
+    "mean_area_m2": 999.0,
+    "q25_area_m2": 557.0,
+    "q75_area_m2": 1268.0,
+    "p10_area_m2": 273.0,
+    "p90_area_m2": 1963.0,
+    "min_area_m2": 104.0,
+    "max_area_m2": 2972.0,
+    "parcel_count": 1404,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "211051284": {
+    "sa2_name": "Upwey - Tecoma",
+    "median_area_m2": 1098.0,
+    "mean_area_m2": 1205.0,
+    "q25_area_m2": 979.0,
+    "q75_area_m2": 1409.0,
+    "p10_area_m2": 704.0,
+    "p90_area_m2": 1920.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2972.0,
+    "parcel_count": 3876,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "211051285": {
+    "sa2_name": "Wandin - Seville",
+    "median_area_m2": 963.0,
+    "mean_area_m2": 1049.0,
+    "q25_area_m2": 666.0,
+    "q75_area_m2": 1270.0,
+    "p10_area_m2": 441.0,
+    "p90_area_m2": 1906.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2981.0,
+    "parcel_count": 1072,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "211051286": {
+    "sa2_name": "Yarra Valley",
+    "median_area_m2": 1847.0,
+    "mean_area_m2": 1605.0,
+    "q25_area_m2": 1165.0,
+    "q75_area_m2": 2036.0,
+    "p10_area_m2": 247.0,
+    "p90_area_m2": 2369.0,
+    "min_area_m2": 115.0,
+    "max_area_m2": 2945.0,
+    "parcel_count": 37,
+    "lga_codes": [
+      "377"
+    ]
+  },
+  "212011289": {
+    "sa2_name": "Emerald - Cockatoo",
+    "median_area_m2": 1314.0,
+    "mean_area_m2": 1453.0,
+    "q25_area_m2": 1012.0,
+    "q75_area_m2": 2021.0,
+    "p10_area_m2": 753.0,
+    "p90_area_m2": 2385.0,
+    "min_area_m2": 104.0,
+    "max_area_m2": 2981.0,
+    "parcel_count": 2582,
+    "lga_codes": [
+      "311",
+      "312",
+      "377"
+    ]
+  },
+  "212011546": {
+    "sa2_name": "Beaconsfield - Officer",
+    "median_area_m2": 400.0,
+    "mean_area_m2": 465.0,
+    "q25_area_m2": 315.0,
+    "q75_area_m2": 512.0,
+    "p10_area_m2": 221.0,
+    "p90_area_m2": 700.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2993.0,
+    "parcel_count": 8692,
+    "lga_codes": [
+      "311",
+      "312"
+    ]
+  },
+  "212011547": {
+    "sa2_name": "Bunyip - Garfield",
+    "median_area_m2": 1389.0,
+    "mean_area_m2": 1429.0,
+    "q25_area_m2": 810.0,
+    "q75_area_m2": 2026.0,
+    "p10_area_m2": 376.0,
+    "p90_area_m2": 2428.0,
+    "min_area_m2": 111.0,
+    "max_area_m2": 2914.0,
+    "parcel_count": 354,
+    "lga_codes": [
+      "311"
+    ]
+  },
+  "212011548": {
+    "sa2_name": "Koo Wee Rup",
+    "median_area_m2": 573.0,
+    "mean_area_m2": 663.0,
+    "q25_area_m2": 400.0,
+    "q75_area_m2": 776.0,
+    "p10_area_m2": 225.0,
+    "p90_area_m2": 1017.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2991.0,
+    "parcel_count": 2173,
+    "lga_codes": [
+      "311"
+    ]
+  },
+  "212011549": {
+    "sa2_name": "Pakenham - North East",
+    "median_area_m2": 512.0,
+    "mean_area_m2": 537.0,
+    "q25_area_m2": 338.0,
+    "q75_area_m2": 641.0,
+    "p10_area_m2": 224.0,
+    "p90_area_m2": 820.0,
+    "min_area_m2": 110.0,
+    "max_area_m2": 2938.0,
+    "parcel_count": 4693,
+    "lga_codes": [
+      "311"
+    ]
+  },
+  "212011550": {
+    "sa2_name": "Pakenham - North West",
+    "median_area_m2": 447.0,
+    "mean_area_m2": 495.0,
+    "q25_area_m2": 350.0,
+    "q75_area_m2": 543.0,
+    "p10_area_m2": 264.0,
+    "p90_area_m2": 758.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2748.0,
+    "parcel_count": 3290,
+    "lga_codes": [
+      "311"
+    ]
+  },
+  "212011551": {
+    "sa2_name": "Pakenham - South East",
+    "median_area_m2": 414.0,
+    "mean_area_m2": 553.0,
+    "q25_area_m2": 216.0,
+    "q75_area_m2": 785.0,
+    "p10_area_m2": 144.0,
+    "p90_area_m2": 1012.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2931.0,
+    "parcel_count": 2848,
+    "lga_codes": [
+      "311"
+    ]
+  },
+  "212011552": {
+    "sa2_name": "Pakenham - South West",
+    "median_area_m2": 525.0,
+    "mean_area_m2": 560.0,
+    "q25_area_m2": 400.0,
+    "q75_area_m2": 678.0,
+    "p10_area_m2": 273.0,
+    "p90_area_m2": 841.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2995.0,
+    "parcel_count": 8807,
+    "lga_codes": [
+      "311"
+    ]
+  },
+  "212021293": {
+    "sa2_name": "Berwick - North",
+    "median_area_m2": 648.0,
+    "mean_area_m2": 631.0,
+    "q25_area_m2": 396.0,
+    "q75_area_m2": 788.0,
+    "p10_area_m2": 232.0,
+    "p90_area_m2": 948.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 9186,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212021295": {
+    "sa2_name": "Doveton",
+    "median_area_m2": 585.0,
+    "mean_area_m2": 514.0,
+    "q25_area_m2": 235.0,
+    "q75_area_m2": 654.0,
+    "p10_area_m2": 165.0,
+    "p90_area_m2": 766.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2975.0,
+    "parcel_count": 4862,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212021297": {
+    "sa2_name": "Hallam",
+    "median_area_m2": 650.0,
+    "mean_area_m2": 640.0,
+    "q25_area_m2": 376.0,
+    "q75_area_m2": 715.0,
+    "p10_area_m2": 196.0,
+    "p90_area_m2": 884.0,
+    "min_area_m2": 104.0,
+    "max_area_m2": 2997.0,
+    "parcel_count": 4741,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212021299": {
+    "sa2_name": "Narre Warren North",
+    "median_area_m2": 2000.0,
+    "mean_area_m2": 1631.0,
+    "q25_area_m2": 1000.0,
+    "q75_area_m2": 2024.0,
+    "p10_area_m2": 857.0,
+    "p90_area_m2": 2173.0,
+    "min_area_m2": 104.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 1231,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212021453": {
+    "sa2_name": "Endeavour Hills - North",
+    "median_area_m2": 656.0,
+    "mean_area_m2": 714.0,
+    "q25_area_m2": 609.0,
+    "q75_area_m2": 719.0,
+    "p10_area_m2": 378.0,
+    "p90_area_m2": 854.0,
+    "min_area_m2": 104.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 4113,
+    "lga_codes": [
+      "312",
+      "326"
+    ]
+  },
+  "212021454": {
+    "sa2_name": "Endeavour Hills - South",
+    "median_area_m2": 653.0,
+    "mean_area_m2": 636.0,
+    "q25_area_m2": 610.0,
+    "q75_area_m2": 691.0,
+    "p10_area_m2": 343.0,
+    "p90_area_m2": 770.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2990.0,
+    "parcel_count": 4885,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212021455": {
+    "sa2_name": "Narre Warren - North East",
+    "median_area_m2": 650.0,
+    "mean_area_m2": 621.0,
+    "q25_area_m2": 571.0,
+    "q75_area_m2": 675.0,
+    "p10_area_m2": 414.0,
+    "p90_area_m2": 751.0,
+    "min_area_m2": 108.0,
+    "max_area_m2": 2980.0,
+    "parcel_count": 4774,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212021456": {
+    "sa2_name": "Narre Warren - South West",
+    "median_area_m2": 645.0,
+    "mean_area_m2": 603.0,
+    "q25_area_m2": 387.0,
+    "q75_area_m2": 720.0,
+    "p10_area_m2": 210.0,
+    "p90_area_m2": 803.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2970.0,
+    "parcel_count": 6073,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212021553": {
+    "sa2_name": "Berwick - South East",
+    "median_area_m2": 607.0,
+    "mean_area_m2": 584.0,
+    "q25_area_m2": 448.0,
+    "q75_area_m2": 676.0,
+    "p10_area_m2": 294.0,
+    "p90_area_m2": 789.0,
+    "min_area_m2": 111.0,
+    "max_area_m2": 2967.0,
+    "parcel_count": 6572,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212021554": {
+    "sa2_name": "Berwick - South West",
+    "median_area_m2": 526.0,
+    "mean_area_m2": 512.0,
+    "q25_area_m2": 400.0,
+    "q75_area_m2": 626.0,
+    "p10_area_m2": 255.0,
+    "p90_area_m2": 692.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2854.0,
+    "parcel_count": 4455,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031300": {
+    "sa2_name": "Cranbourne",
+    "median_area_m2": 598.0,
+    "mean_area_m2": 571.0,
+    "q25_area_m2": 340.0,
+    "q75_area_m2": 662.0,
+    "p10_area_m2": 198.0,
+    "p90_area_m2": 801.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2897.0,
+    "parcel_count": 9040,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031303": {
+    "sa2_name": "Cranbourne South",
+    "median_area_m2": 441.0,
+    "mean_area_m2": 491.0,
+    "q25_area_m2": 341.0,
+    "q75_area_m2": 583.0,
+    "p10_area_m2": 230.0,
+    "p90_area_m2": 793.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2963.0,
+    "parcel_count": 7535,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031304": {
+    "sa2_name": "Cranbourne West",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 451.0,
+    "q25_area_m2": 350.0,
+    "q75_area_m2": 526.0,
+    "p10_area_m2": 192.0,
+    "p90_area_m2": 586.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2995.0,
+    "parcel_count": 8249,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031306": {
+    "sa2_name": "Lynbrook - Lyndhurst",
+    "median_area_m2": 571.0,
+    "mean_area_m2": 572.0,
+    "q25_area_m2": 439.0,
+    "q75_area_m2": 646.0,
+    "p10_area_m2": 326.0,
+    "p90_area_m2": 737.0,
+    "min_area_m2": 108.0,
+    "max_area_m2": 2952.0,
+    "parcel_count": 5598,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031308": {
+    "sa2_name": "Pearcedale - Tooradin",
+    "median_area_m2": 945.0,
+    "mean_area_m2": 923.0,
+    "q25_area_m2": 680.0,
+    "q75_area_m2": 1012.0,
+    "p10_area_m2": 538.0,
+    "p90_area_m2": 1215.0,
+    "min_area_m2": 104.0,
+    "max_area_m2": 2977.0,
+    "parcel_count": 2264,
+    "lga_codes": [
+      "312",
+      "380"
+    ]
+  },
+  "212031457": {
+    "sa2_name": "Narre Warren South - East",
+    "median_area_m2": 660.0,
+    "mean_area_m2": 699.0,
+    "q25_area_m2": 610.0,
+    "q75_area_m2": 727.0,
+    "p10_area_m2": 580.0,
+    "p90_area_m2": 833.0,
+    "min_area_m2": 141.0,
+    "max_area_m2": 2901.0,
+    "parcel_count": 3741,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031458": {
+    "sa2_name": "Narre Warren South - West",
+    "median_area_m2": 590.0,
+    "mean_area_m2": 587.0,
+    "q25_area_m2": 525.0,
+    "q75_area_m2": 650.0,
+    "p10_area_m2": 450.0,
+    "p90_area_m2": 702.0,
+    "min_area_m2": 108.0,
+    "max_area_m2": 2716.0,
+    "parcel_count": 4765,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031555": {
+    "sa2_name": "Clyde North - North",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 437.0,
+    "q25_area_m2": 380.0,
+    "q75_area_m2": 506.0,
+    "p10_area_m2": 294.0,
+    "p90_area_m2": 544.0,
+    "min_area_m2": 105.0,
+    "max_area_m2": 2960.0,
+    "parcel_count": 3840,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031556": {
+    "sa2_name": "Clyde North - South",
+    "median_area_m2": 400.0,
+    "mean_area_m2": 414.0,
+    "q25_area_m2": 336.0,
+    "q75_area_m2": 461.0,
+    "p10_area_m2": 253.0,
+    "p90_area_m2": 528.0,
+    "min_area_m2": 108.0,
+    "max_area_m2": 2928.0,
+    "parcel_count": 8630,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031557": {
+    "sa2_name": "Cranbourne East - North",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 467.0,
+    "q25_area_m2": 375.0,
+    "q75_area_m2": 534.0,
+    "p10_area_m2": 272.0,
+    "p90_area_m2": 621.0,
+    "min_area_m2": 116.0,
+    "max_area_m2": 2960.0,
+    "parcel_count": 6992,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031558": {
+    "sa2_name": "Cranbourne East - South",
+    "median_area_m2": 392.0,
+    "mean_area_m2": 388.0,
+    "q25_area_m2": 313.0,
+    "q75_area_m2": 448.0,
+    "p10_area_m2": 247.0,
+    "p90_area_m2": 513.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2779.0,
+    "parcel_count": 4476,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031559": {
+    "sa2_name": "Cranbourne North - East",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 454.0,
+    "q25_area_m2": 384.0,
+    "q75_area_m2": 512.0,
+    "p10_area_m2": 294.0,
+    "p90_area_m2": 603.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2879.0,
+    "parcel_count": 3768,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031560": {
+    "sa2_name": "Cranbourne North - West",
+    "median_area_m2": 591.0,
+    "mean_area_m2": 592.0,
+    "q25_area_m2": 528.0,
+    "q75_area_m2": 664.0,
+    "p10_area_m2": 338.0,
+    "p90_area_m2": 757.0,
+    "min_area_m2": 113.0,
+    "max_area_m2": 2939.0,
+    "parcel_count": 4227,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031561": {
+    "sa2_name": "Hampton Park - East",
+    "median_area_m2": 544.0,
+    "mean_area_m2": 531.0,
+    "q25_area_m2": 450.0,
+    "q75_area_m2": 627.0,
+    "p10_area_m2": 272.0,
+    "p90_area_m2": 699.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2945.0,
+    "parcel_count": 4099,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212031562": {
+    "sa2_name": "Hampton Park - West",
+    "median_area_m2": 598.0,
+    "mean_area_m2": 548.0,
+    "q25_area_m2": 411.0,
+    "q75_area_m2": 660.0,
+    "p10_area_m2": 220.0,
+    "p90_area_m2": 747.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2883.0,
+    "parcel_count": 4637,
+    "lga_codes": [
+      "312"
+    ]
+  },
+  "212041309": {
+    "sa2_name": "Clarinda - Oakleigh South",
+    "median_area_m2": 538.0,
+    "mean_area_m2": 542.0,
+    "q25_area_m2": 529.0,
+    "q75_area_m2": 605.0,
+    "p10_area_m2": 221.0,
+    "p90_area_m2": 705.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2973.0,
+    "parcel_count": 4544,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "212041310": {
+    "sa2_name": "Clayton South",
+    "median_area_m2": 534.0,
+    "mean_area_m2": 529.0,
+    "q25_area_m2": 221.0,
+    "q75_area_m2": 636.0,
+    "p10_area_m2": 169.0,
+    "p90_area_m2": 876.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2923.0,
+    "parcel_count": 5766,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "212041312": {
+    "sa2_name": "Dandenong North",
+    "median_area_m2": 573.0,
+    "mean_area_m2": 566.0,
+    "q25_area_m2": 534.0,
+    "q75_area_m2": 652.0,
+    "p10_area_m2": 259.0,
+    "p90_area_m2": 736.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2865.0,
+    "parcel_count": 8284,
+    "lga_codes": [
+      "312",
+      "326",
+      "336"
+    ]
+  },
+  "212041313": {
+    "sa2_name": "Dingley Village",
+    "median_area_m2": 557.0,
+    "mean_area_m2": 579.0,
+    "q25_area_m2": 530.0,
+    "q75_area_m2": 643.0,
+    "p10_area_m2": 266.0,
+    "p90_area_m2": 741.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2955.0,
+    "parcel_count": 3996,
+    "lga_codes": [
+      "335"
+    ]
+  },
+  "212041316": {
+    "sa2_name": "Noble Park North",
+    "median_area_m2": 552.0,
+    "mean_area_m2": 562.0,
+    "q25_area_m2": 534.0,
+    "q75_area_m2": 594.0,
+    "p10_area_m2": 319.0,
+    "p90_area_m2": 679.0,
+    "min_area_m2": 104.0,
+    "max_area_m2": 2941.0,
+    "parcel_count": 2928,
+    "lga_codes": [
+      "326"
+    ]
+  },
+  "212041317": {
+    "sa2_name": "Springvale",
+    "median_area_m2": 581.0,
+    "mean_area_m2": 548.0,
+    "q25_area_m2": 270.0,
+    "q75_area_m2": 690.0,
+    "p10_area_m2": 174.0,
+    "p90_area_m2": 860.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2992.0,
+    "parcel_count": 8787,
+    "lga_codes": [
+      "326"
+    ]
+  },
+  "212041318": {
+    "sa2_name": "Springvale South",
+    "median_area_m2": 535.0,
+    "mean_area_m2": 518.0,
+    "q25_area_m2": 395.0,
+    "q75_area_m2": 588.0,
+    "p10_area_m2": 189.0,
+    "p90_area_m2": 683.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2981.0,
+    "parcel_count": 4182,
+    "lga_codes": [
+      "326",
+      "335"
+    ]
+  },
+  "212041459": {
+    "sa2_name": "Noble Park - East",
+    "median_area_m2": 306.0,
+    "mean_area_m2": 484.0,
+    "q25_area_m2": 187.0,
+    "q75_area_m2": 652.0,
+    "p10_area_m2": 147.0,
+    "p90_area_m2": 981.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2731.0,
+    "parcel_count": 5734,
+    "lga_codes": [
+      "326"
+    ]
+  },
+  "212041460": {
+    "sa2_name": "Noble Park - West",
+    "median_area_m2": 535.0,
+    "mean_area_m2": 529.0,
+    "q25_area_m2": 244.0,
+    "q75_area_m2": 614.0,
+    "p10_area_m2": 158.0,
+    "p90_area_m2": 835.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2959.0,
+    "parcel_count": 7466,
+    "lga_codes": [
+      "326"
+    ]
+  },
+  "212041563": {
+    "sa2_name": "Dandenong - North",
+    "median_area_m2": 601.0,
+    "mean_area_m2": 773.0,
+    "q25_area_m2": 223.0,
+    "q75_area_m2": 965.0,
+    "p10_area_m2": 151.0,
+    "p90_area_m2": 1899.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2992.0,
+    "parcel_count": 11093,
+    "lga_codes": [
+      "326"
+    ]
+  },
+  "212041564": {
+    "sa2_name": "Dandenong - South",
+    "median_area_m2": 576.0,
+    "mean_area_m2": 787.0,
+    "q25_area_m2": 278.0,
+    "q75_area_m2": 1012.0,
+    "p10_area_m2": 154.0,
+    "p90_area_m2": 1945.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 5585,
+    "lga_codes": [
+      "312",
+      "326"
+    ]
+  },
+  "212041565": {
+    "sa2_name": "Keysborough - North",
+    "median_area_m2": 536.0,
+    "mean_area_m2": 550.0,
+    "q25_area_m2": 531.0,
+    "q75_area_m2": 583.0,
+    "p10_area_m2": 308.0,
+    "p90_area_m2": 660.0,
+    "min_area_m2": 103.0,
+    "max_area_m2": 2991.0,
+    "parcel_count": 5710,
+    "lga_codes": [
+      "326"
+    ]
+  },
+  "212041566": {
+    "sa2_name": "Keysborough - South",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 471.0,
+    "q25_area_m2": 333.0,
+    "q75_area_m2": 542.0,
+    "p10_area_m2": 178.0,
+    "p90_area_m2": 640.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2998.0,
+    "parcel_count": 5173,
+    "lga_codes": [
+      "326"
+    ]
+  },
+  "212051319": {
+    "sa2_name": "Ashwood - Chadstone",
+    "median_area_m2": 508.0,
+    "mean_area_m2": 531.0,
+    "q25_area_m2": 243.0,
+    "q75_area_m2": 711.0,
+    "p10_area_m2": 182.0,
+    "p90_area_m2": 811.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2921.0,
+    "parcel_count": 8124,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "212051321": {
+    "sa2_name": "Glen Waverley - East",
+    "median_area_m2": 656.0,
+    "mean_area_m2": 619.0,
+    "q25_area_m2": 495.0,
+    "q75_area_m2": 727.0,
+    "p10_area_m2": 243.0,
+    "p90_area_m2": 810.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2994.0,
+    "parcel_count": 8468,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "212051322": {
+    "sa2_name": "Glen Waverley - West",
+    "median_area_m2": 654.0,
+    "mean_area_m2": 693.0,
+    "q25_area_m2": 326.0,
+    "q75_area_m2": 732.0,
+    "p10_area_m2": 211.0,
+    "p90_area_m2": 922.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2992.0,
+    "parcel_count": 8527,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "212051323": {
+    "sa2_name": "Mount Waverley - North",
+    "median_area_m2": 669.0,
+    "mean_area_m2": 579.0,
+    "q25_area_m2": 307.0,
+    "q75_area_m2": 738.0,
+    "p10_area_m2": 207.0,
+    "p90_area_m2": 817.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2951.0,
+    "parcel_count": 6890,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "212051324": {
+    "sa2_name": "Mount Waverley - South",
+    "median_area_m2": 653.0,
+    "mean_area_m2": 564.0,
+    "q25_area_m2": 284.0,
+    "q75_area_m2": 734.0,
+    "p10_area_m2": 199.0,
+    "p90_area_m2": 819.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2905.0,
+    "parcel_count": 8466,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "212051325": {
+    "sa2_name": "Mulgrave",
+    "median_area_m2": 654.0,
+    "mean_area_m2": 601.0,
+    "q25_area_m2": 357.0,
+    "q75_area_m2": 703.0,
+    "p10_area_m2": 216.0,
+    "p90_area_m2": 799.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2990.0,
+    "parcel_count": 8043,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "212051326": {
+    "sa2_name": "Oakleigh - Huntingdale",
+    "median_area_m2": 544.0,
+    "mean_area_m2": 582.0,
+    "q25_area_m2": 262.0,
+    "q75_area_m2": 702.0,
+    "p10_area_m2": 177.0,
+    "p90_area_m2": 1011.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2990.0,
+    "parcel_count": 11291,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "212051327": {
+    "sa2_name": "Wheelers Hill",
+    "median_area_m2": 673.0,
+    "mean_area_m2": 721.0,
+    "q25_area_m2": 651.0,
+    "q75_area_m2": 764.0,
+    "p10_area_m2": 642.0,
+    "p90_area_m2": 906.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2947.0,
+    "parcel_count": 7186,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "212051567": {
+    "sa2_name": "Clayton (North) - Notting Hill",
+    "median_area_m2": 697.0,
+    "mean_area_m2": 732.0,
+    "q25_area_m2": 247.0,
+    "q75_area_m2": 768.0,
+    "p10_area_m2": 178.0,
+    "p90_area_m2": 1726.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 3154,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "212051568": {
+    "sa2_name": "Clayton - Central",
+    "median_area_m2": 279.0,
+    "mean_area_m2": 485.0,
+    "q25_area_m2": 193.0,
+    "q75_area_m2": 698.0,
+    "p10_area_m2": 152.0,
+    "p90_area_m2": 941.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2945.0,
+    "parcel_count": 5459,
+    "lga_codes": [
+      "348"
+    ]
+  },
+  "213011328": {
+    "sa2_name": "Ardeer - Albion",
+    "median_area_m2": 604.0,
+    "mean_area_m2": 725.0,
+    "q25_area_m2": 298.0,
+    "q75_area_m2": 836.0,
+    "p10_area_m2": 180.0,
+    "p90_area_m2": 1437.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2981.0,
+    "parcel_count": 3879,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011329": {
+    "sa2_name": "Cairnlea",
+    "median_area_m2": 561.0,
+    "mean_area_m2": 545.0,
+    "q25_area_m2": 481.0,
+    "q75_area_m2": 635.0,
+    "p10_area_m2": 365.0,
+    "p90_area_m2": 701.0,
+    "min_area_m2": 116.0,
+    "max_area_m2": 2750.0,
+    "parcel_count": 2994,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011331": {
+    "sa2_name": "Delahey",
+    "median_area_m2": 543.0,
+    "mean_area_m2": 528.0,
+    "q25_area_m2": 422.0,
+    "q75_area_m2": 648.0,
+    "p10_area_m2": 309.0,
+    "p90_area_m2": 691.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2553.0,
+    "parcel_count": 2675,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011332": {
+    "sa2_name": "Keilor Downs",
+    "median_area_m2": 653.0,
+    "mean_area_m2": 641.0,
+    "q25_area_m2": 544.0,
+    "q75_area_m2": 716.0,
+    "p10_area_m2": 336.0,
+    "p90_area_m2": 799.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2779.0,
+    "parcel_count": 4822,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011333": {
+    "sa2_name": "Kings Park (Vic.)",
+    "median_area_m2": 536.0,
+    "mean_area_m2": 552.0,
+    "q25_area_m2": 531.0,
+    "q75_area_m2": 568.0,
+    "p10_area_m2": 523.0,
+    "p90_area_m2": 637.0,
+    "min_area_m2": 114.0,
+    "max_area_m2": 2014.0,
+    "parcel_count": 4757,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011334": {
+    "sa2_name": "St Albans - North",
+    "median_area_m2": 585.0,
+    "mean_area_m2": 515.0,
+    "q25_area_m2": 254.0,
+    "q75_area_m2": 657.0,
+    "p10_area_m2": 170.0,
+    "p90_area_m2": 766.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2815.0,
+    "parcel_count": 8228,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011335": {
+    "sa2_name": "St Albans - South",
+    "median_area_m2": 534.0,
+    "mean_area_m2": 539.0,
+    "q25_area_m2": 435.0,
+    "q75_area_m2": 610.0,
+    "p10_area_m2": 208.0,
+    "p90_area_m2": 767.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2799.0,
+    "parcel_count": 6367,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011336": {
+    "sa2_name": "Sunshine",
+    "median_area_m2": 499.0,
+    "mean_area_m2": 515.0,
+    "q25_area_m2": 291.0,
+    "q75_area_m2": 627.0,
+    "p10_area_m2": 168.0,
+    "p90_area_m2": 776.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2988.0,
+    "parcel_count": 4454,
+    "lga_codes": [
+      "308",
+      "341"
+    ]
+  },
+  "213011337": {
+    "sa2_name": "Sunshine North",
+    "median_area_m2": 576.0,
+    "mean_area_m2": 531.0,
+    "q25_area_m2": 396.0,
+    "q75_area_m2": 615.0,
+    "p10_area_m2": 186.0,
+    "p90_area_m2": 697.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2961.0,
+    "parcel_count": 6242,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011338": {
+    "sa2_name": "Sunshine West",
+    "median_area_m2": 589.0,
+    "mean_area_m2": 598.0,
+    "q25_area_m2": 448.0,
+    "q75_area_m2": 697.0,
+    "p10_area_m2": 224.0,
+    "p90_area_m2": 786.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 7755,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011339": {
+    "sa2_name": "Sydenham",
+    "median_area_m2": 517.0,
+    "mean_area_m2": 498.0,
+    "q25_area_m2": 272.0,
+    "q75_area_m2": 652.0,
+    "p10_area_m2": 179.0,
+    "p90_area_m2": 779.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2996.0,
+    "parcel_count": 4269,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011340": {
+    "sa2_name": "Taylors Lakes",
+    "median_area_m2": 711.0,
+    "mean_area_m2": 719.0,
+    "q25_area_m2": 652.0,
+    "q75_area_m2": 771.0,
+    "p10_area_m2": 415.0,
+    "p90_area_m2": 884.0,
+    "min_area_m2": 109.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 5801,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011569": {
+    "sa2_name": "Deer Park",
+    "median_area_m2": 543.0,
+    "mean_area_m2": 514.0,
+    "q25_area_m2": 399.0,
+    "q75_area_m2": 604.0,
+    "p10_area_m2": 247.0,
+    "p90_area_m2": 697.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2843.0,
+    "parcel_count": 6791,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213011570": {
+    "sa2_name": "Derrimut",
+    "median_area_m2": 525.0,
+    "mean_area_m2": 614.0,
+    "q25_area_m2": 442.0,
+    "q75_area_m2": 640.0,
+    "p10_area_m2": 336.0,
+    "p90_area_m2": 857.0,
+    "min_area_m2": 103.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 2936,
+    "lga_codes": [
+      "308"
+    ]
+  },
+  "213021341": {
+    "sa2_name": "Altona",
+    "median_area_m2": 534.0,
+    "mean_area_m2": 535.0,
+    "q25_area_m2": 247.0,
+    "q75_area_m2": 696.0,
+    "p10_area_m2": 170.0,
+    "p90_area_m2": 883.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 7332,
+    "lga_codes": [
+      "331"
+    ]
+  },
+  "213021342": {
+    "sa2_name": "Altona Meadows",
+    "median_area_m2": 481.0,
+    "mean_area_m2": 475.0,
+    "q25_area_m2": 464.0,
+    "q75_area_m2": 550.0,
+    "p10_area_m2": 211.0,
+    "p90_area_m2": 648.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2986.0,
+    "parcel_count": 8348,
+    "lga_codes": [
+      "331"
+    ]
+  },
+  "213021343": {
+    "sa2_name": "Altona North",
+    "median_area_m2": 534.0,
+    "mean_area_m2": 469.0,
+    "q25_area_m2": 218.0,
+    "q75_area_m2": 614.0,
+    "p10_area_m2": 156.0,
+    "p90_area_m2": 698.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2989.0,
+    "parcel_count": 7299,
+    "lga_codes": [
+      "331"
+    ]
+  },
+  "213021344": {
+    "sa2_name": "Newport",
+    "median_area_m2": 344.0,
+    "mean_area_m2": 426.0,
+    "q25_area_m2": 235.0,
+    "q75_area_m2": 539.0,
+    "p10_area_m2": 168.0,
+    "p90_area_m2": 732.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2938.0,
+    "parcel_count": 8698,
+    "lga_codes": [
+      "331",
+      "341"
+    ]
+  },
+  "213021345": {
+    "sa2_name": "Seabrook",
+    "median_area_m2": 547.0,
+    "mean_area_m2": 540.0,
+    "q25_area_m2": 530.0,
+    "q75_area_m2": 590.0,
+    "p10_area_m2": 319.0,
+    "p90_area_m2": 649.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2228.0,
+    "parcel_count": 1806,
+    "lga_codes": [
+      "331"
+    ]
+  },
+  "213021346": {
+    "sa2_name": "Williamstown",
+    "median_area_m2": 418.0,
+    "mean_area_m2": 601.0,
+    "q25_area_m2": 253.0,
+    "q75_area_m2": 756.0,
+    "p10_area_m2": 170.0,
+    "p90_area_m2": 1346.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2993.0,
+    "parcel_count": 8058,
+    "lga_codes": [
+      "331"
+    ]
+  },
+  "213031347": {
+    "sa2_name": "Braybrook",
+    "median_area_m2": 348.0,
+    "mean_area_m2": 461.0,
+    "q25_area_m2": 185.0,
+    "q75_area_m2": 595.0,
+    "p10_area_m2": 140.0,
+    "p90_area_m2": 699.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2953.0,
+    "parcel_count": 7464,
+    "lga_codes": [
+      "341"
+    ]
+  },
+  "213031348": {
+    "sa2_name": "Footscray",
+    "median_area_m2": 496.0,
+    "mean_area_m2": 789.0,
+    "q25_area_m2": 245.0,
+    "q75_area_m2": 1027.0,
+    "p10_area_m2": 160.0,
+    "p90_area_m2": 1912.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2986.0,
+    "parcel_count": 8220,
+    "lga_codes": [
+      "341",
+      "343"
+    ]
+  },
+  "213031349": {
+    "sa2_name": "Maribyrnong",
+    "median_area_m2": 450.0,
+    "mean_area_m2": 618.0,
+    "q25_area_m2": 250.0,
+    "q75_area_m2": 737.0,
+    "p10_area_m2": 167.0,
+    "p90_area_m2": 1303.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2995.0,
+    "parcel_count": 4123,
+    "lga_codes": [
+      "341"
+    ]
+  },
+  "213031350": {
+    "sa2_name": "Seddon - Kingsville",
+    "median_area_m2": 276.0,
+    "mean_area_m2": 412.0,
+    "q25_area_m2": 207.0,
+    "q75_area_m2": 464.0,
+    "p10_area_m2": 142.0,
+    "p90_area_m2": 868.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2543.0,
+    "parcel_count": 4310,
+    "lga_codes": [
+      "341"
+    ]
+  },
+  "213031351": {
+    "sa2_name": "West Footscray - Tottenham",
+    "median_area_m2": 427.0,
+    "mean_area_m2": 538.0,
+    "q25_area_m2": 262.0,
+    "q75_area_m2": 608.0,
+    "p10_area_m2": 152.0,
+    "p90_area_m2": 995.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2966.0,
+    "parcel_count": 5067,
+    "lga_codes": [
+      "341"
+    ]
+  },
+  "213031352": {
+    "sa2_name": "Yarraville",
+    "median_area_m2": 405.0,
+    "mean_area_m2": 478.0,
+    "q25_area_m2": 230.0,
+    "q75_area_m2": 483.0,
+    "p10_area_m2": 167.0,
+    "p90_area_m2": 902.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2925.0,
+    "parcel_count": 7090,
+    "lga_codes": [
+      "331",
+      "341"
+    ]
+  },
+  "213041359": {
+    "sa2_name": "Rockbank - Mount Cottrell",
+    "median_area_m2": 392.0,
+    "mean_area_m2": 421.0,
+    "q25_area_m2": 294.0,
+    "q75_area_m2": 456.0,
+    "p10_area_m2": 220.0,
+    "p90_area_m2": 587.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 12760,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213041360": {
+    "sa2_name": "Taylors Hill",
+    "median_area_m2": 634.0,
+    "mean_area_m2": 574.0,
+    "q25_area_m2": 453.0,
+    "q75_area_m2": 684.0,
+    "p10_area_m2": 287.0,
+    "p90_area_m2": 722.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 6056,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213041461": {
+    "sa2_name": "Burnside",
+    "median_area_m2": 526.0,
+    "mean_area_m2": 528.0,
+    "q25_area_m2": 448.0,
+    "q75_area_m2": 630.0,
+    "p10_area_m2": 217.0,
+    "p90_area_m2": 720.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2973.0,
+    "parcel_count": 2164,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213041462": {
+    "sa2_name": "Burnside Heights",
+    "median_area_m2": 504.0,
+    "mean_area_m2": 518.0,
+    "q25_area_m2": 406.0,
+    "q75_area_m2": 633.0,
+    "p10_area_m2": 364.0,
+    "p90_area_m2": 706.0,
+    "min_area_m2": 110.0,
+    "max_area_m2": 2200.0,
+    "parcel_count": 1842,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213041463": {
+    "sa2_name": "Caroline Springs",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 525.0,
+    "q25_area_m2": 350.0,
+    "q75_area_m2": 640.0,
+    "p10_area_m2": 270.0,
+    "p90_area_m2": 782.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2878.0,
+    "parcel_count": 6669,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213041572": {
+    "sa2_name": "Cobblebank - Strathtulloh",
+    "median_area_m2": 400.0,
+    "mean_area_m2": 409.0,
+    "q25_area_m2": 349.0,
+    "q75_area_m2": 461.0,
+    "p10_area_m2": 261.0,
+    "p90_area_m2": 539.0,
+    "min_area_m2": 103.0,
+    "max_area_m2": 2804.0,
+    "parcel_count": 3773,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213041573": {
+    "sa2_name": "Eynesbury - Exford",
+    "median_area_m2": 562.0,
+    "mean_area_m2": 589.0,
+    "q25_area_m2": 420.0,
+    "q75_area_m2": 678.0,
+    "p10_area_m2": 330.0,
+    "p90_area_m2": 820.0,
+    "min_area_m2": 200.0,
+    "max_area_m2": 2933.0,
+    "parcel_count": 1668,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213041574": {
+    "sa2_name": "Fraser Rise - Plumpton",
+    "median_area_m2": 390.0,
+    "mean_area_m2": 376.0,
+    "q25_area_m2": 294.0,
+    "q75_area_m2": 448.0,
+    "p10_area_m2": 213.0,
+    "p90_area_m2": 512.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2892.0,
+    "parcel_count": 9242,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213041575": {
+    "sa2_name": "Hillside",
+    "median_area_m2": 648.0,
+    "mean_area_m2": 683.0,
+    "q25_area_m2": 521.0,
+    "q75_area_m2": 718.0,
+    "p10_area_m2": 309.0,
+    "p90_area_m2": 1000.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2998.0,
+    "parcel_count": 5273,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213041576": {
+    "sa2_name": "Kurunjang - Toolern Vale",
+    "median_area_m2": 651.0,
+    "mean_area_m2": 668.0,
+    "q25_area_m2": 542.0,
+    "q75_area_m2": 727.0,
+    "p10_area_m2": 333.0,
+    "p90_area_m2": 1014.0,
+    "min_area_m2": 108.0,
+    "max_area_m2": 2892.0,
+    "parcel_count": 2556,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213041577": {
+    "sa2_name": "Melton",
+    "median_area_m2": 585.0,
+    "mean_area_m2": 733.0,
+    "q25_area_m2": 287.0,
+    "q75_area_m2": 807.0,
+    "p10_area_m2": 189.0,
+    "p90_area_m2": 1889.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2972.0,
+    "parcel_count": 1410,
+    "lga_codes": [
+      "344"
+    ]
+  },
+  "213051361": {
+    "sa2_name": "Hoppers Crossing - North",
+    "median_area_m2": 624.0,
+    "mean_area_m2": 668.0,
+    "q25_area_m2": 530.0,
+    "q75_area_m2": 734.0,
+    "p10_area_m2": 300.0,
+    "p90_area_m2": 1080.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2976.0,
+    "parcel_count": 7272,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051362": {
+    "sa2_name": "Hoppers Crossing - South",
+    "median_area_m2": 582.0,
+    "mean_area_m2": 582.0,
+    "q25_area_m2": 536.0,
+    "q75_area_m2": 648.0,
+    "p10_area_m2": 307.0,
+    "p90_area_m2": 760.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2886.0,
+    "parcel_count": 7357,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051363": {
+    "sa2_name": "Laverton",
+    "median_area_m2": 464.0,
+    "mean_area_m2": 499.0,
+    "q25_area_m2": 290.0,
+    "q75_area_m2": 578.0,
+    "p10_area_m2": 172.0,
+    "p90_area_m2": 669.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2996.0,
+    "parcel_count": 5176,
+    "lga_codes": [
+      "331",
+      "375"
+    ]
+  },
+  "213051368": {
+    "sa2_name": "Werribee - South",
+    "median_area_m2": 524.0,
+    "mean_area_m2": 561.0,
+    "q25_area_m2": 312.0,
+    "q75_area_m2": 665.0,
+    "p10_area_m2": 190.0,
+    "p90_area_m2": 925.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 7713,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051464": {
+    "sa2_name": "Point Cook - East",
+    "median_area_m2": 463.0,
+    "mean_area_m2": 510.0,
+    "q25_area_m2": 400.0,
+    "q75_area_m2": 581.0,
+    "p10_area_m2": 312.0,
+    "p90_area_m2": 695.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2958.0,
+    "parcel_count": 7068,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051466": {
+    "sa2_name": "Point Cook - South",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 467.0,
+    "q25_area_m2": 392.0,
+    "q75_area_m2": 539.0,
+    "p10_area_m2": 312.0,
+    "p90_area_m2": 613.0,
+    "min_area_m2": 104.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 6342,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051467": {
+    "sa2_name": "Werribee - East",
+    "median_area_m2": 564.0,
+    "mean_area_m2": 554.0,
+    "q25_area_m2": 429.0,
+    "q75_area_m2": 650.0,
+    "p10_area_m2": 235.0,
+    "p90_area_m2": 730.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2921.0,
+    "parcel_count": 7577,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051468": {
+    "sa2_name": "Werribee - West",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 482.0,
+    "q25_area_m2": 350.0,
+    "q75_area_m2": 544.0,
+    "p10_area_m2": 240.0,
+    "p90_area_m2": 743.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 12042,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051579": {
+    "sa2_name": "Manor Lakes - Quandong",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 467.0,
+    "q25_area_m2": 400.0,
+    "q75_area_m2": 512.0,
+    "p10_area_m2": 320.0,
+    "p90_area_m2": 588.0,
+    "min_area_m2": 116.0,
+    "max_area_m2": 2368.0,
+    "parcel_count": 4130,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051580": {
+    "sa2_name": "Point Cook - North East",
+    "median_area_m2": 586.0,
+    "mean_area_m2": 542.0,
+    "q25_area_m2": 435.0,
+    "q75_area_m2": 644.0,
+    "p10_area_m2": 300.0,
+    "p90_area_m2": 700.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2799.0,
+    "parcel_count": 4793,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051581": {
+    "sa2_name": "Point Cook - North West",
+    "median_area_m2": 510.0,
+    "mean_area_m2": 493.0,
+    "q25_area_m2": 408.0,
+    "q75_area_m2": 578.0,
+    "p10_area_m2": 267.0,
+    "p90_area_m2": 648.0,
+    "min_area_m2": 104.0,
+    "max_area_m2": 2839.0,
+    "parcel_count": 3337,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051582": {
+    "sa2_name": "Tarneit (West) - Mount Cottrell",
+    "median_area_m2": 392.0,
+    "mean_area_m2": 383.0,
+    "q25_area_m2": 315.0,
+    "q75_area_m2": 448.0,
+    "p10_area_m2": 240.0,
+    "p90_area_m2": 505.0,
+    "min_area_m2": 106.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 6103,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051583": {
+    "sa2_name": "Tarneit - Central",
+    "median_area_m2": 463.0,
+    "mean_area_m2": 499.0,
+    "q25_area_m2": 400.0,
+    "q75_area_m2": 570.0,
+    "p10_area_m2": 320.0,
+    "p90_area_m2": 701.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2967.0,
+    "parcel_count": 8297,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051584": {
+    "sa2_name": "Tarneit - North",
+    "median_area_m2": 392.0,
+    "mean_area_m2": 381.0,
+    "q25_area_m2": 294.0,
+    "q75_area_m2": 448.0,
+    "p10_area_m2": 228.0,
+    "p90_area_m2": 504.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2957.0,
+    "parcel_count": 5625,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051585": {
+    "sa2_name": "Tarneit - South",
+    "median_area_m2": 472.0,
+    "mean_area_m2": 483.0,
+    "q25_area_m2": 375.0,
+    "q75_area_m2": 577.0,
+    "p10_area_m2": 256.0,
+    "p90_area_m2": 650.0,
+    "min_area_m2": 103.0,
+    "max_area_m2": 2860.0,
+    "parcel_count": 3447,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051586": {
+    "sa2_name": "Truganina - North",
+    "median_area_m2": 400.0,
+    "mean_area_m2": 443.0,
+    "q25_area_m2": 336.0,
+    "q75_area_m2": 458.0,
+    "p10_area_m2": 238.0,
+    "p90_area_m2": 576.0,
+    "min_area_m2": 102.0,
+    "max_area_m2": 2981.0,
+    "parcel_count": 4885,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051587": {
+    "sa2_name": "Truganina - South East",
+    "median_area_m2": 392.0,
+    "mean_area_m2": 414.0,
+    "q25_area_m2": 312.0,
+    "q75_area_m2": 474.0,
+    "p10_area_m2": 238.0,
+    "p90_area_m2": 552.0,
+    "min_area_m2": 105.0,
+    "max_area_m2": 2586.0,
+    "parcel_count": 3258,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051588": {
+    "sa2_name": "Truganina - South West",
+    "median_area_m2": 448.0,
+    "mean_area_m2": 454.0,
+    "q25_area_m2": 350.0,
+    "q75_area_m2": 524.0,
+    "p10_area_m2": 269.0,
+    "p90_area_m2": 598.0,
+    "min_area_m2": 103.0,
+    "max_area_m2": 2949.0,
+    "parcel_count": 5597,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051589": {
+    "sa2_name": "Wyndham Vale - North",
+    "median_area_m2": 395.0,
+    "mean_area_m2": 406.0,
+    "q25_area_m2": 294.0,
+    "q75_area_m2": 489.0,
+    "p10_area_m2": 210.0,
+    "p90_area_m2": 590.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 5426,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "213051590": {
+    "sa2_name": "Wyndham Vale - South",
+    "median_area_m2": 561.0,
+    "mean_area_m2": 561.0,
+    "q25_area_m2": 490.0,
+    "q75_area_m2": 607.0,
+    "p10_area_m2": 366.0,
+    "p90_area_m2": 717.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2880.0,
+    "parcel_count": 4893,
+    "lga_codes": [
+      "375"
+    ]
+  },
+  "214011370": {
+    "sa2_name": "Carrum Downs",
+    "median_area_m2": 540.0,
+    "mean_area_m2": 563.0,
+    "q25_area_m2": 325.0,
+    "q75_area_m2": 652.0,
+    "p10_area_m2": 203.0,
+    "p90_area_m2": 779.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 10007,
+    "lga_codes": [
+      "320"
+    ]
+  },
+  "214011371": {
+    "sa2_name": "Frankston",
+    "median_area_m2": 602.0,
+    "mean_area_m2": 639.0,
+    "q25_area_m2": 284.0,
+    "q75_area_m2": 731.0,
+    "p10_area_m2": 178.0,
+    "p90_area_m2": 1123.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2969.0,
+    "parcel_count": 12268,
+    "lga_codes": [
+      "320"
+    ]
+  },
+  "214011372": {
+    "sa2_name": "Frankston North",
+    "median_area_m2": 587.0,
+    "mean_area_m2": 570.0,
+    "q25_area_m2": 539.0,
+    "q75_area_m2": 635.0,
+    "p10_area_m2": 256.0,
+    "p90_area_m2": 717.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2797.0,
+    "parcel_count": 8732,
+    "lga_codes": [
+      "320"
+    ]
+  },
+  "214011373": {
+    "sa2_name": "Frankston South",
+    "median_area_m2": 703.0,
+    "mean_area_m2": 997.0,
+    "q25_area_m2": 601.0,
+    "q75_area_m2": 1060.0,
+    "p10_area_m2": 317.0,
+    "p90_area_m2": 2601.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 6822,
+    "lga_codes": [
+      "320"
+    ]
+  },
+  "214011374": {
+    "sa2_name": "Langwarrin",
+    "median_area_m2": 651.0,
+    "mean_area_m2": 666.0,
+    "q25_area_m2": 384.0,
+    "q75_area_m2": 806.0,
+    "p10_area_m2": 229.0,
+    "p90_area_m2": 1004.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2990.0,
+    "parcel_count": 8741,
+    "lga_codes": [
+      "320"
+    ]
+  },
+  "214011375": {
+    "sa2_name": "Seaford (Vic.)",
+    "median_area_m2": 572.0,
+    "mean_area_m2": 587.0,
+    "q25_area_m2": 293.0,
+    "q75_area_m2": 694.0,
+    "p10_area_m2": 186.0,
+    "p90_area_m2": 904.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2967.0,
+    "parcel_count": 9287,
+    "lga_codes": [
+      "320"
+    ]
+  },
+  "214011376": {
+    "sa2_name": "Skye - Sandhurst",
+    "median_area_m2": 568.0,
+    "mean_area_m2": 572.0,
+    "q25_area_m2": 483.0,
+    "q75_area_m2": 644.0,
+    "p10_area_m2": 353.0,
+    "p90_area_m2": 746.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2952.0,
+    "parcel_count": 4714,
+    "lga_codes": [
+      "320"
+    ]
+  },
+  "214021377": {
+    "sa2_name": "Dromana",
+    "median_area_m2": 651.0,
+    "mean_area_m2": 654.0,
+    "q25_area_m2": 382.0,
+    "q75_area_m2": 781.0,
+    "p10_area_m2": 220.0,
+    "p90_area_m2": 1012.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2996.0,
+    "parcel_count": 9005,
+    "lga_codes": [
+      "352"
+    ]
+  },
+  "214021378": {
+    "sa2_name": "Flinders",
+    "median_area_m2": 1022.0,
+    "mean_area_m2": 1211.0,
+    "q25_area_m2": 865.0,
+    "q75_area_m2": 1431.0,
+    "p10_area_m2": 695.0,
+    "p90_area_m2": 2075.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 1949,
+    "lga_codes": [
+      "352"
+    ]
+  },
+  "214021379": {
+    "sa2_name": "Hastings - Somers",
+    "median_area_m2": 724.0,
+    "mean_area_m2": 807.0,
+    "q25_area_m2": 546.0,
+    "q75_area_m2": 1008.0,
+    "p10_area_m2": 252.0,
+    "p90_area_m2": 1307.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2994.0,
+    "parcel_count": 10119,
+    "lga_codes": [
+      "352",
+      "379",
+      "380"
+    ]
+  },
+  "214021381": {
+    "sa2_name": "Mount Eliza",
+    "median_area_m2": 1042.0,
+    "mean_area_m2": 1346.0,
+    "q25_area_m2": 799.0,
+    "q75_area_m2": 1929.0,
+    "p10_area_m2": 433.0,
+    "p90_area_m2": 2709.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 6519,
+    "lga_codes": [
+      "352"
+    ]
+  },
+  "214021382": {
+    "sa2_name": "Mount Martha",
+    "median_area_m2": 865.0,
+    "mean_area_m2": 930.0,
+    "q25_area_m2": 616.0,
+    "q75_area_m2": 1148.0,
+    "p10_area_m2": 304.0,
+    "p90_area_m2": 1617.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2994.0,
+    "parcel_count": 8440,
+    "lga_codes": [
+      "352"
+    ]
+  },
+  "214021383": {
+    "sa2_name": "Point Nepean",
+    "median_area_m2": 829.0,
+    "mean_area_m2": 908.0,
+    "q25_area_m2": 676.0,
+    "q75_area_m2": 989.0,
+    "p10_area_m2": 587.0,
+    "p90_area_m2": 1362.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 21613,
+    "lga_codes": [
+      "352"
+    ]
+  },
+  "214021384": {
+    "sa2_name": "Rosebud - McCrae",
+    "median_area_m2": 613.0,
+    "mean_area_m2": 672.0,
+    "q25_area_m2": 390.0,
+    "q75_area_m2": 826.0,
+    "p10_area_m2": 237.0,
+    "p90_area_m2": 1042.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 2999.0,
+    "parcel_count": 14860,
+    "lga_codes": [
+      "352"
+    ]
+  },
+  "214021385": {
+    "sa2_name": "Somerville",
+    "median_area_m2": 647.0,
+    "mean_area_m2": 658.0,
+    "q25_area_m2": 441.0,
+    "q75_area_m2": 790.0,
+    "p10_area_m2": 229.0,
+    "p90_area_m2": 1000.0,
+    "min_area_m2": 101.0,
+    "max_area_m2": 3000.0,
+    "parcel_count": 5881,
+    "lga_codes": [
+      "352"
+    ]
+  },
+  "214021591": {
+    "sa2_name": "Mornington - East",
+    "median_area_m2": 613.0,
+    "mean_area_m2": 662.0,
+    "q25_area_m2": 423.0,
+    "q75_area_m2": 810.0,
+    "p10_area_m2": 224.0,
+    "p90_area_m2": 1100.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2989.0,
+    "parcel_count": 6368,
+    "lga_codes": [
+      "352"
+    ]
+  },
+  "214021592": {
+    "sa2_name": "Mornington - West",
+    "median_area_m2": 392.0,
+    "mean_area_m2": 551.0,
+    "q25_area_m2": 261.0,
+    "q75_area_m2": 725.0,
+    "p10_area_m2": 174.0,
+    "p90_area_m2": 1059.0,
+    "min_area_m2": 100.0,
+    "max_area_m2": 2901.0,
+    "parcel_count": 6541,
+    "lga_codes": [
+      "352"
+    ]
+  }
+}

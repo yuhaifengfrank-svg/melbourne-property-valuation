@@ -102,10 +102,10 @@ async function generateAll() {
   })();
 
   const topSections = [
-    { title: 'Top Growth', color: '#065f46', items: growthSub.map(s => ({ name: s.suburb, slug: slug(s.suburb, s.state), score: s.opportunity_score, desc: (s.growth_3y != null ? s.growth_3y + '% trend signal' : 'Market trend developing') })) },
+    { title: 'Top Growth', color: '#065f46', items: growthSub.map(s => ({ name: s.suburb, slug: slug(s.suburb, s.state), score: s.opportunity_score, desc: (s.growth_3y != null ? s.growth_3y + '% exp. signal' : 'Market trend developing') })) },
     { title: 'Top Yield', color: '#92400e', items: yieldSub.map(s => ({ name: s.suburb, slug: slug(s.suburb, s.state), score: s.opportunity_score, desc: (s.gross_yield != null ? s.gross_yield + '% gross yield' : 'Yield data pending') })) },
     { title: 'Top School Zone', color: '#1e40af', items: schoolSub.map(s => ({ name: s.suburb, slug: slug(s.suburb, s.state), score: s.opportunity_score, desc: 'School score ' + (s.school_score ? Math.round(s.school_score) : 'N/A') + '/100' })) },
-    { title: 'Top Balanced', color: '#0d6b57', items: balancedSub.map(s => ({ name: s.suburb, slug: slug(s.suburb, s.state), score: s.opportunity_score, desc: (s.opportunity_type || 'Balanced') + ' · ' + (s.growth_3y != null ? s.growth_3y + '% signal' : 'Developing') })) },
+    { title: 'Top Balanced', color: '#0d6b57', items: balancedSub.map(s => ({ name: s.suburb, slug: slug(s.suburb, s.state), score: s.opportunity_score, desc: (s.opportunity_type || 'Balanced') + ' · ' + (s.growth_3y != null ? s.growth_3y + '% exp. signal' : 'Developing') })) },
   ];
 
   let sectionsHtml = '';

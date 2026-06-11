@@ -92,7 +92,7 @@ function suburbPageHTML(data) {
       { "@type": "PropertyValue", "name": "Opportunity Score", "value": "${score}/100" },
       { "@type": "PropertyValue", "name": "Median House Price", "value": "${priceStr}" },
       { "@type": "PropertyValue", "name": "Median Unit Price", "value": "${unitStr}" },
-      { "@type": "PropertyValue", "name": "3-Year Growth", "value": "${growthStr}" },
+      { "@type": "PropertyValue", "name": "Growth Signal (experimental)", "value": "${growthStr}" },
       { "@type": "PropertyValue", "name": "School Score", "value": "${schools}" },
       { "@type": "PropertyValue", "name": "Opportunity Type", "value": "${topOpt}" }
     ]
@@ -130,7 +130,7 @@ function suburbPageHTML(data) {
 
     <div class="grid-2">
       <div class="card"><h3>Median House Price</h3><div class="value">${priceStr}</div></div>
-      <div class="card"><h3>3-Year Growth</h3><div class="value">${growthStr}</div></div>
+      <div class="card"><h3>Growth Signal</h3><div class="value">${growthStr}</div></div>
       <div class="card"><h3>School Score</h3><div class="value">${schools}</div></div>
       <div class="card"><h3>Median Unit Price</h3><div class="value">${unitStr}</div></div>
     </div>
@@ -238,7 +238,7 @@ function categoryPageHTML(cat, items, top) {
     return `<div class="card">
         <div>
           <h2><a href="/suburb/${slug(s.suburb, s.state)}.html" style="color:#0d6b57;text-decoration:none;">${s.suburb}, ${s.state}</a></h2>
-          <div class="meta">Score ${s.opportunityScore} · Median $${(s.medianHousePrice / 1000).toFixed(0)}K · ${s.growth3y != null ? (s.growth3y >= 0 ? '+' : '') + s.growth3y + '%' : 'N/A'} 3yr</div>
+          <div class="meta">Score ${s.opportunityScore} · Median $${(s.medianHousePrice / 1000).toFixed(0)}K · ${s.growth3y != null ? (s.growth3y >= 0 ? '+' : '') + s.growth3y + '%' : 'N/A'} trend signal</div>
         </div>
         <div style="display:flex;align-items:center;gap:10px;"><span class="badge">${s.opportunityScore}</span><span class="badge-sub">${s.opportunityType || 'Balanced'}</span></div>
       </div>`;
@@ -291,7 +291,7 @@ async function generateAll() {
 
   // Category definitions
   const categories = [
-    { file: 'growth.html', title: 'Growth Opportunities', desc: 'Suburbs with the strongest experimental market trend signal.', filter: s => (s.growth3y || 0) >= 5 },
+        { file: 'growth.html', title: 'Growth Opportunities', desc: 'Suburbs with the strongest experimental market trend signal (not a calibrated forecast).', filter: s => (s.growth3y || 0) >= 5 },
     { file: 'school-zone.html', title: 'School Zone Opportunities', desc: 'Top-ranked suburbs for school quality based on ICSEA scores from ACARA.', filter: s => s.schoolScore >= 65 },
     { file: 'cashflow.html', title: 'Cashflow Opportunities', desc: 'Suburbs with strong rental yield potential and rental demand indicators.', filter: s => (s.schoolScore || 0) >= 60 && (s.opportunityScore || 0) >= 60 },
     { file: 'infrastructure.html', title: 'Infrastructure Opportunities', desc: 'Growth corridors and suburbs near major infrastructure developments.', filter: s => (s.opportunityScore || 0) >= 65 },

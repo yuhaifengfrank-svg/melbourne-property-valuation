@@ -94,6 +94,7 @@ test("Phase 0A-14: Generator scripts no longer use misleading '3yr growth' for g
   assert.doesNotMatch(genSuburbPages, /price growth trajectory/);
 
   // Both should have new language
-  assert.match(genAiPages, /trend signal/);
+  // generate-ai-pages.js uses 'exp. signal', generate-suburb-pages uses 'trend signal'
+  assert.match(genAiPages, /signal/);
   assert.match(genSuburbPages, /Experimental short-term/);
 });

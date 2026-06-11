@@ -1,0 +1,192 @@
+{
+  "303": {
+    "lga_name": "Banyule",
+    "total_parcels": 65357,
+    "res_parcels": 65150
+  },
+  "304": {
+    "lga_name": "Bass Coast",
+    "total_parcels": 10266,
+    "res_parcels": 10045
+  },
+  "306": {
+    "lga_name": "Bayside",
+    "total_parcels": 56505,
+    "res_parcels": 56356
+  },
+  "307": {
+    "lga_name": "Boroondara",
+    "total_parcels": 96592,
+    "res_parcels": 96302
+  },
+  "308": {
+    "lga_name": "Maribyrnong",
+    "total_parcels": 87231,
+    "res_parcels": 86923
+  },
+  "311": {
+    "lga_name": "Cardinia",
+    "total_parcels": 51703,
+    "res_parcels": 50767
+  },
+  "312": {
+    "lga_name": "Casey",
+    "total_parcels": 157865,
+    "res_parcels": 157389
+  },
+  "316": {
+    "lga_name": "Darebin",
+    "total_parcels": 88226,
+    "res_parcels": 87878
+  },
+  "320": {
+    "lga_name": "Frankston",
+    "total_parcels": 69622,
+    "res_parcels": 69308
+  },
+  "322": {
+    "lga_name": "Glen Eira",
+    "total_parcels": 87123,
+    "res_parcels": 87008
+  },
+  "326": {
+    "lga_name": "Greater Dandenong",
+    "total_parcels": 76894,
+    "res_parcels": 76617
+  },
+  "327": {
+    "lga_name": "Golden Plains",
+    "total_parcels": 3262,
+    "res_parcels": 3177
+  },
+  "331": {
+    "lga_name": "Hobsons Bay",
+    "total_parcels": 52878,
+    "res_parcels": 52307
+  },
+  "333": {
+    "lga_name": "Hume",
+    "total_parcels": 111085,
+    "res_parcels": 110323
+  },
+  "335": {
+    "lga_name": "Kingston",
+    "total_parcels": 89342,
+    "res_parcels": 89048
+  },
+  "336": {
+    "lga_name": "Knox",
+    "total_parcels": 75246,
+    "res_parcels": 75091
+  },
+  "339": {
+    "lga_name": "Mitchell",
+    "total_parcels": 12,
+    "res_parcels": 8
+  },
+  "340": {
+    "lga_name": "Yarra Ranges",
+    "total_parcels": 58214,
+    "res_parcels": 57687
+  },
+  "341": {
+    "lga_name": "Brimbank",
+    "total_parcels": 53922,
+    "res_parcels": 53547
+  },
+  "342": {
+    "lga_name": "Maroondah",
+    "total_parcels": 58608,
+    "res_parcels": 58427
+  },
+  "343": {
+    "lga_name": "Melbourne",
+    "total_parcels": 158821,
+    "res_parcels": 157026
+  },
+  "344": {
+    "lga_name": "Melton",
+    "total_parcels": 73396,
+    "res_parcels": 73140
+  },
+  "346": {
+    "lga_name": "Whittlesea",
+    "total_parcels": 6099,
+    "res_parcels": 6014
+  },
+  "348": {
+    "lga_name": "Monash",
+    "total_parcels": 92685,
+    "res_parcels": 92499
+  },
+  "349": {
+    "lga_name": "Moonee Valley",
+    "total_parcels": 68288,
+    "res_parcels": 68026
+  },
+  "351": {
+    "lga_name": "Merri-bek",
+    "total_parcels": 103266,
+    "res_parcels": 102938
+  },
+  "352": {
+    "lga_name": "Mornington Peninsula",
+    "total_parcels": 109691,
+    "res_parcels": 108683
+  },
+  "356": {
+    "lga_name": "Manningham",
+    "total_parcels": 26575,
+    "res_parcels": 25369
+  },
+  "358": {
+    "lga_name": "Port Phillip",
+    "total_parcels": 89256,
+    "res_parcels": 88114
+  },
+  "360": {
+    "lga_name": "Surf Coast",
+    "total_parcels": 3559,
+    "res_parcels": 3305
+  },
+  "363": {
+    "lga_name": "Stonnington",
+    "total_parcels": 84746,
+    "res_parcels": 84565
+  },
+  "372": {
+    "lga_name": "Whitehorse",
+    "total_parcels": 92012,
+    "res_parcels": 91810
+  },
+  "373": {
+    "lga_name": "Whittlesea",
+    "total_parcels": 110985,
+    "res_parcels": 110595
+  },
+  "375": {
+    "lga_name": "Wyndham",
+    "total_parcels": 138074,
+    "res_parcels": 137480
+  },
+  "376": {
+    "lga_name": "Yarra",
+    "total_parcels": 64247,
+    "res_parcels": 63526
+  },
+  "377": {
+    "lga_name": "Nillumbik",
+    "total_parcels": 59563,
+    "res_parcels": 58324
+  },
+  "379": {
+    "lga_name": "South Gippsland",
+    "total_parcels": 895,
+    "res_parcels": 858
+  },
+  "380": {
+    "lga_name": "Frankston",
+    "total_parcels": 75,
+    "res_parcels": 0
+  }
+}

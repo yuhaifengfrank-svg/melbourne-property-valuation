@@ -1,0 +1,282 @@
+{
+  "Banyule": {
+    "lga_name": "Banyule",
+    "parcel_count": 45352,
+    "median_area_m2": 601.6,
+    "mean_area_m2": 645.3,
+    "q25_area_m2": 313.6,
+    "q75_area_m2": 792.9
+  },
+  "Bass Coast": {
+    "lga_name": "Bass Coast",
+    "parcel_count": 5298,
+    "median_area_m2": 647.8,
+    "mean_area_m2": 699.5,
+    "q25_area_m2": 488.8,
+    "q75_area_m2": 801.5
+  },
+  "Bayside": {
+    "lga_name": "Bayside",
+    "parcel_count": 45703,
+    "median_area_m2": 603.8,
+    "mean_area_m2": 657.9,
+    "q25_area_m2": 333.0,
+    "q75_area_m2": 764.9
+  },
+  "Boroondara": {
+    "lga_name": "Boroondara",
+    "parcel_count": 81973,
+    "median_area_m2": 696.7,
+    "mean_area_m2": 796.1,
+    "q25_area_m2": 444.1,
+    "q75_area_m2": 964.5
+  },
+  "Brimbank": {
+    "lga_name": "Brimbank",
+    "parcel_count": 36277,
+    "median_area_m2": 393.8,
+    "mean_area_m2": 561.3,
+    "q25_area_m2": 223.2,
+    "q75_area_m2": 644.4
+  },
+  "Cardinia": {
+    "lga_name": "Cardinia",
+    "parcel_count": 33374,
+    "median_area_m2": 485.5,
+    "mean_area_m2": 608.6,
+    "q25_area_m2": 350.0,
+    "q75_area_m2": 698.4
+  },
+  "Casey": {
+    "lga_name": "Casey",
+    "parcel_count": 132754,
+    "median_area_m2": 545.8,
+    "mean_area_m2": 561.9,
+    "q25_area_m2": 392.0,
+    "q75_area_m2": 656.1
+  },
+  "Darebin": {
+    "lga_name": "Darebin",
+    "parcel_count": 72267,
+    "median_area_m2": 495.5,
+    "mean_area_m2": 566.6,
+    "q25_area_m2": 250.8,
+    "q75_area_m2": 696.7
+  },
+  "Frankston": {
+    "lga_name": "Frankston",
+    "parcel_count": 60584,
+    "median_area_m2": 598.0,
+    "mean_area_m2": 647.5,
+    "q25_area_m2": 390.4,
+    "q75_area_m2": 704.1
+  },
+  "Glen Eira": {
+    "lga_name": "Glen Eira",
+    "parcel_count": 75521,
+    "median_area_m2": 631.5,
+    "mean_area_m2": 737.7,
+    "q25_area_m2": 357.6,
+    "q75_area_m2": 917.8
+  },
+  "Golden Plains": {
+    "lga_name": "Golden Plains",
+    "parcel_count": 2481,
+    "median_area_m2": 555.1,
+    "mean_area_m2": 578.0,
+    "q25_area_m2": 448.1,
+    "q75_area_m2": 660.3
+  },
+  "Greater Dandenong": {
+    "lga_name": "Greater Dandenong",
+    "parcel_count": 64939,
+    "median_area_m2": 540.4,
+    "mean_area_m2": 594.2,
+    "q25_area_m2": 292.0,
+    "q75_area_m2": 659.7
+  },
+  "Hobsons Bay": {
+    "lga_name": "Hobsons Bay",
+    "parcel_count": 43976,
+    "median_area_m2": 464.7,
+    "mean_area_m2": 499.5,
+    "q25_area_m2": 257.9,
+    "q75_area_m2": 603.7
+  },
+  "Hume": {
+    "lga_name": "Hume",
+    "parcel_count": 74454,
+    "median_area_m2": 468.8,
+    "mean_area_m2": 528.6,
+    "q25_area_m2": 331.3,
+    "q75_area_m2": 627.0
+  },
+  "Kingston": {
+    "lga_name": "Kingston",
+    "parcel_count": 73416,
+    "median_area_m2": 544.1,
+    "mean_area_m2": 618.7,
+    "q25_area_m2": 289.1,
+    "q75_area_m2": 696.3
+  },
+  "Knox": {
+    "lga_name": "Knox",
+    "parcel_count": 66984,
+    "median_area_m2": 723.6,
+    "mean_area_m2": 689.2,
+    "q25_area_m2": 413.9,
+    "q75_area_m2": 794.1
+  },
+  "Manningham": {
+    "lga_name": "Manningham",
+    "parcel_count": 9814,
+    "median_area_m2": 841.1,
+    "mean_area_m2": 968.3,
+    "q25_area_m2": 612.3,
+    "q75_area_m2": 1185.2
+  },
+  "Maribyrnong": {
+    "lga_name": "Maribyrnong",
+    "parcel_count": 76449,
+    "median_area_m2": 573.4,
+    "mean_area_m2": 577.8,
+    "q25_area_m2": 426.3,
+    "q75_area_m2": 675.2
+  },
+  "Maroondah": {
+    "lga_name": "Maroondah",
+    "parcel_count": 51000,
+    "median_area_m2": 655.8,
+    "mean_area_m2": 664.0,
+    "q25_area_m2": 304.3,
+    "q75_area_m2": 864.6
+  },
+  "Melbourne": {
+    "lga_name": "Melbourne",
+    "parcel_count": 103026,
+    "median_area_m2": 1298.0,
+    "mean_area_m2": 1402.4,
+    "q25_area_m2": 726.6,
+    "q75_area_m2": 2023.0
+  },
+  "Melton": {
+    "lga_name": "Melton",
+    "parcel_count": 56220,
+    "median_area_m2": 447.9,
+    "mean_area_m2": 500.3,
+    "q25_area_m2": 349.7,
+    "q75_area_m2": 614.9
+  },
+  "Merri-bek": {
+    "lga_name": "Merri-bek",
+    "parcel_count": 82954,
+    "median_area_m2": 461.8,
+    "mean_area_m2": 563.7,
+    "q25_area_m2": 225.8,
+    "q75_area_m2": 664.3
+  },
+  "Monash": {
+    "lga_name": "Monash",
+    "parcel_count": 79322,
+    "median_area_m2": 651.0,
+    "mean_area_m2": 607.8,
+    "q25_area_m2": 296.0,
+    "q75_area_m2": 728.4
+  },
+  "Moonee Valley": {
+    "lga_name": "Moonee Valley",
+    "parcel_count": 26737,
+    "median_area_m2": 534.1,
+    "mean_area_m2": 659.6,
+    "q25_area_m2": 266.5,
+    "q75_area_m2": 781.5
+  },
+  "Mornington Peninsula": {
+    "lga_name": "Mornington Peninsula",
+    "parcel_count": 91174,
+    "median_area_m2": 728.6,
+    "mean_area_m2": 814.6,
+    "q25_area_m2": 533.8,
+    "q75_area_m2": 966.7
+  },
+  "Nillumbik": {
+    "lga_name": "Nillumbik",
+    "parcel_count": 38080,
+    "median_area_m2": 865.4,
+    "mean_area_m2": 913.7,
+    "q25_area_m2": 467.1,
+    "q75_area_m2": 1114.3
+  },
+  "Port Phillip": {
+    "lga_name": "Port Phillip",
+    "parcel_count": 64280,
+    "median_area_m2": 757.1,
+    "mean_area_m2": 990.1,
+    "q25_area_m2": 379.8,
+    "q75_area_m2": 1461.6
+  },
+  "South Gippsland": {
+    "lga_name": "South Gippsland",
+    "parcel_count": 844,
+    "median_area_m2": 534.5,
+    "mean_area_m2": 547.8,
+    "q25_area_m2": 534.3,
+    "q75_area_m2": 535.7
+  },
+  "Stonnington": {
+    "lga_name": "Stonnington",
+    "parcel_count": 68368,
+    "median_area_m2": 780.5,
+    "mean_area_m2": 898.9,
+    "q25_area_m2": 442.1,
+    "q75_area_m2": 1190.9
+  },
+  "Surf Coast": {
+    "lga_name": "Surf Coast",
+    "parcel_count": 3104,
+    "median_area_m2": 613.7,
+    "mean_area_m2": 636.9,
+    "q25_area_m2": 428.0,
+    "q75_area_m2": 737.4
+  },
+  "Whitehorse": {
+    "lga_name": "Whitehorse",
+    "parcel_count": 77369,
+    "median_area_m2": 601.0,
+    "mean_area_m2": 672.2,
+    "q25_area_m2": 318.5,
+    "q75_area_m2": 760.4
+  },
+  "Whittlesea": {
+    "lga_name": "Whittlesea",
+    "parcel_count": 95220,
+    "median_area_m2": 517.4,
+    "mean_area_m2": 520.7,
+    "q25_area_m2": 351.7,
+    "q75_area_m2": 604.0
+  },
+  "Wyndham": {
+    "lga_name": "Wyndham",
+    "parcel_count": 117906,
+    "median_area_m2": 463.1,
+    "mean_area_m2": 500.0,
+    "q25_area_m2": 362.9,
+    "q75_area_m2": 582.3
+  },
+  "Yarra": {
+    "lga_name": "Yarra",
+    "parcel_count": 45902,
+    "median_area_m2": 383.3,
+    "mean_area_m2": 679.2,
+    "q25_area_m2": 183.0,
+    "q75_area_m2": 917.3
+  },
+  "Yarra Ranges": {
+    "lga_name": "Yarra Ranges",
+    "parcel_count": 45650,
+    "median_area_m2": 663.7,
+    "mean_area_m2": 726.7,
+    "q25_area_m2": 365.7,
+    "q75_area_m2": 796.3
+  }
+}

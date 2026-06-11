@@ -1,0 +1,5930 @@
+{
+  "Abbotsford": {
+    "sa2_code": "206071139",
+    "sa2_name": "Abbotsford",
+    "lga_code": "27350",
+    "lga_name": "Yarra"
+  },
+  "Aberfeldie": {
+    "sa2_code": "206031501",
+    "sa2_name": "Essendon (West) - Aberfeldie",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Aintree": {
+    "sa2_code": "213041359",
+    "sa2_name": "Rockbank - Mount Cottrell",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Aintree ": {
+    "sa2_code": "213041359",
+    "sa2_name": "Rockbank - Mount Cottrell",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Aireys Inlet": {
+    "sa2_code": "203031049",
+    "sa2_name": "Lorne - Anglesea",
+    "lga_code": "26490",
+    "lga_name": "Surf Coast"
+  },
+  "Airly": {
+    "sa2_code": "205051101",
+    "sa2_name": "Maffra",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Airport West": {
+    "sa2_code": "210011226",
+    "sa2_name": "Airport West",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Albanvale": {
+    "sa2_code": "213011333",
+    "sa2_name": "Kings Park (Vic.)",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Albert Park": {
+    "sa2_code": "206051128",
+    "sa2_name": "Albert Park",
+    "lga_code": "25900",
+    "lga_name": "Port Phillip"
+  },
+  "Alberton": {
+    "sa2_code": "205051104",
+    "sa2_name": "Yarram",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Albion": {
+    "sa2_code": "213011328",
+    "sa2_name": "Ardeer - Albion",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Alexandra": {
+    "sa2_code": "204011054",
+    "sa2_name": "Alexandra",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Alfredton": {
+    "sa2_code": "201011001",
+    "sa2_name": "Alfredton",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Allansford": {
+    "sa2_code": "217041480",
+    "sa2_name": "Warrnambool - South",
+    "lga_code": "26730",
+    "lga_name": "Warrnambool"
+  },
+  "Alphington": {
+    "sa2_code": "206071145",
+    "sa2_name": "Clifton Hill - Alphington",
+    "lga_code": "27350",
+    "lga_name": "Yarra"
+  },
+  "Altona": {
+    "sa2_code": "213021341",
+    "sa2_name": "Altona",
+    "lga_code": "23110",
+    "lga_name": "Hobsons Bay"
+  },
+  "Altona Meadows": {
+    "sa2_code": "213021342",
+    "sa2_name": "Altona Meadows",
+    "lga_code": "23110",
+    "lga_name": "Hobsons Bay"
+  },
+  "Altona North": {
+    "sa2_code": "213021343",
+    "sa2_name": "Altona North",
+    "lga_code": "23110",
+    "lga_name": "Hobsons Bay"
+  },
+  "Alvie": {
+    "sa2_code": "217031473",
+    "sa2_name": "Colac Surrounds",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Amphitheatre": {
+    "sa2_code": "201031013",
+    "sa2_name": "Avoca",
+    "lga_code": "25990",
+    "lga_name": "Pyrenees"
+  },
+  "Anakie": {
+    "sa2_code": "203021043",
+    "sa2_name": "Lara",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Anglesea": {
+    "sa2_code": "203031049",
+    "sa2_name": "Lorne - Anglesea",
+    "lga_code": "26490",
+    "lga_name": "Surf Coast"
+  },
+  "Apollo Bay": {
+    "sa2_code": "217031476",
+    "sa2_name": "Otway",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Apsley": {
+    "sa2_code": "215011393",
+    "sa2_name": "West Wimmera",
+    "lga_code": "26890",
+    "lga_name": "West Wimmera"
+  },
+  "Ararat": {
+    "sa2_code": "215011386",
+    "sa2_name": "Ararat",
+    "lga_code": "20260",
+    "lga_name": "Ararat"
+  },
+  "Ardeer": {
+    "sa2_code": "213011328",
+    "sa2_name": "Ardeer - Albion",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Ardmona": {
+    "sa2_code": "216031419",
+    "sa2_name": "Shepparton Surrounds - West",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Armadale": {
+    "sa2_code": "206061136",
+    "sa2_name": "Prahran - Windsor",
+    "lga_code": "26350",
+    "lga_name": "Stonnington"
+  },
+  "Armstrong Creek": {
+    "sa2_code": "203031489",
+    "sa2_name": "Barwon Heads - Armstrong Creek",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Arthurs Creek": {
+    "sa2_code": "209031212",
+    "sa2_name": "Panton Hill - St Andrews",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Ascot Vale": {
+    "sa2_code": "206031113",
+    "sa2_name": "Ascot Vale",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Ashburton": {
+    "sa2_code": "207011146",
+    "sa2_name": "Ashburton (Vic.)",
+    "lga_code": "21110",
+    "lga_name": "Boroondara"
+  },
+  "Ashwood": {
+    "sa2_code": "212051319",
+    "sa2_name": "Ashwood - Chadstone",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "Aspendale": {
+    "sa2_code": "208031189",
+    "sa2_name": "Edithvale - Aspendale",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Aspendale Gardens": {
+    "sa2_code": "208031183",
+    "sa2_name": "Aspendale Gardens - Waterways",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Avenel": {
+    "sa2_code": "204011058",
+    "sa2_name": "Nagambie",
+    "lga_code": "26430",
+    "lga_name": "Strathbogie"
+  },
+  "Avoca": {
+    "sa2_code": "201031013",
+    "sa2_name": "Avoca",
+    "lga_code": "25990",
+    "lga_name": "Pyrenees"
+  },
+  "Avondale Heights": {
+    "sa2_code": "210011533",
+    "sa2_name": "Avondale Heights",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Axe Creek": {
+    "sa2_code": "202021026",
+    "sa2_name": "Bendigo Surrounds - South",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Axedale": {
+    "sa2_code": "202021029",
+    "sa2_name": "Heathcote",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Bacchus Marsh": {
+    "sa2_code": "213041353",
+    "sa2_name": "Bacchus Marsh",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Baddaginnie": {
+    "sa2_code": "204021064",
+    "sa2_name": "Benalla Surrounds",
+    "lga_code": "21010",
+    "lga_name": "Benalla"
+  },
+  "Bairnsdale": {
+    "sa2_code": "205021081",
+    "sa2_name": "Bairnsdale",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Bakery Hill": {
+    "sa2_code": "201011002",
+    "sa2_name": "Ballarat",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Ballan": {
+    "sa2_code": "201021009",
+    "sa2_name": "Bacchus Marsh Surrounds",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Ballarat": {
+    "sa2_code": "201011002",
+    "sa2_name": "Ballarat",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Ballarat East": {
+    "sa2_code": "201011481",
+    "sa2_name": "Ballarat East - Warrenheip",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Ballarat North": {
+    "sa2_code": "201011482",
+    "sa2_name": "Ballarat North - Invermay",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Balliang East": {
+    "sa2_code": "201021009",
+    "sa2_name": "Bacchus Marsh Surrounds",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Balmoral": {
+    "sa2_code": "217011423",
+    "sa2_name": "Southern Grampians",
+    "lga_code": "26260",
+    "lga_name": "Southern Grampians"
+  },
+  "Balnarring": {
+    "sa2_code": "214021379",
+    "sa2_name": "Hastings - Somers",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Balwyn": {
+    "sa2_code": "207011147",
+    "sa2_name": "Balwyn",
+    "lga_code": "21110",
+    "lga_name": "Boroondara"
+  },
+  "Balwyn North": {
+    "sa2_code": "207011148",
+    "sa2_name": "Balwyn North",
+    "lga_code": "21110",
+    "lga_name": "Boroondara"
+  },
+  "Bandiana": {
+    "sa2_code": "204031491",
+    "sa2_name": "Baranduda - Leneva",
+    "lga_code": "27170",
+    "lga_name": "Wodonga"
+  },
+  "Bangholme": {
+    "sa2_code": "212041566",
+    "sa2_name": "Keysborough - South",
+    "lga_code": "22670",
+    "lga_name": "Greater Dandenong"
+  },
+  "Bannockburn": {
+    "sa2_code": "203011034",
+    "sa2_name": "Bannockburn",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Baranduda": {
+    "sa2_code": "204031491",
+    "sa2_name": "Baranduda - Leneva",
+    "lga_code": "27170",
+    "lga_name": "Wodonga"
+  },
+  "Barjarg": {
+    "sa2_code": "204011057",
+    "sa2_name": "Mansfield (Vic.)",
+    "lga_code": "24250",
+    "lga_name": "Mansfield"
+  },
+  "Barnawartha": {
+    "sa2_code": "204031070",
+    "sa2_name": "Chiltern - Indigo Valley",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Barongarook": {
+    "sa2_code": "217031473",
+    "sa2_name": "Colac Surrounds",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Barwon Heads": {
+    "sa2_code": "203031489",
+    "sa2_name": "Barwon Heads - Armstrong Creek",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Batesford": {
+    "sa2_code": "203021047",
+    "sa2_name": "North Geelong - Bell Park",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Baxter": {
+    "sa2_code": "214021385",
+    "sa2_name": "Somerville",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Bayles": {
+    "sa2_code": "212011548",
+    "sa2_name": "Koo Wee Rup",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Bayswater": {
+    "sa2_code": "211011251",
+    "sa2_name": "Bayswater",
+    "lga_code": "23670",
+    "lga_name": "Knox"
+  },
+  "Bayswater North": {
+    "sa2_code": "211031263",
+    "sa2_name": "Bayswater North",
+    "lga_code": "24410",
+    "lga_name": "Maroondah"
+  },
+  "Beaconsfield": {
+    "sa2_code": "212011546",
+    "sa2_name": "Beaconsfield - Officer",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Beaconsfield Upper": {
+    "sa2_code": "212011289",
+    "sa2_name": "Emerald - Cockatoo",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Bealiba": {
+    "sa2_code": "201031017",
+    "sa2_name": "Maryborough Surrounds",
+    "lga_code": "21670",
+    "lga_name": "Central Goldfields"
+  },
+  "Beaufort": {
+    "sa2_code": "201031014",
+    "sa2_name": "Beaufort",
+    "lga_code": "25990",
+    "lga_name": "Pyrenees"
+  },
+  "Beaumaris": {
+    "sa2_code": "208011168",
+    "sa2_name": "Beaumaris",
+    "lga_code": "20910",
+    "lga_name": "Bayside (Vic.)"
+  },
+  "Beeac": {
+    "sa2_code": "217031473",
+    "sa2_name": "Colac Surrounds",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Beechworth": {
+    "sa2_code": "204031068",
+    "sa2_name": "Beechworth",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Belgrave": {
+    "sa2_code": "211051274",
+    "sa2_name": "Belgrave - Selby",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Belgrave Heights": {
+    "sa2_code": "211051274",
+    "sa2_name": "Belgrave - Selby",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Belgrave South": {
+    "sa2_code": "211051274",
+    "sa2_name": "Belgrave - Selby",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Bell Park": {
+    "sa2_code": "203021047",
+    "sa2_name": "North Geelong - Bell Park",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Bell Post Hill": {
+    "sa2_code": "203021047",
+    "sa2_name": "North Geelong - Bell Park",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Bellbrae": {
+    "sa2_code": "203031053",
+    "sa2_name": "Torquay",
+    "lga_code": "26490",
+    "lga_name": "Surf Coast"
+  },
+  "Bellfield": {
+    "sa2_code": "209011199",
+    "sa2_name": "Heidelberg West",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Belmont": {
+    "sa2_code": "203021037",
+    "sa2_name": "Belmont",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Benalla": {
+    "sa2_code": "204011057",
+    "sa2_name": "Mansfield (Vic.)",
+    "lga_code": "24250",
+    "lga_name": "Mansfield"
+  },
+  "Bendigo": {
+    "sa2_code": "202011025",
+    "sa2_name": "White Hills - Ascot",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Bennettswood": {
+    "sa2_code": "207031165",
+    "sa2_name": "Burwood (Vic.)",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Bentleigh": {
+    "sa2_code": "208021427",
+    "sa2_name": "Bentleigh East - South",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Bentleigh East": {
+    "sa2_code": "208021426",
+    "sa2_name": "Bentleigh East - North",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Berwick": {
+    "sa2_code": "212021293",
+    "sa2_name": "Berwick - North",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Bethanga": {
+    "sa2_code": "204031072",
+    "sa2_name": "Towong",
+    "lga_code": "26670",
+    "lga_name": "Towong"
+  },
+  "Beulah": {
+    "sa2_code": "215011394",
+    "sa2_name": "Yarriambiack",
+    "lga_code": "27630",
+    "lga_name": "Yarriambiack"
+  },
+  "Beverford": {
+    "sa2_code": "215031405",
+    "sa2_name": "Swan Hill Surrounds",
+    "lga_code": "26610",
+    "lga_name": "Swan Hill"
+  },
+  "Beveridge": {
+    "sa2_code": "209041224",
+    "sa2_name": "Wallan",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Big Hill": {
+    "sa2_code": "202011022",
+    "sa2_name": "Kangaroo Flat - Golden Square",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Birchip": {
+    "sa2_code": "215031400",
+    "sa2_name": "Buloke",
+    "lga_code": "21270",
+    "lga_name": "Buloke"
+  },
+  "Birregurra": {
+    "sa2_code": "217031473",
+    "sa2_name": "Colac Surrounds",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Bittern": {
+    "sa2_code": "214021379",
+    "sa2_name": "Hastings - Somers",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Black Rock": {
+    "sa2_code": "208011173",
+    "sa2_name": "Sandringham - Black Rock",
+    "lga_code": "20910",
+    "lga_name": "Bayside (Vic.)"
+  },
+  "Blackburn": {
+    "sa2_code": "207031161",
+    "sa2_name": "Blackburn",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Blackburn North": {
+    "sa2_code": "207031161",
+    "sa2_name": "Blackburn",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Blackburn South": {
+    "sa2_code": "207031162",
+    "sa2_name": "Blackburn South",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Blackwood": {
+    "sa2_code": "201021009",
+    "sa2_name": "Bacchus Marsh Surrounds",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Blowhard": {
+    "sa2_code": "201021010",
+    "sa2_name": "Creswick - Clunes",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Bogong": {
+    "sa2_code": "204031069",
+    "sa2_name": "Bright - Mount Beauty",
+    "lga_code": "20110",
+    "lga_name": "Alpine"
+  },
+  "Boho South": {
+    "sa2_code": "204011055",
+    "sa2_name": "Euroa",
+    "lga_code": "26430",
+    "lga_name": "Strathbogie"
+  },
+  "Boisdale": {
+    "sa2_code": "205051101",
+    "sa2_name": "Maffra",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Bolinda": {
+    "sa2_code": "210021235",
+    "sa2_name": "Romsey",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Bolwarra": {
+    "sa2_code": "217011420",
+    "sa2_name": "Glenelg (Vic.)",
+    "lga_code": "22410",
+    "lga_name": "Glenelg"
+  },
+  "Bona Vista": {
+    "sa2_code": "205011079",
+    "sa2_name": "Warragul",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Bonbeach": {
+    "sa2_code": "208031186",
+    "sa2_name": "Chelsea - Bonbeach",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Boneo": {
+    "sa2_code": "214021378",
+    "sa2_name": "Flinders",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Boolarra": {
+    "sa2_code": "205041094",
+    "sa2_name": "Churchill",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Boort": {
+    "sa2_code": "202031033",
+    "sa2_name": "Loddon",
+    "lga_code": "23940",
+    "lga_name": "Loddon"
+  },
+  "Boronia": {
+    "sa2_code": "211011446",
+    "sa2_name": "Boronia",
+    "lga_code": "23670",
+    "lga_name": "Knox"
+  },
+  "Botanic Ridge": {
+    "sa2_code": "212031303",
+    "sa2_name": "Cranbourne South",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Box Hill": {
+    "sa2_code": "207031163",
+    "sa2_name": "Box Hill",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Box Hill North": {
+    "sa2_code": "207031164",
+    "sa2_name": "Box Hill North",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Box Hill South": {
+    "sa2_code": "207031163",
+    "sa2_name": "Box Hill",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Branxholme": {
+    "sa2_code": "217011423",
+    "sa2_name": "Southern Grampians",
+    "lga_code": "26260",
+    "lga_name": "Southern Grampians"
+  },
+  "Braybrook": {
+    "sa2_code": "213031347",
+    "sa2_name": "Braybrook",
+    "lga_code": "24330",
+    "lga_name": "Maribyrnong"
+  },
+  "Briagolong": {
+    "sa2_code": "205051101",
+    "sa2_name": "Maffra",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Briar Hill": {
+    "sa2_code": "209011202",
+    "sa2_name": "Montmorency - Briar Hill",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Bridgewater On Loddon": {
+    "sa2_code": "202031033",
+    "sa2_name": "Loddon",
+    "lga_code": "23940",
+    "lga_name": "Loddon"
+  },
+  "Bright": {
+    "sa2_code": "204031069",
+    "sa2_name": "Bright - Mount Beauty",
+    "lga_code": "20110",
+    "lga_name": "Alpine"
+  },
+  "Brighton": {
+    "sa2_code": "208011172",
+    "sa2_name": "Hampton",
+    "lga_code": "20910",
+    "lga_name": "Bayside (Vic.)"
+  },
+  "Brighton East": {
+    "sa2_code": "208011170",
+    "sa2_name": "Brighton East",
+    "lga_code": "20910",
+    "lga_name": "Bayside (Vic.)"
+  },
+  "Broadford": {
+    "sa2_code": "204011056",
+    "sa2_name": "Kilmore - Broadford",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Broadmeadows": {
+    "sa2_code": "210051243",
+    "sa2_name": "Campbellfield - Coolaroo",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Broken Creek": {
+    "sa2_code": "204021064",
+    "sa2_name": "Benalla Surrounds",
+    "lga_code": "21010",
+    "lga_name": "Benalla"
+  },
+  "Brookfield": {
+    "sa2_code": "213041571",
+    "sa2_name": "Brookfield",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Brooklyn": {
+    "sa2_code": "213021343",
+    "sa2_name": "Altona North",
+    "lga_code": "23110",
+    "lga_name": "Hobsons Bay"
+  },
+  "Brown Hill": {
+    "sa2_code": "201011481",
+    "sa2_name": "Ballarat East - Warrenheip",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Brunswick": {
+    "sa2_code": "206011496",
+    "sa2_name": "Brunswick - South",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Brunswick East": {
+    "sa2_code": "206011106",
+    "sa2_name": "Brunswick East",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Brunswick North": {
+    "sa2_code": "206011495",
+    "sa2_name": "Brunswick - North",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Brunswick South": {
+    "sa2_code": "206011107",
+    "sa2_name": "Brunswick West",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Brunswick West": {
+    "sa2_code": "206011107",
+    "sa2_name": "Brunswick West",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Bruthen": {
+    "sa2_code": "205021082",
+    "sa2_name": "Bruthen - Omeo",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Buangor": {
+    "sa2_code": "215011387",
+    "sa2_name": "Ararat Surrounds",
+    "lga_code": "20260",
+    "lga_name": "Ararat"
+  },
+  "Buchan": {
+    "sa2_code": "205021085",
+    "sa2_name": "Orbost",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Bullarto": {
+    "sa2_code": "201021011",
+    "sa2_name": "Daylesford",
+    "lga_code": "22910",
+    "lga_name": "Hepburn"
+  },
+  "Bulleen": {
+    "sa2_code": "207021156",
+    "sa2_name": "Bulleen",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Bullengarook": {
+    "sa2_code": "210021232",
+    "sa2_name": "Gisborne",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Buln Buln": {
+    "sa2_code": "205011077",
+    "sa2_name": "Mount Baw Baw Region",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Bundalaguah": {
+    "sa2_code": "205051101",
+    "sa2_name": "Maffra",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Bundoora": {
+    "sa2_code": "209021205",
+    "sa2_name": "Kingsbury",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Bungaree": {
+    "sa2_code": "201021012",
+    "sa2_name": "Gordon (Vic.)",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Buninyong": {
+    "sa2_code": "201011005",
+    "sa2_name": "Buninyong",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Bunyip": {
+    "sa2_code": "212011547",
+    "sa2_name": "Bunyip - Garfield",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Burnley": {
+    "sa2_code": "206071517",
+    "sa2_name": "Richmond (South) - Cremorne",
+    "lga_code": "27350",
+    "lga_name": "Yarra"
+  },
+  "Burnside": {
+    "sa2_code": "213041461",
+    "sa2_name": "Burnside",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Burnside Heights": {
+    "sa2_code": "213041462",
+    "sa2_name": "Burnside Heights",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Burwood": {
+    "sa2_code": "207031166",
+    "sa2_name": "Burwood East",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Burwood East": {
+    "sa2_code": "207031166",
+    "sa2_name": "Burwood East",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Buxton": {
+    "sa2_code": "204011054",
+    "sa2_name": "Alexandra",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Cabarita": {
+    "sa2_code": "215021396",
+    "sa2_name": "Merbein",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Cairnlea": {
+    "sa2_code": "213011329",
+    "sa2_name": "Cairnlea",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "California Gully": {
+    "sa2_code": "202011019",
+    "sa2_name": "California Gully - Eaglehawk",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Camberwell": {
+    "sa2_code": "207011149",
+    "sa2_name": "Camberwell",
+    "lga_code": "21110",
+    "lga_name": "Boroondara"
+  },
+  "Campbellfield": {
+    "sa2_code": "210051243",
+    "sa2_name": "Campbellfield - Coolaroo",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Campbells Creek": {
+    "sa2_code": "202021027",
+    "sa2_name": "Castlemaine",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Camperdown": {
+    "sa2_code": "217031471",
+    "sa2_name": "Camperdown",
+    "lga_code": "21830",
+    "lga_name": "Corangamite"
+  },
+  "Cann River": {
+    "sa2_code": "205021085",
+    "sa2_name": "Orbost",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Canterbury": {
+    "sa2_code": "207011155",
+    "sa2_name": "Surrey Hills (West) - Canterbury",
+    "lga_code": "21110",
+    "lga_name": "Boroondara"
+  },
+  "Cape Clear": {
+    "sa2_code": "201031015",
+    "sa2_name": "Golden Plains - North",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Capel Sound": {
+    "sa2_code": "214021384",
+    "sa2_name": "Rosebud - McCrae",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Cardinia": {
+    "sa2_code": "212011548",
+    "sa2_name": "Koo Wee Rup",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Cardross": {
+    "sa2_code": "215021399",
+    "sa2_name": "Red Cliffs",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Carisbrook": {
+    "sa2_code": "201031017",
+    "sa2_name": "Maryborough Surrounds",
+    "lga_code": "21670",
+    "lga_name": "Central Goldfields"
+  },
+  "Carlisle River": {
+    "sa2_code": "217031476",
+    "sa2_name": "Otway",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Carlsruhe": {
+    "sa2_code": "202021030",
+    "sa2_name": "Kyneton",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Carlton": {
+    "sa2_code": "206041117",
+    "sa2_name": "Carlton",
+    "lga_code": "24600",
+    "lga_name": "Melbourne"
+  },
+  "Carlton North": {
+    "sa2_code": "206071140",
+    "sa2_name": "Carlton North - Princes Hill",
+    "lga_code": "27350",
+    "lga_name": "Yarra"
+  },
+  "Carnegie": {
+    "sa2_code": "208021176",
+    "sa2_name": "Carnegie",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Caroline Springs": {
+    "sa2_code": "213041463",
+    "sa2_name": "Caroline Springs",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Carrum": {
+    "sa2_code": "208031185",
+    "sa2_name": "Carrum - Patterson Lakes",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Carrum Downs": {
+    "sa2_code": "214011370",
+    "sa2_name": "Carrum Downs",
+    "lga_code": "22170",
+    "lga_name": "Frankston"
+  },
+  "Casterton": {
+    "sa2_code": "217011420",
+    "sa2_name": "Glenelg (Vic.)",
+    "lga_code": "22410",
+    "lga_name": "Glenelg"
+  },
+  "Castlemaine": {
+    "sa2_code": "202021027",
+    "sa2_name": "Castlemaine",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Caulfield": {
+    "sa2_code": "208021177",
+    "sa2_name": "Caulfield - North",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Caulfield East": {
+    "sa2_code": "208021177",
+    "sa2_name": "Caulfield - North",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Caulfield North": {
+    "sa2_code": "208021177",
+    "sa2_name": "Caulfield - North",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Caulfield South": {
+    "sa2_code": "208021178",
+    "sa2_name": "Caulfield - South",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Cavendish": {
+    "sa2_code": "217011423",
+    "sa2_name": "Southern Grampians",
+    "lga_code": "26260",
+    "lga_name": "Southern Grampians"
+  },
+  "Ceres": {
+    "sa2_code": "203021042",
+    "sa2_name": "Highton",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Chadstone": {
+    "sa2_code": "212051319",
+    "sa2_name": "Ashwood - Chadstone",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "Charlemont": {
+    "sa2_code": "203021485",
+    "sa2_name": "Charlemont",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Charlton": {
+    "sa2_code": "215031400",
+    "sa2_name": "Buloke",
+    "lga_code": "21270",
+    "lga_name": "Buloke"
+  },
+  "Chelsea": {
+    "sa2_code": "208031186",
+    "sa2_name": "Chelsea - Bonbeach",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Chelsea Heights": {
+    "sa2_code": "208031187",
+    "sa2_name": "Chelsea Heights",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Cheltenham": {
+    "sa2_code": "208031188",
+    "sa2_name": "Highett (East) - Cheltenham",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Chewton": {
+    "sa2_code": "202021027",
+    "sa2_name": "Castlemaine",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Childers": {
+    "sa2_code": "205011078",
+    "sa2_name": "Trafalgar (Vic.)",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Chiltern": {
+    "sa2_code": "204031070",
+    "sa2_name": "Chiltern - Indigo Valley",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Chirnside Park": {
+    "sa2_code": "211051275",
+    "sa2_name": "Chirnside Park",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Christmas Hills": {
+    "sa2_code": "209031212",
+    "sa2_name": "Panton Hill - St Andrews",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Chum Creek": {
+    "sa2_code": "211051276",
+    "sa2_name": "Healesville - Yarra Glen",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Churchill": {
+    "sa2_code": "205041094",
+    "sa2_name": "Churchill",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Clarinda": {
+    "sa2_code": "208031191",
+    "sa2_name": "Moorabbin - Heatherton",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Clarkes Hill": {
+    "sa2_code": "201021012",
+    "sa2_name": "Gordon (Vic.)",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Clayton": {
+    "sa2_code": "212051567",
+    "sa2_name": "Clayton (North) - Notting Hill",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "Clayton South": {
+    "sa2_code": "212041309",
+    "sa2_name": "Clarinda - Oakleigh South",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Clifton Creek": {
+    "sa2_code": "205021082",
+    "sa2_name": "Bruthen - Omeo",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Clifton Hill": {
+    "sa2_code": "206071145",
+    "sa2_name": "Clifton Hill - Alphington",
+    "lga_code": "27350",
+    "lga_name": "Yarra"
+  },
+  "Clifton Springs": {
+    "sa2_code": "203031048",
+    "sa2_name": "Clifton Springs",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Clunes": {
+    "sa2_code": "201021010",
+    "sa2_name": "Creswick - Clunes",
+    "lga_code": "22910",
+    "lga_name": "Hepburn"
+  },
+  "Clyde": {
+    "sa2_code": "212031303",
+    "sa2_name": "Cranbourne South",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Clyde North": {
+    "sa2_code": "212031557",
+    "sa2_name": "Cranbourne East - North",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Cobains": {
+    "sa2_code": "205051100",
+    "sa2_name": "Longford - Loch Sport",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Cobblebank": {
+    "sa2_code": "213041572",
+    "sa2_name": "Cobblebank - Strathtulloh",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Cobden": {
+    "sa2_code": "217031475",
+    "sa2_name": "Corangamite - South",
+    "lga_code": "21830",
+    "lga_name": "Corangamite"
+  },
+  "Cobram": {
+    "sa2_code": "216021411",
+    "sa2_name": "Cobram",
+    "lga_code": "24900",
+    "lga_name": "Moira"
+  },
+  "Coburg": {
+    "sa2_code": "210031236",
+    "sa2_name": "Coburg North",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Coburg North": {
+    "sa2_code": "210031236",
+    "sa2_name": "Coburg North",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Cockatoo": {
+    "sa2_code": "212011289",
+    "sa2_name": "Emerald - Cockatoo",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Cohuna": {
+    "sa2_code": "215031401",
+    "sa2_name": "Gannawarra",
+    "lga_code": "22250",
+    "lga_name": "Gannawarra"
+  },
+  "Coimadai": {
+    "sa2_code": "213041353",
+    "sa2_name": "Bacchus Marsh",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Colac": {
+    "sa2_code": "217031472",
+    "sa2_name": "Colac",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Colbinabbin": {
+    "sa2_code": "216011410",
+    "sa2_name": "Rushworth",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Coldstream": {
+    "sa2_code": "211051278",
+    "sa2_name": "Lilydale - Coldstream",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Coleraine": {
+    "sa2_code": "217011423",
+    "sa2_name": "Southern Grampians",
+    "lga_code": "26260",
+    "lga_name": "Southern Grampians"
+  },
+  "Collingwood": {
+    "sa2_code": "206071141",
+    "sa2_name": "Collingwood",
+    "lga_code": "27350",
+    "lga_name": "Yarra"
+  },
+  "Concongella": {
+    "sa2_code": "215011392",
+    "sa2_name": "Stawell",
+    "lga_code": "25810",
+    "lga_name": "Northern Grampians"
+  },
+  "Congupna": {
+    "sa2_code": "216031418",
+    "sa2_name": "Shepparton Surrounds - East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Coolaroo": {
+    "sa2_code": "210051243",
+    "sa2_name": "Campbellfield - Coolaroo",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Coragulac": {
+    "sa2_code": "217031473",
+    "sa2_name": "Colac Surrounds",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Corinella": {
+    "sa2_code": "205031093",
+    "sa2_name": "Wonthaggi - Inverloch",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Corio": {
+    "sa2_code": "203021486",
+    "sa2_name": "Corio - Lovely Banks",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Corryong": {
+    "sa2_code": "204031072",
+    "sa2_name": "Towong",
+    "lga_code": "26670",
+    "lga_name": "Towong"
+  },
+  "Cottles Bridge": {
+    "sa2_code": "209031212",
+    "sa2_name": "Panton Hill - St Andrews",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Cowes": {
+    "sa2_code": "205031091",
+    "sa2_name": "Phillip Island",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Cowwarr": {
+    "sa2_code": "205051102",
+    "sa2_name": "Rosedale",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Craigieburn": {
+    "sa2_code": "210051443",
+    "sa2_name": "Craigieburn - South",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Cranbourne": {
+    "sa2_code": "212031560",
+    "sa2_name": "Cranbourne North - West",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Cranbourne East": {
+    "sa2_code": "212031557",
+    "sa2_name": "Cranbourne East - North",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Cranbourne North": {
+    "sa2_code": "212031559",
+    "sa2_name": "Cranbourne North - East",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Cranbourne South": {
+    "sa2_code": "212031303",
+    "sa2_name": "Cranbourne South",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Cranbourne West": {
+    "sa2_code": "212031304",
+    "sa2_name": "Cranbourne West",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Creek Junction": {
+    "sa2_code": "204011055",
+    "sa2_name": "Euroa",
+    "lga_code": "26430",
+    "lga_name": "Strathbogie"
+  },
+  "Creswick": {
+    "sa2_code": "201021010",
+    "sa2_name": "Creswick - Clunes",
+    "lga_code": "22910",
+    "lga_name": "Hepburn"
+  },
+  "Crib Point": {
+    "sa2_code": "214021379",
+    "sa2_name": "Hastings - Somers",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Croydon": {
+    "sa2_code": "211031451",
+    "sa2_name": "Croydon - West",
+    "lga_code": "24410",
+    "lga_name": "Maroondah"
+  },
+  "Croydon Hills": {
+    "sa2_code": "211031265",
+    "sa2_name": "Croydon Hills - Warranwood",
+    "lga_code": "24410",
+    "lga_name": "Maroondah"
+  },
+  "Croydon North": {
+    "sa2_code": "211031265",
+    "sa2_name": "Croydon Hills - Warranwood",
+    "lga_code": "24410",
+    "lga_name": "Maroondah"
+  },
+  "Croydon South": {
+    "sa2_code": "211031452",
+    "sa2_name": "Croydon South",
+    "lga_code": "24410",
+    "lga_name": "Maroondah"
+  },
+  "Cudgee": {
+    "sa2_code": "217041477",
+    "sa2_name": "Moyne - East",
+    "lga_code": "25490",
+    "lga_name": "Moyne"
+  },
+  "Dallas": {
+    "sa2_code": "210051243",
+    "sa2_name": "Campbellfield - Coolaroo",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Dalyston": {
+    "sa2_code": "205031093",
+    "sa2_name": "Wonthaggi - Inverloch",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Dandenong": {
+    "sa2_code": "212041563",
+    "sa2_name": "Dandenong - North",
+    "lga_code": "22670",
+    "lga_name": "Greater Dandenong"
+  },
+  "Dandenong North": {
+    "sa2_code": "212041312",
+    "sa2_name": "Dandenong North",
+    "lga_code": "22670",
+    "lga_name": "Greater Dandenong"
+  },
+  "Darley": {
+    "sa2_code": "213041353",
+    "sa2_name": "Bacchus Marsh",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Darnum": {
+    "sa2_code": "205011079",
+    "sa2_name": "Warragul",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Darraweit Guim": {
+    "sa2_code": "210021235",
+    "sa2_name": "Romsey",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Dartmoor": {
+    "sa2_code": "217011420",
+    "sa2_name": "Glenelg (Vic.)",
+    "lga_code": "22410",
+    "lga_name": "Glenelg"
+  },
+  "Daylesford": {
+    "sa2_code": "201021011",
+    "sa2_name": "Daylesford",
+    "lga_code": "22910",
+    "lga_name": "Hepburn"
+  },
+  "Deans Marsh": {
+    "sa2_code": "203011036",
+    "sa2_name": "Winchelsea",
+    "lga_code": "26490",
+    "lga_name": "Surf Coast"
+  },
+  "Deanside": {
+    "sa2_code": "213041574",
+    "sa2_name": "Fraser Rise - Plumpton",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Dederang": {
+    "sa2_code": "204031069",
+    "sa2_name": "Bright - Mount Beauty",
+    "lga_code": "20110",
+    "lga_name": "Alpine"
+  },
+  "Deepdene": {
+    "sa2_code": "207011147",
+    "sa2_name": "Balwyn",
+    "lga_code": "21110",
+    "lga_name": "Boroondara"
+  },
+  "Deer Park": {
+    "sa2_code": "213011569",
+    "sa2_name": "Deer Park",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Delacombe": {
+    "sa2_code": "201011006",
+    "sa2_name": "Delacombe",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Delahey": {
+    "sa2_code": "213011331",
+    "sa2_name": "Delahey",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Dennington": {
+    "sa2_code": "217041479",
+    "sa2_name": "Warrnambool - North",
+    "lga_code": "26730",
+    "lga_name": "Warrnambool"
+  },
+  "Derrimut": {
+    "sa2_code": "213011570",
+    "sa2_name": "Derrimut",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Derrinallum": {
+    "sa2_code": "217031474",
+    "sa2_name": "Corangamite - North",
+    "lga_code": "21830",
+    "lga_name": "Corangamite"
+  },
+  "Devenish": {
+    "sa2_code": "204021064",
+    "sa2_name": "Benalla Surrounds",
+    "lga_code": "21010",
+    "lga_name": "Benalla"
+  },
+  "Devon Meadows": {
+    "sa2_code": "212031303",
+    "sa2_name": "Cranbourne South",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Dhurringile": {
+    "sa2_code": "216031419",
+    "sa2_name": "Shepparton Surrounds - West",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Diamond Creek": {
+    "sa2_code": "209031215",
+    "sa2_name": "Wattle Glen - Diamond Creek",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Diggers Rest": {
+    "sa2_code": "210041539",
+    "sa2_name": "Diggers Rest",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Dimboola": {
+    "sa2_code": "215011390",
+    "sa2_name": "Nhill Region",
+    "lga_code": "22980",
+    "lga_name": "Hindmarsh"
+  },
+  "Dingee": {
+    "sa2_code": "202031033",
+    "sa2_name": "Loddon",
+    "lga_code": "23940",
+    "lga_name": "Loddon"
+  },
+  "Dingley Village": {
+    "sa2_code": "212041313",
+    "sa2_name": "Dingley Village",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Dinner Plain": {
+    "sa2_code": "204031069",
+    "sa2_name": "Bright - Mount Beauty",
+    "lga_code": "20110",
+    "lga_name": "Alpine"
+  },
+  "Docklands": {
+    "sa2_code": "206041118",
+    "sa2_name": "Docklands",
+    "lga_code": "24600",
+    "lga_name": "Melbourne"
+  },
+  "Don Valley": {
+    "sa2_code": "211051286",
+    "sa2_name": "Yarra Valley",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Donald": {
+    "sa2_code": "215031400",
+    "sa2_name": "Buloke",
+    "lga_code": "21270",
+    "lga_name": "Buloke"
+  },
+  "Doncaster": {
+    "sa2_code": "207021157",
+    "sa2_name": "Doncaster",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Doncaster East": {
+    "sa2_code": "207021425",
+    "sa2_name": "Doncaster East - South",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Donnybrook": {
+    "sa2_code": "209041225",
+    "sa2_name": "Whittlesea",
+    "lga_code": "27070",
+    "lga_name": "Whittlesea"
+  },
+  "Donvale": {
+    "sa2_code": "211021261",
+    "sa2_name": "Donvale - Park Orchards",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Dookie": {
+    "sa2_code": "216031418",
+    "sa2_name": "Shepparton Surrounds - East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Dookie Campus": {
+    "sa2_code": "216031418",
+    "sa2_name": "Shepparton Surrounds - East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Dookie College": {
+    "sa2_code": "216031418",
+    "sa2_name": "Shepparton Surrounds - East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Doreen": {
+    "sa2_code": "209031212",
+    "sa2_name": "Panton Hill - St Andrews",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Doveton": {
+    "sa2_code": "212021295",
+    "sa2_name": "Doveton",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Dromana": {
+    "sa2_code": "214021377",
+    "sa2_name": "Dromana",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Drouin": {
+    "sa2_code": "205011076",
+    "sa2_name": "Drouin",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Drouin East": {
+    "sa2_code": "205011079",
+    "sa2_name": "Warragul",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Drouin South": {
+    "sa2_code": "205011076",
+    "sa2_name": "Drouin",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Drouin West": {
+    "sa2_code": "205011076",
+    "sa2_name": "Drouin",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Drysdale": {
+    "sa2_code": "203031048",
+    "sa2_name": "Clifton Springs",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Dunkeld": {
+    "sa2_code": "217011423",
+    "sa2_name": "Southern Grampians",
+    "lga_code": "26260",
+    "lga_name": "Southern Grampians"
+  },
+  "Dunnstown": {
+    "sa2_code": "201021012",
+    "sa2_name": "Gordon (Vic.)",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Dunolly": {
+    "sa2_code": "201031017",
+    "sa2_name": "Maryborough Surrounds",
+    "lga_code": "21670",
+    "lga_name": "Central Goldfields"
+  },
+  "Eagle Point": {
+    "sa2_code": "205021086",
+    "sa2_name": "Paynesville",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Eaglehawk": {
+    "sa2_code": "202011019",
+    "sa2_name": "California Gully - Eaglehawk",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "East Bentleigh": {
+    "sa2_code": "208021427",
+    "sa2_name": "Bentleigh East - South",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "East Geelong": {
+    "sa2_code": "203021039",
+    "sa2_name": "Geelong",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "East Preston": {
+    "sa2_code": "209021428",
+    "sa2_name": "Preston - East",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "East Warburton": {
+    "sa2_code": "211051286",
+    "sa2_name": "Yarra Valley",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Eastwood": {
+    "sa2_code": "205021081",
+    "sa2_name": "Bairnsdale",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Echuca": {
+    "sa2_code": "216011406",
+    "sa2_name": "Echuca",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Edenhope": {
+    "sa2_code": "215011393",
+    "sa2_name": "West Wimmera",
+    "lga_code": "26890",
+    "lga_name": "West Wimmera"
+  },
+  "Edi Upper": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Edithvale": {
+    "sa2_code": "208031189",
+    "sa2_name": "Edithvale - Aspendale",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Eildon": {
+    "sa2_code": "204011054",
+    "sa2_name": "Alexandra",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Elliminyt": {
+    "sa2_code": "217031472",
+    "sa2_name": "Colac",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Ellinbank": {
+    "sa2_code": "205011079",
+    "sa2_name": "Warragul",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Elmore": {
+    "sa2_code": "202031032",
+    "sa2_name": "Bendigo Surrounds - North",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Elphinstone": {
+    "sa2_code": "202021028",
+    "sa2_name": "Castlemaine Surrounds",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Elsternwick": {
+    "sa2_code": "208021179",
+    "sa2_name": "Elsternwick",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Eltham": {
+    "sa2_code": "209031209",
+    "sa2_name": "Eltham",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Eltham North": {
+    "sa2_code": "209031209",
+    "sa2_name": "Eltham",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Elwood": {
+    "sa2_code": "206051129",
+    "sa2_name": "Elwood",
+    "lga_code": "25900",
+    "lga_name": "Port Phillip"
+  },
+  "Emerald": {
+    "sa2_code": "212011289",
+    "sa2_name": "Emerald - Cockatoo",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Endeavour Hills": {
+    "sa2_code": "212021454",
+    "sa2_name": "Endeavour Hills - South",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Eppalock": {
+    "sa2_code": "202021026",
+    "sa2_name": "Bendigo Surrounds - South",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Epping": {
+    "sa2_code": "209041432",
+    "sa2_name": "Epping - South",
+    "lga_code": "27070",
+    "lga_name": "Whittlesea"
+  },
+  "Epsom": {
+    "sa2_code": "202011025",
+    "sa2_name": "White Hills - Ascot",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Eskdale": {
+    "sa2_code": "204031072",
+    "sa2_name": "Towong",
+    "lga_code": "26670",
+    "lga_name": "Towong"
+  },
+  "Essendon": {
+    "sa2_code": "210011230",
+    "sa2_name": "Niddrie - Essendon West",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Essendon North": {
+    "sa2_code": "206031501",
+    "sa2_name": "Essendon (West) - Aberfeldie",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Euroa": {
+    "sa2_code": "204011055",
+    "sa2_name": "Euroa",
+    "lga_code": "26430",
+    "lga_name": "Strathbogie"
+  },
+  "Everton": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Exford": {
+    "sa2_code": "213041573",
+    "sa2_name": "Eynesbury - Exford",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Eynesbury": {
+    "sa2_code": "213041573",
+    "sa2_name": "Eynesbury - Exford",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Fairfield": {
+    "sa2_code": "206021110",
+    "sa2_name": "Alphington - Fairfield",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Falls Creek": {
+    "sa2_code": "204031069",
+    "sa2_name": "Bright - Mount Beauty",
+    "lga_code": "29399",
+    "lga_name": "Unincorporated Vic"
+  },
+  "Fawkner": {
+    "sa2_code": "210031237",
+    "sa2_name": "Fawkner",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Ferntree Gully": {
+    "sa2_code": "211011447",
+    "sa2_name": "Ferntree Gully - North",
+    "lga_code": "23670",
+    "lga_name": "Knox"
+  },
+  "Ferny Creek": {
+    "sa2_code": "211051282",
+    "sa2_name": "Mount Dandenong - Olinda",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Fish Creek": {
+    "sa2_code": "205031087",
+    "sa2_name": "Foster",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Fitzroy": {
+    "sa2_code": "206071142",
+    "sa2_name": "Fitzroy",
+    "lga_code": "27350",
+    "lga_name": "Yarra"
+  },
+  "Fitzroy North": {
+    "sa2_code": "206071143",
+    "sa2_name": "Fitzroy North",
+    "lga_code": "27350",
+    "lga_name": "Yarra"
+  },
+  "Flemington": {
+    "sa2_code": "207021157",
+    "sa2_name": "Doncaster",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Flowerdale": {
+    "sa2_code": "204011062",
+    "sa2_name": "Yea",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Footscray": {
+    "sa2_code": "213031348",
+    "sa2_name": "Footscray",
+    "lga_code": "24330",
+    "lga_name": "Maribyrnong"
+  },
+  "Forest Hill": {
+    "sa2_code": "211041269",
+    "sa2_name": "Forest Hill",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Forrest": {
+    "sa2_code": "217031476",
+    "sa2_name": "Otway",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Foster": {
+    "sa2_code": "205031087",
+    "sa2_name": "Foster",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Frankston": {
+    "sa2_code": "214011373",
+    "sa2_name": "Frankston South",
+    "lga_code": "22170",
+    "lga_name": "Frankston"
+  },
+  "Frankston East": {
+    "sa2_code": "214011372",
+    "sa2_name": "Frankston North",
+    "lga_code": "22170",
+    "lga_name": "Frankston"
+  },
+  "Frankston North": {
+    "sa2_code": "214011372",
+    "sa2_name": "Frankston North",
+    "lga_code": "22170",
+    "lga_name": "Frankston"
+  },
+  "Frankston South": {
+    "sa2_code": "214011373",
+    "sa2_name": "Frankston South",
+    "lga_code": "22170",
+    "lga_name": "Frankston"
+  },
+  "Fraser Rise": {
+    "sa2_code": "213041574",
+    "sa2_name": "Fraser Rise - Plumpton",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "French Island": {
+    "sa2_code": "205031088",
+    "sa2_name": "French Island",
+    "lga_code": "29399",
+    "lga_name": "Unincorporated Vic"
+  },
+  "Freshwater Creek": {
+    "sa2_code": "203011036",
+    "sa2_name": "Winchelsea",
+    "lga_code": "26490",
+    "lga_name": "Surf Coast"
+  },
+  "Garfield": {
+    "sa2_code": "212011547",
+    "sa2_name": "Bunyip - Garfield",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Garfield North": {
+    "sa2_code": "205041094",
+    "sa2_name": "Churchill",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Geelong": {
+    "sa2_code": "203021047",
+    "sa2_name": "North Geelong - Bell Park",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Geelong East": {
+    "sa2_code": "203021039",
+    "sa2_name": "Geelong",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Geelong West": {
+    "sa2_code": "203021040",
+    "sa2_name": "Geelong West - Hamlyn Heights",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Gembrook": {
+    "sa2_code": "212011289",
+    "sa2_name": "Emerald - Cockatoo",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Girgarre": {
+    "sa2_code": "216011410",
+    "sa2_name": "Rushworth",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Gisborne": {
+    "sa2_code": "210021232",
+    "sa2_name": "Gisborne",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Gladstone Park": {
+    "sa2_code": "210051245",
+    "sa2_name": "Gladstone Park - Westmeadows",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Gladysdale": {
+    "sa2_code": "211051286",
+    "sa2_name": "Yarra Valley",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Glen Forbes": {
+    "sa2_code": "205031093",
+    "sa2_name": "Wonthaggi - Inverloch",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Glen Huntly": {
+    "sa2_code": "208021176",
+    "sa2_name": "Carnegie",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Glen Iris": {
+    "sa2_code": "208041194",
+    "sa2_name": "Malvern - Glen Iris",
+    "lga_code": "26350",
+    "lga_name": "Stonnington"
+  },
+  "Glen Park": {
+    "sa2_code": "201011482",
+    "sa2_name": "Ballarat North - Invermay",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Glen Waverley": {
+    "sa2_code": "212051321",
+    "sa2_name": "Glen Waverley - East",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "Glengarry": {
+    "sa2_code": "205041098",
+    "sa2_name": "Yallourn North - Glengarry",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Glenrowan": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Glenroy": {
+    "sa2_code": "210031536",
+    "sa2_name": "Glenroy - West",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Glenthompson": {
+    "sa2_code": "217011423",
+    "sa2_name": "Southern Grampians",
+    "lga_code": "26260",
+    "lga_name": "Southern Grampians"
+  },
+  "Golden Square": {
+    "sa2_code": "202011022",
+    "sa2_name": "Kangaroo Flat - Golden Square",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Goornong": {
+    "sa2_code": "202031032",
+    "sa2_name": "Bendigo Surrounds - North",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Gordon": {
+    "sa2_code": "201021012",
+    "sa2_name": "Gordon (Vic.)",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Gormandale": {
+    "sa2_code": "205051102",
+    "sa2_name": "Rosedale",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Goroke": {
+    "sa2_code": "215011393",
+    "sa2_name": "West Wimmera",
+    "lga_code": "26890",
+    "lga_name": "West Wimmera"
+  },
+  "Grahamvale": {
+    "sa2_code": "216031416",
+    "sa2_name": "Shepparton - North",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Grasmere": {
+    "sa2_code": "217041477",
+    "sa2_name": "Moyne - East",
+    "lga_code": "25490",
+    "lga_name": "Moyne"
+  },
+  "Great Western": {
+    "sa2_code": "215011392",
+    "sa2_name": "Stawell",
+    "lga_code": "25810",
+    "lga_name": "Northern Grampians"
+  },
+  "Greensborough": {
+    "sa2_code": "209031213",
+    "sa2_name": "Plenty - Yarrambat",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Greenvale": {
+    "sa2_code": "210051246",
+    "sa2_name": "Greenvale - Bulla",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Greta South": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Grovedale": {
+    "sa2_code": "203021487",
+    "sa2_name": "Grovedale - Mount Duneed",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Gruyere": {
+    "sa2_code": "211051285",
+    "sa2_name": "Wandin - Seville",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Guildford": {
+    "sa2_code": "202021028",
+    "sa2_name": "Castlemaine Surrounds",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Gunbower": {
+    "sa2_code": "216011408",
+    "sa2_name": "Lockington - Gunbower",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Haddon": {
+    "sa2_code": "201011007",
+    "sa2_name": "Smythes Creek",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Hadfield": {
+    "sa2_code": "210031440",
+    "sa2_name": "Hadfield",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Hallam": {
+    "sa2_code": "212021297",
+    "sa2_name": "Hallam",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Hallora": {
+    "sa2_code": "205011079",
+    "sa2_name": "Warragul",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Halls Gap": {
+    "sa2_code": "215011392",
+    "sa2_name": "Stawell",
+    "lga_code": "25810",
+    "lga_name": "Northern Grampians"
+  },
+  "Hamilton": {
+    "sa2_code": "217011421",
+    "sa2_name": "Hamilton (Vic.)",
+    "lga_code": "26260",
+    "lga_name": "Southern Grampians"
+  },
+  "Hamlyn Heights": {
+    "sa2_code": "203021040",
+    "sa2_name": "Geelong West - Hamlyn Heights",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Hampton": {
+    "sa2_code": "208011172",
+    "sa2_name": "Hampton",
+    "lga_code": "20910",
+    "lga_name": "Bayside (Vic.)"
+  },
+  "Hampton East": {
+    "sa2_code": "208011172",
+    "sa2_name": "Hampton",
+    "lga_code": "20910",
+    "lga_name": "Bayside (Vic.)"
+  },
+  "Hampton Park": {
+    "sa2_code": "212031561",
+    "sa2_name": "Hampton Park - East",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Harcourt": {
+    "sa2_code": "202021028",
+    "sa2_name": "Castlemaine Surrounds",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Harkaway": {
+    "sa2_code": "212021299",
+    "sa2_name": "Narre Warren North",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Harkness": {
+    "sa2_code": "213041358",
+    "sa2_name": "Melton West",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Harrietville": {
+    "sa2_code": "204031069",
+    "sa2_name": "Bright - Mount Beauty",
+    "lga_code": "20110",
+    "lga_name": "Alpine"
+  },
+  "Harston": {
+    "sa2_code": "216031419",
+    "sa2_name": "Shepparton Surrounds - West",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Hastings": {
+    "sa2_code": "214021379",
+    "sa2_name": "Hastings - Somers",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Haven": {
+    "sa2_code": "215011388",
+    "sa2_name": "Horsham",
+    "lga_code": "23190",
+    "lga_name": "Horsham"
+  },
+  "Hawkesdale": {
+    "sa2_code": "217041478",
+    "sa2_name": "Moyne - West",
+    "lga_code": "25490",
+    "lga_name": "Moyne"
+  },
+  "Hawthorn": {
+    "sa2_code": "207011520",
+    "sa2_name": "Hawthorn - South",
+    "lga_code": "21110",
+    "lga_name": "Boroondara"
+  },
+  "Hawthorn East": {
+    "sa2_code": "207011520",
+    "sa2_name": "Hawthorn - South",
+    "lga_code": "21110",
+    "lga_name": "Boroondara"
+  },
+  "Hazelwood North": {
+    "sa2_code": "205041094",
+    "sa2_name": "Churchill",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Healesville": {
+    "sa2_code": "211051276",
+    "sa2_name": "Healesville - Yarra Glen",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Heathcote": {
+    "sa2_code": "202021029",
+    "sa2_name": "Heathcote",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Heathmont": {
+    "sa2_code": "211031267",
+    "sa2_name": "Ringwood East",
+    "lga_code": "24410",
+    "lga_name": "Maroondah"
+  },
+  "Heidelberg": {
+    "sa2_code": "209011198",
+    "sa2_name": "Heidelberg - Rosanna",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Heidelberg West": {
+    "sa2_code": "209011199",
+    "sa2_name": "Heidelberg West",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Hepburn": {
+    "sa2_code": "201021011",
+    "sa2_name": "Daylesford",
+    "lga_code": "22910",
+    "lga_name": "Hepburn"
+  },
+  "Herne Hill": {
+    "sa2_code": "203021040",
+    "sa2_name": "Geelong West - Hamlyn Heights",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Hesket": {
+    "sa2_code": "210021235",
+    "sa2_name": "Romsey",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Heyfield": {
+    "sa2_code": "205051101",
+    "sa2_name": "Maffra",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Heywood": {
+    "sa2_code": "217011420",
+    "sa2_name": "Glenelg (Vic.)",
+    "lga_code": "22410",
+    "lga_name": "Glenelg"
+  },
+  "Highett": {
+    "sa2_code": "208011171",
+    "sa2_name": "Highett (West) - Cheltenham",
+    "lga_code": "20910",
+    "lga_name": "Bayside (Vic.)"
+  },
+  "Highton": {
+    "sa2_code": "203021042",
+    "sa2_name": "Highton",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Hillside": {
+    "sa2_code": "213041575",
+    "sa2_name": "Hillside",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Hoddles Creek": {
+    "sa2_code": "211051286",
+    "sa2_name": "Yarra Valley",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Hopetoun": {
+    "sa2_code": "215011394",
+    "sa2_name": "Yarriambiack",
+    "lga_code": "27630",
+    "lga_name": "Yarriambiack"
+  },
+  "Hoppers Crossing": {
+    "sa2_code": "213051362",
+    "sa2_name": "Hoppers Crossing - South",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Horsham": {
+    "sa2_code": "215011388",
+    "sa2_name": "Horsham",
+    "lga_code": "23190",
+    "lga_name": "Horsham"
+  },
+  "Howqua": {
+    "sa2_code": "204011057",
+    "sa2_name": "Mansfield (Vic.)",
+    "lga_code": "24250",
+    "lga_name": "Mansfield"
+  },
+  "Hughesdale": {
+    "sa2_code": "208021180",
+    "sa2_name": "Hughesdale",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "Huntly": {
+    "sa2_code": "202011025",
+    "sa2_name": "White Hills - Ascot",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Hurstbridge": {
+    "sa2_code": "209031210",
+    "sa2_name": "Hurstbridge",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Indigo Valley": {
+    "sa2_code": "204031070",
+    "sa2_name": "Chiltern - Indigo Valley",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Inglewood": {
+    "sa2_code": "202031033",
+    "sa2_name": "Loddon",
+    "lga_code": "23940",
+    "lga_name": "Loddon"
+  },
+  "Inverleigh": {
+    "sa2_code": "203011035",
+    "sa2_name": "Golden Plains - South",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Inverloch": {
+    "sa2_code": "205031093",
+    "sa2_name": "Wonthaggi - Inverloch",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Invermay": {
+    "sa2_code": "201011482",
+    "sa2_name": "Ballarat North - Invermay",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Invermay Park": {
+    "sa2_code": "201011482",
+    "sa2_name": "Ballarat North - Invermay",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Irymple": {
+    "sa2_code": "215021395",
+    "sa2_name": "Irymple",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Ivanhoe": {
+    "sa2_code": "209011200",
+    "sa2_name": "Ivanhoe",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Ivanhoe East": {
+    "sa2_code": "209011201",
+    "sa2_name": "Ivanhoe East - Eaglemont",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Jacana": {
+    "sa2_code": "210051242",
+    "sa2_name": "Broadmeadows",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Jamieson": {
+    "sa2_code": "204011057",
+    "sa2_name": "Mansfield (Vic.)",
+    "lga_code": "24250",
+    "lga_name": "Mansfield"
+  },
+  "Jan Juc": {
+    "sa2_code": "203031053",
+    "sa2_name": "Torquay",
+    "lga_code": "26490",
+    "lga_name": "Surf Coast"
+  },
+  "Jeparit": {
+    "sa2_code": "215011390",
+    "sa2_name": "Nhill Region",
+    "lga_code": "22980",
+    "lga_name": "Hindmarsh"
+  },
+  "Jindivick": {
+    "sa2_code": "205011077",
+    "sa2_name": "Mount Baw Baw Region",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Junortoun": {
+    "sa2_code": "202011024",
+    "sa2_name": "Strathfieldsaye",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Kalkallo": {
+    "sa2_code": "210051445",
+    "sa2_name": "Mickleham - Yuroke",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Kallista": {
+    "sa2_code": "211051282",
+    "sa2_name": "Mount Dandenong - Olinda",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Kangaroo Flat": {
+    "sa2_code": "202011022",
+    "sa2_name": "Kangaroo Flat - Golden Square",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Kangaroo Ground": {
+    "sa2_code": "209031214",
+    "sa2_name": "Research - North Warrandyte",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Kaniva": {
+    "sa2_code": "215011390",
+    "sa2_name": "Nhill Region",
+    "lga_code": "26890",
+    "lga_name": "West Wimmera"
+  },
+  "Katamatite": {
+    "sa2_code": "216021412",
+    "sa2_name": "Moira",
+    "lga_code": "24900",
+    "lga_name": "Moira"
+  },
+  "Katandra West": {
+    "sa2_code": "216031418",
+    "sa2_name": "Shepparton Surrounds - East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Katunga": {
+    "sa2_code": "216021413",
+    "sa2_name": "Numurkah",
+    "lga_code": "24900",
+    "lga_name": "Moira"
+  },
+  "Kealba": {
+    "sa2_code": "213011332",
+    "sa2_name": "Keilor Downs",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Keilor": {
+    "sa2_code": "210011228",
+    "sa2_name": "Keilor",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Keilor Downs": {
+    "sa2_code": "213011332",
+    "sa2_name": "Keilor Downs",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Keilor East": {
+    "sa2_code": "210011534",
+    "sa2_name": "Keilor East",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Keilor Lodge": {
+    "sa2_code": "213011340",
+    "sa2_name": "Taylors Lakes",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Kennington": {
+    "sa2_code": "202011020",
+    "sa2_name": "East Bendigo - Kennington",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Kensington": {
+    "sa2_code": "206041121",
+    "sa2_name": "Kensington (Vic.)",
+    "lga_code": "24600",
+    "lga_name": "Melbourne"
+  },
+  "Kerang": {
+    "sa2_code": "215031402",
+    "sa2_name": "Kerang",
+    "lga_code": "22250",
+    "lga_name": "Gannawarra"
+  },
+  "Kew": {
+    "sa2_code": "207011522",
+    "sa2_name": "Kew - West",
+    "lga_code": "21110",
+    "lga_name": "Boroondara"
+  },
+  "Kew East": {
+    "sa2_code": "207011154",
+    "sa2_name": "Kew East",
+    "lga_code": "21110",
+    "lga_name": "Boroondara"
+  },
+  "Keysborough": {
+    "sa2_code": "212041566",
+    "sa2_name": "Keysborough - South",
+    "lga_code": "22670",
+    "lga_name": "Greater Dandenong"
+  },
+  "Kialla": {
+    "sa2_code": "216031593",
+    "sa2_name": "Kialla",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Kialla West": {
+    "sa2_code": "216031593",
+    "sa2_name": "Kialla",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Kilmore": {
+    "sa2_code": "204011056",
+    "sa2_name": "Kilmore - Broadford",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Kilsyth": {
+    "sa2_code": "211051277",
+    "sa2_name": "Kilsyth",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Kinglake": {
+    "sa2_code": "209031211",
+    "sa2_name": "Kinglake",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Kinglake Central": {
+    "sa2_code": "209031211",
+    "sa2_name": "Kinglake",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Kinglake West": {
+    "sa2_code": "209031211",
+    "sa2_name": "Kinglake",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Kings Park": {
+    "sa2_code": "213011333",
+    "sa2_name": "Kings Park (Vic.)",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Kingsbury": {
+    "sa2_code": "209021205",
+    "sa2_name": "Kingsbury",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Kingsville": {
+    "sa2_code": "213031351",
+    "sa2_name": "West Footscray - Tottenham",
+    "lga_code": "24330",
+    "lga_name": "Maribyrnong"
+  },
+  "Knoxfield": {
+    "sa2_code": "211011254",
+    "sa2_name": "Knoxfield - Scoresby",
+    "lga_code": "23670",
+    "lga_name": "Knox"
+  },
+  "Kongwak": {
+    "sa2_code": "205031089",
+    "sa2_name": "Korumburra",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Koo Wee Rup": {
+    "sa2_code": "212011548",
+    "sa2_name": "Koo Wee Rup",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Koondrook": {
+    "sa2_code": "215031401",
+    "sa2_name": "Gannawarra",
+    "lga_code": "22250",
+    "lga_name": "Gannawarra"
+  },
+  "Koonwarra": {
+    "sa2_code": "205031090",
+    "sa2_name": "Leongatha",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Koorlong": {
+    "sa2_code": "215021398",
+    "sa2_name": "Mildura Surrounds",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Koroit": {
+    "sa2_code": "217041478",
+    "sa2_name": "Moyne - West",
+    "lga_code": "25490",
+    "lga_name": "Moyne"
+  },
+  "Korumburra": {
+    "sa2_code": "205031089",
+    "sa2_name": "Korumburra",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Kurunjang": {
+    "sa2_code": "213041576",
+    "sa2_name": "Kurunjang - Toolern Vale",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Kyabram": {
+    "sa2_code": "216011407",
+    "sa2_name": "Kyabram",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Kyneton": {
+    "sa2_code": "202021030",
+    "sa2_name": "Kyneton",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Labertouche": {
+    "sa2_code": "205011076",
+    "sa2_name": "Drouin",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Laharum": {
+    "sa2_code": "215011389",
+    "sa2_name": "Horsham Surrounds",
+    "lga_code": "23190",
+    "lga_name": "Horsham"
+  },
+  "Lake Boga": {
+    "sa2_code": "215031405",
+    "sa2_name": "Swan Hill Surrounds",
+    "lga_code": "26610",
+    "lga_name": "Swan Hill"
+  },
+  "Lake Bolac": {
+    "sa2_code": "215011387",
+    "sa2_name": "Ararat Surrounds",
+    "lga_code": "20260",
+    "lga_name": "Ararat"
+  },
+  "Lake Charm": {
+    "sa2_code": "215031401",
+    "sa2_name": "Gannawarra",
+    "lga_code": "22250",
+    "lga_name": "Gannawarra"
+  },
+  "Lake Gardens": {
+    "sa2_code": "201011002",
+    "sa2_name": "Ballarat",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Lake Tyers Beach": {
+    "sa2_code": "205021084",
+    "sa2_name": "Lakes Entrance",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Lake Wendouree": {
+    "sa2_code": "201011002",
+    "sa2_name": "Ballarat",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Lakes Entrance": {
+    "sa2_code": "205021084",
+    "sa2_name": "Lakes Entrance",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Lal Lal": {
+    "sa2_code": "201021012",
+    "sa2_name": "Gordon (Vic.)",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Lalor": {
+    "sa2_code": "209041529",
+    "sa2_name": "Lalor - East",
+    "lga_code": "27070",
+    "lga_name": "Whittlesea"
+  },
+  "Lancaster": {
+    "sa2_code": "216011407",
+    "sa2_name": "Kyabram",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Lancefield": {
+    "sa2_code": "210021235",
+    "sa2_name": "Romsey",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Landsborough": {
+    "sa2_code": "201031013",
+    "sa2_name": "Avoca",
+    "lga_code": "25990",
+    "lga_name": "Pyrenees"
+  },
+  "Lang Lang": {
+    "sa2_code": "212011548",
+    "sa2_name": "Koo Wee Rup",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Langley": {
+    "sa2_code": "202021028",
+    "sa2_name": "Castlemaine Surrounds",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Langwarrin": {
+    "sa2_code": "214011374",
+    "sa2_name": "Langwarrin",
+    "lga_code": "22170",
+    "lga_name": "Frankston"
+  },
+  "Langwarrin South": {
+    "sa2_code": "214011374",
+    "sa2_name": "Langwarrin",
+    "lga_code": "22170",
+    "lga_name": "Frankston"
+  },
+  "Lara": {
+    "sa2_code": "203021043",
+    "sa2_name": "Lara",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Lara Lake": {
+    "sa2_code": "203021043",
+    "sa2_name": "Lara",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Lardner": {
+    "sa2_code": "205011079",
+    "sa2_name": "Warragul",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Launching Place": {
+    "sa2_code": "211051286",
+    "sa2_name": "Yarra Valley",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Lavers Hill": {
+    "sa2_code": "217031476",
+    "sa2_name": "Otway",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Laverton": {
+    "sa2_code": "213051363",
+    "sa2_name": "Laverton",
+    "lga_code": "23110",
+    "lga_name": "Hobsons Bay"
+  },
+  "Leitchville": {
+    "sa2_code": "215031401",
+    "sa2_name": "Gannawarra",
+    "lga_code": "22250",
+    "lga_name": "Gannawarra"
+  },
+  "Lemnos": {
+    "sa2_code": "216031418",
+    "sa2_name": "Shepparton Surrounds - East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Leneva": {
+    "sa2_code": "204031491",
+    "sa2_name": "Baranduda - Leneva",
+    "lga_code": "27170",
+    "lga_name": "Wodonga"
+  },
+  "Leongatha": {
+    "sa2_code": "205031090",
+    "sa2_name": "Leongatha",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Leopold": {
+    "sa2_code": "203021044",
+    "sa2_name": "Leopold",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Lethbridge": {
+    "sa2_code": "203011035",
+    "sa2_name": "Golden Plains - South",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Lilydale": {
+    "sa2_code": "211051278",
+    "sa2_name": "Lilydale - Coldstream",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Lindenow": {
+    "sa2_code": "205021082",
+    "sa2_name": "Bruthen - Omeo",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Lindenow South": {
+    "sa2_code": "205021082",
+    "sa2_name": "Bruthen - Omeo",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Linton": {
+    "sa2_code": "201031015",
+    "sa2_name": "Golden Plains - North",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Lismore": {
+    "sa2_code": "217031474",
+    "sa2_name": "Corangamite - North",
+    "lga_code": "21830",
+    "lga_name": "Corangamite"
+  },
+  "Little River": {
+    "sa2_code": "213051468",
+    "sa2_name": "Werribee - West",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Loch": {
+    "sa2_code": "205031089",
+    "sa2_name": "Korumburra",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Loch Sport": {
+    "sa2_code": "205051100",
+    "sa2_name": "Longford - Loch Sport",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Lockington": {
+    "sa2_code": "216011408",
+    "sa2_name": "Lockington - Gunbower",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Lockwood": {
+    "sa2_code": "202021026",
+    "sa2_name": "Bendigo Surrounds - South",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Lockwood South": {
+    "sa2_code": "202021026",
+    "sa2_name": "Bendigo Surrounds - South",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Londrigan": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Longford": {
+    "sa2_code": "205051100",
+    "sa2_name": "Longford - Loch Sport",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Longwarry": {
+    "sa2_code": "205011076",
+    "sa2_name": "Drouin",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Longwood": {
+    "sa2_code": "204011055",
+    "sa2_name": "Euroa",
+    "lga_code": "26430",
+    "lga_name": "Strathbogie"
+  },
+  "Lorne": {
+    "sa2_code": "203031049",
+    "sa2_name": "Lorne - Anglesea",
+    "lga_code": "26490",
+    "lga_name": "Surf Coast"
+  },
+  "Lovely Banks": {
+    "sa2_code": "203021486",
+    "sa2_name": "Corio - Lovely Banks",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Lower Plenty": {
+    "sa2_code": "209011202",
+    "sa2_name": "Montmorency - Briar Hill",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Lower Templestowe": {
+    "sa2_code": "207021160",
+    "sa2_name": "Templestowe Lower",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Lucas": {
+    "sa2_code": "201011001",
+    "sa2_name": "Alfredton",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Lucknow": {
+    "sa2_code": "205021081",
+    "sa2_name": "Bairnsdale",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Lynbrook": {
+    "sa2_code": "212031306",
+    "sa2_name": "Lynbrook - Lyndhurst",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Lyndhurst": {
+    "sa2_code": "212031306",
+    "sa2_name": "Lynbrook - Lyndhurst",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Lysterfield": {
+    "sa2_code": "211011255",
+    "sa2_name": "Lysterfield",
+    "lga_code": "23670",
+    "lga_name": "Knox"
+  },
+  "Macarthur": {
+    "sa2_code": "217041478",
+    "sa2_name": "Moyne - West",
+    "lga_code": "25490",
+    "lga_name": "Moyne"
+  },
+  "Macclesfield": {
+    "sa2_code": "211051279",
+    "sa2_name": "Monbulk - Silvan",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Macedon": {
+    "sa2_code": "210021233",
+    "sa2_name": "Macedon",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Macleod": {
+    "sa2_code": "209021205",
+    "sa2_name": "Kingsbury",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Macleod West": {
+    "sa2_code": "209021205",
+    "sa2_name": "Kingsbury",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Maffra": {
+    "sa2_code": "205051101",
+    "sa2_name": "Maffra",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Magpie": {
+    "sa2_code": "201011005",
+    "sa2_name": "Buninyong",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Maiden Gully": {
+    "sa2_code": "202011023",
+    "sa2_name": "Maiden Gully",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Maidstone": {
+    "sa2_code": "213031347",
+    "sa2_name": "Braybrook",
+    "lga_code": "24330",
+    "lga_name": "Maribyrnong"
+  },
+  "Maldon": {
+    "sa2_code": "202021028",
+    "sa2_name": "Castlemaine Surrounds",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Mallacoota": {
+    "sa2_code": "205021085",
+    "sa2_name": "Orbost",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Malmsbury": {
+    "sa2_code": "202021030",
+    "sa2_name": "Kyneton",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Malvern": {
+    "sa2_code": "208041194",
+    "sa2_name": "Malvern - Glen Iris",
+    "lga_code": "26350",
+    "lga_name": "Stonnington"
+  },
+  "Malvern East": {
+    "sa2_code": "208041194",
+    "sa2_name": "Malvern - Glen Iris",
+    "lga_code": "26350",
+    "lga_name": "Stonnington"
+  },
+  "Mambourin": {
+    "sa2_code": "213051468",
+    "sa2_name": "Werribee - West",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Manangatang": {
+    "sa2_code": "215031405",
+    "sa2_name": "Swan Hill Surrounds",
+    "lga_code": "26610",
+    "lga_name": "Swan Hill"
+  },
+  "Manifold Heights": {
+    "sa2_code": "203021040",
+    "sa2_name": "Geelong West - Hamlyn Heights",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Manor Lakes": {
+    "sa2_code": "213051579",
+    "sa2_name": "Manor Lakes - Quandong",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Mansfield": {
+    "sa2_code": "204011057",
+    "sa2_name": "Mansfield (Vic.)",
+    "lga_code": "24250",
+    "lga_name": "Mansfield"
+  },
+  "Maribyrnong": {
+    "sa2_code": "213031349",
+    "sa2_name": "Maribyrnong",
+    "lga_code": "24330",
+    "lga_name": "Maribyrnong"
+  },
+  "Marlo": {
+    "sa2_code": "205021085",
+    "sa2_name": "Orbost",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Marnoo": {
+    "sa2_code": "215011391",
+    "sa2_name": "St Arnaud",
+    "lga_code": "25810",
+    "lga_name": "Northern Grampians"
+  },
+  "Marong": {
+    "sa2_code": "202021026",
+    "sa2_name": "Bendigo Surrounds - South",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Maroona": {
+    "sa2_code": "215011387",
+    "sa2_name": "Ararat Surrounds",
+    "lga_code": "20260",
+    "lga_name": "Ararat"
+  },
+  "Maryborough": {
+    "sa2_code": "201031016",
+    "sa2_name": "Maryborough (Vic.)",
+    "lga_code": "21670",
+    "lga_name": "Central Goldfields"
+  },
+  "Marysville": {
+    "sa2_code": "204011054",
+    "sa2_name": "Alexandra",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Mckenzie Creek": {
+    "sa2_code": "215011389",
+    "sa2_name": "Horsham Surrounds",
+    "lga_code": "23190",
+    "lga_name": "Horsham"
+  },
+  "Mckinnon": {
+    "sa2_code": "208021174",
+    "sa2_name": "Bentleigh - McKinnon",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Meadow Heights": {
+    "sa2_code": "210051247",
+    "sa2_name": "Meadow Heights",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Meeniyan": {
+    "sa2_code": "205031087",
+    "sa2_name": "Foster",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Melbourne": {
+    "sa2_code": "206041506",
+    "sa2_name": "North Melbourne",
+    "lga_code": "24600",
+    "lga_name": "Melbourne"
+  },
+  "Melton": {
+    "sa2_code": "213041358",
+    "sa2_name": "Melton West",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Melton South": {
+    "sa2_code": "213041578",
+    "sa2_name": "Melton South - Weir Views",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Melton West": {
+    "sa2_code": "213041358",
+    "sa2_name": "Melton West",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Mentone": {
+    "sa2_code": "208031190",
+    "sa2_name": "Mentone",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Menzies Creek": {
+    "sa2_code": "211051274",
+    "sa2_name": "Belgrave - Selby",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Merbein": {
+    "sa2_code": "215021396",
+    "sa2_name": "Merbein",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Meredith": {
+    "sa2_code": "203011035",
+    "sa2_name": "Golden Plains - South",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Merino": {
+    "sa2_code": "217011420",
+    "sa2_name": "Glenelg (Vic.)",
+    "lga_code": "22410",
+    "lga_name": "Glenelg"
+  },
+  "Mernda": {
+    "sa2_code": "209041531",
+    "sa2_name": "Mernda - North",
+    "lga_code": "27070",
+    "lga_name": "Whittlesea"
+  },
+  "Merrigum": {
+    "sa2_code": "216031419",
+    "sa2_name": "Shepparton Surrounds - West",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Merrijig": {
+    "sa2_code": "204011057",
+    "sa2_name": "Mansfield (Vic.)",
+    "lga_code": "24250",
+    "lga_name": "Mansfield"
+  },
+  "Merrijig Via Mansfield": {
+    "sa2_code": "204011057",
+    "sa2_name": "Mansfield (Vic.)",
+    "lga_code": "24250",
+    "lga_name": "Mansfield"
+  },
+  "Metung": {
+    "sa2_code": "205021084",
+    "sa2_name": "Lakes Entrance",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Mickleham": {
+    "sa2_code": "210051445",
+    "sa2_name": "Mickleham - Yuroke",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Middle Park": {
+    "sa2_code": "206051128",
+    "sa2_name": "Albert Park",
+    "lga_code": "25900",
+    "lga_name": "Port Phillip"
+  },
+  "Milawa": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Mildura": {
+    "sa2_code": "215021469",
+    "sa2_name": "Mildura - North",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Mildura South": {
+    "sa2_code": "215021470",
+    "sa2_name": "Mildura - South",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Mill Park": {
+    "sa2_code": "209041221",
+    "sa2_name": "Mill Park - South",
+    "lga_code": "27070",
+    "lga_name": "Whittlesea"
+  },
+  "Millgrove": {
+    "sa2_code": "211051286",
+    "sa2_name": "Yarra Valley",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Miners Rest": {
+    "sa2_code": "201011008",
+    "sa2_name": "Wendouree - Miners Rest",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Minyip": {
+    "sa2_code": "215011394",
+    "sa2_name": "Yarriambiack",
+    "lga_code": "27630",
+    "lga_name": "Yarriambiack"
+  },
+  "Mirboo North": {
+    "sa2_code": "205031090",
+    "sa2_name": "Leongatha",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Mirrimbah": {
+    "sa2_code": "204011057",
+    "sa2_name": "Mansfield (Vic.)",
+    "lga_code": "24250",
+    "lga_name": "Mansfield"
+  },
+  "Mitcham": {
+    "sa2_code": "211041270",
+    "sa2_name": "Mitcham (Vic.)",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Mitta Mitta": {
+    "sa2_code": "204031072",
+    "sa2_name": "Towong",
+    "lga_code": "26670",
+    "lga_name": "Towong"
+  },
+  "Moe": {
+    "sa2_code": "205041095",
+    "sa2_name": "Moe - Newborough",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Monbulk": {
+    "sa2_code": "211051279",
+    "sa2_name": "Monbulk - Silvan",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Mont Albert": {
+    "sa2_code": "207031167",
+    "sa2_name": "Surrey Hills (East) - Mont Albert",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Mont Albert North": {
+    "sa2_code": "207031164",
+    "sa2_name": "Box Hill North",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Montmorency": {
+    "sa2_code": "209011202",
+    "sa2_name": "Montmorency - Briar Hill",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Montrose": {
+    "sa2_code": "211051280",
+    "sa2_name": "Montrose",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Moolap": {
+    "sa2_code": "203021045",
+    "sa2_name": "Newcomb - Moolap",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Moonambel": {
+    "sa2_code": "201031013",
+    "sa2_name": "Avoca",
+    "lga_code": "25990",
+    "lga_name": "Pyrenees"
+  },
+  "Moonee Ponds": {
+    "sa2_code": "206031116",
+    "sa2_name": "Moonee Ponds",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Moorabbin": {
+    "sa2_code": "208031191",
+    "sa2_name": "Moorabbin - Heatherton",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Moorabool": {
+    "sa2_code": "203021486",
+    "sa2_name": "Corio - Lovely Banks",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Moorooduc": {
+    "sa2_code": "214021385",
+    "sa2_name": "Somerville",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Mooroolbark": {
+    "sa2_code": "211051281",
+    "sa2_name": "Mooroolbark",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Mooroopna": {
+    "sa2_code": "216031419",
+    "sa2_name": "Shepparton Surrounds - West",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Mordialloc": {
+    "sa2_code": "208031193",
+    "sa2_name": "Mordialloc - Parkdale",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Moreland": {
+    "sa2_code": "206011498",
+    "sa2_name": "Coburg - West",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Moriac": {
+    "sa2_code": "203011036",
+    "sa2_name": "Winchelsea",
+    "lga_code": "26490",
+    "lga_name": "Surf Coast"
+  },
+  "Mornington": {
+    "sa2_code": "214021591",
+    "sa2_name": "Mornington - East",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Mortlake": {
+    "sa2_code": "217041477",
+    "sa2_name": "Moyne - East",
+    "lga_code": "25490",
+    "lga_name": "Moyne"
+  },
+  "Morwell": {
+    "sa2_code": "205041094",
+    "sa2_name": "Churchill",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Mount Beauty": {
+    "sa2_code": "204031069",
+    "sa2_name": "Bright - Mount Beauty",
+    "lga_code": "20110",
+    "lga_name": "Alpine"
+  },
+  "Mount Clear": {
+    "sa2_code": "201011483",
+    "sa2_name": "Canadian - Mount Clear",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Mount Dandenong": {
+    "sa2_code": "211051282",
+    "sa2_name": "Mount Dandenong - Olinda",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Mount Duneed": {
+    "sa2_code": "203021487",
+    "sa2_name": "Grovedale - Mount Duneed",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Mount Egerton": {
+    "sa2_code": "201021012",
+    "sa2_name": "Gordon (Vic.)",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Mount Eliza": {
+    "sa2_code": "214021381",
+    "sa2_name": "Mount Eliza",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Mount Evelyn": {
+    "sa2_code": "211051283",
+    "sa2_name": "Mount Evelyn",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Mount Helen": {
+    "sa2_code": "201011005",
+    "sa2_name": "Buninyong",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Mount Macedon": {
+    "sa2_code": "210021233",
+    "sa2_name": "Macedon",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Mount Martha": {
+    "sa2_code": "214021382",
+    "sa2_name": "Mount Martha",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Mount Rowan": {
+    "sa2_code": "201011008",
+    "sa2_name": "Wendouree - Miners Rest",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Mount Waverley": {
+    "sa2_code": "212051323",
+    "sa2_name": "Mount Waverley - North",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "Moyhu": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Moyston": {
+    "sa2_code": "215011387",
+    "sa2_name": "Ararat Surrounds",
+    "lga_code": "20260",
+    "lga_name": "Ararat"
+  },
+  "Mt Buller": {
+    "sa2_code": "204011057",
+    "sa2_name": "Mansfield (Vic.)",
+    "lga_code": "29399",
+    "lga_name": "Unincorporated Vic"
+  },
+  "Muckleford": {
+    "sa2_code": "202021028",
+    "sa2_name": "Castlemaine Surrounds",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Mulgrave": {
+    "sa2_code": "212051325",
+    "sa2_name": "Mulgrave",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "Murchison": {
+    "sa2_code": "216031419",
+    "sa2_name": "Shepparton Surrounds - West",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Murrabit": {
+    "sa2_code": "215031401",
+    "sa2_name": "Gannawarra",
+    "lga_code": "22250",
+    "lga_name": "Gannawarra"
+  },
+  "Murrayville": {
+    "sa2_code": "215021398",
+    "sa2_name": "Mildura Surrounds",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Murrumbeena": {
+    "sa2_code": "208021181",
+    "sa2_name": "Murrumbeena",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Murtoa": {
+    "sa2_code": "215011394",
+    "sa2_name": "Yarriambiack",
+    "lga_code": "27630",
+    "lga_name": "Yarriambiack"
+  },
+  "Myrniong": {
+    "sa2_code": "201021009",
+    "sa2_name": "Bacchus Marsh Surrounds",
+    "lga_code": "25150",
+    "lga_name": "Moorabool"
+  },
+  "Myrrhee": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Myrtleford": {
+    "sa2_code": "204031071",
+    "sa2_name": "Myrtleford",
+    "lga_code": "20110",
+    "lga_name": "Alpine"
+  },
+  "Nagambie": {
+    "sa2_code": "204011058",
+    "sa2_name": "Nagambie",
+    "lga_code": "26430",
+    "lga_name": "Strathbogie"
+  },
+  "Nambrok": {
+    "sa2_code": "205051102",
+    "sa2_name": "Rosedale",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Nangiloc": {
+    "sa2_code": "215021398",
+    "sa2_name": "Mildura Surrounds",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Nanneella": {
+    "sa2_code": "216011409",
+    "sa2_name": "Rochester",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Napoleons": {
+    "sa2_code": "201031015",
+    "sa2_name": "Golden Plains - North",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Nar Nar Goon": {
+    "sa2_code": "212011547",
+    "sa2_name": "Bunyip - Garfield",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Narracan": {
+    "sa2_code": "205011078",
+    "sa2_name": "Trafalgar (Vic.)",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Narrawong": {
+    "sa2_code": "217011420",
+    "sa2_name": "Glenelg (Vic.)",
+    "lga_code": "22410",
+    "lga_name": "Glenelg"
+  },
+  "Narre Warren": {
+    "sa2_code": "212021456",
+    "sa2_name": "Narre Warren - South West",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Narre Warren North": {
+    "sa2_code": "212021299",
+    "sa2_name": "Narre Warren North",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Narre Warren South": {
+    "sa2_code": "212031457",
+    "sa2_name": "Narre Warren South - East",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Nathalia": {
+    "sa2_code": "216021413",
+    "sa2_name": "Numurkah",
+    "lga_code": "24900",
+    "lga_name": "Moira"
+  },
+  "Natimuk": {
+    "sa2_code": "215011389",
+    "sa2_name": "Horsham Surrounds",
+    "lga_code": "23190",
+    "lga_name": "Horsham"
+  },
+  "Natte Yallock": {
+    "sa2_code": "201031013",
+    "sa2_name": "Avoca",
+    "lga_code": "25990",
+    "lga_name": "Pyrenees"
+  },
+  "Navarre": {
+    "sa2_code": "215011391",
+    "sa2_name": "St Arnaud",
+    "lga_code": "25810",
+    "lga_name": "Northern Grampians"
+  },
+  "Nayook": {
+    "sa2_code": "205011077",
+    "sa2_name": "Mount Baw Baw Region",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Neerim South": {
+    "sa2_code": "205011077",
+    "sa2_name": "Mount Baw Baw Region",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Neilborough": {
+    "sa2_code": "202031032",
+    "sa2_name": "Bendigo Surrounds - North",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Nerrina": {
+    "sa2_code": "201011482",
+    "sa2_name": "Ballarat North - Invermay",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "New Gisborne": {
+    "sa2_code": "210021232",
+    "sa2_name": "Gisborne",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Newborough": {
+    "sa2_code": "205041095",
+    "sa2_name": "Moe - Newborough",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Newcomb": {
+    "sa2_code": "203021045",
+    "sa2_name": "Newcomb - Moolap",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Newham": {
+    "sa2_code": "202021031",
+    "sa2_name": "Woodend",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Newhaven": {
+    "sa2_code": "205031091",
+    "sa2_name": "Phillip Island",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Newlyn": {
+    "sa2_code": "201021010",
+    "sa2_name": "Creswick - Clunes",
+    "lga_code": "22910",
+    "lga_name": "Hepburn"
+  },
+  "Newmerella": {
+    "sa2_code": "205021085",
+    "sa2_name": "Orbost",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Newport": {
+    "sa2_code": "213021344",
+    "sa2_name": "Newport",
+    "lga_code": "23110",
+    "lga_name": "Hobsons Bay"
+  },
+  "Newstead": {
+    "sa2_code": "202021028",
+    "sa2_name": "Castlemaine Surrounds",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Newtown": {
+    "sa2_code": "203021046",
+    "sa2_name": "Newtown (Vic.)",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Nhill": {
+    "sa2_code": "215011390",
+    "sa2_name": "Nhill Region",
+    "lga_code": "22980",
+    "lga_name": "Hindmarsh"
+  },
+  "Nichols Point": {
+    "sa2_code": "215021395",
+    "sa2_name": "Irymple",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Nicholson": {
+    "sa2_code": "205021082",
+    "sa2_name": "Bruthen - Omeo",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Niddrie": {
+    "sa2_code": "210011230",
+    "sa2_name": "Niddrie - Essendon West",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Nilma": {
+    "sa2_code": "205011079",
+    "sa2_name": "Warragul",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Noble Park": {
+    "sa2_code": "212041460",
+    "sa2_name": "Noble Park - West",
+    "lga_code": "22670",
+    "lga_name": "Greater Dandenong"
+  },
+  "Noble Park North": {
+    "sa2_code": "212041316",
+    "sa2_name": "Noble Park North",
+    "lga_code": "22670",
+    "lga_name": "Greater Dandenong"
+  },
+  "Noojee": {
+    "sa2_code": "205011077",
+    "sa2_name": "Mount Baw Baw Region",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Noorat": {
+    "sa2_code": "217031474",
+    "sa2_name": "Corangamite - North",
+    "lga_code": "21830",
+    "lga_name": "Corangamite"
+  },
+  "Norlane": {
+    "sa2_code": "203021488",
+    "sa2_name": "Norlane",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "North Bendigo": {
+    "sa2_code": "202011018",
+    "sa2_name": "Bendigo",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "North Geelong": {
+    "sa2_code": "203021047",
+    "sa2_name": "North Geelong - Bell Park",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "North Melbourne": {
+    "sa2_code": "206041506",
+    "sa2_name": "North Melbourne",
+    "lga_code": "24600",
+    "lga_name": "Melbourne"
+  },
+  "Northcote": {
+    "sa2_code": "206021500",
+    "sa2_name": "Northcote - West",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Nullawarre": {
+    "sa2_code": "217041477",
+    "sa2_name": "Moyne - East",
+    "lga_code": "25490",
+    "lga_name": "Moyne"
+  },
+  "Nullawil": {
+    "sa2_code": "215031400",
+    "sa2_name": "Buloke",
+    "lga_code": "21270",
+    "lga_name": "Buloke"
+  },
+  "Numurkah": {
+    "sa2_code": "216021413",
+    "sa2_name": "Numurkah",
+    "lga_code": "24900",
+    "lga_name": "Moira"
+  },
+  "Nunawading": {
+    "sa2_code": "211041271",
+    "sa2_name": "Nunawading",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Nungurner": {
+    "sa2_code": "205021084",
+    "sa2_name": "Lakes Entrance",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Nutfield": {
+    "sa2_code": "209031212",
+    "sa2_name": "Panton Hill - St Andrews",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Nyah West": {
+    "sa2_code": "215031405",
+    "sa2_name": "Swan Hill Surrounds",
+    "lga_code": "26610",
+    "lga_name": "Swan Hill"
+  },
+  "Nyora": {
+    "sa2_code": "205031089",
+    "sa2_name": "Korumburra",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Oak Park": {
+    "sa2_code": "210031537",
+    "sa2_name": "Oak Park",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Oakleigh": {
+    "sa2_code": "212051326",
+    "sa2_name": "Oakleigh - Huntingdale",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "Oakleigh East": {
+    "sa2_code": "212051326",
+    "sa2_name": "Oakleigh - Huntingdale",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "Oakleigh South": {
+    "sa2_code": "212051326",
+    "sa2_name": "Oakleigh - Huntingdale",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "Ocean Grove": {
+    "sa2_code": "203031490",
+    "sa2_name": "Ocean Grove",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Officer": {
+    "sa2_code": "212011546",
+    "sa2_name": "Beaconsfield - Officer",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Olinda": {
+    "sa2_code": "211051282",
+    "sa2_name": "Mount Dandenong - Olinda",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Omeo": {
+    "sa2_code": "205021082",
+    "sa2_name": "Bruthen - Omeo",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Orbost": {
+    "sa2_code": "205021085",
+    "sa2_name": "Orbost",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Ormond": {
+    "sa2_code": "208021182",
+    "sa2_name": "Ormond - Glen Huntly",
+    "lga_code": "22310",
+    "lga_name": "Glen Eira"
+  },
+  "Orrvale": {
+    "sa2_code": "216031594",
+    "sa2_name": "Shepparton - South East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Osbornes Flat": {
+    "sa2_code": "204031075",
+    "sa2_name": "Yackandandah",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Ouyen": {
+    "sa2_code": "215021398",
+    "sa2_name": "Mildura Surrounds",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Oxley": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Pakenham": {
+    "sa2_code": "212011549",
+    "sa2_name": "Pakenham - North East",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Panmure": {
+    "sa2_code": "217041477",
+    "sa2_name": "Moyne - East",
+    "lga_code": "25490",
+    "lga_name": "Moyne"
+  },
+  "Panton Hill": {
+    "sa2_code": "209031212",
+    "sa2_name": "Panton Hill - St Andrews",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Park Orchards": {
+    "sa2_code": "211021261",
+    "sa2_name": "Donvale - Park Orchards",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Parkdale": {
+    "sa2_code": "208031193",
+    "sa2_name": "Mordialloc - Parkdale",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Parkville": {
+    "sa2_code": "206041124",
+    "sa2_name": "Parkville",
+    "lga_code": "24600",
+    "lga_name": "Melbourne"
+  },
+  "Pascoe Vale": {
+    "sa2_code": "210031538",
+    "sa2_name": "Pascoe Vale",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Pascoe Vale South": {
+    "sa2_code": "206011109",
+    "sa2_name": "Pascoe Vale South",
+    "lga_code": "24700",
+    "lga_name": "Merri-bek"
+  },
+  "Patterson Lakes": {
+    "sa2_code": "208031185",
+    "sa2_name": "Carrum - Patterson Lakes",
+    "lga_code": "23430",
+    "lga_name": "Kingston (Vic.)"
+  },
+  "Paynesville": {
+    "sa2_code": "205021086",
+    "sa2_name": "Paynesville",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Pearcedale": {
+    "sa2_code": "212031308",
+    "sa2_name": "Pearcedale - Tooradin",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Penshurst": {
+    "sa2_code": "217011423",
+    "sa2_name": "Southern Grampians",
+    "lga_code": "26260",
+    "lga_name": "Southern Grampians"
+  },
+  "Point Cook": {
+    "sa2_code": "213051464",
+    "sa2_name": "Point Cook - East",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Point Lonsdale": {
+    "sa2_code": "203031052",
+    "sa2_name": "Point Lonsdale - Queenscliff",
+    "lga_code": "26080",
+    "lga_name": "Queenscliffe"
+  },
+  "Pomonal": {
+    "sa2_code": "215011387",
+    "sa2_name": "Ararat Surrounds",
+    "lga_code": "20260",
+    "lga_name": "Ararat"
+  },
+  "Poowong": {
+    "sa2_code": "205031089",
+    "sa2_name": "Korumburra",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Porepunkah": {
+    "sa2_code": "204031069",
+    "sa2_name": "Bright - Mount Beauty",
+    "lga_code": "20110",
+    "lga_name": "Alpine"
+  },
+  "Port Fairy": {
+    "sa2_code": "217041478",
+    "sa2_name": "Moyne - West",
+    "lga_code": "25490",
+    "lga_name": "Moyne"
+  },
+  "Port Melbourne": {
+    "sa2_code": "206051511",
+    "sa2_name": "Port Melbourne Industrial",
+    "lga_code": "25900",
+    "lga_name": "Port Phillip"
+  },
+  "Portarlington": {
+    "sa2_code": "203031051",
+    "sa2_name": "Portarlington",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Portland": {
+    "sa2_code": "217011422",
+    "sa2_name": "Portland",
+    "lga_code": "22410",
+    "lga_name": "Glenelg"
+  },
+  "Portland North": {
+    "sa2_code": "217011422",
+    "sa2_name": "Portland",
+    "lga_code": "22410",
+    "lga_name": "Glenelg"
+  },
+  "Prahran": {
+    "sa2_code": "206061136",
+    "sa2_name": "Prahran - Windsor",
+    "lga_code": "26350",
+    "lga_name": "Stonnington"
+  },
+  "Preston": {
+    "sa2_code": "209021429",
+    "sa2_name": "Preston - West",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Preston East": {
+    "sa2_code": "209021428",
+    "sa2_name": "Preston - East",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Preston West": {
+    "sa2_code": "209021429",
+    "sa2_name": "Preston - West",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Princes Hill": {
+    "sa2_code": "206071140",
+    "sa2_name": "Carlton North - Princes Hill",
+    "lga_code": "27350",
+    "lga_name": "Yarra"
+  },
+  "Puckapunyal": {
+    "sa2_code": "204011060",
+    "sa2_name": "Seymour Surrounds",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Pyalong": {
+    "sa2_code": "204011060",
+    "sa2_name": "Seymour Surrounds",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Pyramid Hill": {
+    "sa2_code": "202031033",
+    "sa2_name": "Loddon",
+    "lga_code": "23940",
+    "lga_name": "Loddon"
+  },
+  "Quarry Hill": {
+    "sa2_code": "202011021",
+    "sa2_name": "Flora Hill - Spring Gully",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Queenscliff": {
+    "sa2_code": "203031052",
+    "sa2_name": "Point Lonsdale - Queenscliff",
+    "lga_code": "26080",
+    "lga_name": "Queenscliffe"
+  },
+  "Rainbow": {
+    "sa2_code": "215011390",
+    "sa2_name": "Nhill Region",
+    "lga_code": "22980",
+    "lga_name": "Hindmarsh"
+  },
+  "Rawson": {
+    "sa2_code": "205011077",
+    "sa2_name": "Mount Baw Baw Region",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Raywood": {
+    "sa2_code": "202031032",
+    "sa2_name": "Bendigo Surrounds - North",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Red Cliffs": {
+    "sa2_code": "215021399",
+    "sa2_name": "Red Cliffs",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Red Hill": {
+    "sa2_code": "214021378",
+    "sa2_name": "Flinders",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Redan": {
+    "sa2_code": "201011484",
+    "sa2_name": "Sebastopol - Redan",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Redesdale": {
+    "sa2_code": "202021028",
+    "sa2_name": "Castlemaine Surrounds",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Research": {
+    "sa2_code": "209031214",
+    "sa2_name": "Research - North Warrandyte",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Reservoir": {
+    "sa2_code": "209021524",
+    "sa2_name": "Reservoir - North West",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Rhyll": {
+    "sa2_code": "205031091",
+    "sa2_name": "Phillip Island",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Richmond": {
+    "sa2_code": "206071517",
+    "sa2_name": "Richmond (South) - Cremorne",
+    "lga_code": "27350",
+    "lga_name": "Yarra"
+  },
+  "Riddells Creek": {
+    "sa2_code": "210021234",
+    "sa2_name": "Riddells Creek",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Ringwood": {
+    "sa2_code": "211031266",
+    "sa2_name": "Ringwood",
+    "lga_code": "24410",
+    "lga_name": "Maroondah"
+  },
+  "Ringwood East": {
+    "sa2_code": "211031267",
+    "sa2_name": "Ringwood East",
+    "lga_code": "24410",
+    "lga_name": "Maroondah"
+  },
+  "Ringwood North": {
+    "sa2_code": "211031268",
+    "sa2_name": "Ringwood North",
+    "lga_code": "24410",
+    "lga_name": "Maroondah"
+  },
+  "Ripplebrook": {
+    "sa2_code": "205011076",
+    "sa2_name": "Drouin",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Robinvale": {
+    "sa2_code": "215031403",
+    "sa2_name": "Robinvale",
+    "lga_code": "26610",
+    "lga_name": "Swan Hill"
+  },
+  "Rochester": {
+    "sa2_code": "216011409",
+    "sa2_name": "Rochester",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Rockbank": {
+    "sa2_code": "213041359",
+    "sa2_name": "Rockbank - Mount Cottrell",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Rokewood": {
+    "sa2_code": "203011035",
+    "sa2_name": "Golden Plains - South",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Romsey": {
+    "sa2_code": "210021235",
+    "sa2_name": "Romsey",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Rosanna": {
+    "sa2_code": "209011198",
+    "sa2_name": "Heidelberg - Rosanna",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Rosebud": {
+    "sa2_code": "214021384",
+    "sa2_name": "Rosebud - McCrae",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Rosedale": {
+    "sa2_code": "205051102",
+    "sa2_name": "Rosedale",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Ross Creek": {
+    "sa2_code": "201011007",
+    "sa2_name": "Smythes Creek",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Rowville": {
+    "sa2_code": "211011258",
+    "sa2_name": "Rowville - South",
+    "lga_code": "23670",
+    "lga_name": "Knox"
+  },
+  "Roxburgh Park": {
+    "sa2_code": "210051545",
+    "sa2_name": "Roxburgh Park - North",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Rupanyup": {
+    "sa2_code": "215011394",
+    "sa2_name": "Yarriambiack",
+    "lga_code": "27630",
+    "lga_name": "Yarriambiack"
+  },
+  "Rushworth": {
+    "sa2_code": "216011410",
+    "sa2_name": "Rushworth",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Rutherglen": {
+    "sa2_code": "204021065",
+    "sa2_name": "Rutherglen",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Ryanston": {
+    "sa2_code": "205031093",
+    "sa2_name": "Wonthaggi - Inverloch",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Rye": {
+    "sa2_code": "214021383",
+    "sa2_name": "Point Nepean",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Sale": {
+    "sa2_code": "205051103",
+    "sa2_name": "Sale",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "San Remo": {
+    "sa2_code": "205031093",
+    "sa2_name": "Wonthaggi - Inverloch",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Sandringham": {
+    "sa2_code": "208011173",
+    "sa2_name": "Sandringham - Black Rock",
+    "lga_code": "20910",
+    "lga_name": "Bayside (Vic.)"
+  },
+  "Sandy Creek": {
+    "sa2_code": "204031075",
+    "sa2_name": "Yackandandah",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Sassafras": {
+    "sa2_code": "211051282",
+    "sa2_name": "Mount Dandenong - Olinda",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Scarsdale": {
+    "sa2_code": "201031015",
+    "sa2_name": "Golden Plains - North",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Scoresby": {
+    "sa2_code": "211011254",
+    "sa2_name": "Knoxfield - Scoresby",
+    "lga_code": "23670",
+    "lga_name": "Knox"
+  },
+  "Scotsburn": {
+    "sa2_code": "201021012",
+    "sa2_name": "Gordon (Vic.)",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Sea Lake": {
+    "sa2_code": "215031400",
+    "sa2_name": "Buloke",
+    "lga_code": "21270",
+    "lga_name": "Buloke"
+  },
+  "Seabrook": {
+    "sa2_code": "213021345",
+    "sa2_name": "Seabrook",
+    "lga_code": "23110",
+    "lga_name": "Hobsons Bay"
+  },
+  "Seaford": {
+    "sa2_code": "214011375",
+    "sa2_name": "Seaford (Vic.)",
+    "lga_code": "22170",
+    "lga_name": "Frankston"
+  },
+  "Seaholme": {
+    "sa2_code": "213021341",
+    "sa2_name": "Altona",
+    "lga_code": "23110",
+    "lga_name": "Hobsons Bay"
+  },
+  "Seaspray": {
+    "sa2_code": "205051100",
+    "sa2_name": "Longford - Loch Sport",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Sebastopol": {
+    "sa2_code": "201011484",
+    "sa2_name": "Sebastopol - Redan",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Seddon": {
+    "sa2_code": "213031348",
+    "sa2_name": "Footscray",
+    "lga_code": "24330",
+    "lga_name": "Maribyrnong"
+  },
+  "Selby": {
+    "sa2_code": "211051274",
+    "sa2_name": "Belgrave - Selby",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Seville": {
+    "sa2_code": "211051285",
+    "sa2_name": "Wandin - Seville",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Seymour": {
+    "sa2_code": "204011059",
+    "sa2_name": "Seymour",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Shelford": {
+    "sa2_code": "203011035",
+    "sa2_name": "Golden Plains - South",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Shepparton": {
+    "sa2_code": "216031594",
+    "sa2_name": "Shepparton - South East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Shepparton East": {
+    "sa2_code": "216031594",
+    "sa2_name": "Shepparton - South East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Shepparton North": {
+    "sa2_code": "216031416",
+    "sa2_name": "Shepparton - North",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Silvan": {
+    "sa2_code": "211051279",
+    "sa2_name": "Monbulk - Silvan",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Simpson": {
+    "sa2_code": "217031475",
+    "sa2_name": "Corangamite - South",
+    "lga_code": "21830",
+    "lga_name": "Corangamite"
+  },
+  "Skipton": {
+    "sa2_code": "217031474",
+    "sa2_name": "Corangamite - North",
+    "lga_code": "21830",
+    "lga_name": "Corangamite"
+  },
+  "Skye": {
+    "sa2_code": "214011376",
+    "sa2_name": "Skye - Sandhurst",
+    "lga_code": "22170",
+    "lga_name": "Frankston"
+  },
+  "Smythesdale": {
+    "sa2_code": "201031015",
+    "sa2_name": "Golden Plains - North",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Snake Valley": {
+    "sa2_code": "201031014",
+    "sa2_name": "Beaufort",
+    "lga_code": "25990",
+    "lga_name": "Pyrenees"
+  },
+  "Soldiers Hill": {
+    "sa2_code": "201011482",
+    "sa2_name": "Ballarat North - Invermay",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Somers": {
+    "sa2_code": "214021379",
+    "sa2_name": "Hastings - Somers",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Somerville": {
+    "sa2_code": "214021385",
+    "sa2_name": "Somerville",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Sorrento": {
+    "sa2_code": "214021383",
+    "sa2_name": "Point Nepean",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "South Geelong": {
+    "sa2_code": "203021039",
+    "sa2_name": "Geelong",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "South Melbourne": {
+    "sa2_code": "206051512",
+    "sa2_name": "South Melbourne",
+    "lga_code": "25900",
+    "lga_name": "Port Phillip"
+  },
+  "South Morang": {
+    "sa2_code": "209041436",
+    "sa2_name": "South Morang - South",
+    "lga_code": "27070",
+    "lga_name": "Whittlesea"
+  },
+  "South Yarra": {
+    "sa2_code": "206041125",
+    "sa2_name": "South Yarra - West",
+    "lga_code": "24600",
+    "lga_name": "Melbourne"
+  },
+  "Southbank": {
+    "sa2_code": "206051511",
+    "sa2_name": "Port Melbourne Industrial",
+    "lga_code": "25900",
+    "lga_name": "Port Phillip"
+  },
+  "Spotswood": {
+    "sa2_code": "213021344",
+    "sa2_name": "Newport",
+    "lga_code": "23110",
+    "lga_name": "Hobsons Bay"
+  },
+  "Springhurst": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Springvale": {
+    "sa2_code": "212041317",
+    "sa2_name": "Springvale",
+    "lga_code": "22670",
+    "lga_name": "Greater Dandenong"
+  },
+  "Springvale South": {
+    "sa2_code": "212041318",
+    "sa2_name": "Springvale South",
+    "lga_code": "22670",
+    "lga_name": "Greater Dandenong"
+  },
+  "St Albans": {
+    "sa2_code": "213011334",
+    "sa2_name": "St Albans - North",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "St Andrews": {
+    "sa2_code": "209031212",
+    "sa2_name": "Panton Hill - St Andrews",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "St Arnaud": {
+    "sa2_code": "215011391",
+    "sa2_name": "St Arnaud",
+    "lga_code": "25810",
+    "lga_name": "Northern Grampians"
+  },
+  "St Helena": {
+    "sa2_code": "209011197",
+    "sa2_name": "Greensborough",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "St Kilda": {
+    "sa2_code": "206051514",
+    "sa2_name": "St Kilda - West",
+    "lga_code": "25900",
+    "lga_name": "Port Phillip"
+  },
+  "St Kilda East": {
+    "sa2_code": "206051134",
+    "sa2_name": "St Kilda East",
+    "lga_code": "25900",
+    "lga_name": "Port Phillip"
+  },
+  "St Leonards": {
+    "sa2_code": "203031051",
+    "sa2_name": "Portarlington",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Stanhope": {
+    "sa2_code": "216011410",
+    "sa2_name": "Rushworth",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Stanley": {
+    "sa2_code": "204031068",
+    "sa2_name": "Beechworth",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Staughton Vale": {
+    "sa2_code": "203021043",
+    "sa2_name": "Lara",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Stawell": {
+    "sa2_code": "215011392",
+    "sa2_name": "Stawell",
+    "lga_code": "25810",
+    "lga_name": "Northern Grampians"
+  },
+  "Stratford": {
+    "sa2_code": "205051101",
+    "sa2_name": "Maffra",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Strathbogie": {
+    "sa2_code": "204011055",
+    "sa2_name": "Euroa",
+    "lga_code": "26430",
+    "lga_name": "Strathbogie"
+  },
+  "Strathdale": {
+    "sa2_code": "202011020",
+    "sa2_name": "East Bendigo - Kennington",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Strathewen": {
+    "sa2_code": "209031212",
+    "sa2_name": "Panton Hill - St Andrews",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Strathfieldsaye": {
+    "sa2_code": "202011024",
+    "sa2_name": "Strathfieldsaye",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Strathmerton": {
+    "sa2_code": "216021413",
+    "sa2_name": "Numurkah",
+    "lga_code": "24900",
+    "lga_name": "Moira"
+  },
+  "Strathmore": {
+    "sa2_code": "210011231",
+    "sa2_name": "Strathmore",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Strathtulloh": {
+    "sa2_code": "213041572",
+    "sa2_name": "Cobblebank - Strathtulloh",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Sunbury": {
+    "sa2_code": "210041240",
+    "sa2_name": "Sunbury",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Sunshine": {
+    "sa2_code": "213011338",
+    "sa2_name": "Sunshine West",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Sunshine North": {
+    "sa2_code": "213011337",
+    "sa2_name": "Sunshine North",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Sunshine West": {
+    "sa2_code": "213011338",
+    "sa2_name": "Sunshine West",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Surrey Hills": {
+    "sa2_code": "207031167",
+    "sa2_name": "Surrey Hills (East) - Mont Albert",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Swan Hill": {
+    "sa2_code": "215031404",
+    "sa2_name": "Swan Hill",
+    "lga_code": "26610",
+    "lga_name": "Swan Hill"
+  },
+  "Swan Reach": {
+    "sa2_code": "205021084",
+    "sa2_name": "Lakes Entrance",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Swanpool": {
+    "sa2_code": "204021064",
+    "sa2_name": "Benalla Surrounds",
+    "lga_code": "21010",
+    "lga_name": "Benalla"
+  },
+  "Swifts Creek": {
+    "sa2_code": "205021082",
+    "sa2_name": "Bruthen - Omeo",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Sydenham": {
+    "sa2_code": "213011339",
+    "sa2_name": "Sydenham",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Talbot": {
+    "sa2_code": "201031017",
+    "sa2_name": "Maryborough Surrounds",
+    "lga_code": "21670",
+    "lga_name": "Central Goldfields"
+  },
+  "Talgarno": {
+    "sa2_code": "204031072",
+    "sa2_name": "Towong",
+    "lga_code": "26670",
+    "lga_name": "Towong"
+  },
+  "Tallangatta": {
+    "sa2_code": "204031072",
+    "sa2_name": "Towong",
+    "lga_code": "26670",
+    "lga_name": "Towong"
+  },
+  "Tallarook": {
+    "sa2_code": "204011060",
+    "sa2_name": "Seymour Surrounds",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Tallygaroopna": {
+    "sa2_code": "216031418",
+    "sa2_name": "Shepparton Surrounds - East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Tambo Upper": {
+    "sa2_code": "205021082",
+    "sa2_name": "Bruthen - Omeo",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Tangambalanga": {
+    "sa2_code": "204031075",
+    "sa2_name": "Yackandandah",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Tanjil South": {
+    "sa2_code": "205011077",
+    "sa2_name": "Mount Baw Baw Region",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Tanybryn": {
+    "sa2_code": "217031476",
+    "sa2_name": "Otway",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Taradale": {
+    "sa2_code": "202021028",
+    "sa2_name": "Castlemaine Surrounds",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Tarnagulla": {
+    "sa2_code": "202031033",
+    "sa2_name": "Loddon",
+    "lga_code": "23940",
+    "lga_name": "Loddon"
+  },
+  "Tarneit": {
+    "sa2_code": "213051584",
+    "sa2_name": "Tarneit - North",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Tarneit North": {
+    "sa2_code": "213051584",
+    "sa2_name": "Tarneit - North",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Tarrington": {
+    "sa2_code": "217011423",
+    "sa2_name": "Southern Grampians",
+    "lga_code": "26260",
+    "lga_name": "Southern Grampians"
+  },
+  "Tarwin Lower": {
+    "sa2_code": "205031087",
+    "sa2_name": "Foster",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Tatura": {
+    "sa2_code": "216031419",
+    "sa2_name": "Shepparton Surrounds - West",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Tawonga": {
+    "sa2_code": "204031069",
+    "sa2_name": "Bright - Mount Beauty",
+    "lga_code": "20110",
+    "lga_name": "Alpine"
+  },
+  "Taylors Hill": {
+    "sa2_code": "213041360",
+    "sa2_name": "Taylors Hill",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Taylors Lakes": {
+    "sa2_code": "213011340",
+    "sa2_name": "Taylors Lakes",
+    "lga_code": "21180",
+    "lga_name": "Brimbank"
+  },
+  "Tecoma": {
+    "sa2_code": "211051284",
+    "sa2_name": "Upwey - Tecoma",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Teesdale": {
+    "sa2_code": "203011035",
+    "sa2_name": "Golden Plains - South",
+    "lga_code": "22490",
+    "lga_name": "Golden Plains"
+  },
+  "Templestowe": {
+    "sa2_code": "207021159",
+    "sa2_name": "Templestowe",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Templestowe Lower": {
+    "sa2_code": "207021160",
+    "sa2_name": "Templestowe Lower",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Tempy": {
+    "sa2_code": "215011394",
+    "sa2_name": "Yarriambiack",
+    "lga_code": "27630",
+    "lga_name": "Yarriambiack"
+  },
+  "Terang": {
+    "sa2_code": "217031474",
+    "sa2_name": "Corangamite - North",
+    "lga_code": "21830",
+    "lga_name": "Corangamite"
+  },
+  "The Basin": {
+    "sa2_code": "212011289",
+    "sa2_name": "Emerald - Cockatoo",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "The Patch": {
+    "sa2_code": "211051282",
+    "sa2_name": "Mount Dandenong - Olinda",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Thomastown": {
+    "sa2_code": "209041223",
+    "sa2_name": "Thomastown",
+    "lga_code": "27070",
+    "lga_name": "Whittlesea"
+  },
+  "Thornbury": {
+    "sa2_code": "206021112",
+    "sa2_name": "Thornbury",
+    "lga_code": "21890",
+    "lga_name": "Darebin"
+  },
+  "Thornhill Park": {
+    "sa2_code": "213041359",
+    "sa2_name": "Rockbank - Mount Cottrell",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Thornton": {
+    "sa2_code": "204011054",
+    "sa2_name": "Alexandra",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Thorpdale": {
+    "sa2_code": "205011078",
+    "sa2_name": "Trafalgar (Vic.)",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Timboon": {
+    "sa2_code": "217031475",
+    "sa2_name": "Corangamite - South",
+    "lga_code": "21830",
+    "lga_name": "Corangamite"
+  },
+  "Timor": {
+    "sa2_code": "201031017",
+    "sa2_name": "Maryborough Surrounds",
+    "lga_code": "21670",
+    "lga_name": "Central Goldfields"
+  },
+  "Tolmie": {
+    "sa2_code": "204021064",
+    "sa2_name": "Benalla Surrounds",
+    "lga_code": "21010",
+    "lga_name": "Benalla"
+  },
+  "Tongala": {
+    "sa2_code": "216011407",
+    "sa2_name": "Kyabram",
+    "lga_code": "21370",
+    "lga_name": "Campaspe"
+  },
+  "Tooborac": {
+    "sa2_code": "204011060",
+    "sa2_name": "Seymour Surrounds",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Toolamba": {
+    "sa2_code": "216031419",
+    "sa2_name": "Shepparton Surrounds - West",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Toolangi": {
+    "sa2_code": "209031211",
+    "sa2_name": "Kinglake",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Toolern Vale": {
+    "sa2_code": "213041576",
+    "sa2_name": "Kurunjang - Toolern Vale",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Toongabbie": {
+    "sa2_code": "205041098",
+    "sa2_name": "Yallourn North - Glengarry",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Toora": {
+    "sa2_code": "205031087",
+    "sa2_name": "Foster",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Tooradin": {
+    "sa2_code": "212031308",
+    "sa2_name": "Pearcedale - Tooradin",
+    "lga_code": "21610",
+    "lga_name": "Casey"
+  },
+  "Toorak": {
+    "sa2_code": "206061138",
+    "sa2_name": "Toorak",
+    "lga_code": "26350",
+    "lga_name": "Stonnington"
+  },
+  "Tootgarook": {
+    "sa2_code": "214021383",
+    "sa2_name": "Point Nepean",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Torquay": {
+    "sa2_code": "203031053",
+    "sa2_name": "Torquay",
+    "lga_code": "26490",
+    "lga_name": "Surf Coast"
+  },
+  "Tottenham": {
+    "sa2_code": "213031351",
+    "sa2_name": "West Footscray - Tottenham",
+    "lga_code": "24330",
+    "lga_name": "Maribyrnong"
+  },
+  "Trafalgar": {
+    "sa2_code": "205011078",
+    "sa2_name": "Trafalgar (Vic.)",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Traralgon": {
+    "sa2_code": "205041493",
+    "sa2_name": "Traralgon - East",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Traralgon South": {
+    "sa2_code": "205041094",
+    "sa2_name": "Churchill",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Travancore": {
+    "sa2_code": "206031115",
+    "sa2_name": "Flemington",
+    "lga_code": "25060",
+    "lga_name": "Moonee Valley"
+  },
+  "Trawalla": {
+    "sa2_code": "201031014",
+    "sa2_name": "Beaufort",
+    "lga_code": "25990",
+    "lga_name": "Pyrenees"
+  },
+  "Trentham": {
+    "sa2_code": "201021011",
+    "sa2_name": "Daylesford",
+    "lga_code": "22910",
+    "lga_name": "Hepburn"
+  },
+  "Truganina": {
+    "sa2_code": "213051587",
+    "sa2_name": "Truganina - South East",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Tullamarine": {
+    "sa2_code": "210051250",
+    "sa2_name": "Tullamarine",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Tungamah": {
+    "sa2_code": "216021412",
+    "sa2_name": "Moira",
+    "lga_code": "24900",
+    "lga_name": "Moira"
+  },
+  "Tyabb": {
+    "sa2_code": "214021385",
+    "sa2_name": "Somerville",
+    "lga_code": "25340",
+    "lga_name": "Mornington Peninsula"
+  },
+  "Tyers": {
+    "sa2_code": "205041098",
+    "sa2_name": "Yallourn North - Glengarry",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Tylden": {
+    "sa2_code": "202021030",
+    "sa2_name": "Kyneton",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Tynong": {
+    "sa2_code": "212011547",
+    "sa2_name": "Bunyip - Garfield",
+    "lga_code": "21450",
+    "lga_name": "Cardinia"
+  },
+  "Ultima": {
+    "sa2_code": "215031405",
+    "sa2_name": "Swan Hill Surrounds",
+    "lga_code": "26610",
+    "lga_name": "Swan Hill"
+  },
+  "Undera": {
+    "sa2_code": "216031419",
+    "sa2_name": "Shepparton Surrounds - West",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  },
+  "Underbool": {
+    "sa2_code": "215021398",
+    "sa2_name": "Mildura Surrounds",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Upper Ferntree Gully": {
+    "sa2_code": "211011448",
+    "sa2_name": "Ferntree Gully (South) - Upper Ferntree Gully",
+    "lga_code": "23670",
+    "lga_name": "Knox"
+  },
+  "Upper Plenty": {
+    "sa2_code": "209041224",
+    "sa2_name": "Wallan",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Upwey": {
+    "sa2_code": "211051284",
+    "sa2_name": "Upwey - Tecoma",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Ventnor": {
+    "sa2_code": "205031091",
+    "sa2_name": "Phillip Island",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Vermont": {
+    "sa2_code": "211041272",
+    "sa2_name": "Vermont",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Vermont South": {
+    "sa2_code": "211041273",
+    "sa2_name": "Vermont South",
+    "lga_code": "26980",
+    "lga_name": "Whitehorse"
+  },
+  "Viewbank": {
+    "sa2_code": "209011203",
+    "sa2_name": "Viewbank - Yallambie",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Violet Town": {
+    "sa2_code": "204011055",
+    "sa2_name": "Euroa",
+    "lga_code": "26430",
+    "lga_name": "Strathbogie"
+  },
+  "Waaia": {
+    "sa2_code": "216021413",
+    "sa2_name": "Numurkah",
+    "lga_code": "24900",
+    "lga_name": "Moira"
+  },
+  "Wahgunyah": {
+    "sa2_code": "204021065",
+    "sa2_name": "Rutherglen",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Wallan": {
+    "sa2_code": "209041224",
+    "sa2_name": "Wallan",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Wallington": {
+    "sa2_code": "203031490",
+    "sa2_name": "Ocean Grove",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Walwa": {
+    "sa2_code": "204031072",
+    "sa2_name": "Towong",
+    "lga_code": "26670",
+    "lga_name": "Towong"
+  },
+  "Wandiligong": {
+    "sa2_code": "204031069",
+    "sa2_name": "Bright - Mount Beauty",
+    "lga_code": "20110",
+    "lga_name": "Alpine"
+  },
+  "Wandin North": {
+    "sa2_code": "211051285",
+    "sa2_name": "Wandin - Seville",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Wandong": {
+    "sa2_code": "209041224",
+    "sa2_name": "Wallan",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Wangaratta": {
+    "sa2_code": "204021066",
+    "sa2_name": "Wangaratta",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Wantirna": {
+    "sa2_code": "211011259",
+    "sa2_name": "Wantirna",
+    "lga_code": "23670",
+    "lga_name": "Knox"
+  },
+  "Wantirna South": {
+    "sa2_code": "211011260",
+    "sa2_name": "Wantirna South",
+    "lga_code": "23670",
+    "lga_name": "Knox"
+  },
+  "Warburton": {
+    "sa2_code": "211051286",
+    "sa2_name": "Yarra Valley",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Warracknabeal": {
+    "sa2_code": "215011394",
+    "sa2_name": "Yarriambiack",
+    "lga_code": "27630",
+    "lga_name": "Yarriambiack"
+  },
+  "Warragul": {
+    "sa2_code": "205011079",
+    "sa2_name": "Warragul",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Warrandyte": {
+    "sa2_code": "211021262",
+    "sa2_name": "Warrandyte - Wonga Park",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Warrandyte South": {
+    "sa2_code": "211021262",
+    "sa2_name": "Warrandyte - Wonga Park",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Warranwood": {
+    "sa2_code": "211031265",
+    "sa2_name": "Croydon Hills - Warranwood",
+    "lga_code": "24410",
+    "lga_name": "Maroondah"
+  },
+  "Warrenheip": {
+    "sa2_code": "201011481",
+    "sa2_name": "Ballarat East - Warrenheip",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Warrnambool": {
+    "sa2_code": "217041480",
+    "sa2_name": "Warrnambool - South",
+    "lga_code": "26730",
+    "lga_name": "Warrnambool"
+  },
+  "Watsonia": {
+    "sa2_code": "209011204",
+    "sa2_name": "Watsonia",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Watsonia North": {
+    "sa2_code": "209011204",
+    "sa2_name": "Watsonia",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Wattle Glen": {
+    "sa2_code": "209031215",
+    "sa2_name": "Wattle Glen - Diamond Creek",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Waubra": {
+    "sa2_code": "201031013",
+    "sa2_name": "Avoca",
+    "lga_code": "25990",
+    "lga_name": "Pyrenees"
+  },
+  "Waurn Ponds": {
+    "sa2_code": "203021042",
+    "sa2_name": "Highton",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Wedderburn": {
+    "sa2_code": "202031033",
+    "sa2_name": "Loddon",
+    "lga_code": "23940",
+    "lga_name": "Loddon"
+  },
+  "Weir Views": {
+    "sa2_code": "213041578",
+    "sa2_name": "Melton South - Weir Views",
+    "lga_code": "24650",
+    "lga_name": "Melton"
+  },
+  "Welshpool": {
+    "sa2_code": "205031087",
+    "sa2_name": "Foster",
+    "lga_code": "26170",
+    "lga_name": "South Gippsland"
+  },
+  "Wendouree": {
+    "sa2_code": "201011008",
+    "sa2_name": "Wendouree - Miners Rest",
+    "lga_code": "20570",
+    "lga_name": "Ballarat"
+  },
+  "Werribee": {
+    "sa2_code": "213051467",
+    "sa2_name": "Werribee - East",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Werribee South": {
+    "sa2_code": "213051368",
+    "sa2_name": "Werribee - South",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Werrimull": {
+    "sa2_code": "215021398",
+    "sa2_name": "Mildura Surrounds",
+    "lga_code": "24780",
+    "lga_name": "Mildura"
+  },
+  "Wesburn": {
+    "sa2_code": "211051286",
+    "sa2_name": "Yarra Valley",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "West Footscray": {
+    "sa2_code": "213031351",
+    "sa2_name": "West Footscray - Tottenham",
+    "lga_code": "24330",
+    "lga_name": "Maribyrnong"
+  },
+  "West Heidelberg": {
+    "sa2_code": "209011199",
+    "sa2_name": "Heidelberg West",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "West Melbourne": {
+    "sa2_code": "206041510",
+    "sa2_name": "West Melbourne - Residential",
+    "lga_code": "24600",
+    "lga_name": "Melbourne"
+  },
+  "West Wodonga": {
+    "sa2_code": "204031073",
+    "sa2_name": "West Wodonga",
+    "lga_code": "27170",
+    "lga_name": "Wodonga"
+  },
+  "Westmeadows": {
+    "sa2_code": "210051245",
+    "sa2_name": "Gladstone Park - Westmeadows",
+    "lga_code": "23270",
+    "lga_name": "Hume"
+  },
+  "Wheelers Hill": {
+    "sa2_code": "212051327",
+    "sa2_name": "Wheelers Hill",
+    "lga_code": "24970",
+    "lga_name": "Monash"
+  },
+  "White Hills": {
+    "sa2_code": "202011025",
+    "sa2_name": "White Hills - Ascot",
+    "lga_code": "22620",
+    "lga_name": "Greater Bendigo"
+  },
+  "Whitfield": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Whittington": {
+    "sa2_code": "203021045",
+    "sa2_name": "Newcomb - Moolap",
+    "lga_code": "22750",
+    "lga_name": "Greater Geelong"
+  },
+  "Whittlesea": {
+    "sa2_code": "209041225",
+    "sa2_name": "Whittlesea",
+    "lga_code": "27070",
+    "lga_name": "Whittlesea"
+  },
+  "Whorouly": {
+    "sa2_code": "204021067",
+    "sa2_name": "Wangaratta Surrounds",
+    "lga_code": "26700",
+    "lga_name": "Wangaratta"
+  },
+  "Willaura": {
+    "sa2_code": "215011387",
+    "sa2_name": "Ararat Surrounds",
+    "lga_code": "20260",
+    "lga_name": "Ararat"
+  },
+  "Williamstown": {
+    "sa2_code": "213021346",
+    "sa2_name": "Williamstown",
+    "lga_code": "23110",
+    "lga_name": "Hobsons Bay"
+  },
+  "Willow Grove": {
+    "sa2_code": "205011077",
+    "sa2_name": "Mount Baw Baw Region",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Willowmavin": {
+    "sa2_code": "204011056",
+    "sa2_name": "Kilmore - Broadford",
+    "lga_code": "24850",
+    "lga_name": "Mitchell"
+  },
+  "Winchelsea": {
+    "sa2_code": "203011036",
+    "sa2_name": "Winchelsea",
+    "lga_code": "26490",
+    "lga_name": "Surf Coast"
+  },
+  "Windsor": {
+    "sa2_code": "206051514",
+    "sa2_name": "St Kilda - West",
+    "lga_code": "25900",
+    "lga_name": "Port Phillip"
+  },
+  "Winton": {
+    "sa2_code": "204021064",
+    "sa2_name": "Benalla Surrounds",
+    "lga_code": "21010",
+    "lga_name": "Benalla"
+  },
+  "Wodonga": {
+    "sa2_code": "204031073",
+    "sa2_name": "West Wodonga",
+    "lga_code": "27170",
+    "lga_name": "Wodonga"
+  },
+  "Wollert": {
+    "sa2_code": "209041437",
+    "sa2_name": "Wollert",
+    "lga_code": "27070",
+    "lga_name": "Whittlesea"
+  },
+  "Wonga Park": {
+    "sa2_code": "211021262",
+    "sa2_name": "Warrandyte - Wonga Park",
+    "lga_code": "24210",
+    "lga_name": "Manningham"
+  },
+  "Wonthaggi": {
+    "sa2_code": "205031093",
+    "sa2_name": "Wonthaggi - Inverloch",
+    "lga_code": "20740",
+    "lga_name": "Bass Coast"
+  },
+  "Woodend": {
+    "sa2_code": "202021031",
+    "sa2_name": "Woodend",
+    "lga_code": "24130",
+    "lga_name": "Macedon Ranges"
+  },
+  "Woodford": {
+    "sa2_code": "217041479",
+    "sa2_name": "Warrnambool - North",
+    "lga_code": "26730",
+    "lga_name": "Warrnambool"
+  },
+  "Woodglen": {
+    "sa2_code": "205021082",
+    "sa2_name": "Bruthen - Omeo",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Woodside": {
+    "sa2_code": "205051104",
+    "sa2_name": "Yarram",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Woolsthorpe": {
+    "sa2_code": "217041477",
+    "sa2_name": "Moyne - East",
+    "lga_code": "25490",
+    "lga_name": "Moyne"
+  },
+  "Wooragee": {
+    "sa2_code": "204031068",
+    "sa2_name": "Beechworth",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Woori Yallock": {
+    "sa2_code": "211051286",
+    "sa2_name": "Yarra Valley",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Woorinen South": {
+    "sa2_code": "215031405",
+    "sa2_name": "Swan Hill Surrounds",
+    "lga_code": "26610",
+    "lga_name": "Swan Hill"
+  },
+  "Wunghnu": {
+    "sa2_code": "216021413",
+    "sa2_name": "Numurkah",
+    "lga_code": "24900",
+    "lga_name": "Moira"
+  },
+  "Wurruk": {
+    "sa2_code": "205051103",
+    "sa2_name": "Sale",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Wy Yung": {
+    "sa2_code": "205021081",
+    "sa2_name": "Bairnsdale",
+    "lga_code": "22110",
+    "lga_name": "East Gippsland"
+  },
+  "Wycheproof": {
+    "sa2_code": "215031400",
+    "sa2_name": "Buloke",
+    "lga_code": "21270",
+    "lga_name": "Buloke"
+  },
+  "Wyndham Vale": {
+    "sa2_code": "213051590",
+    "sa2_name": "Wyndham Vale - South",
+    "lga_code": "27260",
+    "lga_name": "Wyndham"
+  },
+  "Yackandandah": {
+    "sa2_code": "204031075",
+    "sa2_name": "Yackandandah",
+    "lga_code": "23350",
+    "lga_name": "Indigo"
+  },
+  "Yallambie": {
+    "sa2_code": "209011203",
+    "sa2_name": "Viewbank - Yallambie",
+    "lga_code": "20660",
+    "lga_name": "Banyule"
+  },
+  "Yallourn North": {
+    "sa2_code": "205041098",
+    "sa2_name": "Yallourn North - Glengarry",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Yandoit": {
+    "sa2_code": "201021011",
+    "sa2_name": "Daylesford",
+    "lga_code": "22910",
+    "lga_name": "Hepburn"
+  },
+  "Yapeen": {
+    "sa2_code": "202021028",
+    "sa2_name": "Castlemaine Surrounds",
+    "lga_code": "25430",
+    "lga_name": "Mount Alexander"
+  },
+  "Yarra Glen": {
+    "sa2_code": "211051276",
+    "sa2_name": "Healesville - Yarra Glen",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Yarra Junction": {
+    "sa2_code": "211051286",
+    "sa2_name": "Yarra Valley",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Yarragon": {
+    "sa2_code": "205011078",
+    "sa2_name": "Trafalgar (Vic.)",
+    "lga_code": "20830",
+    "lga_name": "Baw Baw"
+  },
+  "Yarram": {
+    "sa2_code": "205051104",
+    "sa2_name": "Yarram",
+    "lga_code": "26810",
+    "lga_name": "Wellington"
+  },
+  "Yarrambat": {
+    "sa2_code": "209031213",
+    "sa2_name": "Plenty - Yarrambat",
+    "lga_code": "25710",
+    "lga_name": "Nillumbik"
+  },
+  "Yarraville": {
+    "sa2_code": "213031352",
+    "sa2_name": "Yarraville",
+    "lga_code": "24330",
+    "lga_name": "Maribyrnong"
+  },
+  "Yarrawonga": {
+    "sa2_code": "216021414",
+    "sa2_name": "Yarrawonga",
+    "lga_code": "24900",
+    "lga_name": "Moira"
+  },
+  "Yea": {
+    "sa2_code": "204011062",
+    "sa2_name": "Yea",
+    "lga_code": "25620",
+    "lga_name": "Murrindindi"
+  },
+  "Yering": {
+    "sa2_code": "211051278",
+    "sa2_name": "Lilydale - Coldstream",
+    "lga_code": "27450",
+    "lga_name": "Yarra Ranges"
+  },
+  "Yinnar": {
+    "sa2_code": "205041094",
+    "sa2_name": "Churchill",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Yinnar South": {
+    "sa2_code": "205041094",
+    "sa2_name": "Churchill",
+    "lga_code": "23810",
+    "lga_name": "Latrobe (Vic.)"
+  },
+  "Yuulong": {
+    "sa2_code": "217031476",
+    "sa2_name": "Otway",
+    "lga_code": "21750",
+    "lga_name": "Colac Otway"
+  },
+  "Zeerust": {
+    "sa2_code": "216031418",
+    "sa2_name": "Shepparton Surrounds - East",
+    "lga_code": "22830",
+    "lga_name": "Greater Shepparton"
+  }
+}
