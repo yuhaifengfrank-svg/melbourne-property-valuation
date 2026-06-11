@@ -261,7 +261,14 @@ export default async function handler(req, res) {
     if (hasSessionConflict()) {
       return res.status(409).json({
         ok: false,
-        error: "Session already bound to a different contact. Please start fresh or use the original registration session."
+        error: "Session already bound to a different contact. Please start fresh or use the original registration session.",
+        _debug: {
+          existingBindingCount: existingBinding.length,
+          existingBindingCid: existingBinding.length > 0 ? existingBinding[0].lead_contact_id : null,
+          existingContactCount: existingContact.length,
+          existingContactId: existingContact.length > 0 ? existingContact[0].id : null,
+          email: email
+        }
       });
     }
 
@@ -301,7 +308,8 @@ export default async function handler(req, res) {
     if (bound.length === 0 || bound[0].lead_contact_id !== cid) {
       return res.status(409).json({
         ok: false,
-        error: "Session already bound to a different contact. Please start fresh or use the original registration session."
+        error: "Session already bound to a different contact. Please start fresh or use the original registration session.",
+        _debug: { cid, boundCid: bound.length > 0 ? bound[0].lead_contact_id : null }
       });
     }
 
@@ -406,6 +414,6 @@ export default async function handler(req, res) {
     console.error("[unlock-opportunity]", error.message);
     return res
       .status(500)
-      .json({ ok: false, error: "Service temporarily unavailable" });
+      .json({ ok: false, error: "Service temporarily unavailable", _debug: { message: error.message, stack: error.stack ? error.stack.split('\n').slice(0,3).join('|') : null } });
   }
 }
