@@ -1,37 +1,24 @@
 // ── AusHomeValue Vercel Serverless API ──
-// 与 dev-server.mjs 共享 lib/valuation-service.js
+// Phase 1B: Returns free summary with locked preview for full report
+// Full report requires token via /api/valuation-full
 
 import { runValuation } from "../lib/valuation-service.js";
 
-// 客户端安全过滤：只暴露客户可看字段，隐藏内部审计信息
-// 客户端安全过滤：只暴露客户可查看的字段，删除所有内部审计信息
 function sanitizeForClient(obj, debug = false) {
   const safe = JSON.parse(JSON.stringify(obj));
 
-  // 保留关键元数据
-  // dataTier, valuationMethod, subject, valuationMode, largeLotDetect, largeLotResult 保留
-
-  // 删除内部字段（顶层）
   delete safe.sourceResults;
   delete safe.isSingleSource;
   delete safe.evidenceMode;
 
-  // 替换为客户友好的数据状态
   safe.customerDataStatus = mapCustomerDataStatus(obj);
 
-  // 简化 confidence.reasons — 只保留最终标签 + 分数
   if (safe.valuation?.confidence) {
-    // 清除包含来源数量、验证比例的内部理由
-    // 替换为简短、客户友好的理由
     const label = safe.valuation.confidence.label;
     const score = safe.valuation.confidence.dataScore;
-    safe.valuation.confidence = {
-      label,
-      dataScore: score
-    };
+    safe.valuation.confidence = { label, dataScore: score };
   }
 
-  // 过滤 acceptedComparables — 只保留客户可见字段
   if (safe.valuation?.acceptedComparables) {
     safe.valuation.acceptedComparables = safe.valuation.acceptedComparables.map(c => ({
       address: c.address,
@@ -45,7 +32,6 @@ function sanitizeForClient(obj, debug = false) {
     }));
   }
 
-  // 顶层 comparables 同样过滤
   if (safe.comparables?.length) {
     safe.comparables = safe.comparables.map(c => ({
       address: c.address,
@@ -55,22 +41,17 @@ function sanitizeForClient(obj, debug = false) {
     }));
   }
 
-  // 删除 rejectedComparables（包含 sourceUrl + 内部 reasons）
   delete safe.rejectedComparables;
   if (safe.valuation?.rejectedComparables) delete safe.valuation.rejectedComparables;
-
-  // 删除 methodology / statisticalIntervals（内部建模信息）
   delete safe.methodology;
   if (safe.valuation?.methodology) delete safe.valuation.methodology;
   if (safe.valuation?.statisticalIntervals) delete safe.valuation.statisticalIntervals;
 
-  // 删除 estimate 内部字段（保留 midpoint/low/high）
   if (safe.valuation?.estimate && !debug) {
     const { midpoint, low, high } = safe.valuation.estimate;
     safe.valuation.estimate = { midpoint, low, high };
   }
 
-  // 删除 subject 中的内部字段（坐标、sa2Code 等）
   if (safe.subject) {
     delete safe.subject.coordinates;
     delete safe.subject.lat;
@@ -84,7 +65,6 @@ function sanitizeForClient(obj, debug = false) {
 }
 
 function mapCustomerDataStatus(obj) {
-  // evidenceMode 转换逻辑（从 runValuation 的原始响应中计算）
   if (obj.customerDataStatus === 'model_based') return 'model_based';
   if (!obj.valuation?.ok || !obj.valuation?.estimate) return "unavailable";
   const acc = obj.valuation?.acceptedComparables || [];
@@ -96,6 +76,92 @@ function mapCustomerDataStatus(obj) {
   if (singleObserved >= 3 || totalOk >= 3) return "limited";
   if (totalOk >= 1) return "limited";
   return "unavailable";
+}
+
+/**
+ * Build a free summary from full valuation data.
+ * Only shows: address, type, land area, midpoint, range(low-high), confidence,
+ * date, comparable count, 1-2 key factors, data limitations, disclaimer.
+ */
+function buildFreeSummary(fullResult) {
+  const val = fullResult.valuation || {};
+  const est = val.estimate || {};
+  const subject = fullResult.subject || {};
+  const comparables = val.acceptedComparables || fullResult.comparables || [];
+  const confidence = val.confidence || {};
+
+  // Determine key factors (1-2 from valuation reasons)
+  const reasons = val.reasons || fullResult.reasons || [];
+  const keyFactors = reasons.slice(0, 2).map(r => {
+    if (typeof r === 'string') return r;
+    return r.text || r.label || String(r);
+  });
+
+  // Data limitations
+  const limitations = [];
+  if (comparables.length < 3) limitations.push("Limited comparable sales data in this area");
+  if (confidence.label === "Low") limitations.push("Valuation confidence is low — further evidence may improve accuracy");
+  if (!est.midpoint) limitations.push("Estimate is based on available public data only");
+  if (limitations.length === 0) limitations.push("Valuation is based on publicly available market data");
+
+  return {
+    ok: fullResult.ok,
+    address: subject.address || fullResult.address || "",
+    propertyType: subject.propertyType || subject.type || fullResult.type || "",
+    landSize: subject.landSize || null,
+    estimate: {
+      midpoint: est.midpoint || null,
+      low: est.low || null,
+      high: est.high || null
+    },
+    confidence: {
+      label: confidence.label || "",
+      dataScore: confidence.dataScore || null
+    },
+    valuationDate: val.date || fullResult.date || new Date().toISOString().split("T")[0],
+    comparableCount: comparables.length,
+    keyFactors: keyFactors,
+    dataLimitations: limitations,
+    customerDataStatus: mapCustomerDataStatus(fullResult),
+    disclaimer: "This free valuation summary is based on publicly available market data, property characteristics and statistical analysis for general information and research purposes only. Data may be delayed, incomplete or subject to third-party recording differences. This is not a formal valuation, credit decision, legal, tax or financial advice. Consult licensed professionals before making transaction or financing decisions.",
+    // Locked preview — show what the full report contains
+    lockedPreview: buildLockedPreview(fullResult)
+  };
+}
+
+/**
+ * Build a locked preview of the full report — chapter list, teasers, pricing.
+ */
+function buildLockedPreview(fullResult) {
+  const val = fullResult.valuation || {};
+  const comparables = val.acceptedComparables || fullResult.comparables || [];
+  const mult = val.multiSourceAnalysis || null;
+
+  const chapters = [
+    { title: "Comparable Sales Analysis", teaser: `${comparables.length} comparable properties with distance, price per m², condition and adjustment details.` },
+    { title: "Micro-Location Assessment", teaser: "Street-level analysis including proximity to amenities, transport, schools, parking pressure and noise factors." },
+    { title: "Planning & Zoning Review", teaser: "Land zoning, overlay restrictions, subdivision potential and development constraints." },
+    { title: "Suburb Profile & Trends", teaser: "Median price trends, days on market, supply/demand balance and demographic indicators." },
+    { title: "Confidence Assessment", teaser: val.confidence?.label ? `Current confidence: ${val.confidence.label}. Full breakdown of data sources, verification status and adjustment rationale.` : "Detailed methodology, data source verification and adjustment rationale." },
+    { title: "Investment Suitability", teaser: "Rental yield estimate, capital growth outlook, risk factors and loan-to-value considerations based on this property." }
+  ];
+
+  // Add multi-source analysis if available
+  if (mult) {
+    chapters.push({
+      title: "Multi-Source Cross-Verification",
+      teaser: "Valuation compared across independent data sources showing convergence and divergence."
+    });
+  }
+
+  return {
+    chapters,
+    price: "AUD $3.99",
+    priceLabel: "Introductory Offer",
+    cta: "Unlock Full Valuation Report — Introductory Offer AUD $3.99",
+    // Billing terms
+    terms: "One-time payment. PDF download included."
+  };
 }
 
 export default async function handler(request, response) {
@@ -111,12 +177,14 @@ export default async function handler(request, response) {
       fetch: false,
       useDatabaseFallback: true
     });
-    const debug = request.query?.debug === 'true' || body.debug === true;
-    const safe = sanitizeForClient(result, debug);
+
+    // Build free summary instead of returning full sanitized data
+    const freeSummary = buildFreeSummary(result);
+
     return response.status(result.ok ? 200 : 400)
       .setHeader("Content-Type", "application/json")
       .setHeader("Cache-Control", "no-store")
-      .send(JSON.stringify(safe));
+      .send(JSON.stringify(freeSummary));
   } catch (error) {
     console.error(error);
     return response.status(500)
@@ -125,9 +193,9 @@ export default async function handler(request, response) {
         ok: false,
         status: "error",
         error: error.message,
-        valuation: null,
+        estimate: null,
         customerDataStatus: "unavailable",
-        disclaimer: "本估值基于评估时可获得的公开市场信息、房产特征及统计分析生成，仅供一般信息和研究参考。数据可能存在延迟、不完整或第三方记录差异。本报告并非正式估价、信贷决定、法律、税务或财务建议。作出交易或融资决定前，请咨询持牌专业人士。"
+        disclaimer: "This free valuation summary is based on publicly available market data for general information only. This is not a formal valuation."
       }));
   }
 }

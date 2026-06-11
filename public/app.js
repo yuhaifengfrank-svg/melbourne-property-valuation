@@ -1564,6 +1564,49 @@ function renderComparables(rows) {
 }
 
 function renderValuation(data) {
+  /* Handle Phase 1B free summary format (from /api/valuation) or old format */
+  if (data.estimate && !data.valuation) {
+    // Free summary format: transform to show in old layout where possible
+    var freeData = {
+      address: data.address || "",
+      type: data.propertyType || "House",
+      value: data.estimate.midpoint ? "$" + Number(data.estimate.midpoint).toLocaleString("en-AU") : "Pending",
+      midpoint: data.estimate.midpoint ? "$" + Number(data.estimate.midpoint).toLocaleString("en-AU") : "Pending",
+      midpointValue: data.estimate.midpoint || NaN,
+      low: data.estimate.low || null,
+      high: data.estimate.high || null,
+      confidence: data.confidence && data.confidence.label ? data.confidence.label : "Pending",
+      confidenceScore: data.confidence && data.confidence.dataScore ? data.confidence.dataScore : null,
+      status: data.confidence && data.confidence.label ? data.confidence.label : "Pending",
+      reasons: data.keyFactors && data.keyFactors.length ? data.keyFactors : ["Free estimate based on comparable market data."],
+      reasonsZh: data.keyFactors && data.keyFactors.length ? data.keyFactors : ["基于可比市场数据的免费估值。"],
+      comparables: [],
+      comparableCount: data.comparableCount || 0,
+      customerDataStatus: data.customerDataStatus || "unavailable",
+      dataLimitations: data.dataLimitations || [],
+      lockedPreview: data.lockedPreview || null,
+      propertyState: data.propertyState || stateFromAddress(data.address),
+      propertySuburb: data.propertySuburb || suburbFromAddress(data.address)
+    };
+    data = freeData;
+  } else if (data.valuation) {
+    // Old full format — extract fields for display
+    var v = data.valuation || {};
+    var e = v.estimate || {};
+    var subj = data.subject || {};
+    var c = v.confidence || {};
+    data.address = subj.address || data.address || "";
+    data.value = e.midpoint ? "$" + Number(e.midpoint).toLocaleString("en-AU") : v.value || "Pending";
+    data.midpoint = e.midpoint ? "$" + Number(e.midpoint).toLocaleString("en-AU") : "Pending";
+    data.midpointValue = e.midpoint || NaN;
+    data.low = e.low || null;
+    data.high = e.high || null;
+    data.confidence = c.label || "Pending";
+    data.status = c.label || "Pending";
+    data.comparableCount = (v.acceptedComparables || []).length;
+    data.lockedPreview = null;
+  }
+
   currentValuation = {
     ...data,
     propertyState: data.propertyState || stateFromAddress(data.address),
@@ -1732,6 +1775,48 @@ function renderLockState() {
   document.querySelectorAll(".detail-panel").forEach((panel) => {
     panel.classList.toggle("unlocked", !locked);
   });
+
+  /* Render locked preview CTA with chapter list if available */
+  var lockedPreview = currentValuation && currentValuation.lockedPreview;
+  var lockedPreviewEl = byId("locked-preview-cta");
+  if (lockedPreview && lockedPreview.chapters && lockedPreview.chapters.length && locked) {
+    if (lockedPreviewEl) {
+      var ctaHtml = renderLockedPreviewHTML(lockedPreview);
+      lockedPreviewEl.innerHTML = ctaHtml;
+      lockedPreviewEl.classList.remove("hidden");
+    }
+  } else if (lockedPreviewEl) {
+    lockedPreviewEl.classList.add("hidden");
+  }
+}
+
+function renderLockedPreviewHTML(lockedPreview) {
+  var lang = typeof language !== "undefined" ? language : "en";
+  var isZh = lang === "zh";
+  var chapters = lockedPreview.chapters || [];
+  var price = lockedPreview.price || "AUD $3.99";
+  var priceLabel = lockedPreview.priceLabel || "Introductory Offer";
+  var cta = lockedPreview.cta || "Unlock Full Valuation Report";
+  var terms = lockedPreview.terms || "One-time payment. PDF download included.";
+
+  var html = '<div class="locked-preview-inner" style="border:2px dashed #dbe2de;border-radius:12px;padding:24px;margin:20px 0;background:#f8faf9;">';
+  html += '<h3 style="margin-top:0;color:#17211d;">' + (isZh ? '完整报告章节预览' : 'Full Report Preview') + '</h3>';
+  html += '<p style="color:#66736d;font-size:0.9rem;margin-bottom:16px;">' + (isZh ? '以下内容包含在完整估值报告中：' : 'The full valuation report includes:') + '</p>';
+  html += '<div style="display:flex;flex-direction:column;gap:12px;">';
+  chapters.forEach(function(ch) {
+    html += '<div style="background:white;border:1px solid #eef2f0;border-radius:8px;padding:12px 16px;">';
+    html += '<strong style="color:#0d6b57;font-size:0.9rem;">' + ch.title + '</strong>';
+    if (ch.teaser) html += '<p style="margin:4px 0 0;font-size:0.8rem;color:#66736d;">' + ch.teaser + '</p>';
+    html += '</div>';
+  });
+  html += '</div>';
+  html += '<div style="margin-top:20px;text-align:center;">';
+  html += '<p style="font-size:1.2rem;font-weight:700;color:#17211d;margin-bottom:4px;">' + price + '</p>';
+  html += '<p style="font-size:0.8rem;color:#0d6b57;font-weight:600;margin:0 0 12px;">' + priceLabel + '</p>';
+  html += '<button id="locked-preview-cta-btn" onclick="window.scrollTo({top:document.querySelector(\'.lead-panel\')?.offsetTop || 0,behavior:\'smooth\'})" style="background:#0d6b57;color:white;border:none;border-radius:8px;padding:12px 24px;font-weight:600;font-size:1rem;cursor:pointer;">' + cta + '</button>';
+  html += '<p style="font-size:0.7rem;color:#889994;margin-top:8px;">' + terms + '</p>';
+  html += '</div></div>';
+  return html;
 }
 
 function scrollToSection(selector) {
@@ -2189,9 +2274,7 @@ async function saveLead({ pdfDownload = false } = {}) {
     stored = true;
     /* Persist email so page reload can restore unlocked state */
     try { localStorage.setItem("aushomevalue.reg.email", JSON.stringify(email)); } catch(e) {}
-    if (window.opportunityGate) {
-      try { localStorage.setItem("lead.unlocked.v2", "true"); } catch(e) {}
-    }
+    /* Phase 1B: No longer writes lead.unlocked.v2 — using signed tokens via opportunity-gate.js */
   } catch (error) {
     console.error(error);
   }
