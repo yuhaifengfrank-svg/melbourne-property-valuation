@@ -158,7 +158,7 @@ function buildLockedPreview(fullResult) {
     chapters,
     price: "AUD $3.99",
     priceLabel: "Introductory Offer",
-    cta: "Unlock Full Valuation Report — Introductory Offer AUD $3.99",
+    cta: "Coming Soon — Full Valuation Report",
     // Billing terms
     terms: "One-time payment. PDF download included."
   };

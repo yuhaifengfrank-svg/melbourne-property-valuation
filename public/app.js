@@ -1245,13 +1245,56 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
 
     if (!response.ok) throw new Error(result.error || `Valuation API returned ${response.status}`);
 
+    /* ── Phase 1B: Handle free summary format (result.estimate directly, not result.valuation.estimate) ── */
+    if (result.estimate && !result.valuation) {
+      // Free summary format from Phase 1B
+      var est = result.estimate;
+      var conf = result.confidence || {};
+      return {
+        address: result.address || address,
+        addressZh: result.address || address,
+        propertyState: resolvedState,
+        propertySuburb: normalizedSuburb,
+        type: result.propertyType || inferredType,
+        value: est.low && est.high
+          ? "$" + Number(est.low).toLocaleString("en-AU") + " - $" + Number(est.high).toLocaleString("en-AU")
+          : "Pending",
+        midpoint: est.midpoint ? "$" + Number(est.midpoint).toLocaleString("en-AU") : "Pending",
+        midpointValue: est.midpoint || NaN,
+        low: est.low || null,
+        high: est.high || null,
+        confidence: conf.label || "",
+        confidenceZh: conf.label || "",
+        status: conf.label || "",
+        statusZh: conf.label || "",
+        customerDataStatus: result.customerDataStatus || "",
+        valuationMode: "standard_house",
+        experimentalLabel: null,
+        modelVersion: "",
+        comparables: [],
+        comparableCount: result.comparableCount || 0,
+        reasons: result.keyFactors || ["Free estimate based on comparable market data."],
+        reasonsZh: result.keyFactors || ["基于可比市场数据的免费估值。"],
+        dataLimitations: result.dataLimitations || [],
+        lockedPreview: result.lockedPreview || null,
+        location: emptyValuation.location,
+        planning: emptyValuation.planning,
+        suburb: [],
+        modelNotes: [],
+        map: {},
+        mapZh: {},
+        evidenceSummary: "",
+        evidenceSummaryZh: ""
+      };
+    }
+
+    /* ── Old format (fallback): result.valuation.estimate ── */
     if (!result.valuation?.ok || !result.valuation.estimate) {
-      // API 返回了明确但无法估值的结果
       throw new Error(result.message || "Valuation engine returned no estimate");
     }
-    const acc = result.valuation.acceptedComparables || [];
-    const est = result.valuation.estimate;
-    const conf = result.valuation.confidence || {};
+    var acc = result.valuation.acceptedComparables || [];
+    var est_old = result.valuation.estimate;
+    var conf_old = result.valuation.confidence || {};
 
     // 确定证据模式展示文案
     const customerDataStatus = result.customerDataStatus || "unavailable";
@@ -2308,25 +2351,15 @@ async function saveLead({ pdfDownload = false } = {}) {
 }
 
 async function downloadDemoReport() {
-  const phone = byId("lead-phone").value.trim();
-  const consent = byId("lead-consent").checked;
-  if (!phone || !consent) {
-    const message = byId("lead-message");
-    message.textContent =
+  // Phase 1B: Full report PDF is paywalled — Coming Soon
+  var msgEl = byId("lead-message");
+  if (msgEl) {
+    msgEl.textContent =
       language === "zh"
-        ? "下载 PDF 前需要填写电话并勾选联系授权。"
-        : "Phone number and contact consent are required before PDF download.";
-    showPdfRequirementsModal();
-    return;
+        ? "完整报告 PDF 即将推出。"
+        : "Full report PDF coming soon.";
   }
-  if (!(await saveLead({ pdfDownload: true }))) return;
-  const blob = createPdfDocument(buildDetailedReportLines());
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "aushomevalue-property-valuation-report.pdf";
-  link.click();
-  URL.revokeObjectURL(url);
+  return;
 }
 
 byId("start-valuation").addEventListener("click", async () => {
