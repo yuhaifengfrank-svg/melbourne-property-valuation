@@ -283,9 +283,28 @@ export default async function handler(req, res) {
       cid = newContact[0].id;
     }
 
-    // Step 3: Upsert lead_preferences using ON CONFLICT on unique (lead_contact_id)
-    // Note: lead_preferences has no explicit UNIQUE on lead_contact_id, so we use a manual upsert
-    // Since lead_contact_id has an index but not a UNIQUE constraint, we use SELECT-then-INSERT/UPDATE
+    // Step 3: Session binding — DO NOTHING on conflict, then verify
+    // MUST be before all data writes (preferences/consent/events) so a conflict
+    // returns 409 without side effects
+    await sql`
+      INSERT INTO lead_session_contacts (session_id, lead_contact_id)
+      VALUES (${activeSessionId}, ${cid})
+      ON CONFLICT (session_id) DO NOTHING
+    `;
+
+    const bound = await sql`
+      SELECT lead_contact_id FROM lead_session_contacts
+      WHERE session_id = ${activeSessionId}
+    `;
+    if (bound.length === 0 || bound[0].lead_contact_id !== cid) {
+      return res.status(409).json({
+        ok: false,
+        error: "Session already bound to a different contact. Please start fresh or use the original registration session."
+      });
+    }
+
+    // Step 4: Upsert lead_preferences
+    // lead_preferences has no UNIQUE constraint on lead_contact_id, so use manual upsert
     const existingPrefs = await sql`
       SELECT id FROM lead_preferences WHERE lead_contact_id = ${cid} LIMIT 1
     `;
@@ -309,7 +328,7 @@ export default async function handler(req, res) {
       `;
     }
 
-    // Step 4: Write consent_records
+    // Step 5: Write consent_records
     if (serviceConsent) {
       await sql`
         INSERT INTO consent_records (lead_contact_id, consent_type, granted, ip_hash, source_reference)
@@ -323,33 +342,13 @@ export default async function handler(req, res) {
       `;
     }
 
-    // Step 5: Write lead_events
+    // Step 6: Write lead_events
     await sql`
       INSERT INTO lead_events (lead_contact_id, session_id, event_type, event_data)
       VALUES (${cid}, ${activeSessionId}, 'opportunity_unlock', ${JSON.stringify(
       { goal, state, propertyType, budgetMin, budgetMax }
     )})
     `;
-
-    // Step 6: Session binding — DO NOTHING on conflict, then verify
-    await sql`
-      INSERT INTO lead_session_contacts (session_id, lead_contact_id)
-      VALUES (${activeSessionId}, ${cid})
-      ON CONFLICT (session_id) DO NOTHING
-    `;
-
-    // Verify the binding matches our contact (safety check for concurrent insert)
-    const bound = await sql`
-      SELECT lead_contact_id FROM lead_session_contacts
-      WHERE session_id = ${activeSessionId}
-    `;
-    if (bound.length === 0 || bound[0].lead_contact_id !== cid) {
-      // Session already bound to a different contact — return 409
-      return res.status(409).json({
-        ok: false,
-        error: "Session already bound to a different contact. Please start fresh or use the original registration session."
-      });
-    }
 
     const contactId = cid;
 
