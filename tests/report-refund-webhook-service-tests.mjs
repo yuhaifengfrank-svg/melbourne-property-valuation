@@ -112,9 +112,37 @@ function makeSql() {
       return handleRefundCte(raw, values);
     }
 
+    // ── LEFT JOIN recheck (catch path) ────────────────────────────
+    // Handle: SELECT rp.status, re.status, re.lead_contact_id
+    //         FROM report_payments rp LEFT JOIN report_entitlements re ON ...
+    //         WHERE rp.id = X LIMIT 1
+    const leftJoinRecheck = raw.match(
+      /SELECT\s+([\s\S]+?)\s+FROM\s+report_payments\s+rp\s+LEFT\s+JOIN\s+report_entitlements\s+re\s+ON\s+/i
+    );
+    if (leftJoinRecheck) {
+      const idMatch = raw.match(/WHERE\s+rp\.id\s*=\s*\$(\d+)/i);
+      if (idMatch) {
+        const idx = parseInt(idMatch[1], 10);
+        const pid = idx < values.length ? values[idx] : null;
+        const p = mockDb.payments.find(p => p.id === pid);
+        if (p) {
+          const e = mockDb.entitlements.find(
+            e => e.report_id === p.report_id
+          );
+          return [{
+            payment_status: p.status,
+            ent_status: e ? e.status : null,
+            ent_lead_contact_id: e ? e.lead_contact_id : null,
+          }];
+        }
+      }
+      return [];
+    }
+
     return [];
   };
 }
+
 
 // ── Refund CTE handler ──────────────────────────────────────────────
 
@@ -670,6 +698,199 @@ test("concurrent state race: ent rolled back when pay concurrently fails", async
   // Verify: payment stayed paid (since we simulated it not being paid)
   assert.equal(env.payments[0].status, "paid", "Payment must stay paid");
 });
+
+
+
+test("catch path: SQL error, payment refunded but entitlement active → STATE_INCONSISTENT", async () => {
+  // Catch path must verify both payment AND entitlement state.
+  // If payment=refunded but entitlement=active, it's half-state.
+  const paymentIntent = "pi_test_" + crypto.randomBytes(8).toString("hex");
+  const reportId = "rpt_test_" + crypto.randomBytes(8).toString("hex");
+  const env = await setupEnv({
+    seedPayment: { paymentIntent, report_id: reportId, lead_contact_id: 42 },
+    seedEntitlement: { report_id: reportId, lead_contact_id: 42 },
+  });
+
+  const charge = makeCharge({ paymentIntent });
+
+  // Pre-set state BEFORE calling the service:
+  // Payment is 'refunded' (concurrent caller did partial work),
+  // Entitlement is still 'active'.
+  env.payments[0].status = "refunded";
+
+  // The initial SELECT sees payment.status='refunded'.
+  // The service enters the idempotent path (step 3).
+  // The idempotent check sees ent status='active' →
+  // REFUND_STATE_INCONSISTENT.
+  // (This is the non-catch path, which we already test.)
+
+  // We want to test the CATCH path specifically.
+  // To enter catch path, the CTE must run and fail.
+  // CTE runs only if payment.status != 'refunded'.
+  // So payment must be 'paid' at initial SELECT, but the CTE
+  // must fail after ent updates.
+
+  // Reset: payment back to paid
+  env.payments[0].status = "paid";
+
+  // We need the LEFT JOIN recheck to return payment=refunded + ent=active.
+  // The mock's LEFT JOIN handler reads the current state.
+  // We can set a flag to make the CTE fail like the guard,
+  // then BEFORE the catch recheck, we change the state.
+
+  // This is hard with a purely synchronous mock.
+  // Let me take a different approach: simulate the guard error
+  // directly by making the sql function throw a mock error
+  // at the right time. The service catches it and runs the
+  // LEFT JOIN recheck.
+  //
+  // We wrap env.sql to intercept the CTE call and throw.
+  // Then set up the state for the recheck.
+  const sql = env.sql;
+
+  // We need: CTE call → throw → catch → recheck with bad state
+  // Easiest: set up a state where:
+  // 1. initial SELECT returns paid
+  // 2. _simulatePayRace makes CTE fail via guard
+  // 3. before the catch, we set payment=refunded but keep ent=active
+  //
+  // Problem: the mock is sync, so step 2 and 3 happen in the same tick.
+  // We can't interleave.
+  //
+  // Cleanest: use a wrapper around sql that does the state change.
+  // Count calls: call 1 = initial SELECT, call 2 = the catch path
+  // LEFT JOIN. We'll make wrapping simpler.
+
+  // Let's just use a simpler approach: wrap sql to intercept
+  // the CTE and inject the bad state.
+
+  let callCount = 0;
+  const wrappedSql = async function(...args) {
+    // args is template-literaled: args = [strings, ...values]
+    callCount++;
+    const full = args[0].map((s, i) =>
+      i < args[0].length - 1 ? s + "$" + i : s
+    ).join("");
+
+    // After the CTE fails (call 2: guard error), set up bad state
+    // before the catch path recheck runs (call 3).
+    if (callCount === 3) {
+      // This is the catch path's LEFT JOIN query.
+      // Set payment to 'refunded' but leave ent 'active'.
+      env.payments[0].status = "refunded";
+    }
+
+    // Let the mock handle normally
+    return sql(...args);
+  };
+
+  // Set simulate flag so CTE fails
+  env.mockDb._simulatePayRace = true;
+
+  await assert.rejects(
+    () => env.handleChargeRefunded(charge, wrappedSql),
+    { code: "REFUND_STATE_INCONSISTENT" },
+    "Catch path must reject when payment=refunded but ent still active"
+  );
+
+  // Verify DB state: the guard rolled back ent, so both should be
+  // in original state... but we manually set payment=refunded in
+  // the wrapper. Let's verify the final expected state.
+  // The ent was rolled back by the guard, then we set payment=refunded.
+  assert.equal(env.entitlements[0].status, "active",
+    "Entitlement should be rolled back to active by guard");
+  assert.equal(env.payments[0].status, "refunded",
+    "Payment should have been set to refunded by wrapper (simulating race)");
+
+  // The catch path handles inconsistent state correctly
+  // (payment refunded but entitlement still active → error)
+});
+
+test("catch path: SQL error, payment refunded, missing entitlement → STATE_INCONSISTENT", async () => {
+  // Entitlement MUST exist for CTE ent to succeed (so guard fires).
+  // Then in the catch recheck, we simulate the entitlement being
+  // gone: the LEFT JOIN returns ent_status=null.
+  const paymentIntent = "pi_test_" + crypto.randomBytes(8).toString("hex");
+  const reportId = "rpt_test_" + crypto.randomBytes(8).toString("hex");
+  const env = await setupEnv({
+    seedPayment: { paymentIntent, report_id: reportId, lead_contact_id: 42 },
+    // Seed an entitlement so the CTE ent step succeeds
+    seedEntitlement: { report_id: reportId, lead_contact_id: 42 },
+  });
+
+  const charge = makeCharge({ paymentIntent });
+  const sql = env.sql;
+
+  let callCount = 0;
+  const wrappedSql = async function(...args) {
+    callCount++;
+    if (callCount === 3) {
+      // Simulate: after guard fired, the catch recheck finds
+      // payment=refunded but NO entitlement (ent was rolled back
+      // by the guard, then another concurrent caller refunded
+      // the payment independently — creating an inconsistent state)
+      env.payments[0].status = "refunded";
+      // Remove the entitlement to simulate "missing"
+      env.entitlements.length = 0;
+    }
+    return sql(...args);
+  };
+
+  env.mockDb._simulatePayRace = true;
+
+  await assert.rejects(
+    () => env.handleChargeRefunded(charge, wrappedSql),
+    { code: "REFUND_STATE_INCONSISTENT" },
+    "Catch path must reject when payment=refunded but no entitlement"
+  );
+});
+
+
+
+test("catch path: SQL error, payment refunded, wrong-owner entitlement → STATE_INCONSISTENT", async () => {
+  // Simulates worst-case race: a concurrent caller refunded the
+  // payment and someone created/modified the entitlement to belong
+  // to a different customer. The catch recheck must detect this.
+  //
+  // To trigger the catch path, ent must succeed in the CTE first.
+  // We seed a matching entitlement so CTE ent succeeds.
+  // Then in the catch recheck, we change the entitlement owner
+  // to simulate the concurrent modification.
+  const paymentIntent = "pi_test_" + crypto.randomBytes(8).toString("hex");
+  const reportId = "rpt_test_" + crypto.randomBytes(8).toString("hex");
+  const env = await setupEnv({
+    seedPayment: { paymentIntent, report_id: reportId, lead_contact_id: 42 },
+    // Seed a MATCHING entitlement so CTE ent step succeeds
+    seedEntitlement: { report_id: reportId, lead_contact_id: 42 },
+  });
+
+  const charge = makeCharge({ paymentIntent });
+  const sql = env.sql;
+
+  let callCount = 0;
+  const wrappedSql = async function(...args) {
+    callCount++;
+    if (callCount === 3) {
+      // Simulate: concurrent process refunded payment AND changed
+      // entitlement to a different customer before our check
+      env.payments[0].status = "refunded";
+      env.entitlements[0].lead_contact_id = 99;
+    }
+    return sql(...args);
+  };
+
+  env.mockDb._simulatePayRace = true;
+
+  await assert.rejects(
+    () => env.handleChargeRefunded(charge, wrappedSql),
+    { code: "REFUND_STATE_INCONSISTENT" },
+    "Catch path must reject when payment=refunded but wrong-owner ent"
+  );
+});
+
+
+
+
 
 test("no access to Stripe network or production DB", () => {
   // Verify the module doesn't import any Stripe or DB clients
