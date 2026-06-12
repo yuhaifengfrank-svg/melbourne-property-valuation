@@ -82,7 +82,9 @@ CREATE INDEX IF NOT EXISTS idx_rd_expires ON report_drafts (expires_at);
 CREATE INDEX IF NOT EXISTS idx_rd_consumed ON report_drafts (consumed_at) WHERE consumed_at IS NULL;
 
 -- Add draft_id FK to report_snapshots (Phase 1B)
+-- UNIQUE(draft_id) ensures at most one snapshot per draft (atomic guarantee)
 ALTER TABLE report_snapshots ADD COLUMN IF NOT EXISTS draft_id TEXT REFERENCES report_drafts(draft_id);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_rs_draft_id ON report_snapshots (draft_id) WHERE draft_id IS NOT NULL;
 
 -- 5. Stripe Webhook Events: idempotency audit log
 CREATE TABLE IF NOT EXISTS stripe_webhook_events (

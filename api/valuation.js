@@ -4,7 +4,7 @@
 
 import { runValuation } from "../lib/valuation-service.js";
 import { createReportDraft } from "../lib/report-snapshot-service.js";
-import { getSql } from "./_db.js";
+import { getSql, ensureCustomerFunnelSchema, ensureReportPaymentSchema } from "./_db.js";
 
 function sanitizeForClient(obj, debug = false) {
   const safe = JSON.parse(JSON.stringify(obj));
@@ -186,6 +186,9 @@ export default async function handler(request, response) {
     try {
       if (result.ok) {
         const sql = getSql();
+        // Ensure dependent schemas exist before writing report_drafts
+        await ensureCustomerFunnelSchema(sql);
+        await ensureReportPaymentSchema(sql);
         const draft = await createReportDraft(result, sql);
         draftToken = draft.draftToken;
         draftExpiresAt = draft.draftExpiresAt;

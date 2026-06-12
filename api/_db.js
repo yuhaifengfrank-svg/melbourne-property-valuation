@@ -216,6 +216,8 @@ export async function ensureReportPaymentSchema(sql) {
 
   await sql`ALTER TABLE report_snapshots ADD COLUMN IF NOT EXISTS draft_id TEXT REFERENCES report_drafts(draft_id)`;
 
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_rs_draft_id ON report_snapshots (draft_id) WHERE draft_id IS NOT NULL`;
+
   await sql`CREATE TABLE IF NOT EXISTS stripe_webhook_events (
     stripe_event_id TEXT PRIMARY KEY,
     event_type TEXT NOT NULL,
