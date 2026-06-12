@@ -27,11 +27,25 @@
       });
   }
 
+  /** Get or create anonymous session ID for funnel tracking */
+  function getFunnelSessionId() {
+    var sid = sessionStorage.getItem("aushomevalue_sid");
+    if (!sid) {
+      sid = "anon_" + Date.now() + "_" + Math.random().toString(36).slice(2, 10);
+      sessionStorage.setItem("aushomevalue_sid", sid);
+    }
+    return sid;
+  }
+
   /** Submit registration form to server */
   function submitRegistration(formData) {
+    var sid = getFunnelSessionId();
     return fetch("/api/unlock-opportunity", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "X-Session-Id": sid,
+      },
       body: JSON.stringify(formData),
     }).then(function (r) {
       return r.json();
