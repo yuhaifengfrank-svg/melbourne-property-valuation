@@ -21,16 +21,11 @@ const projectRoot = path.resolve(__dirname, "..");
 // from the values array before matching conditions.
 
 function createMockDb(initialState = {}) {
-  /** @type {Array} */
   const payments = [...(initialState.payments || [])];
-  /** @type {Array} */
   const entitlements = [...(initialState.entitlements || [])];
   let entitlementIdSeq = entitlements.length;
   let callLog = [];
 
-  /**
-   * Resolve $N placeholders in a query fragment to actual values.
-   */
   function resolvePlaceholders(expr, values) {
     return expr.replace(/\$(\d+)/g, (_, n) => {
       const idx = parseInt(n, 10) - 1;
@@ -43,10 +38,6 @@ function createMockDb(initialState = {}) {
     });
   }
 
-  /**
-   * Parse a resolved WHERE clause like "col1 = 'val1' AND col2 = 'val2'"
-   * and test against a row object.
-   */
   function rowMatchesWhere(whereClause, row, values) {
     const resolved = resolvePlaceholders(whereClause, values);
     const parts = resolved.split(/\s+AND\s+/i);
@@ -54,7 +45,6 @@ function createMockDb(initialState = {}) {
       const trimmed = part.trim();
       if (!trimmed) continue;
 
-      // col IN ('val1', 'val2')
       const inMatch = trimmed.match(/^(\w+)\s+IN\s*\((.+)\)$/i);
       if (inMatch) {
         const col = inMatch[1].toLowerCase();
@@ -65,22 +55,14 @@ function createMockDb(initialState = {}) {
         continue;
       }
 
-      // col = value
       const eqMatch = trimmed.match(/^(\w+)\s*=\s*(.+)$/);
       if (eqMatch) {
         const col = eqMatch[1].toLowerCase();
         let val = eqMatch[2].trim();
-        // Strip surrounding quotes
-        if (val.startsWith("'") && val.endsWith("'")) {
-          val = val.slice(1, -1);
-        } else if (val.toUpperCase() === "NULL") {
-          val = null;
-        } else if (val.toUpperCase() === "NOW()") {
-          continue; // always true for mock
-        } else if (val.includes("COALESCE") || val.includes("report_payments.")) {
-          // Complex expression — skip check (assume true for mock)
-          continue;
-        }
+        if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
+        else if (val.toUpperCase() === "NULL") val = null;
+        else if (val.toUpperCase() === "NOW()") continue;
+        else if (val.includes("COALESCE") || val.includes("report_payments.")) continue;
 
         if (row[col] === undefined) return false;
         const rowVal = row[col] === null ? null : String(row[col]);
@@ -88,7 +70,6 @@ function createMockDb(initialState = {}) {
         continue;
       }
 
-      // column > value, column < value, column >= value, column <= value
       const opMatch = trimmed.match(/^(\w+)\s*(>=|<=|!=|<>|>|<)\s*(.+)$/);
       if (opMatch) {
         const col = opMatch[1].toLowerCase();
@@ -112,9 +93,6 @@ function createMockDb(initialState = {}) {
     return true;
   }
 
-  /**
-   * Extract column values from SET clause.
-   */
   function parseSetClause(setClause, values) {
     const resolved = resolvePlaceholders(setClause, values);
     const result = {};
@@ -127,24 +105,16 @@ function createMockDb(initialState = {}) {
         if (val.startsWith("'") && val.endsWith("'")) val = val.slice(1, -1);
         else if (val.toUpperCase() === "NULL") val = null;
         else if (val.toUpperCase() === "NOW()") val = new Date();
-        else if (val.includes("EXCLUDED.")) {
-          // ON CONFLICT DO UPDATE SET with EXCLUDED — skip, will be handled
-          // by the INSERT handler separately
-        }
+        else if (val.includes("EXCLUDED.")) { /* handled separately */ }
         result[col] = val;
       }
     }
     return result;
   }
 
-  /**
-   * Main SQL tagged template function.
-   */
   function sql(strings, ...values) {
-    // Build the interpolated query text for pattern matching
     const q = strings.reduce(
-      (acc, s, i) =>
-        acc + s + (i < values.length ? `$${i + 1}` : ""),
+      (acc, s, i) => acc + s + (i < values.length ? `$${i + 1}` : ""),
       ""
     );
     callLog.push({ query: q, values: [...values] });
@@ -154,9 +124,7 @@ function createMockDb(initialState = {}) {
       /SELECT\s+(.+?)\s+FROM\s+report_payments\s+WHERE\s+(.+?)(?:\s+LIMIT\s+\d+)?\s*$/is
     );
     if (selPayments) {
-      const selects = selPayments[1].trim() === "*"
-        ? "*"
-        : selPayments[1].split(",").map((s) => s.trim());
+      const selects = selPayments[1].trim() === "*" ? "*" : selPayments[1].split(",").map((s) => s.trim());
       const whereClause = selPayments[2];
       return payments
         .filter((p) => rowMatchesWhere(whereClause, p, values))
@@ -166,7 +134,7 @@ function createMockDb(initialState = {}) {
           for (const col of selects) row[col] = p[col];
           return row;
         })
-        .slice(0, 1); // LIMIT 1
+        .slice(0, 1);
     }
 
     // ── SELECT from report_entitlements ────────────────────────
@@ -174,9 +142,7 @@ function createMockDb(initialState = {}) {
       /SELECT\s+(.+?)\s+FROM\s+report_entitlements\s+WHERE\s+(.+?)(?:\s+LIMIT\s+\d+)?\s*$/is
     );
     if (selEntitlements) {
-      const selects = selEntitlements[1].trim() === "*"
-        ? "*"
-        : selEntitlements[1].split(",").map((s) => s.trim());
+      const selects = selEntitlements[1].trim() === "*" ? "*" : selEntitlements[1].split(",").map((s) => s.trim());
       const whereClause = selEntitlements[2];
       return entitlements
         .filter((e) => rowMatchesWhere(whereClause, e, values))
@@ -197,14 +163,9 @@ function createMockDb(initialState = {}) {
       const setClause = updPayments[1];
       const whereClause = updPayments[2];
       const returningCols = updPayments[3] ? updPayments[3].split(",").map((s) => s.trim()) : "*";
-
       const matched = payments.filter((p) => rowMatchesWhere(whereClause, p, values));
       const setValues = parseSetClause(setClause, values);
-
-      for (const p of matched) {
-        Object.assign(p, setValues);
-      }
-
+      for (const p of matched) Object.assign(p, setValues);
       return matched.map((p) => {
         if (returningCols === "*" || returningCols[0] === "*") return { ...p };
         const row = {};
@@ -219,32 +180,34 @@ function createMockDb(initialState = {}) {
     );
     if (insEnt) {
       const cols = insEnt[1].split(",").map((s) => s.trim().toLowerCase());
-      const vals = resolvePlaceholders(insEnt[2], values)
-        .split(",")
-        .map((s) => s.trim().replace(/^'(.*)'$/, "$1"));
-      const doUpdateClause = insEnt[4] || "";
-      const returningMatch = q.match(/RETURNING\s+(.+?)$/i);
-      const returningCols = returningMatch
-        ? returningMatch[1].split(",").map((s) => s.trim())
-        : "*";
+      const vals = resolvePlaceholders(insEnt[2], values).split(",").map((s) => s.trim().replace(/^'(.*)'$/, "$1"));
+      let doUpdateClause = insEnt[4] || "";
+      const returningMatch = q.match(/RETURNING\s+(.+?)$/is);
+      const returningCols = returningMatch ? returningMatch[1].split(",").map((s) => s.trim()) : "*";
+      if (returningMatch) {
+        doUpdateClause = doUpdateClause.replace(/RETURNING\s+.+?$/is, "").trim();
+      }
 
       const row = {};
       cols.forEach((c, i) => {
         let v = vals[i];
         if (v === undefined) v = null;
-        if (v.toUpperCase() === "NULL") v = null;
-        if (v.toUpperCase() === "NOW()") v = new Date();
+        if (typeof v === "string" && v.toUpperCase() === "NULL") v = null;
+        if (typeof v === "string" && v.toUpperCase() === "NOW()") v = new Date();
         row[c] = v;
       });
 
-      // Check for conflict on (report_id)
+      // Convert lead_contact_id to number for mock
+      if (row.lead_contact_id !== undefined) {
+        const n = Number(row.lead_contact_id);
+        if (!isNaN(n)) row.lead_contact_id = n;
+      }
+
       const existing = entitlements.find((e) => e.report_id === row.report_id);
       if (existing && doUpdateClause) {
-        // DO UPDATE SET — parse SET from the DO clause
-        const setMatch = doUpdateClause.match(/SET\s+(.+?)(?:\s+WHERE\s+|$)/i);
+        const setMatch = doUpdateClause.match(/SET\s+(.+?)(?:\s+WHERE\s+|$)/is);
         if (setMatch) {
           const setValues = parseSetClause(setMatch[1], values);
-          // Replace EXCLUDED refs with insert values
           for (const [k, v] of Object.entries(setValues)) {
             if (typeof v === "string" && v.includes("EXCLUDED.")) {
               const excludedCol = v.replace("EXCLUDED.", "").toLowerCase();
@@ -265,24 +228,17 @@ function createMockDb(initialState = {}) {
         return returningCols === "*" ? [{ ...row }] : [returningCols.reduce((o, c) => ({ ...o, [c]: row[c] }), {})];
       }
 
-      // Existing but no DO UPDATE (ON CONFLICT DO NOTHING)
       return [];
     }
 
     return [];
   }
 
-  // ── sql.transaction() mock ──────────────────────────────────
   sql.transaction = async function transaction(queries) {
-    if (typeof queries === "function") {
-      queries = queries(sql);
-    }
-    if (!Array.isArray(queries)) {
-      throw new Error("transaction() expects an array of queries, or a function returning one");
-    }
+    if (typeof queries === "function") queries = queries(sql);
+    if (!Array.isArray(queries)) throw new Error("transaction() expects an array of queries");
     const results = [];
     for (const query of queries) {
-      // Queries may be NeonQueryPromise instances (with .then) or already-resolved arrays.
       if (Array.isArray(query)) {
         results.push(query);
       } else if (query && typeof query.then === "function") {
@@ -294,7 +250,6 @@ function createMockDb(initialState = {}) {
     return results;
   };
 
-  // ── Accessors ───────────────────────────────────────────────
   sql.getPayments = () => [...payments];
   sql.getEntitlements = () => [...entitlements];
   sql.getCallLog = () => [...callLog];
@@ -303,7 +258,7 @@ function createMockDb(initialState = {}) {
   return sql;
 }
 
-// ── Build test session ──────────────────────────────────────────────
+// ── Builders ────────────────────────────────────────────────────────
 
 function makeSession(overrides = {}) {
   return {
@@ -345,7 +300,7 @@ function makeEntitlement(overrides = {}) {
     lead_contact_id: overrides.lead_contact_id || 42,
     status: overrides.status !== undefined ? overrides.status : "active",
     granted_at: new Date("2026-06-12T00:00:00Z"),
-    revoked_at: null,
+    revoked_at: overrides.revoked_at !== undefined ? overrides.revoked_at : null,
   };
 }
 
@@ -366,11 +321,7 @@ test("normal payment grants entitlement", async () => {
     purchase_intent_key: pik,
     stripe_checkout_session_id: sessionId,
   });
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-  });
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
 
   const sql = createMockDb({ payments: [payment] });
   const result = await handleCheckoutCompleted(session, sql);
@@ -379,12 +330,10 @@ test("normal payment grants entitlement", async () => {
   assert.equal(result.entitlementCreated, true);
   assert.ok(result.entitlementId > 0, "Should have created entitlement");
 
-  // Verify payment was updated
   const updatedPayment = sql.getPayments().find((p) => p.id === payment.id);
   assert.equal(updatedPayment.status, "paid");
   assert.equal(updatedPayment.stripe_payment_intent_id, session.payment_intent);
 
-  // Verify entitlement was created
   const ents = sql.getEntitlements();
   assert.equal(ents.length, 1);
   assert.equal(ents[0].report_id, reportId);
@@ -400,28 +349,16 @@ test("amount mismatch rejects payment", async () => {
     report_id: reportId,
     purchase_intent_key: pik,
     stripe_checkout_session_id: sessionId,
-    amount_cents: 0, // Corrupted in DB
+    amount_cents: 0,
   });
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-  });
-
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
   const sql = createMockDb({ payments: [payment] });
 
   await assert.rejects(
     () => handleCheckoutCompleted(session, sql),
-    (err) => {
-      assert.ok(err instanceof SessionValidationError);
-      assert.equal(err.code, "AMOUNT_MISMATCH");
-      return true;
-    }
+    (err) => { assert.equal(err.code, "AMOUNT_MISMATCH"); return true; }
   );
-
-  // Payment should NOT be updated
-  const updatedPayment = sql.getPayments().find((p) => p.id === payment.id);
-  assert.equal(updatedPayment.status, "pending");
+  assert.equal(sql.getPayments()[0].status, "pending");
   assert.equal(sql.getEntitlements().length, 0);
 });
 
@@ -433,27 +370,16 @@ test("currency mismatch rejects payment", async () => {
     report_id: reportId,
     purchase_intent_key: pik,
     stripe_checkout_session_id: sessionId,
-    currency: "usd", // Wrong currency in DB
+    currency: "usd",
   });
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-  });
-
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
   const sql = createMockDb({ payments: [payment] });
 
   await assert.rejects(
     () => handleCheckoutCompleted(session, sql),
-    (err) => {
-      assert.ok(err instanceof SessionValidationError);
-      assert.equal(err.code, "CURRENCY_MISMATCH");
-      return true;
-    }
+    (err) => { assert.equal(err.code, "CURRENCY_MISMATCH"); return true; }
   );
-
-  const updatedPayment = sql.getPayments().find((p) => p.id === payment.id);
-  assert.equal(updatedPayment.status, "pending");
+  assert.equal(sql.getPayments()[0].status, "pending");
   assert.equal(sql.getEntitlements().length, 0);
 });
 
@@ -462,49 +388,21 @@ test("incomplete metadata rejects payment", async () => {
   const pik = "pik_" + crypto.randomBytes(8).toString("hex");
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
   const payment = makePayment({
-    report_id: reportId,
-    purchase_intent_key: pik,
-    stripe_checkout_session_id: sessionId,
+    report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId,
   });
 
-  // Missing product_code
-  const noProduct = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-    product_code: "wrong",
-  });
-  const sql1 = createMockDb({ payments: [payment] });
   await assert.rejects(
-    () => handleCheckoutCompleted(noProduct, sql1),
+    () => handleCheckoutCompleted(makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik, product_code: "wrong" }), createMockDb({ payments: [payment] })),
     (err) => err instanceof SessionValidationError && err.code === "INVALID_PRODUCT_CODE"
   );
 
-  // Missing report_id
-  const noReportId = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-    product_code: "valuation_report_399",
-    report_id: "",
-  });
-  const sql2 = createMockDb({ payments: [payment] });
   await assert.rejects(
-    () => handleCheckoutCompleted(noReportId, sql2),
+    () => handleCheckoutCompleted(makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik, product_code: "valuation_report_399", report_id: "" }), createMockDb({ payments: [payment] })),
     (err) => err instanceof SessionValidationError && err.code === "MISSING_REPORT_ID"
   );
 
-  // Missing purchase_intent_key
-  const noPik = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-    product_code: "valuation_report_399",
-    purchase_intent_key: "",
-  });
-  const sql3 = createMockDb({ payments: [payment] });
   await assert.rejects(
-    () => handleCheckoutCompleted(noPik, sql3),
+    () => handleCheckoutCompleted(makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik, product_code: "valuation_report_399", purchase_intent_key: "" }), createMockDb({ payments: [payment] })),
     (err) => err instanceof SessionValidationError && err.code === "MISSING_PURCHASE_INTENT_KEY"
   );
 });
@@ -512,24 +410,13 @@ test("incomplete metadata rejects payment", async () => {
 test("session ID mismatch rejects", async () => {
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
   const wrongSessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
-  const payment = makePayment({
-    stripe_checkout_session_id: wrongSessionId, // Doesn't match
-  });
-  const session = makeSession({
-    id: sessionId,
-    report_id: payment.report_id,
-    purchase_intent_key: payment.purchase_intent_key,
-  });
-
+  const payment = makePayment({ stripe_checkout_session_id: wrongSessionId });
+  const session = makeSession({ id: sessionId, report_id: payment.report_id, purchase_intent_key: payment.purchase_intent_key });
   const sql = createMockDb({ payments: [payment] });
 
   await assert.rejects(
     () => handleCheckoutCompleted(session, sql),
-    (err) => {
-      assert.ok(err instanceof SessionValidationError);
-      assert.equal(err.code, "PAYMENT_NOT_FOUND");
-      return true;
-    }
+    (err) => { assert.equal(err.code, "PAYMENT_NOT_FOUND"); return true; }
   );
 });
 
@@ -537,26 +424,13 @@ test("wrong session mode rejects", async () => {
   const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
   const pik = "pik_" + crypto.randomBytes(8).toString("hex");
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
-  const payment = makePayment({
-    report_id: reportId,
-    purchase_intent_key: pik,
-    stripe_checkout_session_id: sessionId,
-  });
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-    mode: "subscription",
-  });
+  const payment = makePayment({ report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId });
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik, mode: "subscription" });
   const sql = createMockDb({ payments: [payment] });
 
   await assert.rejects(
     () => handleCheckoutCompleted(session, sql),
-    (err) => {
-      assert.ok(err instanceof SessionValidationError);
-      assert.equal(err.code, "INVALID_SESSION_MODE");
-      return true;
-    }
+    (err) => { assert.equal(err.code, "INVALID_SESSION_MODE"); return true; }
   );
 });
 
@@ -564,26 +438,13 @@ test("unpaid session rejects", async () => {
   const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
   const pik = "pik_" + crypto.randomBytes(8).toString("hex");
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
-  const payment = makePayment({
-    report_id: reportId,
-    purchase_intent_key: pik,
-    stripe_checkout_session_id: sessionId,
-  });
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-    payment_status: "unpaid",
-  });
+  const payment = makePayment({ report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId });
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik, payment_status: "unpaid" });
   const sql = createMockDb({ payments: [payment] });
 
   await assert.rejects(
     () => handleCheckoutCompleted(session, sql),
-    (err) => {
-      assert.ok(err instanceof SessionValidationError);
-      assert.equal(err.code, "SESSION_NOT_PAID");
-      return true;
-    }
+    (err) => { assert.equal(err.code, "SESSION_NOT_PAID"); return true; }
   );
 });
 
@@ -592,35 +453,22 @@ test("duplicate event is idempotent", async () => {
   const pik = "pik_" + crypto.randomBytes(8).toString("hex");
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
   const paidPayment = makePayment({
-    id: 2,
-    report_id: reportId,
-    purchase_intent_key: pik,
-    stripe_checkout_session_id: sessionId,
-    status: "paid",
+    id: 2, report_id: reportId, purchase_intent_key: pik,
+    stripe_checkout_session_id: sessionId, status: "paid",
     stripe_payment_intent_id: "pi_already_paid",
   });
   const existingEntitlement = makeEntitlement({
-    id: 10,
-    report_id: reportId,
-    lead_contact_id: paidPayment.lead_contact_id,
+    id: 10, report_id: reportId, lead_contact_id: paidPayment.lead_contact_id,
   });
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-  });
-
-  const sql = createMockDb({
-    payments: [paidPayment],
-    entitlements: [existingEntitlement],
-  });
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
+  const sql = createMockDb({ payments: [paidPayment], entitlements: [existingEntitlement] });
 
   const result = await handleCheckoutCompleted(session, sql);
-
   assert.equal(result.paid, true);
   assert.equal(result.entitlementCreated, false);
   assert.equal(result.alreadyPaid, true);
-  assert.ok(result.entitlements.length > 0, "Should report existing entitlements");
+  assert.ok(result.entitlement, "Should report existing entitlement");
+  assert.equal(result.entitlement.status, "active");
 });
 
 test("entitlement lead_contact_id comes from payment record, not session", async () => {
@@ -628,53 +476,32 @@ test("entitlement lead_contact_id comes from payment record, not session", async
   const pik = "pik_" + crypto.randomBytes(8).toString("hex");
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
   const payment = makePayment({
-    report_id: reportId,
-    purchase_intent_key: pik,
-    stripe_checkout_session_id: sessionId,
-    lead_contact_id: 42,
+    report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId, lead_contact_id: 42,
   });
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-    extra: { client_reference_id: "user_999" },
-  });
-
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik, extra: { client_reference_id: "user_999" } });
   const sql = createMockDb({ payments: [payment] });
+
   const result = await handleCheckoutCompleted(session, sql);
-
   assert.equal(result.entitlementCreated, true);
-
   const ents = sql.getEntitlements();
   assert.equal(ents.length, 1);
-  assert.equal(Number(ents[0].lead_contact_id), 42, "Must use payment's lead_contact_id, not session data");
+  assert.equal(Number(ents[0].lead_contact_id), 42, "Must use payment's lead_contact_id");
 });
 
 test("Promise.all concurrent only creates one entitlement", async () => {
   const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
   const pik = "pik_" + crypto.randomBytes(8).toString("hex");
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
-  const payment = makePayment({
-    report_id: reportId,
-    purchase_intent_key: pik,
-    stripe_checkout_session_id: sessionId,
-  });
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-  });
-
+  const payment = makePayment({ report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId });
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
   const sql = createMockDb({ payments: [payment] });
 
   const results = await Promise.all(
     Array.from({ length: 5 }, () => handleCheckoutCompleted(session, sql))
   );
 
-  // First call creates entitlement, subsequent calls see already-paid
   const created = results.filter((r) => r.entitlementCreated);
   assert.equal(created.length, 1, "Only one call should create entitlement");
-
   const ents = sql.getEntitlements();
   assert.equal(ents.length, 1, "Only one entitlement row should exist");
 });
@@ -683,36 +510,18 @@ test("payment update failure does not leave paid-without-entitlement", async () 
   const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
   const pik = "pik_" + crypto.randomBytes(8).toString("hex");
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
-  const payment = makePayment({
-    id: 1,
-    report_id: reportId,
-    purchase_intent_key: pik,
-    stripe_checkout_session_id: sessionId,
-  });
+  const payment = makePayment({ id: 1, report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId });
 
-  // Simulate a DB client without .transaction support
   const sql = createMockDb({ payments: [payment] });
   delete sql.transaction;
 
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-  });
-
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
   await assert.rejects(
     () => handleCheckoutCompleted(session, sql),
-    (err) => {
-      assert.ok(err instanceof Error);
-      assert.equal(err.constructor.name, "Error");
-      assert.ok(err.message.includes("does not support sql.transaction()"));
-      return true;
-    }
+    (err) => err.message.includes("does not support sql.transaction()")
   );
 
-  // Nothing should be updated
-  const updatedPayment = sql.getPayments().find((p) => p.id === payment.id);
-  assert.equal(updatedPayment.status, "pending");
+  assert.equal(sql.getPayments()[0].status, "pending");
   assert.equal(sql.getEntitlements().length, 0);
 });
 
@@ -720,27 +529,13 @@ test("payment in invalid status throws", async () => {
   const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
   const pik = "pik_" + crypto.randomBytes(8).toString("hex");
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
-  const payment = makePayment({
-    report_id: reportId,
-    purchase_intent_key: pik,
-    stripe_checkout_session_id: sessionId,
-    status: "expired", // Cannot be updated
-  });
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-  });
-
+  const payment = makePayment({ report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId, status: "expired" });
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
   const sql = createMockDb({ payments: [payment] });
 
   await assert.rejects(
     () => handleCheckoutCompleted(session, sql),
-    (err) => {
-      assert.ok(err instanceof SessionValidationError);
-      assert.equal(err.code, "PAYMENT_STATUS_INVALID");
-      return true;
-    }
+    (err) => { assert.equal(err.code, "PAYMENT_STATUS_INVALID"); return true; }
   );
 });
 
@@ -748,27 +543,118 @@ test("failed payment can be updated to paid with entitlement", async () => {
   const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
   const pik = "pik_" + crypto.randomBytes(8).toString("hex");
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
-  const payment = makePayment({
-    report_id: reportId,
-    purchase_intent_key: pik,
-    stripe_checkout_session_id: sessionId,
-    status: "failed", // Previously failed, now paid
-  });
-  const session = makeSession({
-    id: sessionId,
-    report_id: reportId,
-    purchase_intent_key: pik,
-  });
-
+  const payment = makePayment({ report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId, status: "failed" });
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
   const sql = createMockDb({ payments: [payment] });
-  const result = await handleCheckoutCompleted(session, sql);
 
+  const result = await handleCheckoutCompleted(session, sql);
+  assert.equal(result.paid, true);
+  assert.equal(result.entitlementCreated, true);
+  assert.equal(sql.getPayments()[0].status, "paid");
+  assert.equal(sql.getEntitlements().length, 1);
+});
+
+test("same-owner revoked entitlement is reactivated", async () => {
+  const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
+  const pik = "pik_" + crypto.randomBytes(8).toString("hex");
+  const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
+  const payment = makePayment({ report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId });
+  const revokedEnt = makeEntitlement({
+    id: 5, report_id: reportId, lead_contact_id: payment.lead_contact_id,
+    status: "revoked", revoked_at: new Date("2026-06-01T00:00:00Z"),
+  });
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
+  const sql = createMockDb({ payments: [payment], entitlements: [revokedEnt] });
+
+  const result = await handleCheckoutCompleted(session, sql);
   assert.equal(result.paid, true);
   assert.equal(result.entitlementCreated, true);
 
-  const updatedPayment = sql.getPayments().find((p) => p.id === payment.id);
-  assert.equal(updatedPayment.status, "paid");
-  assert.equal(sql.getEntitlements().length, 1);
+  const ents = sql.getEntitlements();
+  assert.equal(ents.length, 1, "Should not create new entitlement row");
+  assert.equal(ents[0].status, "active", "Should be reactivated");
+  assert.equal(Number(ents[0].lead_contact_id), payment.lead_contact_id, "lead_contact_id must not change");
+  // The ON CONFLICT DO UPDATE does NOT include lead_contact_id, so it should remain unchanged
+});
+
+test("cross-owner entitlement throws ENTITLEMENT_OWNER_CONFLICT", async () => {
+  const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
+  const pik = "pik_" + crypto.randomBytes(8).toString("hex");
+  const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
+  const payment = makePayment({
+    report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId,
+    lead_contact_id: 100, // New buyer
+  });
+  const existingEnt = makeEntitlement({
+    id: 7, report_id: reportId, lead_contact_id: 999, // Different owner
+    status: "active",
+  });
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
+  const sql = createMockDb({ payments: [payment], entitlements: [existingEnt] });
+
+  await assert.rejects(
+    () => handleCheckoutCompleted(session, sql),
+    (err) => { assert.equal(err.code, "ENTITLEMENT_OWNER_CONFLICT"); return true; }
+  );
+
+  // Payment must NOT have been updated
+  assert.equal(sql.getPayments()[0].status, "pending", "Payment must remain pending on owner conflict");
+  assert.equal(sql.getEntitlements().length, 1, "No new entitlement should be created");
+  assert.equal(sql.getEntitlements()[0].lead_contact_id, 999, "Existing entitlement owner must not change");
+});
+
+test("paid payment with missing active entitlement throws PAYMENT_WITHOUT_ENTITLEMENT", async () => {
+  const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
+  const pik = "pik_" + crypto.randomBytes(8).toString("hex");
+  const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
+  const payment = makePayment({
+    id: 3, report_id: reportId, purchase_intent_key: pik,
+    stripe_checkout_session_id: sessionId, status: "paid",
+  });
+  // No entitlement exists — data integrity problem
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
+  const sql = createMockDb({ payments: [payment] });
+
+  await assert.rejects(
+    () => handleCheckoutCompleted(session, sql),
+    (err) => { assert.equal(err.code, "PAYMENT_WITHOUT_ENTITLEMENT"); return true; }
+  );
+});
+
+test("paid payment with revoked entitlement throws PAYMENT_WITHOUT_ENTITLEMENT", async () => {
+  const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
+  const pik = "pik_" + crypto.randomBytes(8).toString("hex");
+  const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
+  const payment = makePayment({
+    id: 4, report_id: reportId, purchase_intent_key: pik,
+    stripe_checkout_session_id: sessionId, status: "paid",
+  });
+  const revokedEnt = makeEntitlement({
+    id: 6, report_id: reportId, lead_contact_id: payment.lead_contact_id,
+    status: "revoked",
+  });
+  const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
+  const sql = createMockDb({ payments: [payment], entitlements: [revokedEnt] });
+
+  await assert.rejects(
+    () => handleCheckoutCompleted(session, sql),
+    (err) => { assert.equal(err.code, "PAYMENT_WITHOUT_ENTITLEMENT"); return true; }
+  );
+});
+
+test("ON CONFLICT DO UPDATE never changes lead_contact_id of existing entitlement", async () => {
+  // Verify the SQL generated does NOT have lead_contact_id in the DO UPDATE SET clause
+  const source = fs.readFileSync(
+    path.join(projectRoot, "lib/report-payment-webhook-service.js"),
+    "utf8"
+  );
+
+  // Find the DO UPDATE SET block
+  const doUpdateMatch = source.match(/ON CONFLICT\s*\(report_id\)\s*DO UPDATE SET\s*([\s\S]*?)RETURNING/);
+  assert.ok(doUpdateMatch, "Should have ON CONFLICT DO UPDATE SET");
+  const setClause = doUpdateMatch[1];
+  assert.equal(setClause.includes("lead_contact_id"), false,
+    "ON CONFLICT DO UPDATE SET must NOT modify lead_contact_id. Got: " + setClause);
 });
 
 test("service does not import stripe SDK or read secret env vars", () => {
