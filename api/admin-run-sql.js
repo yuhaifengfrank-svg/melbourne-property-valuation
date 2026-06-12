@@ -25,10 +25,9 @@ export default async function handler(req, res) {
     // Use UnsafeRawSql to inject dynamic SQL into tagged template
     const { UnsafeRawSql } = await import('@neondatabase/serverless');
     const raw = new UnsafeRawSql(sqlStmt);
-    // Tagged template with raw SQL injection
-    const result = await neonClient`select 1 as test`;
+    // Passing UnsafeRawSql instance into tagged template escapes injection
+    const result = await neonClient`${raw}`;
 
-    // Normalize
     let rows = [];
     if (result) {
       if (Array.isArray(result)) rows = result;
@@ -36,7 +35,7 @@ export default async function handler(req, res) {
       else rows = [result];
     }
 
-    return res.status(200).json({ ok: true, rows, debug: JSON.stringify(result).substring(0,200) });
+    return res.status(200).json({ ok: true, rows });
   } catch (e) {
     return res.status(500).json({ ok: false, error: e.message });
   }
