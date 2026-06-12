@@ -118,6 +118,112 @@ function createMockDb(initialState = {}) {
       ""
     );
     callLog.push({ query: q, values: [...values] });
+    // ── CTE: atomic entitlement upsert + conditional payment update ──
+    // Simpler approach: check for WITH + ent AS + pay AS
+    if (q.trimStart().startsWith("WITH") && q.includes("ent AS (") && q.includes("pay AS (")) {
+      let entResult = null;
+      let conflictBlocked = false;
+      let payResult = null;
+
+      // Extract INSERT INTO report_entitlements values
+      const insMatch = q.match(/INSERT\s+INTO\s+report_entitlements\s+\((.+?)\)\s+VALUES\s+\((.+?)\)/is);
+      if (insMatch) {
+        const cols = insMatch[1].split(",").map((s) => s.trim().toLowerCase());
+        const vals = resolvePlaceholders(insMatch[2], values).split(",").map((s) =>
+          s.trim().replace(/^'(.*)'$/, "$1")
+        );
+
+        const row = {};
+        cols.forEach((c, i) => {
+          let v = vals[i];
+          if (v === undefined) v = null;
+          if (typeof v === "string" && v.toUpperCase() === "NULL") v = null;
+          if (typeof v === "string" && v.toUpperCase() === "NOW()") v = new Date();
+          row[c] = v;
+        });
+        if (row.lead_contact_id !== undefined) {
+          const n = Number(row.lead_contact_id);
+          if (!isNaN(n)) row.lead_contact_id = n;
+        }
+
+        const existing = entitlements.find((e) => e.report_id === row.report_id);
+
+        // Extract WHERE from ON CONFLICT ... WHERE report_entitlements.xxx = $N
+        const whereMatch = q.match(/WHERE\s+report_entitlements\.(\w+)\s*=\s*\$(\d+)/i);
+
+        if (existing) {
+          if (whereMatch) {
+            const col = whereMatch[1].toLowerCase();
+            const idx = parseInt(whereMatch[2], 10) - 1;
+            const expectedVal = (idx >= 0 && idx < values.length)
+              ? (values[idx] !== null && values[idx] !== undefined ? String(values[idx]) : "NULL")
+              : ("$" + whereMatch[2]);
+            if (String(existing[col]) !== expectedVal) {
+              conflictBlocked = true;
+            }
+          }
+
+          if (!conflictBlocked) {
+            existing.status = "active";
+            existing.revoked_at = null;
+            existing.granted_at = new Date();
+            entResult = { id: existing.id, lead_contact_id: existing.lead_contact_id, status: existing.status };
+          }
+        } else {
+          entitlementIdSeq++;
+          row.id = entitlementIdSeq;
+          if (!row.granted_at) row.granted_at = new Date();
+          entitlements.push(row);
+          entResult = { id: row.id, lead_contact_id: row.lead_contact_id, status: row.status };
+        }
+      }
+
+      // Update payment if AND EXISTS (SELECT 1 FROM ent) present and ent succeeded
+      const existsCheck = q.match(/AND\s+EXISTS\s+\(SELECT\s+1\s+FROM\s+ent\)/i);
+      if (entResult && !conflictBlocked && existsCheck) {
+        const pmtWhere = q.match(/WHERE\s+id\s*=\s*\$(\d+)/i);
+        if (pmtWhere) {
+          const idx = parseInt(pmtWhere[1], 10) - 1;
+          if (idx >= 0 && idx < values.length) {
+            const pmtId = values[idx];
+            const matched = payments.filter((p) => p.id === pmtId && ["pending", "failed"].includes(p.status));
+            for (const p of matched) {
+              p.status = "paid";
+              p.updated_at = new Date();
+              // Find stripe_payment_intent_id in SET clause
+              const piMatch = q.match(/stripe_payment_intent_id\s*=\s*\$(\d+)/i);
+              if (piMatch) {
+                const piIdx = parseInt(piMatch[1], 10) - 1;
+                p.stripe_payment_intent_id = (piIdx >= 0 && piIdx < values.length) ? values[piIdx] : null;
+              }
+            }
+            if (matched.length > 0) {
+              payResult = { id: matched[0].id, status: matched[0].status };
+            }
+          }
+        }
+      }
+
+      const resultRow = {};
+      if (conflictBlocked) {
+        resultRow.entitlement_id = null;
+        resultRow.entitlement_owner_id = null;
+        resultRow.entitlement_status = null;
+        resultRow.payment_id = null;
+        resultRow.payment_status = null;
+      } else {
+        if (entResult) {
+          resultRow.entitlement_id = entResult.id;
+          resultRow.entitlement_owner_id = entResult.lead_contact_id;
+          resultRow.entitlement_status = entResult.status;
+        }
+        if (payResult) {
+          resultRow.payment_id = payResult.id;
+          resultRow.payment_status = payResult.status;
+        }
+      }
+      return [resultRow];
+    }
 
     // ── SELECT from report_payments ────────────────────────────
     const selPayments = q.match(
@@ -205,6 +311,27 @@ function createMockDb(initialState = {}) {
 
       const existing = entitlements.find((e) => e.report_id === row.report_id);
       if (existing && doUpdateClause) {
+        // Check ON CONFLICT DO UPDATE WHERE clause
+        // Pattern: WHERE table_or_alias.column = value
+        const whereMatch = doUpdateClause.match(/SET\s+(.+?)(?:\s+WHERE\s+(.+))?$/is);
+        const hasWhere = whereMatch && whereMatch[2];
+
+        if (hasWhere) {
+          const whereCondition = resolvePlaceholders(whereMatch[2], values);
+          // Simple equality check: col = val
+          const eqWhere = whereCondition.match(/(\w+)\.(\w+)\s*=\s*([^\s]+)/);
+          if (eqWhere) {
+            const col = eqWhere[2].toLowerCase();
+            let expectedVal = eqWhere[3].replace(/^'(.*)'$/, "$1");
+            const actualVal = existing[col];
+            if (String(actualVal) !== expectedVal) {
+              // WHERE condition rejected the update — conflict!
+              // The existing row is not modified, RETURNING returns nothing
+              return [];
+            }
+          }
+        }
+
         const setMatch = doUpdateClause.match(/SET\s+(.+?)(?:\s+WHERE\s+|$)/is);
         if (setMatch) {
           const setValues = parseSetClause(setMatch[1], values);
@@ -507,22 +634,29 @@ test("Promise.all concurrent only creates one entitlement", async () => {
 });
 
 test("payment update failure does not leave paid-without-entitlement", async () => {
+  // Atomic CTE replaces sql.transaction, so the service must NOT
+  // call sql.transaction(). Verify that handleCheckoutCompleted
+  // works correctly without a transaction method.
   const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
   const pik = "pik_" + crypto.randomBytes(8).toString("hex");
   const sessionId = "cs_test_" + crypto.randomBytes(12).toString("hex");
   const payment = makePayment({ id: 1, report_id: reportId, purchase_intent_key: pik, stripe_checkout_session_id: sessionId });
 
+  // Create mock WITHOUT sql.transaction — service must not need it
   const sql = createMockDb({ payments: [payment] });
   delete sql.transaction;
 
   const session = makeSession({ id: sessionId, report_id: reportId, purchase_intent_key: pik });
-  await assert.rejects(
-    () => handleCheckoutCompleted(session, sql),
-    (err) => err.message.includes("does not support sql.transaction()")
-  );
+  const result = await handleCheckoutCompleted(session, sql);
 
-  assert.equal(sql.getPayments()[0].status, "pending");
-  assert.equal(sql.getEntitlements().length, 0);
+  assert.equal(result.paid, true);
+  assert.equal(result.entitlementCreated, true);
+
+  const updatedPayment = sql.getPayments().find((p) => p.id === payment.id);
+  assert.equal(updatedPayment.status, "paid");
+
+  const ents = sql.getEntitlements();
+  assert.equal(ents.length, 1);
 });
 
 test("payment in invalid status throws", async () => {
@@ -575,6 +709,60 @@ test("same-owner revoked entitlement is reactivated", async () => {
   assert.equal(ents[0].status, "active", "Should be reactivated");
   assert.equal(Number(ents[0].lead_contact_id), payment.lead_contact_id, "lead_contact_id must not change");
   // The ON CONFLICT DO UPDATE does NOT include lead_contact_id, so it should remain unchanged
+});
+
+test("Promise.all concurrent two customers same report: one wins one ENTITLEMENT_OWNER_CONFLICT", async () => {
+  const reportId = "rpt_" + crypto.randomBytes(8).toString("hex");
+
+  // Customer A (wins maybe)
+  const pikA = "pik_A_" + crypto.randomBytes(8).toString("hex");
+  const sessA = "cs_test_A_" + crypto.randomBytes(12).toString("hex");
+  const payA = makePayment({ id: 10, report_id: reportId, purchase_intent_key: pikA, stripe_checkout_session_id: sessA, lead_contact_id: 42 });
+
+  // Customer B (conflict maybe)
+  const pikB = "pik_B_" + crypto.randomBytes(8).toString("hex");
+  const sessB = "cs_test_B_" + crypto.randomBytes(12).toString("hex");
+  const payB = makePayment({ id: 11, report_id: reportId, purchase_intent_key: pikB, stripe_checkout_session_id: sessB, lead_contact_id: 99 });
+
+  const sql = createMockDb({ payments: [payA, payB] });
+  const sessionA = makeSession({ id: sessA, report_id: reportId, purchase_intent_key: pikA });
+  const sessionB = makeSession({ id: sessB, report_id: reportId, purchase_intent_key: pikB });
+
+  const results = await Promise.allSettled([
+    handleCheckoutCompleted(sessionA, sql),
+    handleCheckoutCompleted(sessionB, sql),
+  ]);
+
+  const success = results.find((r) => r.status === "fulfilled");
+  const conflict = results.find((r) => r.status === "rejected");
+
+  assert.ok(success, "One must succeed");
+  assert.ok(conflict, "One must be rejected");
+  assert.equal(conflict.reason.code, "ENTITLEMENT_OWNER_CONFLICT", "The loser must get owner conflict");
+
+  // Exactly one entitlement for this report
+  const ents = sql.getEntitlements().filter((e) => e.report_id === reportId);
+  assert.equal(ents.length, 1, "Exactly one entitlement across both calls");
+
+  // The entitlement owner matches the successful caller
+  const winnerLeadId = success.value.paid ? success.value.entitlement.id
+    : typeof success.value?.entitlement?.lead_contact_id !== "undefined"
+      ? success.value.entitlement.lead_contact_id
+      : ents[0].lead_contact_id;
+
+  // Either 42 or 99 is fine, whatever won
+  assert.ok(
+    ents[0].lead_contact_id === 42 || ents[0].lead_contact_id === 99,
+    "Entitlement owner must be one of the two customers"
+  );
+
+  // Verify payment states
+  const allPayments = sql.getPayments();
+  const winnerPay = allPayments.find((p) => p.lead_contact_id === ents[0].lead_contact_id);
+  const loserPay = allPayments.find((p) => p.lead_contact_id !== ents[0].lead_contact_id);
+
+  assert.equal(winnerPay.status, "paid", "Winner's payment must be paid");
+  assert.equal(loserPay.status, "pending", "Loser's payment must stay pending");
 });
 
 test("cross-owner entitlement throws ENTITLEMENT_OWNER_CONFLICT", async () => {
@@ -650,8 +838,8 @@ test("ON CONFLICT DO UPDATE never changes lead_contact_id of existing entitlemen
   );
 
   // Find the DO UPDATE SET block
-  const doUpdateMatch = source.match(/ON CONFLICT\s*\(report_id\)\s*DO UPDATE SET\s*([\s\S]*?)RETURNING/);
-  assert.ok(doUpdateMatch, "Should have ON CONFLICT DO UPDATE SET");
+  const doUpdateMatch = source.match(/ON CONFLICT\s*\(report_id\)\s*DO UPDATE SET\s*([\s\S]*?)WHERE/);
+  assert.ok(doUpdateMatch, "Should have ON CONFLICT DO UPDATE SET...WHERE");
   const setClause = doUpdateMatch[1];
   assert.equal(setClause.includes("lead_contact_id"), false,
     "ON CONFLICT DO UPDATE SET must NOT modify lead_contact_id. Got: " + setClause);
