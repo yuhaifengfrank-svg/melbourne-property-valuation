@@ -25,11 +25,32 @@ export default async function handler(req, res) {
     // Use sql.unsafe() for dynamic SQL execution
     const result = await neonClient.unsafe(sqlStmt);
 
-    // neon@latest returns either an Array (for SELECT/INSERT RETURNING)
-    // or a QueryResult-like object. Normalize to array.
-    const rows = Array.isArray(result) ? result : result?.rows || [];
+    // Debug: dump the full result type
+    const debugInfo = {
+      type: typeof result,
+      isArray: Array.isArray(result),
+      keys: result && typeof result === 'object' ? Object.keys(result) : null,
+      hasRows: !!(result && result.rows),
+      hasLength: !!(result && result.length !== undefined),
+      sample: result ? (typeof result === 'object' ? 
+        (Array.isArray(result) ? result.slice(0,2) : 
+          JSON.stringify(result).substring(0,200)) : 
+        String(result).substring(0,200)) : null
+    };
 
-    return res.status(200).json({ ok: true, rows });
+    // Normalize: try multiple access patterns
+    let rows;
+    if (Array.isArray(result)) {
+      rows = result;
+    } else if (result && Array.isArray(result.rows)) {
+      rows = result.rows;
+    } else if (result && result.length !== undefined) {
+      rows = Array.from(result);
+    } else {
+      rows = [];
+    }
+
+    return res.status(200).json({ ok: true, rows, _debug: debugInfo });
   } catch (e) {
     return res.status(500).json({ ok: false, error: e.message });
   }
