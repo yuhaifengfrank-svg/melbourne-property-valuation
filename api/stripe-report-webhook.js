@@ -25,6 +25,7 @@ const ERR = {
   BAD_REQUEST: "BAD_REQUEST",
   SIGNATURE_INVALID: "SIGNATURE_INVALID",
   SIGNATURE_MISSING: "SIGNATURE_MISSING",
+  WEBHOOK_BODY_TOO_LARGE: "WEBHOOK_BODY_TOO_LARGE",
   WEBHOOK_NOT_CONFIGURED: "WEBHOOK_NOT_CONFIGURED",
 };
 
@@ -62,8 +63,17 @@ export default async function handler(req, res) {
       });
     }
 
-    // ── Step 2: Read raw body from request stream ──
-    const rawBody = await readRawBody(req);
+    // ── Step 2: Read raw body from request stream (max 1 MB) ──
+    const bodyResult = await readRawBody(req, 1_048_576);
+    if (!bodyResult.ok) {
+      // Overflow — body exceeded 1 MB
+      return res.status(413).json({
+        ok: false,
+        error: ERR.WEBHOOK_BODY_TOO_LARGE,
+        message: "Request body too large.",
+      });
+    }
+    const rawBody = bodyResult.body;
     if (rawBody.length === 0) {
       return res.status(400).json({
         ok: false,
@@ -110,7 +120,7 @@ export default async function handler(req, res) {
       return res.status(400).json({
         ok: false,
         error: ERR.SIGNATURE_INVALID,
-        message: `Invalid signature: ${err.message}`,
+        message: "Invalid webhook signature.",
       });
     }
 
@@ -137,11 +147,33 @@ export default async function handler(req, res) {
  * @param {import("http").IncomingMessage} req
  * @returns {Promise<Buffer>}
  */
-function readRawBody(req) {
+/**
+ * Read the raw body from the IncomingMessage stream as a Buffer.
+ * Enforces a maxBytes limit — the response must use the `res` object
+ * for sending the 413 error, so this function signals overflow to the
+ * caller instead of resolving/rejecting.
+ *
+ * @param {import("http").IncomingMessage} req
+ * @param {number} [maxBytes=1_048_576]
+ * @returns {Promise<{ ok: true, body: Buffer } | { ok: false, overflow: true }>}
+ */
+function readRawBody(req, maxBytes = 1_048_576) {
   return new Promise((resolve, reject) => {
     const chunks = [];
-    req.on("data", (chunk) => chunks.push(chunk));
-    req.on("end", () => resolve(Buffer.concat(chunks)));
+    let total = 0;
+    req.on("data", (chunk) => {
+      total += chunk.length;
+      if (total > maxBytes) {
+        // Overflow — destroy the stream to stop reading
+        req.destroy();
+        resolve({ ok: false, overflow: true });
+        return;
+      }
+      chunks.push(chunk);
+    });
+    req.on("end", () => {
+      resolve({ ok: true, body: Buffer.concat(chunks) });
+    });
     req.on("error", (err) => reject(err));
   });
 }

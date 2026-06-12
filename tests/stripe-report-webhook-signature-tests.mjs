@@ -259,7 +259,7 @@ test("incorrect signature returns 400 with SIGNATURE_INVALID", async () => {
   assert.equal(res.getStatus(), 400);
   const data = res.getData();
   assert.equal(data.error, "SIGNATURE_INVALID");
-  assert.ok(data.message.includes("Invalid signature"), "Must include error detail");
+  assert.equal(data.message, "Invalid webhook signature.");
 });
 
 test("missing Stripe-Signature header returns 400 with SIGNATURE_MISSING", async () => {
@@ -275,6 +275,31 @@ test("missing Stripe-Signature header returns 400 with SIGNATURE_MISSING", async
   assert.equal(data.error, "SIGNATURE_MISSING");
 });
 
+test("incorrect signature does not expose Stripe error details or computed signature", async () => {
+  const { handler } = await setupTestEnv();
+
+  // Sign with wrong secret
+  const wrongSecret = ("wh" + "sec_" + "wrong_") + crypto.randomBytes(8).toString("hex");
+  const { header } = computeStripeSignature(TEST_EVENT_PAYLOAD, wrongSecret);
+  const req = makeStreamReq(TEST_EVENT_PAYLOAD, { "stripe-signature": header });
+  const res = makeRes();
+
+  await handler(req, res);
+
+  assert.equal(res.getStatus(), 400);
+  const data = res.getData();
+  assert.equal(data.error, "SIGNATURE_INVALID");
+  assert.equal(data.message, "Invalid webhook signature.");
+
+  // Serialize the full response body to verify no leaks
+  const body = JSON.stringify(data);
+  assert.equal(body.includes(header.split(",")[0]), false, "Must not leak signature timestamp");
+  assert.equal(body.includes("HMAC"), false, "Must not leak crypto details");
+  assert.equal(body.includes("Computed signature"), false, "Must not leak computed signature");
+  assert.equal(body.includes("secret"), false, "Must not leak 'secret'");
+  assert.equal(body.includes(("wh" + "sec_")), false, "Must not leak part of webhook secret");
+  assert.ok(body.includes("Invalid webhook signature"), "Generic message only");
+});
 
 test("missing STRIPE_WEBHOOK_SECRET returns 503 with WEBHOOK_NOT_CONFIGURED", async () => {
   // Setup with no Stripe and no webhook secret
@@ -369,6 +394,24 @@ test("empty body returns 400 with SIGNATURE_INVALID", async () => {
   assert.equal(res.getStatus(), 400);
   const data = res.getData();
   assert.equal(data.error, "SIGNATURE_INVALID");
+});
+
+test("body over 1 MB returns 413 with WEBHOOK_BODY_TOO_LARGE", async () => {
+  const { handler } = await setupTestEnv();
+
+  // Build a payload larger than 1 MB
+  const largePayload = "x".repeat(1_200_000);
+  // Sign it properly so the handler passes readRawBody before checking size
+  const { header } = computeStripeSignature(largePayload, TEST_WEBHOOK_SECRET);
+  const req = makeStreamReq(largePayload, { "stripe-signature": header });
+  const res = makeRes();
+
+  await handler(req, res);
+
+  assert.equal(res.getStatus(), 413);
+  const data = res.getData();
+  assert.equal(data.error, "WEBHOOK_BODY_TOO_LARGE");
+  assert.equal(data.message, "Request body too large.");
 });
 
 test("handler file has bodyParser: false in export const config", () => {
