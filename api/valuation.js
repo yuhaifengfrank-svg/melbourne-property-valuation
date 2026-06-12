@@ -3,6 +3,8 @@
 // Full report requires token via /api/valuation-full
 
 import { runValuation } from "../lib/valuation-service.js";
+import { createReportDraft } from "../lib/report-snapshot-service.js";
+import { getSql } from "./_db.js";
 
 function sanitizeForClient(obj, debug = false) {
   const safe = JSON.parse(JSON.stringify(obj));
@@ -178,8 +180,25 @@ export default async function handler(request, response) {
       useDatabaseFallback: true
     });
 
+    // Generate short-lived draft token for this valuation
+    let draftToken = null;
+    let draftExpiresAt = null;
+    try {
+      if (result.ok) {
+        const sql = getSql();
+        const draft = await createReportDraft(result, sql);
+        draftToken = draft.draftToken;
+        draftExpiresAt = draft.draftExpiresAt;
+      }
+    } catch (draftErr) {
+      // Draft creation failure should not break the free valuation
+      console.error("Draft creation failed (non-fatal):", draftErr.message);
+    }
+
     // Build free summary instead of returning full sanitized data
     const freeSummary = buildFreeSummary(result);
+    freeSummary.reportDraftToken = draftToken;
+    freeSummary.draftExpiresAt = draftExpiresAt;
 
     return response.status(result.ok ? 200 : 400)
       .setHeader("Content-Type", "application/json")

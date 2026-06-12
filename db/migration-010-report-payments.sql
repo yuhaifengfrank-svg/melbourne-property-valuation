@@ -64,7 +64,27 @@ CREATE INDEX IF NOT EXISTS idx_re_lead_contact ON report_entitlements (lead_cont
 CREATE INDEX IF NOT EXISTS idx_re_status ON report_entitlements (status);
 CREATE INDEX IF NOT EXISTS idx_re_granted_at ON report_entitlements (granted_at DESC);
 
--- 4. Stripe Webhook Events: idempotency audit log
+-- 4. Report Drafts: temporary storage for free-valuation snapshots
+-- Drafts are created on every free valuation. Their content is frozen at
+-- purchase time into report_snapshots. Expired drafts are garbage-collected.
+CREATE TABLE IF NOT EXISTS report_drafts (
+    draft_id TEXT PRIMARY KEY,
+    property_key TEXT NOT NULL,
+    valuation_version TEXT NOT NULL,
+    snapshot_json JSONB NOT NULL,
+    snapshot_hash TEXT NOT NULL,
+    expires_at TIMESTAMPTZ NOT NULL,
+    consumed_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_rd_expires ON report_drafts (expires_at);
+CREATE INDEX IF NOT EXISTS idx_rd_consumed ON report_drafts (consumed_at) WHERE consumed_at IS NULL;
+
+-- Add draft_id FK to report_snapshots (Phase 1B)
+ALTER TABLE report_snapshots ADD COLUMN IF NOT EXISTS draft_id TEXT REFERENCES report_drafts(draft_id);
+
+-- 5. Stripe Webhook Events: idempotency audit log
 CREATE TABLE IF NOT EXISTS stripe_webhook_events (
     stripe_event_id TEXT PRIMARY KEY,
     event_type TEXT NOT NULL,
