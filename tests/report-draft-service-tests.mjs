@@ -146,7 +146,7 @@ function createMockSql() {
     if (sql.includes("FROM report_snapshots") && sql.includes("draft_id")) {
       const draftId = values.find(v => typeof v === "string" && v.startsWith("rd_")) || values[0];
       if (snapshots.has(draftId)) {
-        return [{ report_id: snapshots.get(draftId).report_id }];
+        return [{ report_id: snapshots.get(draftId).report_id, lead_contact_id: snapshots.get(draftId).lead_contact_id || null }];
       }
       return [];
     }
@@ -156,7 +156,7 @@ function createMockSql() {
       const draftId = values[1];
       const reportId = values[0];
       if (!snapshots.has(draftId)) {
-        snapshots.set(draftId, { report_id: reportId });
+        snapshots.set(draftId, { report_id: reportId, lead_contact_id: values[6] || null });
         // Mark draft consumed
         const draft = drafts.get(draftId);
         if (draft) draft.consumed_at = new Date().toISOString();

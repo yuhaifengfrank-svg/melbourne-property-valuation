@@ -17,7 +17,7 @@
 // Does NOT implement webhook, frontend, or PDF.
 
 import { ensureCustomerFunnelSchema, ensureReportPaymentSchema, getSql } from "./_db.js";
-import { verifyReportDraftToken, consumeDraftIntoSnapshot, DraftTokenError } from "../lib/report-snapshot-service.js";
+import { verifyReportDraftToken, consumeDraftIntoSnapshot } from "../lib/report-snapshot-service.js";
 import { createReportCheckout } from "../lib/report-checkout-service.js";
 
 // ── Error codes ─────────────────────────────────────────────────────
@@ -30,6 +30,7 @@ const ERR = {
   STRIPE_NOT_CONFIGURED: "STRIPE_NOT_CONFIGURED",
   CHECKOUT_CREATE_FAILED: "CHECKOUT_CREATE_FAILED",
   PAYMENT_AWAITING_ENTITLEMENT: "PAYMENT_AWAITING_ENTITLEMENT",
+  REPORT_OWNER_CONFLICT: "REPORT_OWNER_CONFLICT",
 };
 
 // ── Test-injectable SQL ─────────────────────────────────────────────
@@ -112,13 +113,17 @@ export default async function handler(req, res) {
     try {
       snapshotOutcome = await consumeDraftIntoSnapshot(reportDraftToken, leadContactId, sql);
     } catch (consumeErr) {
-      if (consumeErr instanceof DraftTokenError) {
+
+      if (consumeErr.code && ["TOKEN_EXPIRED", "DRAFT_CONSUMED", "REPORT_OWNER_CONFLICT", "TOKEN_INVALID"].includes(consumeErr.code)) {
         // Token-level errors: expired, tampered, invalid
         if (consumeErr.code === "TOKEN_EXPIRED") {
           return res.status(400).json({ ok: false, error: ERR.DRAFT_EXPIRED, message: "The report draft has expired. Please run a new valuation." });
         }
         if (consumeErr.code === "DRAFT_CONSUMED") {
           return res.status(400).json({ ok: false, error: ERR.DRAFT_EXPIRED, message: "The report draft has already been used. Please run a new valuation." });
+        }
+        if (consumeErr.code === "REPORT_OWNER_CONFLICT") {
+          return res.status(409).json({ ok: false, error: ERR.REPORT_OWNER_CONFLICT, message: consumeErr.message || "This report already belongs to another customer." });
         }
         return res.status(400).json({ ok: false, error: ERR.INVALID_DRAFT_TOKEN, message: consumeErr.message || "The report draft token is invalid." });
       }

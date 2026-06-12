@@ -160,6 +160,7 @@ export async function ensureReportPaymentSchema(sql) {
 
   await sql`CREATE INDEX IF NOT EXISTS idx_rs_property_key ON report_snapshots (property_key)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_rs_created_at ON report_snapshots (created_at DESC)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_rs_lead_contact ON report_snapshots (lead_contact_id)`;
 
   await sql`CREATE TABLE IF NOT EXISTS report_payments (
     id BIGSERIAL PRIMARY KEY,
@@ -217,6 +218,8 @@ export async function ensureReportPaymentSchema(sql) {
   await sql`ALTER TABLE report_snapshots ADD COLUMN IF NOT EXISTS draft_id TEXT REFERENCES report_drafts(draft_id)`;
 
   await sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_rs_draft_id ON report_snapshots (draft_id) WHERE draft_id IS NOT NULL`;
+  await sql`ALTER TABLE report_snapshots ADD COLUMN IF NOT EXISTS lead_contact_id BIGINT REFERENCES lead_contacts(id)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_rs_lead_contact ON report_snapshots (lead_contact_id)`;
 
   await sql`CREATE TABLE IF NOT EXISTS stripe_webhook_events (
     stripe_event_id TEXT PRIMARY KEY,

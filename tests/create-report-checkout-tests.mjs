@@ -59,6 +59,7 @@ let nextLeadContactId = 1;
 
 function createMockSql() {
   return async (strings, ...values) => {
+
     const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
 
     // INSERT INTO lead_contacts ... ON CONFLICT (email_lower) DO UPDATE SET updated_at = NOW() RETURNING id
@@ -101,11 +102,12 @@ function createMockSql() {
     }
 
     if (raw.includes("INSERT INTO report_snapshots")) {
-      const reportId = values[0];
       const draftId = values[1];
-      if (mockDb.snapshots.some(s => s.draft_id === draftId)) {
+const conflict = mockDb.snapshots.some(s => s.draft_id === draftId);
+      if (conflict) {
         return [];
       }
+      const reportId = values[0];
       mockDb.snapshots.push({
         report_id: reportId,
         draft_id: draftId,
@@ -113,14 +115,16 @@ function createMockSql() {
         valuation_version: values[3],
         snapshot_json: values[4],
         snapshot_hash: values[5],
+        lead_contact_id: values[6] || null,
       });
       return [{ report_id: reportId }];
+
     }
 
     if (raw.includes("FROM report_snapshots")) {
       const draftId = values[0];
       const match = mockDb.snapshots.find(s => s.draft_id === draftId);
-      return match ? [{ report_id: match.report_id }] : [];
+      return match ? [{ report_id: match.report_id, lead_contact_id: match.lead_contact_id || null }] : [];
     }
 
     if (raw.includes("UPDATE report_drafts")) {
@@ -675,4 +679,145 @@ test("CONCURRENT: same email Promise.all atomically creates only one lead_contac
   );
   assert.equal(matchingContacts.length, 1,
     "Concurrent same-email requests must create only one lead_contact");
+});
+
+// ── Phase 1C6: Report Draft — Owner Binding (lead_contact_id) ───────
+
+test("same token same email reuses snapshot and returns 200", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const r1 = makeReqRes({ email: "reuse-test@example.com", reportDraftToken: token });
+  await handler(r1.req, r1.res);
+  assert.equal(r1.getStatus(), 200, "First request must succeed");
+  const reportId1 = r1.getData()?.reportId;
+
+  const r2 = makeReqRes({ email: "reuse-test@example.com", reportDraftToken: token });
+  await handler(r2.req, r2.res);
+  assert.equal(r2.getStatus(), 200, "Same-token repeat must succeed (idempotent)");
+  assert.equal(r2.getData()?.reportId, reportId1, "Must return the same report_id");
+});
+
+test("same token different email returns 409 REPORT_OWNER_CONFLICT", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  // First customer consumes the token
+  const r1 = makeReqRes({ email: "owner@example.com", reportDraftToken: token });
+  await handler(r1.req, r1.res);
+  assert.equal(r1.getStatus(), 200, "First customer must succeed");
+
+  // Second customer uses the same token — should be rejected
+  const r2 = makeReqRes({ email: "intruder@example.com", reportDraftToken: token });
+  await handler(r2.req, r2.res);
+  assert.equal(r2.getStatus(), 409, "Different-email repeat must return 409");
+  assert.equal(r2.getData()?.error, "REPORT_OWNER_CONFLICT", "Error code must be REPORT_OWNER_CONFLICT");
+
+  // Second customer must NOT have created a payment or Stripe session
+  assert.equal(
+    mockDb.payments.filter((p) => p.lead_contact_id !== mockDb.leadContacts[0].id).length,
+    0,
+    "Conflicting customer must not create a payment"
+  );
+  assert.equal(stripeSessions.length, 1, "Only one Stripe session should ever be created");
+
+  // Snapshot owner must not change
+  const snapshot = mockDb.snapshots.find((s) => s.draft_id);
+  assert.ok(snapshot, "Snapshot must exist");
+  assert.equal(
+    mockDb.leadContacts.find((c) => c.id === snapshot.lead_contact_id)?.email_lower,
+    "owner@example.com",
+    "Snapshot owner must remain the original customer"
+  );
+});
+
+test("Promise.all two emails compete for same token: one wins, one 409", async () => { const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const rA = makeReqRes({ email: "racer-a@example.com", reportDraftToken: token });
+  const rB = makeReqRes({ email: "racer-b@example.com", reportDraftToken: token });
+
+  const results = await Promise.allSettled([
+    handler(rA.req, rA.res),
+    handler(rB.req, rB.res),
+  ]);
+
+  // Both resolve (neither throws) but one is 200, one is 409
+  assert.equal(results.length, 2, "Both handlers must complete");
+
+  const statuses = [rA.getStatus(), rB.getStatus()].sort();
+  assert.deepEqual(statuses, [200, 409], "One must succeed, one must be REPORT_OWNER_CONFLICT");
+
+  // Exactly one snapshot for this draft
+  const snapshotsForDraft = mockDb.snapshots.filter((s) => s.draft_id);
+  assert.equal(snapshotsForDraft.length, 1, "Exactly one snapshot must exist");
+
+  // Only one payment (winner), no payments for the loser
+  const payments = mockDb.payments;
+  const loserEmail = rA.getStatus() === 409 ? "racer-a@example.com" : "racer-b@example.com";
+  const loserContact = mockDb.leadContacts.find((c) => c.email_lower === loserEmail);
+  if (loserContact) {
+    const loserPayments = payments.filter(
+      (p) => p.lead_contact_id === loserContact.id
+    );
+    assert.equal(loserPayments.length, 0, "Loser must have no payments");
+  }
+});
+
+test("conflicting customer has no payment created", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const r1 = makeReqRes({ email: "first@example.com", reportDraftToken: token });
+  await handler(r1.req, r1.res);
+  assert.equal(r1.getStatus(), 200);
+  const firstPayments = mockDb.payments.length;
+
+  const r2 = makeReqRes({ email: "second@example.com", reportDraftToken: token });
+  await handler(r2.req, r2.res);
+  assert.equal(r2.getStatus(), 409, "Second customer must get 409");
+
+  // No new payments created after the conflict
+  assert.equal(mockDb.payments.length, firstPayments,
+    "Conflicting request must not create any payment");
+
+  // No new Stripe sessions
+  assert.equal(stripeSessions.length, 1, "Only one Stripe session for the successful customer");
+});
+
+test("snapshot owner never changes after conflict", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  // First customer owns the snapshot
+  const r1 = makeReqRes({ email: "owner-test@example.com", reportDraftToken: token });
+  await handler(r1.req, r1.res);
+  assert.equal(r1.getStatus(), 200);
+
+  const ownerContact = mockDb.leadContacts.find((c) => c.email_lower === "owner-test@example.com");
+  assert.ok(ownerContact, "Owner lead_contact must exist");
+
+  // Get the snapshot lead_contact_id from first request
+  const snapshotBefore = mockDb.snapshots.find((s) => s.draft_id);
+  assert.equal(snapshotBefore.lead_contact_id, ownerContact.id,
+    "Snapshot must be owned by the first customer");
+
+  // Multiple different customers try to steal it
+  for (const email of ["attacker-1@example.com", "attacker-2@example.com", "attacker-3@example.com"]) {
+    const r = makeReqRes({ email, reportDraftToken: token });
+    await handler(r.req, r.res);
+    assert.equal(r.getStatus(), 409, `${email} must get 409`);
+  }
+
+  // Snapshot owner unchanged
+  const snapshotAfter = mockDb.snapshots.find((s) => s.draft_id);
+  assert.equal(snapshotAfter.lead_contact_id, ownerContact.id,
+    "Snapshot lead_contact_id must never change, even after multiple conflicts");
+
+  // Original owner can still use the token (idempotent)
+  const rRepeat = makeReqRes({ email: "owner-test@example.com", reportDraftToken: token });
+  await handler(rRepeat.req, rRepeat.res);
+  assert.equal(rRepeat.getStatus(), 200, "Original owner must still get 200 (idempotent)");
+  assert.equal(rRepeat.getData()?.reportId, snapshotAfter.report_id,
+    "Must return same report_id for original owner");
 });
