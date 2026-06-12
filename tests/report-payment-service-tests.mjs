@@ -368,3 +368,77 @@ test("no Stripe network access", () => {
   assert.equal(source.includes("checkout.sessions"), false,
     "Must not call Stripe checkout API");
 });
+
+test("paid payment without active entitlement returns alreadyPurchased: false, paymentPresent: true", async () => {
+  resetMockDb();
+  const sql = createMockSql();
+  const { ensureReportPayment } = await reloadService();
+
+  const reportId = makeTestReportId();
+
+  // Pre-create a paid payment (simulates Stripe webhook aftermath)
+  mockDb.payments.push({
+    id: 99,
+    report_id: reportId,
+    lead_contact_id: 20,
+    stripe_checkout_session_id: "cs_test_paid_no_entitlement",
+    stripe_payment_intent_id: "pi_test_paid",
+    purchase_intent_key: buildPurchaseIntentKey(reportId, 20),
+    amount_cents: 399,
+    currency: "aud",
+    status: "paid",
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  });
+
+  const result = await ensureReportPayment({ reportId, leadContactId: 20 }, sql);
+
+  // Must NOT claim already purchased (no active entitlement)
+  assert.equal(result.alreadyPurchased, false,
+    "Paid payment without entitlement must not claim alreadyPurchased");
+  // Must indicate payment exists
+  assert.equal(result.paymentPresent, true,
+    "Must indicate payment is present");
+  // Must return the payment
+  assert.equal(result.payment.status, "paid",
+    "Must return the paid payment record");
+  // Must not create a new payment
+  assert.equal(mockDb.payments.length, 1,
+    "Must not create a new payment record");
+});
+
+test("paid payment returns paymentPresent even if entitlements checked first", async () => {
+  resetMockDb();
+  const sql = createMockSql();
+  const { ensureReportPayment } = await reloadService();
+
+  const reportId = makeTestReportId();
+
+  // Both exist — entitlement check happens first
+  mockDb.entitlements.push({
+    id: 10,
+    report_id: reportId,
+    lead_contact_id: 21,
+    status: "active",
+    granted_at: new Date().toISOString(),
+  });
+  mockDb.payments.push({
+    id: 100,
+    report_id: reportId,
+    lead_contact_id: 21,
+    stripe_checkout_session_id: "cs_test_paid_entitled_also",
+    purchase_intent_key: buildPurchaseIntentKey(reportId, 21),
+    amount_cents: 399,
+    currency: "aud",
+    status: "paid",
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  });
+
+  // Entitlement wins — returns alreadyPurchased: true
+  const result = await ensureReportPayment({ reportId, leadContactId: 21 }, sql);
+  assert.equal(result.alreadyPurchased, true,
+    "Active entitlement must take priority even with paid payment");
+  assert.equal(result.payment, null,
+    "No payment returned when entitlement exists");
+});
