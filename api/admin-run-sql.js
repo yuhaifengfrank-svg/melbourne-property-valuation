@@ -21,13 +21,15 @@ export default async function handler(req, res) {
 
   try {
     const neonClient = neon(process.env.DATABASE_URL);
-    const results = [];
 
     // Use sql.unsafe() for dynamic SQL execution
-    // Each call is a single statement (no semicolon splitting needed)
     const result = await neonClient.unsafe(sqlStmt);
 
-    return res.status(200).json({ ok: true, rows: result || [] });
+    // neon@latest returns either an Array (for SELECT/INSERT RETURNING)
+    // or a QueryResult-like object. Normalize to array.
+    const rows = Array.isArray(result) ? result : result?.rows || [];
+
+    return res.status(200).json({ ok: true, rows });
   } catch (e) {
     return res.status(500).json({ ok: false, error: e.message });
   }
