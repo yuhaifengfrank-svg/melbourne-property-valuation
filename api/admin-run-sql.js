@@ -14,34 +14,20 @@ export default async function handler(req, res) {
     return res.status(403).json({ ok: false, error: "Forbidden" });
   }
 
-  const { sql: sqlStatements } = req.body;
-  if (!sqlStatements) {
+  const { sql: sqlStmt } = req.body;
+  if (!sqlStmt) {
     return res.status(400).json({ ok: false, error: "missing sql" });
   }
 
   try {
-    const sql = neon(process.env.DATABASE_URL);
+    const neonClient = neon(process.env.DATABASE_URL);
     const results = [];
 
-    // Split by semicolons (simple splitting, no complex SQL)
-    const statements = sqlStatements
-      .split(";")
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
+    // Use sql.unsafe() for dynamic SQL execution
+    // Each call is a single statement (no semicolon splitting needed)
+    const result = await neonClient.unsafe(sqlStmt);
 
-    for (const stmt of statements) {
-      try {
-        const result = await sql(stmt);
-        results.push({ statement: stmt.substring(0, 60), rows: result || [] });
-      } catch (e) {
-        results.push({
-          statement: stmt.substring(0, 60),
-          error: e.message,
-        });
-      }
-    }
-
-    return res.status(200).json({ ok: true, results });
+    return res.status(200).json({ ok: true, rows: result || [] });
   } catch (e) {
     return res.status(500).json({ ok: false, error: e.message });
   }
