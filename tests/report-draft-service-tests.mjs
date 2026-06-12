@@ -388,7 +388,7 @@ test("consumeDraftIntoSnapshot rejects invalid token", async () => {
   const sql = createMockSql();
   await assert.rejects(
     () => svc.consumeDraftIntoSnapshot("invalid.token.here", 42, sql),
-    { message: /Invalid or expired draft token/ }
+    { message: /invalid or has been tampered with/ }
   );
 });
 
@@ -411,7 +411,7 @@ test("consumeDraftIntoSnapshot rejects draft expired in database (valid token, p
   // but the DB row is expired — must be rejected by DB-side check.
   await assert.rejects(
     () => svc.consumeDraftIntoSnapshot(draft.draftToken, 42, sql),
-    { message: /Draft not found, already consumed, or expired/ }
+    { message: /expired or is no longer valid/ }
   );
 });
 

@@ -19,14 +19,20 @@ process.env.NODE_ENV = "test";
 
 let _stableStringifyFn;
 let _hashSnapshotFn;
+let _verifyReportDraftTokenFn;
 
 async function getSnapshotTools() {
   if (!_stableStringifyFn) {
     const mod = await import("../lib/report-snapshot-service.js");
     _stableStringifyFn = mod.stableStringify;
     _hashSnapshotFn = mod.hashSnapshot;
+    _verifyReportDraftTokenFn = mod.verifyReportDraftToken;
   }
-  return { stableStringify: _stableStringifyFn, hashSnapshot: _hashSnapshotFn };
+  return {
+    stableStringify: _stableStringifyFn,
+    hashSnapshot: _hashSnapshotFn,
+    verifyReportDraftToken: _verifyReportDraftTokenFn,
+  };
 }
 
 // ── Mock Database ───────────────────────────────────────────────────
@@ -37,6 +43,7 @@ const mockDb = {
   snapshots: [],
   payments: [],
   entitlements: [],
+  upsertLeadContactLog: [],
 };
 
 function resetMockDb() {
@@ -45,6 +52,7 @@ function resetMockDb() {
   mockDb.snapshots = [];
   mockDb.payments = [];
   mockDb.entitlements = [];
+  mockDb.upsertLeadContactLog = [];
 }
 
 let nextLeadContactId = 1;
@@ -53,15 +61,16 @@ function createMockSql() {
   return async (strings, ...values) => {
     const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
 
-    if (raw.includes("FROM lead_contacts WHERE email_lower")) {
-      const emailLower = values[0];
-      const match = mockDb.leadContacts.find(c => c.email_lower === emailLower);
-      return match ? [{ id: match.id }] : [];
-    }
-
-    if (raw.includes("INSERT INTO lead_contacts")) {
+    // INSERT INTO lead_contacts ... ON CONFLICT (email_lower) DO UPDATE SET updated_at = NOW() RETURNING id
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
       const email = values[0];
       const emailLower = values[1];
+      let existing = mockDb.leadContacts.find(c => c.email_lower === emailLower);
+      if (existing) {
+        existing.updated_at = new Date().toISOString();
+        mockDb.upsertLeadContactLog.push({ action: "update", id: existing.id, email: emailLower });
+        return [{ id: existing.id }];
+      }
       const contact = {
         id: nextLeadContactId++,
         email,
@@ -70,7 +79,13 @@ function createMockSql() {
         updated_at: new Date().toISOString(),
       };
       mockDb.leadContacts.push(contact);
+      mockDb.upsertLeadContactLog.push({ action: "insert", id: contact.id, email: emailLower });
       return [{ id: contact.id }];
+    }
+
+    // SELECT … FROM lead_contacts — only here for schema-safety SELECT
+    if (raw.includes("FROM lead_contacts")) {
+      return [];
     }
 
     if (raw.includes("CREATE TABLE") || raw.includes("ALTER TABLE") || raw.includes("CREATE INDEX")) {
@@ -109,6 +124,11 @@ function createMockSql() {
     }
 
     if (raw.includes("UPDATE report_drafts")) {
+      const draftId = values[0];
+      const draft = mockDb.drafts.find(d => d.draft_id === draftId);
+      if (draft && draft.consumed_at == null) {
+        draft.consumed_at = new Date().toISOString();
+      }
       return [];
     }
 
@@ -176,7 +196,7 @@ async function makeDraftToken() {
   const draftId = "rd_" + crypto.randomBytes(12).toString("hex");
   const now = Date.now();
   const snapObj = { test: "data", estimate: { midpoint: 850000, low: 800000, high: 900000 } };
-  const stableJson = JSON.stringify(snapObj); // not stable, but hashSnapshot will normalise it
+  const stableJson = JSON.stringify(snapObj);
   const snapHash = hashSnapshot(stableJson);
 
   const payload = {
@@ -191,7 +211,6 @@ async function makeDraftToken() {
   const sig = crypto.createHmac("sha256", DRAFT_SECRET).update(encoded).digest("base64url");
   const token = `${encoded}.${sig}`;
 
-  // Insert draft into mock DB with stable JSON matching the hash
   const { stableStringify } = await getSnapshotTools();
   mockDb.drafts.push({
     draft_id: draftId,
@@ -207,7 +226,8 @@ async function makeDraftToken() {
   return token;
 }
 
-function makeExpiredDraftToken() {
+/** Token-level expired: signature valid but expires_at in the past */
+function makeTokenLevelExpiredDraftToken() {
   const draftId = "rd_" + crypto.randomBytes(12).toString("hex");
   const now = Date.now();
   const payload = {
@@ -221,6 +241,70 @@ function makeExpiredDraftToken() {
   const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
   const sig = crypto.createHmac("sha256", DRAFT_SECRET).update(encoded).digest("base64url");
   return `${encoded}.${sig}`;
+}
+
+/** Tampered token: valid signature but modified payload */
+function makeTamperedDraftToken() {
+  const draftId = "rd_" + crypto.randomBytes(12).toString("hex");
+  const now = Date.now();
+  const payload = {
+    draft_id: draftId,
+    property_key: "test|Suburb|VIC|3000|house",
+    valuation_version: "1.0.0",
+    snapshot_hash: crypto.randomBytes(16).toString("hex"),
+    issued_at: now,
+    expires_at: now + 30 * 60 * 1000,
+  };
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", DRAFT_SECRET).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+  // Tamper: change the payload body while keeping signature
+  const tamperedPayload = { ...payload, draft_id: "rd_TAMPERED_" + Date.now() };
+  const tamperedEncoded = Buffer.from(JSON.stringify(tamperedPayload)).toString("base64url");
+  return `${tamperedEncoded}.${sig}`;
+}
+
+/** DB-level expired: token is valid (future expires_at), but draft row is expired in DB */
+async function makeDbLevelExpiredDraftToken() {
+  const { hashSnapshot } = await getSnapshotTools();
+  const draftId = "rd_" + crypto.randomBytes(12).toString("hex");
+  const now = Date.now();
+  const snapObj = { test: "data" };
+  const snapHash = hashSnapshot(JSON.stringify(snapObj));
+
+  // Token has future expires_at — passes verifyReportDraftToken
+  const payload = {
+    draft_id: draftId,
+    property_key: "test|Suburb|VIC|3000|house",
+    valuation_version: "1.0.0",
+    snapshot_hash: snapHash,
+    issued_at: now,
+    expires_at: now + 30 * 60 * 1000,
+  };
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", DRAFT_SECRET).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+
+  // Insert draft with DB-level past expiry — the FROM report_drafts query
+  // includes expires_at > NOW() and will return no rows
+  const { stableStringify } = await getSnapshotTools();
+  mockDb.drafts.push({
+    draft_id: draftId,
+    property_key: payload.property_key,
+    valuation_version: payload.valuation_version,
+    snapshot_json: stableStringify(snapObj),
+    snapshot_hash: snapHash,
+    expires_at: new Date(now - 1000).toISOString(),
+    consumed_at: null,
+    created_at: new Date(now - 3600 * 1000).toISOString(),
+  });
+
+  return token;
+}
+
+/** Invalid format token: missing dot separator */
+function makeMalformedDraftToken() {
+  return "just_a_random_string_without_dot";
 }
 
 // ── Mock Stripe ─────────────────────────────────────────────────────
@@ -361,20 +445,72 @@ test("missing draft token returns 400 with INVALID_DRAFT_TOKEN", async () => {
   assert.equal(ctx.getData().error, "INVALID_DRAFT_TOKEN");
 });
 
-test("expired draft token returns 400 with DRAFT_EXPIRED", async () => {
+test("malformed draft token returns INVALID_DRAFT_TOKEN and does not create lead_contact", async () => {
   const { handler } = await setupTestEnv();
-  const expiredToken = makeExpiredDraftToken();
+  const badToken = makeMalformedDraftToken();
 
   const ctx = makeReqRes({
-    email: "expired@example.com",
+    email: "nolead@example.com",
+    reportDraftToken: badToken,
+  });
+
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 400);
+  assert.equal(ctx.getData().error, "INVALID_DRAFT_TOKEN");
+
+  // Token was checked before any DB writes — no lead_contact must be created
+  assert.equal(mockDb.leadContacts.length, 0, "No lead_contact should be created for invalid token");
+});
+
+test("tampered draft token returns 400 with INVALID_DRAFT_TOKEN and does not create lead_contact", async () => {
+  const { handler } = await setupTestEnv();
+  const tampered = makeTamperedDraftToken();
+
+  const ctx = makeReqRes({
+    email: "tamper@example.com",
+    reportDraftToken: tampered,
+  });
+
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 400);
+  assert.equal(ctx.getData().error, "INVALID_DRAFT_TOKEN");
+
+  // No lead_contact created
+  assert.equal(mockDb.leadContacts.length, 0, "No lead_contact should be created for tampered token");
+});
+
+test("token-level expired returns INVALID_DRAFT_TOKEN (not DRAFT_EXPIRED)", async () => {
+  const { handler } = await setupTestEnv();
+  const expiredToken = makeTokenLevelExpiredDraftToken();
+
+  const ctx = makeReqRes({
+    email: "expired_token@example.com",
     reportDraftToken: expiredToken,
   });
 
   await handler(ctx.req, ctx.res);
 
   assert.equal(ctx.getStatus(), 400);
+  assert.equal(ctx.getData().error, "INVALID_DRAFT_TOKEN",
+    "Token-level expiry returns INVALID_DRAFT_TOKEN, not DRAFT_EXPIRED");
+});
+
+test("DB-level expired draft returns DRAFT_EXPIRED", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDbLevelExpiredDraftToken();
+
+  const ctx = makeReqRes({
+    email: "db_expired@example.com",
+    reportDraftToken: token,
+  });
+
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 400);
   assert.equal(ctx.getData().error, "DRAFT_EXPIRED",
-    "Expired token must return DRAFT_EXPIRED");
+    "DB-level draft expiry must return DRAFT_EXPIRED");
 });
 
 test("client-provided price fields are ignored", async () => {
@@ -396,15 +532,12 @@ test("client-provided price fields are ignored", async () => {
 
   assert.equal(ctx.getStatus(), 200);
 
-  // Check what was sent to Stripe
   const session = stripeSessions[0];
   assert.ok(session, "Must have created a Stripe session");
   assert.equal(session.mode, "payment", "Mode must be payment");
   assert.ok(session.line_items && session.line_items.length > 0, "Must have line items");
   assert.notEqual(session.line_items[0]?.price, "client_supplied_price",
     "Price ID must not come from client");
-
-  // Customer email should still be set
 });
 
 test("repeat request returns the same checkout session", async () => {
@@ -443,7 +576,6 @@ test("OPTIONS returns 204", async () => {
 
   const ctx = makeReqRes({}, { method: "OPTIONS" });
   await handler(ctx.req, ctx.res);
-  // With the inline res, status not set for 204 (res.end() called)
 });
 
 test("Stripe not configured returns 503 with STRIPE_NOT_CONFIGURED", async () => {
@@ -452,7 +584,6 @@ test("Stripe not configured returns 503 with STRIPE_NOT_CONFIGURED", async () =>
   process.env.STRIPE_PRICE_ID_REPORT_399 = "price_test_399";
   nextLeadContactId = 1;
 
-  // Reset mock Stripe to null so getStripe() returns null in test mode
   const { setMockStripe } = await import("../lib/report-checkout-service.js");
   setMockStripe(null);
 
@@ -519,4 +650,29 @@ test("same email finds existing lead_contact", async () => {
   // Should not create a new contact
   assert.equal(mockDb.leadContacts.length, contactCount,
     "Same email should reuse existing lead_contact");
+});
+
+test("CONCURRENT: same email Promise.all atomically creates only one lead_contact", async () => {
+  const { handler } = await setupTestEnv();
+  const token1 = await makeDraftToken();
+  const token2 = await makeDraftToken();
+
+  const c1 = makeReqRes({ email: "concurrent@example.com", reportDraftToken: token1 });
+  const c2 = makeReqRes({ email: "concurrent@example.com", reportDraftToken: token2 });
+
+  await Promise.all([
+    handler(c1.req, c1.res),
+    handler(c2.req, c2.res),
+  ]);
+
+  // Both should succeed (ON CONFLICT upsert, not unique constraint error)
+  assert.equal(c1.getStatus(), 200, "First concurrent request must succeed");
+  assert.equal(c2.getStatus(), 200, "Second concurrent request must succeed");
+
+  // Only one lead_contact created
+  const matchingContacts = mockDb.leadContacts.filter(
+    c => c.email_lower === "concurrent@example.com"
+  );
+  assert.equal(matchingContacts.length, 1,
+    "Concurrent same-email requests must create only one lead_contact");
 });

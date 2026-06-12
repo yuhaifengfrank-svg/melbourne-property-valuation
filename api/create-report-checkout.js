@@ -5,9 +5,9 @@
 // All other fields (amount, price_id, report_id, URLs) are IGNORED.
 //
 // Flow:
-//   1. Validate email + draft token
+//   1. Validate email + verify draft token FIRST (before any DB writes)
 //   2. Ensure customer funnel + report payment schemas
-//   3. Find or create lead_contact by email_lower
+//   3. Upsert lead_contact by email_lower (atomic ON CONFLICT)
 //   4. consumeDraftIntoSnapshot → immutable report_id
 //   5. createReportCheckout() (from Phase 1C4 service)
 //   6. Return checkoutUrl/checkoutSessionId or error
@@ -17,7 +17,7 @@
 // Does NOT implement webhook, frontend, or PDF.
 
 import { ensureCustomerFunnelSchema, ensureReportPaymentSchema, getSql } from "./_db.js";
-import { consumeDraftIntoSnapshot } from "../lib/report-snapshot-service.js";
+import { verifyReportDraftToken, consumeDraftIntoSnapshot, DraftTokenError } from "../lib/report-snapshot-service.js";
 import { createReportCheckout } from "../lib/report-checkout-service.js";
 
 // ── Error codes ─────────────────────────────────────────────────────
@@ -82,13 +82,14 @@ export default async function handler(req, res) {
     const rawEmail = (body.email || "").trim().toLowerCase();
     const reportDraftToken = body.reportDraftToken || "";
 
-    // ── Step 1: Validate input ──
+    // ── Step 1: Validate input + verify token BEFORE any DB writes ──
     if (!isValidEmail(rawEmail)) {
       return res.status(400).json({ ok: false, error: ERR.INVALID_EMAIL, message: "A valid email address is required." });
     }
 
-    if (!reportDraftToken) {
-      return res.status(400).json({ ok: false, error: ERR.INVALID_DRAFT_TOKEN, message: "Missing report draft token." });
+    const tokenPayload = verifyReportDraftToken(reportDraftToken);
+    if (!tokenPayload) {
+      return res.status(400).json({ ok: false, error: ERR.INVALID_DRAFT_TOKEN, message: "The report draft token is invalid or has been tampered with." });
     }
 
     // ── Step 2: Initialise database schemas ──
@@ -96,33 +97,30 @@ export default async function handler(req, res) {
     await ensureCustomerFunnelSchema(sql);
     await ensureReportPaymentSchema(sql);
 
-    // ── Step 3: Find or create lead_contact ──
-    let leadContactId;
-    const existingContacts = await sql`
-      SELECT id FROM lead_contacts WHERE email_lower = ${rawEmail} LIMIT 1
+    // ── Step 3: Upsert lead_contact (atomic — no SELECT-before-INSERT race) ──
+    const contactResult = await sql`
+      INSERT INTO lead_contacts (email, email_lower)
+      VALUES (${rawEmail}, ${rawEmail})
+      ON CONFLICT (email_lower)
+      DO UPDATE SET updated_at = NOW()
+      RETURNING id
     `;
-    if (existingContacts.length > 0) {
-      leadContactId = existingContacts[0].id;
-    } else {
-      const newContact = await sql`
-        INSERT INTO lead_contacts (email, email_lower)
-        VALUES (${rawEmail}, ${rawEmail})
-        RETURNING id
-      `;
-      leadContactId = newContact[0].id;
-    }
+    const leadContactId = contactResult[0].id;
 
     // ── Step 4: Consume draft into immutable snapshot ──
     let snapshotOutcome;
     try {
       snapshotOutcome = await consumeDraftIntoSnapshot(reportDraftToken, leadContactId, sql);
     } catch (consumeErr) {
-      const msg = consumeErr.message || "";
-      if (msg.includes("expired") || msg.includes("not found") || msg.includes("Draft not found")) {
-        return res.status(400).json({ ok: false, error: ERR.DRAFT_EXPIRED, message: "The report draft has expired or is no longer valid. Please run a new valuation." });
-      }
-      if (msg.includes("Invalid or expired draft token")) {
-        return res.status(400).json({ ok: false, error: ERR.INVALID_DRAFT_TOKEN, message: "The report draft token is invalid or has expired." });
+      if (consumeErr instanceof DraftTokenError) {
+        // Token-level errors: expired, tampered, invalid
+        if (consumeErr.code === "TOKEN_EXPIRED") {
+          return res.status(400).json({ ok: false, error: ERR.DRAFT_EXPIRED, message: "The report draft has expired. Please run a new valuation." });
+        }
+        if (consumeErr.code === "DRAFT_CONSUMED") {
+          return res.status(400).json({ ok: false, error: ERR.DRAFT_EXPIRED, message: "The report draft has already been used. Please run a new valuation." });
+        }
+        return res.status(400).json({ ok: false, error: ERR.INVALID_DRAFT_TOKEN, message: consumeErr.message || "The report draft token is invalid." });
       }
       throw consumeErr;
     }
