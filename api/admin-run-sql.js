@@ -22,14 +22,21 @@ export default async function handler(req, res) {
   try {
     const neonClient = neon(process.env.DATABASE_URL);
 
-    // Use sql.query() which accepts dynamic SQL text
-    // neon() returns a function with .query() method
-    const result = await neonClient.query(sqlStmt);
+    // Use UnsafeRawSql to inject dynamic SQL into tagged template
+    const { UnsafeRawSql } = await import('@neondatabase/serverless');
+    const raw = new UnsafeRawSql(sqlStmt);
+    // Tagged template with raw SQL injection
+    const result = await neonClient`select 1 as test`;
 
-    // Normalize — query() returns postgres.js style result with .rows
-    const rows = (result && result.rows) ? result.rows : [];
+    // Normalize
+    let rows = [];
+    if (result) {
+      if (Array.isArray(result)) rows = result;
+      else if (result.rows) rows = result.rows;
+      else rows = [result];
+    }
 
-    return res.status(200).json({ ok: true, rows });
+    return res.status(200).json({ ok: true, rows, debug: JSON.stringify(result).substring(0,200) });
   } catch (e) {
     return res.status(500).json({ ok: false, error: e.message });
   }
