@@ -100,6 +100,9 @@ function makeProductionValuationResult(overrides = {}) {
 
 // ── Mock SQL that simulates Neon JSONB behaviour ────────────────────
 //
+// Returns { sql, drafts, snapshots } so tests can inspect snapshot content
+// and manipulate draft expiry.
+//
 // Neon reads JSONB columns as parsed JavaScript objects, NOT strings.
 // This mock deliberately stores and returns parsed objects to reproduce
 // the real production code path for hashSnapshot.
@@ -109,18 +112,15 @@ function createMockSql() {
   const snapshots = new Map(); // draft_id → { report_id }
 
   const sqlFn = async (strings, ...values) => {
-    const text = strings.join("__").replace(/(\$)\d+/g, ""); // crude tag join
-    const sql = strings.map((s, i) => (i < values.length ? s + "__val__" : s)).join("");
+    const sql = strings.map((s, i) => (i < values.length ? s + values[i] : s)).join("");
 
     if (sql.includes("INSERT INTO report_drafts")) {
       const [draftId, propertyKey, valuationVersion, snapshotJson, snapshotHash, expiresAt] = values;
-      // Neon returns JSONB as parsed objects, so we store it as parsed
       const parsedJson = typeof snapshotJson === "string" ? JSON.parse(snapshotJson) : snapshotJson;
       drafts.set(draftId, {
         draft_id: draftId,
         property_key: propertyKey,
         valuation_version: valuationVersion,
-        // 🧠 Simulate Neon JSONB: return as parsed object, NOT raw string
         snapshot_json: parsedJson,
         snapshot_hash: snapshotHash,
         expires_at: expiresAt,
@@ -129,7 +129,8 @@ function createMockSql() {
       return [];
     }
 
-    if (sql.includes("WHERE draft_id") && !sql.includes("final_report_id") && !sql.includes("FROM report_snapshots")) {
+    // SELECT FROM report_drafts WHERE draft_id = ... (draft read, not snapshot check)
+    if (sql.includes("WHERE draft_id") && sql.includes("FROM report_drafts")) {
       const target = values.find(v => typeof v === "string" && v.startsWith("rd_")) || values[0];
       const draft = drafts.get(target);
       if (!draft) return [];
@@ -141,61 +142,56 @@ function createMockSql() {
       return [draft];
     }
 
-    if (sql.includes("FROM report_snapshots") && text.includes("draft_id") && !sql.includes("WITH")) {
-      const draftId = values.find(v => typeof v === "string" && (v.startsWith("rd_") || v.startsWith("rp_"))) || values[0];
+    // SELECT FROM report_snapshots WHERE draft_id = ...
+    if (sql.includes("FROM report_snapshots") && sql.includes("draft_id")) {
+      const draftId = values.find(v => typeof v === "string" && v.startsWith("rd_")) || values[0];
       if (snapshots.has(draftId)) {
         return [{ report_id: snapshots.get(draftId).report_id }];
-      }
-      // Also check by report_id column
-      for (const [, v] of snapshots) {
-        if (v.report_id === draftId) return [v];
       }
       return [];
     }
 
-    // 🏆 CTE query (single WITH statement): must be checked first since it contains
-    // INSERT INTO report_snapshots, ON CONFLICT, UPDATE report_drafts, and SELECT all at once.
-    if (sql.includes("final_report_id")) {
-      // Extract draft_id from values — second INSERT value or sub-select filter
-      const target = values.find(v => typeof v === "string" && v.startsWith("rd_"));
-      const reportId = values.find(v => typeof v === "string" && v.startsWith("rp_"));
-      if (target) {
-        if (!snapshots.has(target) && reportId) {
-          // First time: store the snapshot
-          snapshots.set(target, { report_id: reportId });
-          const draft = drafts.get(target);
-          if (draft) draft.consumed_at = new Date().toISOString();
-        }
-      }
-      const rid = target ? snapshots.get(target)?.report_id : null;
-      return rid ? [{ final_report_id: rid }] : [];
-    }
-
-    if (sql.includes("INSERT INTO report_snapshots") && !sql.includes("WITH")) {
-      // Standalone INSERT (non-CTE)
-      const draftId = values[1]; // draft_id is second column
-      const reportId = values[0]; // report_id is first
+    // INSERT INTO report_snapshots … ON CONFLICT (draft_id) DO NOTHING RETURNING …
+    if (sql.includes("INSERT INTO report_snapshots")) {
+      const draftId = values[1];
+      const reportId = values[0];
       if (!snapshots.has(draftId)) {
         snapshots.set(draftId, { report_id: reportId });
+        // Mark draft consumed
+        const draft = drafts.get(draftId);
+        if (draft) draft.consumed_at = new Date().toISOString();
+        return [{ report_id: reportId }];
       }
-      return [{ report_id: snapshots.get(draftId).report_id }];
+      // ON CONFLICT DO NOTHING — already exists
+      return [];
     }
 
-    if (sql.includes("ON CONFLICT (draft_id)") && !sql.includes("final_report_id")) {
-      return []; // standalone ON CONFLICT (unlikely but safe)
-    }
-
-    if (sql.includes("UPDATE report_drafts") && !sql.includes("WITH")) {
+    // UPDATE report_drafts SET consumed_at = NOW() …
+    if (sql.includes("UPDATE report_drafts") && sql.includes("consumed_at")) {
       const target = values.find(v => typeof v === "string" && v.startsWith("rd_")) || values[0];
       const draft = drafts.get(target);
-      if (draft) draft.consumed_at = new Date().toISOString();
-      return [{ final_report_id: snapshots.get(target)?.report_id || null }];
+      if (draft && !draft.consumed_at) draft.consumed_at = new Date().toISOString();
+      return [];
     }
 
     return [];
   };
 
+  sqlFn.__drafts = drafts;
+  sqlFn.__snapshots = snapshots;
   return sqlFn;
+}
+
+// ── Helpers ─────────────────────────────────────────────────────────
+
+/**
+ * Build a token payload signed with the same secret as the service uses in test env.
+ */
+function makeMockToken(payload) {
+  const secret = "report-draft-dev-secret";
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", secret).update(encoded).digest("base64url");
+  return `${encoded}.${sig}`;
 }
 
 // ── Tests ───────────────────────────────────────────────────────────
@@ -219,7 +215,6 @@ test("snapshot hash is deterministic for same content", () => {
 });
 
 test("hashSnapshot accepts parsed JSON objects (Neon JSONB behaviour)", () => {
-  // Production: Neon returns JSONB columns as already-parsed objects
   const obj = { midpoint: 825000, low: 780000, high: 870000 };
   const objStr = JSON.stringify(obj);
 
@@ -256,23 +251,15 @@ test("snapshot contains non-null estimate values from production structure", asy
   const sql = createMockSql();
   await svc.createReportDraft(result, sql);
 
-  // Read back stored draft and verify estimate values
-  // The mock stores the snapshot_json as a parsed object (Neon JSONB)
-  // We test via hashSnapshot which should produce correct hash with estimate values
-  // Actually we need to check that buildReportSnapshot read the correct path
-  // Let's verify by checking the hash of the snapshot content includes midpoint
   const result2 = makeProductionValuationResult();
   const sql2 = createMockSql();
   const draft2 = await svc.createReportDraft(result2, sql2);
   const payload = svc.verifyReportDraftToken(draft2.draftToken);
   assert.ok(payload.snapshot_hash, "Must have snapshot_hash in token");
-  // If estimate was null due to reading wrong path, snapshot_hash would be
-  // deterministic for all valuations. We check it's non-trivial.
   assert.ok(payload.snapshot_hash.length >= 32, "snapshot_hash must be SHA-256 length");
 
   // Verify hash is based on real estimate data (different property = different hash)
   const result3 = makeProductionValuationResult({ address: "99 Different St" });
-  // Also override subject since buildPropertyKey reads subject
   result3.subject.address = "99 Different St";
   const sql3 = createMockSql();
   const draft3 = await svc.createReportDraft(result3, sql3);
@@ -332,7 +319,7 @@ test("verifyReportDraftToken rejects malformed input", () => {
   assert.equal(svc.verifyReportDraftToken("too.many.parts"), null);
 });
 
-test("consumeDraftIntoSnapshot creates immutable snapshot", async () => {
+test("consumeDraftIntoSnapshot creates immutable snapshot with correct estimate values", async () => {
   const result = makeProductionValuationResult();
   const sql = createMockSql();
   const draft = await svc.createReportDraft(result, sql);
@@ -341,6 +328,24 @@ test("consumeDraftIntoSnapshot creates immutable snapshot", async () => {
   assert.ok(outcome.report_id, "Must return a report_id");
   assert.ok(outcome.report_id.startsWith("rp_"), "report_id must start with rp_");
   assert.equal(outcome.alreadyConsumed, false, "First consume must not be duplicate");
+
+  // Verify snapshot content in mock database
+  // Get the stored snapshot_json from the drafts Map
+  const payload = svc.verifyReportDraftToken(draft.draftToken);
+  const snapData = sql.__snapshots.get(payload.draft_id);
+  assert.ok(snapData, "Snapshot must exist in mock DB");
+
+  // Also retrieve from drafts Map to inspect snapshot_json content
+  const draftRecord = sql.__drafts.get(payload.draft_id);
+  assert.ok(draftRecord, "Draft must exist in mock DB");
+
+  // snapshot_json must be a parsed object (Neon JSONB behaviour) with correct values
+  const snapJson = draftRecord.snapshot_json;
+  assert.ok(typeof snapJson === "object", "snapshot_json must be a parsed object (Neon JSONB)");
+  assert.ok(snapJson.estimate, "snapshot_json must have estimate object");
+  assert.equal(snapJson.estimate.midpoint, 825000, "Midpoint must match production input");
+  assert.equal(snapJson.estimate.low, 780000, "Low must match production input");
+  assert.equal(snapJson.estimate.high, 870000, "High must match production input");
 });
 
 test("consumeDraftIntoSnapshot is idempotent on repeated calls", async () => {
@@ -355,23 +360,28 @@ test("consumeDraftIntoSnapshot is idempotent on repeated calls", async () => {
   assert.equal(second.alreadyConsumed, true, "Second call must be marked consumed");
 });
 
-test("concurrent consume calls produce only one snapshot", async () => {
-  // Simulate two concurrent consumers using the same token
+test("concurrent consume calls with shared mock state return same report_id", async () => {
   const result = makeProductionValuationResult();
-  const sql1 = createMockSql();
-  const sql2 = createMockSql();
-  const draft = await svc.createReportDraft(result, sql1);
+  const sql = createMockSql();
+  const draft = await svc.createReportDraft(result, sql);
 
-  // Both consumers see the same draft (they use separate sql instances
-  // but the mock has independent state — each mock is isolated.
-  // To test real concurrency we inject a shared state, but for unit
-  // testing we verify the DB-side UNIQUE(draft_id) + ON CONFLICT logic
-  // by calling consume twice with the same sql instance.
-  const first = await svc.consumeDraftIntoSnapshot(draft.draftToken, 42, sql1);
-  const second = await svc.consumeDraftIntoSnapshot(draft.draftToken, 42, sql1);
+  // Both consumers share the same mock state (same sql instance)
+  const [first, second] = await Promise.all([
+    svc.consumeDraftIntoSnapshot(draft.draftToken, 42, sql),
+    svc.consumeDraftIntoSnapshot(draft.draftToken, 42, sql),
+  ]);
+
   assert.equal(first.report_id, second.report_id,
-    "Both concurrent consumers must get the same report_id");
-  assert.equal(second.alreadyConsumed, true, "Second consumer must be marked duplicate");
+    "Both concurrent consumers must return the same report_id");
+  // One of them won, the other lost — exactly one has alreadyConsumed: true
+  const win = first.alreadyConsumed ? second : first;
+  const loss = first.alreadyConsumed ? first : second;
+  assert.equal(win.alreadyConsumed, false, "Winner must not be marked duplicate");
+  assert.equal(loss.alreadyConsumed, true, "Loser must be marked duplicate");
+
+  // Verify exactly one snapshot in the mock
+  const snapCount = sql.__snapshots.size;
+  assert.equal(snapCount, 1, "There must be exactly one snapshot in the mock DB");
 });
 
 test("consumeDraftIntoSnapshot rejects invalid token", async () => {
@@ -382,24 +392,26 @@ test("consumeDraftIntoSnapshot rejects invalid token", async () => {
   );
 });
 
-test("consumeDraftIntoSnapshot rejects expired draft in database", async () => {
+test("consumeDraftIntoSnapshot rejects draft expired in database (valid token, past expires_at)", async () => {
   const result = makeProductionValuationResult();
   const sql = createMockSql();
 
-  // Create draft with expired token, but also need DB draft expired.
-  // The mock checks expiry on read, and expired draft within DRAFT_TTL
-  // is tricky. We create a regular draft then manually make the mock expire it:
+  // Create the draft normally — this gives us a validly-signed token
   const draft = await svc.createReportDraft(result, sql);
 
-  // Manually expire the DB entry in the mock (not through the token)
-  // We override the mock by setting a future expires_at to past
-  // Since mock stores raw expires_at string from our call, we need to
-  // verify that the service uses DB-side expiry check (expires_at > NOW()).
-  // We just verify the error message includes "expired" possibility.
-  // This is tested via mock filtering logic.
+  // Now manually expire the DB row by setting expires_at to the past
+  const payload = svc.verifyReportDraftToken(draft.draftToken);
+  assert.ok(payload, "Token must still be valid at this point");
+
+  const pastDate = new Date(Date.now() - 86400000); // 1 day ago
+  const draftRecord = sql.__drafts.get(payload.draft_id);
+  draftRecord.expires_at = pastDate.toISOString();
+
+  // Token is still cryptographically valid (hasn't expired in its own clock),
+  // but the DB row is expired — must be rejected by DB-side check.
   await assert.rejects(
-    () => svc.consumeDraftIntoSnapshot("invalid.junk.token", 42, sql),
-    { message: /Invalid or expired draft token/ }
+    () => svc.consumeDraftIntoSnapshot(draft.draftToken, 42, sql),
+    { message: /Draft not found, already consumed, or expired/ }
   );
 });
 
@@ -432,13 +444,11 @@ test("free valuation API ensures schema before creating draft", () => {
     "utf8"
   );
 
-  // Must import the ensure functions
   assert.ok(apiFile.includes("ensureCustomerFunnelSchema"),
     "valuation.js must import ensureCustomerFunnelSchema");
   assert.ok(apiFile.includes("ensureReportPaymentSchema"),
     "valuation.js must import ensureReportPaymentSchema");
 
-  // Must call them before createReportDraft
   const handlerStart = apiFile.indexOf("export default async function handler");
   const handlerBody = apiFile.slice(handlerStart, handlerStart + 2500);
   const draftCallIndex = handlerBody.indexOf("createReportDraft(");
