@@ -127,6 +127,20 @@ const conflict = mockDb.snapshots.some(s => s.draft_id === draftId);
       return match ? [{ report_id: match.report_id, lead_contact_id: match.lead_contact_id || null }] : [];
     }
 
+    if (raw.includes("UPDATE report_snapshots") && raw.includes("lead_contact_id")) {
+      // Phase 1C6: bind NULL-owner snapshot to a customer
+      // SQL: SET lead_contact_id = $1 WHERE report_id = $2
+      // mock: $0=leadContactId, $1=reportId
+      const leadContactId = values[0];
+      const reportId = values[1];
+      const snap = mockDb.snapshots.find((s) => s.report_id === reportId && s.lead_contact_id == null);
+      if (snap && values.length >= 2) {
+        snap.lead_contact_id = leadContactId;
+        return [{ report_id: snap.report_id }];
+      }
+      return [];
+    }
+
     if (raw.includes("UPDATE report_drafts")) {
       const draftId = values[0];
       const draft = mockDb.drafts.find(d => d.draft_id === draftId);
@@ -819,5 +833,87 @@ test("snapshot owner never changes after conflict", async () => {
   await handler(rRepeat.req, rRepeat.res);
   assert.equal(rRepeat.getStatus(), 200, "Original owner must still get 200 (idempotent)");
   assert.equal(rRepeat.getData()?.reportId, snapshotAfter.report_id,
+    "Must return same report_id for original owner");
+});
+
+
+test("Promise.all two emails compete for NULL-owner snapshot: one wins, one 409" , async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+  // We use the mockDb directly - no need to parse reportId from token
+
+  // Simulate an old snapshot with NULL lead_contact_id (pre-1C6)
+  const draft = mockDb.drafts.find((d) => !d.consumed_at);
+  const existingReportId = "legacy_rp_" + Date.now();
+  mockDb.snapshots.push({
+    report_id: existingReportId,
+    draft_id: draft.draft_id,
+    property_key: draft.property_key,
+    valuation_version: draft.valuation_version,
+    snapshot_json: draft.snapshot_json,
+    snapshot_hash: draft.snapshot_hash,
+    lead_contact_id: null,
+  });
+  // Also mark the draft consumed so consumeDraftIntoSnapshot picks the
+  // existing snapshot path instead of trying to INSERT a new one.
+  draft.consumed_at = new Date().toISOString();
+
+  const rA = makeReqRes({ email: "racer-a@example.com", reportDraftToken: token });
+  const rB = makeReqRes({ email: "racer-b@example.com", reportDraftToken: token });
+
+  const results = await Promise.allSettled([
+    handler(rA.req, rA.res),
+    handler(rB.req, rB.res),
+  ]);
+  const statuses = [rA.getStatus(), rB.getStatus()].sort();
+
+  assert.deepEqual(statuses, [200, 409],
+    "One wins the NULL-owner binding, one gets REPORT_OWNER_CONFLICT");
+
+  // Exactly one payment created
+  assert.equal(mockDb.payments.length, 1, "Only one payment for the winner");
+
+  // Snapshot should now have a non-null lead_contact_id
+  const snap = mockDb.snapshots.find((s) => s.draft_id === draft.draft_id);
+  assert.ok(snap.lead_contact_id !== null && snap.lead_contact_id !== undefined,
+    "Snapshot must be bound after the race");
+});
+
+test("snapshot with NULL lead_contact_id binds atomically on first access", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const draft = mockDb.drafts.find((d) => !d.consumed_at);
+  mockDb.snapshots.push({
+    report_id: "legacy_rp_" + Date.now(),
+    draft_id: draft.draft_id,
+    property_key: draft.property_key,
+    valuation_version: draft.valuation_version,
+    snapshot_json: draft.snapshot_json,
+    snapshot_hash: draft.snapshot_hash,
+    lead_contact_id: null,
+  });
+  draft.consumed_at = new Date().toISOString();
+
+  // First customer accesses the legacy snapshot - should bind successfully
+  const r1 = makeReqRes({ email: "first-owner@example.com", reportDraftToken: token });
+  await handler(r1.req, r1.res);
+  assert.equal(r1.getStatus(), 200, "First customer must bind NULL-owner snapshot");
+
+  const ownerContact = mockDb.leadContacts.find((c) => c.email_lower === "first-owner@example.com");
+  const snap = mockDb.snapshots.find((s) => s.draft_id === draft.draft_id);
+  assert.equal(snap.lead_contact_id, ownerContact.id,
+    "NULL-owner snapshot must be bound to first customer");
+
+  // Second customer gets 409
+  const r2 = makeReqRes({ email: "second@example.com", reportDraftToken: token });
+  await handler(r2.req, r2.res);
+  assert.equal(r2.getStatus(), 409, "Second customer must get REPORT_OWNER_CONFLICT");
+
+  // Original owner still works (idempotent)
+  const rRepeat = makeReqRes({ email: "first-owner@example.com", reportDraftToken: token });
+  await handler(rRepeat.req, rRepeat.res);
+  assert.equal(rRepeat.getStatus(), 200, "Original owner must still get 200 (idempotent)");
+  assert.equal(rRepeat.getData()?.reportId, snap.report_id,
     "Must return same report_id for original owner");
 });

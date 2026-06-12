@@ -160,7 +160,6 @@ export async function ensureReportPaymentSchema(sql) {
 
   await sql`CREATE INDEX IF NOT EXISTS idx_rs_property_key ON report_snapshots (property_key)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_rs_created_at ON report_snapshots (created_at DESC)`;
-  await sql`CREATE INDEX IF NOT EXISTS idx_rs_lead_contact ON report_snapshots (lead_contact_id)`;
 
   await sql`CREATE TABLE IF NOT EXISTS report_payments (
     id BIGSERIAL PRIMARY KEY,

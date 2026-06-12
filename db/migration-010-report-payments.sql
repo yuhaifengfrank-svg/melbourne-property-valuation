@@ -86,6 +86,12 @@ CREATE INDEX IF NOT EXISTS idx_rd_consumed ON report_drafts (consumed_at) WHERE 
 ALTER TABLE report_snapshots ADD COLUMN IF NOT EXISTS draft_id TEXT REFERENCES report_drafts(draft_id);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_rs_draft_id ON report_snapshots (draft_id) WHERE draft_id IS NOT NULL;
 
+-- Add lead_contact_id to report_snapshots (Phase 1C6)
+-- Links snapshot to the customer who first consumed the draft.
+-- Used to prevent another customer from purchasing the same report.
+ALTER TABLE report_snapshots ADD COLUMN IF NOT EXISTS lead_contact_id BIGINT REFERENCES lead_contacts(id);
+CREATE INDEX IF NOT EXISTS idx_rs_lead_contact ON report_snapshots (lead_contact_id);
+
 -- 5. Stripe Webhook Events: idempotency audit log
 CREATE TABLE IF NOT EXISTS stripe_webhook_events (
     stripe_event_id TEXT PRIMARY KEY,

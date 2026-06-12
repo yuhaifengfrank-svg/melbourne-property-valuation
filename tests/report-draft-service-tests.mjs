@@ -501,6 +501,33 @@ test("_db.js has UNIQUE index on report_snapshots.draft_id", () => {
   assert.ok(db.includes("draft_id IS NOT NULL"), "Must be a partial unique index");
 });
 
+test("_db.js ALTER TABLE order: draft_id before lead_contact_id", () => {
+  const db = fs.readFileSync(
+    path.join(projectRoot, "api/_db.js"),
+    "utf8"
+  );
+  const draftIdx = db.indexOf("ADD COLUMN IF NOT EXISTS draft_id");
+  const leadIdx = db.indexOf("ADD COLUMN IF NOT EXISTS lead_contact_id");
+  assert.ok(draftIdx >= 0, "Must add draft_id column");
+  assert.ok(leadIdx >= 0, "Must add lead_contact_id column");
+  assert.ok(draftIdx < leadIdx,
+    "draft_id ALTER TABLE must come before lead_contact_id ALTER TABLE");
+});
+
+test("migration-010 ALTER TABLE order: draft_id before lead_contact_id", () => {
+  const sql = fs.readFileSync(
+    path.join(projectRoot, "db/migration-010-report-payments.sql"),
+    "utf8"
+  );
+  const draftIdx = sql.indexOf("ADD COLUMN IF NOT EXISTS draft_id");
+  const leadIdx = sql.indexOf("ADD COLUMN IF NOT EXISTS lead_contact_id");
+  assert.ok(draftIdx >= 0, "Must add draft_id column");
+  assert.ok(leadIdx >= 0, "Must add lead_contact_id column");
+  assert.ok(draftIdx < leadIdx,
+    "draft_id ALTER TABLE must come before lead_contact_id ALTER TABLE");
+});
+
+
 test("service does not import or reference Opportunity Cookie", () => {
   const svcSource = fs.readFileSync(
     path.join(projectRoot, "lib/report-snapshot-service.js"),
