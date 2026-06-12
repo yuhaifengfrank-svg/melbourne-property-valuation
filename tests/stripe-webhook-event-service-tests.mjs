@@ -74,23 +74,38 @@ function createMockDb(initialRows = []) {
       return [{ stripe_event_id: eventId, processing_status: "received" }];
     }
 
-    // ── UPDATE stripe_webhook_events SET ... WHERE stripe_event_id = $1 RETURNING ──
-    // Needs to match: SET ... 'processed' ... or SET ... 'failed' ...
-    if (/UPDATE\s+stripe_webhook_events\s+SET/i.test(q)) {
+    // ── UPDATE stripe_webhook_events SET processing_status = '...' ...
+    //     WHERE stripe_event_id = $1 [AND processing_status = '...'] RETURNING ──
+    const updateMatch = q.match(
+      /UPDATE\s+stripe_webhook_events\s+SET\s+processing_status\s*=\s*'(\w+)'/i
+    );
+    if (updateMatch) {
       const eventId = values[values.length - 1];
       const existing = events.find((e) => e.stripe_event_id === eventId);
       if (!existing) return [];
 
-      if (q.includes("'processed'")) {
-        existing.processing_status = "processed";
+      // Respect conditional WHERE: AND processing_status = 'received' / 'failed'
+      const andMatch = q.match(/AND\s+processing_status\s*=\s*'(\w+)'/i);
+      const requiredStatus = andMatch ? andMatch[1] : null;
+      if (requiredStatus && existing.processing_status !== requiredStatus) {
+        return []; // Status doesn't match, no-op
+      }
+
+      const newStatus = updateMatch[1];
+      existing.processing_status = newStatus;
+
+      if (newStatus === "processed") {
         existing.processed_at = new Date();
-      } else if (q.includes("'failed'")) {
-        existing.processing_status = "failed";
-        // The error_message value will be one of the earlier params
+      } else if (newStatus === "failed") {
         const errorValue = values.find((v, i) => i < values.length - 1 && typeof v === "string");
         existing.error_message = errorValue || null;
         existing.processed_at = new Date();
+      } else if (newStatus === "received") {
+        existing.error_message = null;
+        existing.processed_at = null;
+        existing.received_at = new Date();
       }
+
       return [{ stripe_event_id: eventId }];
     }
 
@@ -555,6 +570,61 @@ test("processed event cannot be re-claimed", async () => {
   assert.equal(r.claimed, false);
   assert.equal(r.duplicate, true);
   assert.equal(r.status, "processed");
+});
+
+test("concurrent Promise.all re-claim of failed event only one caller gets claimed=true", async () => {
+  const eventId = uniqueEventId();
+  const sql = createMockDb();
+
+  // Claim and fail once
+  await service.claimWebhookEvent(eventId, "checkout.session.completed", sql);
+  await service.markWebhookFailed(eventId, "transient error", sql);
+
+  // 5 concurrent retries
+  const results = await Promise.all(
+    Array.from({ length: 5 }, () =>
+      service.claimWebhookEvent(eventId, "checkout.session.completed", sql)
+    )
+  );
+
+  const claimed = results.filter((r) => r.claimed);
+  assert.equal(claimed.length, 1, "Only one retry should claim the failed event");
+  const duplicates = results.filter((r) => r.duplicate && !r.claimed);
+  assert.equal(duplicates.length, 4, "Four callers should get duplicate=false + claimed=false");
+  results.forEach((r) => assert.equal(r.status, "received"));
+});
+
+test("processed event cannot be marked as failed", async () => {
+  const sql = createMockDb();
+  const eventId = uniqueEventId();
+
+  await service.claimWebhookEvent(eventId, "checkout.session.completed", sql);
+  await service.markWebhookProcessed(eventId, sql);
+
+  // Attempt to mark the processed event as failed — should return false
+  const result = await service.markWebhookFailed(eventId, "Should not apply", sql);
+  assert.equal(result, false, "markWebhookFailed must not overwrite processed status");
+
+  const evts = sql.getEvents();
+  const e = evts.find((x) => x.stripe_event_id === eventId);
+  assert.equal(e.processing_status, "processed", "Must remain processed");
+  assert.equal(e.error_message, null, "error_message must not be set");
+});
+
+test("failed event cannot be marked as processed directly", async () => {
+  const sql = createMockDb();
+  const eventId = uniqueEventId();
+
+  await service.claimWebhookEvent(eventId, "checkout.session.completed", sql);
+  await service.markWebhookFailed(eventId, "transient error", sql);
+
+  // Attempt to mark the failed event as processed without re-claiming
+  const result = await service.markWebhookProcessed(eventId, sql);
+  assert.equal(result, false, "markWebhookProcessed must not update failed status");
+
+  const evts = sql.getEvents();
+  const e = evts.find((x) => x.stripe_event_id === eventId);
+  assert.equal(e.processing_status, "failed", "Must remain failed");
 });
 
 test("service does not import stripe SDK or read secret env vars", () => {
