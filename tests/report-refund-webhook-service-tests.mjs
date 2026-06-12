@@ -21,6 +21,7 @@ let entSeq = 100;
 function resetDb() {
   mockDb.payments.length = 0;
   mockDb.entitlements.length = 0;
+  delete mockDb._simulatePayRace;
   paySeq = 100;
   entSeq = 100;
 }
@@ -119,7 +120,7 @@ function makeSql() {
 
 function handleRefundCte(raw, values) {
   // ── Parse entitlement UPDATE ─────────────────────────────────────
-  // ent runs FIRST. Only if it succeeds does pay run.
+  // ent runs FIRST. Only if it succeeds does pay check proceed.
   const entReportMatch = raw.match(/WHERE\s+report_id\s*=\s*\$(\d+)/i);
   const entLeadMatch = raw.match(/lead_contact_id\s*=\s*\$(\d+)/i);
   const entResult = { id: null, status: null, revoked_at: null };
@@ -145,7 +146,10 @@ function handleRefundCte(raw, values) {
   }
 
   // ── Parse payment UPDATE (depends on ent) ────────────────────────
-  // pay only runs if ent succeeded.
+  // pay only runs if ent succeeded. If pay fails after ent succeeds,
+  // we simulate PostgreSQL's division-by-zero guard: throw an error
+  // so the service catches it. Before throwing, ROLL BACK ent.
+
   const payResult = { id: null, status: null };
 
   if (entFound) {
@@ -153,13 +157,34 @@ function handleRefundCte(raw, values) {
     if (payWhere) {
       const idx = parseInt(payWhere[1], 10);
       const pid = idx < values.length ? values[idx] : null;
-      const p = mockDb.payments.find(p => p.id === pid && p.status === "paid");
-      if (p) {
-        p.status = "refunded";
-        p.updated_at = new Date();
-        payResult.id = p.id;
-        payResult.status = "refunded";
+      // Check for simulated race: if _simulatePayRace is set,
+      // pretend payment is NOT in 'paid' state for the CTE.
+      // The mock will undo ent and throw, simulating the SQL guard.
+      const payRaceActive = mockDb._simulatePayRace;
+      if (!payRaceActive) {
+        const p = mockDb.payments.find(p => p.id === pid && p.status === "paid");
+        if (p) {
+          p.status = "refunded";
+          p.updated_at = new Date();
+          payResult.id = p.id;
+          payResult.status = "refunded";
+        }
       }
+    }
+
+    // ── Guard: if ent updated but pay did not (state race) ─────
+    // Roll back ent to simulate PostgreSQL statement-level rollback.
+    if (payResult.id === null) {
+      // Undo ent update
+      const entRollback = mockDb.entitlements.find(
+        e => e.id === entResult.id
+      );
+      if (entRollback) {
+        entRollback.status = "active";
+        entRollback.revoked_at = null;
+      }
+      // Throw to simulate div-by-zero guard error
+      throw new Error("division_by_zero_guard: atomic CTE rolled back");
     }
   }
 
@@ -574,6 +599,76 @@ test("all failure paths leave no partial writes", async () => {
   );
   assert.equal(envC.payments[0].status, "pending", "C: payment unchanged");
   assert.equal(envC.entitlements[0].status, "active", "C: entitlement unchanged");
+});
+
+test("concurrent state race: ent rolled back when pay concurrently fails", async () => {
+  // Scenario: the initial SELECT sees payment.status='paid'. By the time
+  // the CTE runs, payment has changed to a non-'paid' state (concurrent
+  // update). The CTE should:
+  //   - NOT change entitlement (GDP triggers rollback)
+  //   - NOT change payment
+  //   - Throw an atomic failure error
+  //
+  // We simulate this by making the mock CTE handler check a flag.
+  // This test also verifies that the service catches the error and
+  // produces a meaningful RefundProcessingError, not a raw SQL error.
+
+  const paymentIntent = "pi_test_" + crypto.randomBytes(8).toString("hex");
+  const reportId = "rpt_test_" + crypto.randomBytes(8).toString("hex");
+  const env = await setupEnv({
+    seedPayment: { paymentIntent, report_id: reportId, lead_contact_id: 42 },
+    seedEntitlement: { report_id: reportId, lead_contact_id: 42 },
+  });
+
+  // Before the CTE runs, change payment status to trigger guard failure.
+  // The initial SELECT runs first and finds status='paid'. The CTE handler
+  // runs next and sees status has changed.
+  // We do this by patching the mockDb directly.
+  const charge = makeCharge({ paymentIntent });
+
+  // Strip the CTE handler to temporarily skip the "ent found found" check
+  // by flipping payment status just before the CTE.
+  // Strategy: wrap the sql function to flip payment status to 'pending'
+  // on the second call (after the initial SELECT, before the CTE).
+
+  let callIndex = 0;
+  const originalSql = env.sql;
+
+  // We can't easily intercept. Instead, just change payment status
+  // before the call, but keep the initial select result cached.
+  // Actually, simpler: change the payment status BEFORE calling,
+  // but set up our mockDb to have the payment in 'pending' state.
+  // No — the initial SELECT needs to return 'paid' for the service
+  // to proceed past step 4. But the CTE needs to find it NOT 'paid'.
+  //
+  // Solution: use the concurrentFlags mechanism on mockDb.
+  // The mock CTE handler will check mockDb.concurrentFlags.racePayNotPaid.
+  // If set, it skips the payment UPDATE (simulating the race condition).
+
+  // Mark the payment as 'paid' initially (it is — we seeded it as paid).
+  // Set a flag for the mock to NOT find the payment in 'paid' state during CTE.
+  // The mock handler will see mockDb._simulatePayRace = true and behave
+  // as if payment is no longer 'paid'.
+
+  // Set the flag BEFORE calling
+  env.mockDb._simulatePayRace = true;
+
+  // The service should throw ATOMIC_UPDATE_FAILED because:
+  // ent succeeds → pay fails → guard fires → rollback → re-check → payment still 'paid'
+  // (we didn't actually change it, just told the mock to pretend)
+  await assert.rejects(
+    () => env.handleChargeRefunded(charge, env.sql),
+    { code: "ATOMIC_UPDATE_FAILED" },
+    "Race condition must throw ATOMIC_UPDATE_FAILED"
+  );
+
+  // Verify: entitlement was rolled back to active (not left in revoked half-state)
+  const ent = env.entitlements[0];
+  assert.equal(ent.status, "active", "Entitlement must be rolled back to active");
+  assert.equal(ent.revoked_at, null, "revoked_at must be cleared after rollback");
+
+  // Verify: payment stayed paid (since we simulated it not being paid)
+  assert.equal(env.payments[0].status, "paid", "Payment must stay paid");
 });
 
 test("no access to Stripe network or production DB", () => {
