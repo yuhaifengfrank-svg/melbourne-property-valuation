@@ -118,28 +118,14 @@ function makeSql() {
 // ── Refund CTE handler ──────────────────────────────────────────────
 
 function handleRefundCte(raw, values) {
-  // Parse payment UPDATE: WHERE id = $N AND status = 'paid'
-  const payWhere = raw.match(/WHERE\s+id\s*=\s*\$(\d+)\s+AND\s+status\s*=\s*'paid'/i);
-  const payResult = { id: null, status: null };
-
-  if (payWhere) {
-    const idx = parseInt(payWhere[1], 10);
-    const pid = idx < values.length ? values[idx] : null;
-    const p = mockDb.payments.find(p => p.id === pid && p.status === "paid");
-    if (p) {
-      p.status = "refunded";
-      p.updated_at = new Date();
-      payResult.id = p.id;
-      payResult.status = "refunded";
-    }
-  }
-
-  // Parse entitlement UPDATE: WHERE report_id = $N AND lead_contact_id = $N AND status = 'active'
-  const entReportMatch = raw.match(/report_id\s*=\s*\$(\d+)/i);
+  // ── Parse entitlement UPDATE ─────────────────────────────────────
+  // ent runs FIRST. Only if it succeeds does pay run.
+  const entReportMatch = raw.match(/WHERE\s+report_id\s*=\s*\$(\d+)/i);
   const entLeadMatch = raw.match(/lead_contact_id\s*=\s*\$(\d+)/i);
   const entResult = { id: null, status: null, revoked_at: null };
+  let entFound = false;
 
-  if (payResult.id !== null && entReportMatch && entLeadMatch) {
+  if (entReportMatch && entLeadMatch) {
     const repIdx = parseInt(entReportMatch[1], 10);
     const leadIdx = parseInt(entLeadMatch[1], 10);
     const repId = repIdx < values.length ? values[repIdx] : null;
@@ -154,21 +140,36 @@ function handleRefundCte(raw, values) {
       entResult.id = e.id;
       entResult.status = "revoked";
       entResult.revoked_at = e.revoked_at;
+      entFound = true;
     }
   }
 
-  // If payment didn't update (e.g., not in 'paid' state), ent also won't update
-  // because of AND EXISTS (SELECT 1 FROM pay)
-  if (payResult.id === null) {
-    return [{ payment_id: null, payment_status: null, entitlement_id: null, entitlement_status: null, entitlement_revoked_at: null }];
+  // ── Parse payment UPDATE (depends on ent) ────────────────────────
+  // pay only runs if ent succeeded.
+  const payResult = { id: null, status: null };
+
+  if (entFound) {
+    const payWhere = raw.match(/WHERE\s+id\s*=\s*\$(\d+)\s+AND\s+status\s*=\s*'paid'/i);
+    if (payWhere) {
+      const idx = parseInt(payWhere[1], 10);
+      const pid = idx < values.length ? values[idx] : null;
+      const p = mockDb.payments.find(p => p.id === pid && p.status === "paid");
+      if (p) {
+        p.status = "refunded";
+        p.updated_at = new Date();
+        payResult.id = p.id;
+        payResult.status = "refunded";
+      }
+    }
   }
 
+  // If ent didn't find a matching active row, both ent and pay return nulls
   return [{
-    payment_id: payResult.id,
-    payment_status: payResult.status,
     entitlement_id: entResult.id,
     entitlement_status: entResult.status,
     entitlement_revoked_at: entResult.revoked_at,
+    payment_id: payResult.id,
+    payment_status: payResult.status,
   }];
 }
 
@@ -353,25 +354,26 @@ test("payment with status pending rejects (not yet paid)", async () => {
   );
 });
 
-test("payment and entitlement must update together", async () => {
-  // If entitlement exists but belongs to a different lead_contact_id than payment,
-  // payment should still refund but entitlement should NOT be revoked
+test("cross-owner: payment stays paid, entitlement unchanged", async () => {
+  // Entitlement exists but belongs to a different lead_contact_id than payment.
+  // The CTE must reject — payment must stay paid, entitlement must stay active.
   const paymentIntent = "pi_test_" + crypto.randomBytes(8).toString("hex");
   const reportId = "rpt_test_" + crypto.randomBytes(8).toString("hex");
   const env = await setupEnv({
     seedPayment: { paymentIntent, report_id: reportId, lead_contact_id: 42 },
-    seedEntitlement: { report_id: reportId, lead_contact_id: 99 }, // Different owner
+    seedEntitlement: { report_id: reportId, lead_contact_id: 99 },
   });
 
   const charge = makeCharge({ paymentIntent });
-  const result = await env.handleChargeRefunded(charge, env.sql);
+  await assert.rejects(
+    () => env.handleChargeRefunded(charge, env.sql),
+    { code: "REFUND_ENTITLEMENT_MISMATCH" },
+    "Cross-owner refund must reject with REFUND_ENTITLEMENT_MISMATCH"
+  );
 
-  assert.equal(result.refunded, true, "Payment should be refunded");
-  assert.equal(result.revoked, false, "Entitlement for different owner should NOT be revoked");
-
-  // Verify: payment refunded, entitlement unchanged
-  assert.equal(env.payments[0].status, "refunded", "Payment marked refunded");
-  assert.equal(env.entitlements[0].status, "active", "Other customer's entitlement not revoked");
+  // Verify: both payment and entitlement are UNCHANGED
+  assert.equal(env.payments[0].status, "paid", "Payment must stay paid");
+  assert.equal(env.entitlements[0].status, "active", "Entitlement must stay active");
   assert.equal(Number(env.entitlements[0].lead_contact_id), 99, "Entitlement owner unchanged");
 });
 
@@ -404,7 +406,11 @@ test("charge object structure invalid rejects", async () => {
   );
 });
 
-test("Promise.all concurrent refund: only one processes, no double revocation", async () => {
+test("Promise.all concurrent refund: one succeeds, other gets mismatch (Stripe retries)", async () => {
+  // In a concurrent scenario, both callers see payment.status='paid'.
+  // Only one's CTE succeeds in updating entitlement+payment.
+  // The other's CTE sees entitlement already revoked → REFUND_ENTITLEMENT_MISMATCH.
+  // Stripe will retry, then the repeat caller hits the idempotent path.
   const paymentIntent = "pi_test_" + crypto.randomBytes(8).toString("hex");
   const reportId = "rpt_test_" + crypto.randomBytes(8).toString("hex");
   const env = await setupEnv({
@@ -414,27 +420,160 @@ test("Promise.all concurrent refund: only one processes, no double revocation", 
 
   const charge = makeCharge({ paymentIntent });
 
-  const results = await Promise.all([
+  const results = await Promise.allSettled([
     env.handleChargeRefunded(charge, env.sql),
     env.handleChargeRefunded(charge, env.sql),
   ]);
 
-  // One should process, one should be idempotent
-  const original = results.filter(r => !r.alreadyRefunded);
-  const repeats = results.filter(r => r.alreadyRefunded);
-  assert.equal(original.length, 1, "Exactly one first-time refund");
-  assert.equal(repeats.length, 1, "Exactly one idempotent repeat");
+  // One should fulfill (refunded), one should reject (mismatch due to race)
+  const fulfilled = results.filter(r => r.status === "fulfilled");
+  const rejected = results.filter(r => r.status === "rejected");
+  assert.equal(fulfilled.length, 1, "Exactly one fulfillment");
+  assert.equal(rejected.length, 1, "Exactly one rejection");
 
-  // Both should report refunded=true
-  assert.equal(original[0].refunded, true, "First refund succeeds");
-  assert.equal(repeats[0].refunded, true, "Repeat refund also reports refunded");
+  // The fulfilled one refunded+revoked
+  assert.equal(fulfilled[0].value.refunded, true, "First refund succeeds");
+  assert.equal(fulfilled[0].value.revoked, true, "Entitlement revoked");
+  assert.equal(fulfilled[0].value.alreadyRefunded, false, "First time");
 
-  // Payment refunded exactly once
+  // The rejected one got REFUND_ENTITLEMENT_MISMATCH
+  assert.equal(rejected[0].reason.code, "REFUND_ENTITLEMENT_MISMATCH",
+    "Second caller gets REFUND_ENTITLEMENT_MISMATCH during race");
+
+  // DB state: exactly one update
   assert.equal(env.payments[0].status, "refunded", "Payment is refunded");
   assert.equal(env.entitlements[0].status, "revoked", "Entitlement is revoked");
-
-  // Only one entitlement should exist (no duplicate)
   assert.equal(env.entitlements.length, 1, "Exactly one entitlement row");
+
+  // Now simulate Stripe retry: third call should be idempotent
+  const retryResult = await env.handleChargeRefunded(charge, env.sql);
+  assert.equal(retryResult.refunded, true, "Retry succeeds");
+  assert.equal(retryResult.revoked, true, "Retry shows revoked");
+  assert.equal(retryResult.alreadyRefunded, true, "Retry is idempotent");
+});
+
+
+test("missing entitlement: payment stays paid, entitlement was never created", async () => {
+  // No entitlement exists for this report at all.
+  // Payment must stay paid — do not refund without revoking first.
+  const paymentIntent = "pi_test_" + crypto.randomBytes(8).toString("hex");
+  const reportId = "rpt_test_" + crypto.randomBytes(8).toString("hex");
+  const env = await setupEnv({
+    seedPayment: { paymentIntent, report_id: reportId, lead_contact_id: 42 },
+    // No seedEntitlement
+  });
+
+  const charge = makeCharge({ paymentIntent });
+  await assert.rejects(
+    () => env.handleChargeRefunded(charge, env.sql),
+    { code: "REFUND_ENTITLEMENT_MISMATCH" },
+    "Missing entitlement must reject"
+  );
+
+  assert.equal(env.payments[0].status, "paid", "Payment must stay paid");
+  assert.equal(env.entitlements.length, 0, "No entitlement created");
+});
+
+test("refunded payment + active entitlement: throws REFUND_STATE_INCONSISTENT", async () => {
+  // Abnormal state: payment is refunded but entitlement is still active.
+  // Must throw, cannot pretend success.
+  const paymentIntent = "pi_test_" + crypto.randomBytes(8).toString("hex");
+  const reportId = "rpt_test_" + crypto.randomBytes(8).toString("hex");
+  const env = await setupEnv({
+    seedPayment: { paymentIntent, report_id: reportId, lead_contact_id: 42, status: "refunded" },
+    seedEntitlement: { report_id: reportId, lead_contact_id: 42, status: "active" },
+  });
+
+  const charge = makeCharge({ paymentIntent });
+  await assert.rejects(
+    () => env.handleChargeRefunded(charge, env.sql),
+    { code: "REFUND_STATE_INCONSISTENT" },
+    "Must throw REFUND_STATE_INCONSISTENT"
+  );
+
+  // DB state unchanged
+  assert.equal(env.payments[0].status, "refunded", "Payment already refunded");
+  assert.equal(env.entitlements[0].status, "active", "Entitlement still active");
+  assert.equal(Number(env.entitlements[0].lead_contact_id), 42, "Owner unchanged");
+});
+
+test("refunded payment + missing entitlement: throws REFUND_STATE_INCONSISTENT", async () => {
+  // Abnromal: payment refunded but no entitlement row exists at all.
+  const paymentIntent = "pi_test_" + crypto.randomBytes(8).toString("hex");
+  const reportId = "rpt_test_" + crypto.randomBytes(8).toString("hex");
+  const env = await setupEnv({
+    seedPayment: { paymentIntent, report_id: reportId, lead_contact_id: 42, status: "refunded" },
+    // No entitlement
+  });
+
+  const charge = makeCharge({ paymentIntent });
+  await assert.rejects(
+    () => env.handleChargeRefunded(charge, env.sql),
+    { code: "REFUND_STATE_INCONSISTENT" },
+    "Must throw REFUND_STATE_INCONSISTENT when entitlement is missing"
+  );
+});
+
+test("refunded payment + wrong-owner entitlement: throws REFUND_STATE_INCONSISTENT", async () => {
+  // Abnormal: payment refunded but entitlement belongs to another customer.
+  const paymentIntent = "pi_test_" + crypto.randomBytes(8).toString("hex");
+  const reportId = "rpt_test_" + crypto.randomBytes(8).toString("hex");
+  const env = await setupEnv({
+    seedPayment: { paymentIntent, report_id: reportId, lead_contact_id: 42, status: "refunded" },
+    seedEntitlement: { report_id: reportId, lead_contact_id: 99, status: "revoked" },
+  });
+
+  const charge = makeCharge({ paymentIntent });
+  await assert.rejects(
+    () => env.handleChargeRefunded(charge, env.sql),
+    { code: "REFUND_STATE_INCONSISTENT" },
+    "Must throw REFUND_STATE_INCONSISTENT when owner mismatches"
+  );
+});
+
+test("all failure paths leave no partial writes", async () => {
+  // Run several failure scenarios and verify none left partial state.
+  const pi1 = "pi_test_no_" + crypto.randomBytes(8).toString("hex");
+  const pi2 = "pi_test_no_" + crypto.randomBytes(8).toString("hex");
+  const rep1 = "rpt_test_no_" + crypto.randomBytes(8).toString("hex");
+  const rep2 = "rpt_test_no_" + crypto.randomBytes(8).toString("hex");
+
+  // Scenario A: cross-owner → both unchanged
+  const envA = await setupEnv({
+    seedPayment: { paymentIntent: pi1, report_id: rep1, lead_contact_id: 42 },
+    seedEntitlement: { report_id: rep1, lead_contact_id: 99 },
+  });
+  await assert.rejects(
+    () => envA.handleChargeRefunded(makeCharge({ paymentIntent: pi1 }), envA.sql),
+    { code: "REFUND_ENTITLEMENT_MISMATCH" }
+  );
+  assert.equal(envA.payments[0].status, "paid", "A: payment unchanged");
+  assert.equal(envA.entitlements[0].status, "active", "A: entitlement unchanged");
+
+  // Scenario B: missing entitlement → payment unchanged, no entitlement created
+  const envB = await setupEnv({
+    seedPayment: { paymentIntent: pi2, report_id: rep2, lead_contact_id: 42 },
+  });
+  await assert.rejects(
+    () => envB.handleChargeRefunded(makeCharge({ paymentIntent: pi2 }), envB.sql),
+    { code: "REFUND_ENTITLEMENT_MISMATCH" }
+  );
+  assert.equal(envB.payments[0].status, "paid", "B: payment unchanged");
+  assert.equal(envB.entitlements.length, 0, "B: no entitlement created");
+
+  // Scenario C: pending payment → no refund, no entitlement change
+  const pi3 = "pi_test_no_" + crypto.randomBytes(8).toString("hex");
+  const rep3 = "rpt_test_no_" + crypto.randomBytes(8).toString("hex");
+  const envC = await setupEnv({
+    seedPayment: { paymentIntent: pi3, report_id: rep3, lead_contact_id: 42, status: "pending" },
+    seedEntitlement: { report_id: rep3, lead_contact_id: 42 },
+  });
+  await assert.rejects(
+    () => envC.handleChargeRefunded(makeCharge({ paymentIntent: pi3 }), envC.sql),
+    { code: "PAYMENT_NOT_PAID" }
+  );
+  assert.equal(envC.payments[0].status, "pending", "C: payment unchanged");
+  assert.equal(envC.entitlements[0].status, "active", "C: entitlement unchanged");
 });
 
 test("no access to Stripe network or production DB", () => {
