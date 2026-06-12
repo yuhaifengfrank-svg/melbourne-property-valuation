@@ -205,7 +205,11 @@ export default async function handler(req, res) {
     const propertyType = clean(body.propertyType, 50);
     const serviceConsent = Boolean(body.serviceConsent);
     const marketingConsent = Boolean(body.marketingConsent);
-    const sessionId = clean(body.sessionId, 100) || generateSessionId();
+    // Read session ID from header first (X-Session-Id), fallback to body, then auto-generate
+    const sessionId = clean(
+      req.headers['x-session-id'] || req.headers['X-Session-Id'] || body.sessionId,
+      100
+    ) || generateSessionId();
     const ip = hashIp(
       req.headers["x-forwarded-for"]?.split(",")[0] ||
         req.socket?.remoteAddress ||
