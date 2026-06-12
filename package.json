@@ -29,6 +29,7 @@
     "puppeteer": "^25.1.0",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "stripe": "^22.2.0",
     "xlsx": "^0.18.5"
   },
   "description": "An open-source prototype for explainable residential property valuation in Metropolitan Melbourne.",
