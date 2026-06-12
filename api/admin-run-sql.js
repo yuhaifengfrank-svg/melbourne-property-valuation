@@ -22,35 +22,23 @@ export default async function handler(req, res) {
   try {
     const neonClient = neon(process.env.DATABASE_URL);
 
-    // Use sql.unsafe() for dynamic SQL execution
-    const result = await neonClient.unsafe(sqlStmt);
+    // Use sql via tagged template
+    const stmt = sqlStmt.trim();
 
-    // Debug: dump the full result type
-    const debugInfo = {
-      type: typeof result,
-      isArray: Array.isArray(result),
-      keys: result && typeof result === 'object' ? Object.keys(result) : null,
-      hasRows: !!(result && result.rows),
-      hasLength: !!(result && result.length !== undefined),
-      sample: result ? (typeof result === 'object' ? 
-        (Array.isArray(result) ? result.slice(0,2) : 
-          JSON.stringify(result).substring(0,200)) : 
-        String(result).substring(0,200)) : null
-    };
+    // Execute via raw query using a temporary tagged template
+    // Neon serverless requires tagged template: sql`SELECT ...`
+    // For dynamic SQL, we use the Query class or exec
+    const result = await neonClient.unsafe(stmt);
 
-    // Normalize: try multiple access patterns
-    let rows;
-    if (Array.isArray(result)) {
-      rows = result;
-    } else if (result && Array.isArray(result.rows)) {
-      rows = result.rows;
-    } else if (result && result.length !== undefined) {
-      rows = Array.from(result);
-    } else {
-      rows = [];
+    // Normalize: Handle different neon return formats
+    let rows = [];
+    if (result) {
+      if (Array.isArray(result)) rows = result;
+      else if (result.rows && Array.isArray(result.rows)) rows = result.rows;
+      else if (typeof result === 'object' && result !== null) rows = [result];
     }
 
-    return res.status(200).json({ ok: true, rows, _debug: debugInfo });
+    return res.status(200).json({ ok: true, rows, _raw: rows.length === 0 ? JSON.stringify(result).substring(0,200) : undefined });
   } catch (e) {
     return res.status(500).json({ ok: false, error: e.message });
   }
