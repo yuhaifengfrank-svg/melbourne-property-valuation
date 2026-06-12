@@ -164,12 +164,32 @@ export default async function handler(req, res) {
 
       claimResult = await claimWebhookEvent(event.id, event.type, sql);
 
-      // Already processed — idempotent ACK
-      if (!claimResult.claimed && claimResult.status === "processed") {
+      // claimed = true → we have exclusive right to process
+      if (claimResult.claimed) {
+        // Continue to Step 8
+      }
+      // claimed = false + processed → already processed, idempotent ACK
+      else if (claimResult.status === "processed") {
         return res.status(200).json({
           received: true,
           eventType: event.type,
           idempotent: true,
+        });
+      }
+      // claimed = false + received → another caller is processing, retry later
+      else if (claimResult.status === "received") {
+        return res.status(409).json({
+          ok: false,
+          error: "DUPLICATE_PROCESSING",
+          message: "This event is already being processed.",
+        });
+      }
+      // claimed = false + any other status → unknown state, cannot proceed
+      else {
+        return res.status(500).json({
+          ok: false,
+          error: "INTERNAL_ERROR",
+          message: "An unexpected error occurred.",
         });
       }
     } catch (claimErr) {
@@ -194,7 +214,19 @@ export default async function handler(req, res) {
       const { markWebhookProcessed } = await import(
         "../lib/stripe-webhook-event-service.js"
       );
-      await markWebhookProcessed(event.id, sql);
+      const markOk = await markWebhookProcessed(event.id, sql);
+      if (!markOk) {
+        // Event was not in 'received' state — something went wrong
+        console.error(
+          "[stripe-report-webhook] markWebhookProcessed returned false for event",
+          event.id
+        );
+        return res.status(500).json({
+          ok: false,
+          error: "INTERNAL_ERROR",
+          message: "An unexpected error occurred.",
+        });
+      }
 
       return res.status(200).json({
         received: true,

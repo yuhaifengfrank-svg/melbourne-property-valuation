@@ -657,3 +657,76 @@ test("no real Stripe or production DB access", () => {
   assert.equal(source.includes("DATABASE_URL"), false, "Must not hardcode DATABASE_URL");
   assert.equal(source.includes("new Stripe("), false, "Must not instantiate Stripe directly");
 });
+test("Promise.all same event_id: only one caller processes, other gets 409", async () => {
+  const reportId = "rpt_int_con_" + crypto.randomBytes(8).toString("hex");
+  const pik = "pik_int_con_" + crypto.randomBytes(8).toString("hex");
+  const sessionId = "cs_test_int_con_" + crypto.randomBytes(12).toString("hex");
+  const paymentIntent = "pi_test_int_con_" + crypto.randomBytes(12).toString("hex");
+
+  const session = makeSessionObject({ sessionId, reportId, pik, paymentIntent });
+  const eventId = "evt_test_int_con_" + crypto.randomBytes(8).toString("hex");
+  const payload = JSON.stringify({
+    id: eventId,
+    type: "checkout.session.completed",
+    data: { object: session },
+  });
+  const { header } = computeStripeSignature(payload, TEST_WEBHOOK_SECRET);
+
+  const env = await setupEnv({
+    seedPayment: {
+      report_id: reportId,
+      purchase_intent_key: pik,
+      stripe_checkout_session_id: sessionId,
+    },
+  });
+
+  // Confirm start state
+  assert.equal(env.events.length, 0, "No events before test");
+  assert.equal(env.payments.length, 1, "One seeded payment");
+  assert.equal(env.payments[0].status, "pending", "Payment is pending");
+  assert.equal(env.entitlements.length, 0, "No entitlements yet");
+
+  // Fire both requests concurrently
+  const req1 = makeStreamReq(payload, { "stripe-signature": header });
+  const res1 = makeRes();
+  const req2 = makeStreamReq(payload, { "stripe-signature": header });
+  const res2 = makeRes();
+
+  const [r1, r2] = await Promise.all([
+    env.handler(req1, res1),
+    env.handler(req2, res2),
+  ]);
+
+  // Exactly one handler should have succeeded (200)
+  const s200 = [res1, res2].filter(r => r.getStatus() === 200);
+  const s409 = [res1, res2].filter(r => r.getStatus() === 409);
+  assert.equal(s200.length, 1, "Exactly one request returns 200");
+  assert.equal(s409.length, 1, "Exactly one request returns 409");
+
+  // Only one entitlement created
+  assert.equal(env.entitlements.length, 1, "Exactly one entitlement created");
+
+  // Exactly one payment update
+  const paidPayments = env.payments.filter(p => p.status === "paid");
+  assert.equal(paidPayments.length, 1, "Exactly one payment marked paid");
+
+  // Exactly one webhook event, final status is processed
+  assert.equal(env.events.length, 1, "Exactly one webhook event row");
+  assert.equal(env.events[0].processing_status, "processed",
+    "Final event status is 'processed'");
+
+  // The 200 response must not have been marked as ignored
+  const successRes = s200[0];
+  const successData = successRes.getData();
+  assert.equal(successData.ignored, false,
+    "200 handler must not be flagged as ignored");
+
+  // The 409 response must not have called handleCheckoutCompleted
+  // (no side effects from the 409 caller)
+  const failRes = s409[0];
+  const failData = failRes.getData();
+  assert.equal(failData.error, "DUPLICATE_PROCESSING",
+    "409 must return DUPLICATE_PROCESSING");
+  assert.equal(failData.message, "This event is already being processed.",
+    "Safe error message");
+});
