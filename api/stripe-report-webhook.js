@@ -33,6 +33,18 @@ const ERR = {
 
 import { getStripe } from "../lib/stripe-client.js";
 
+// ── Test-injectable SQL ─────────────────────────────────────────────
+// Tests can set a mock SQL function via setTestSql().
+// When set, it overrides the default getSql() from _db.js.
+
+let _testSql = null;
+/**
+ * @param {Function|null} sqlFn
+ */
+export function setTestSql(sqlFn) {
+  _testSql = sqlFn;
+}
+
 // ── Handler ─────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
@@ -124,11 +136,88 @@ export default async function handler(req, res) {
       });
     }
 
-    // ── Step 6: Return success (no DB writes yet) ──
-    return res.status(200).json({
-      received: true,
-      eventType: event.type,
-    });
+    // ── Step 6: Get SQL (use test injection if set) ──
+    let sql;
+    try {
+      if (_testSql) {
+        sql = _testSql;
+      } else {
+        const { getSql } = await import("./_db.js");
+        sql = getSql();
+      }
+      await import("./_db.js").then(m => m.ensureReportPaymentSchema(sql));
+    } catch {
+      console.error("[stripe-report-webhook] Failed to initialize DB");
+      return res.status(500).json({
+        ok: false,
+        error: "INTERNAL_ERROR",
+        message: "An unexpected error occurred.",
+      });
+    }
+
+    // ── Step 7: Claim event for idempotent processing ──
+    let claimResult;
+    try {
+      const { claimWebhookEvent, markWebhookProcessed, markWebhookFailed } = await import(
+        "../lib/stripe-webhook-event-service.js"
+      );
+
+      claimResult = await claimWebhookEvent(event.id, event.type, sql);
+
+      // Already processed — idempotent ACK
+      if (!claimResult.claimed && claimResult.status === "processed") {
+        return res.status(200).json({
+          received: true,
+          eventType: event.type,
+          idempotent: true,
+        });
+      }
+    } catch (claimErr) {
+      console.error("[stripe-report-webhook] claim failed:", claimErr.message);
+      return res.status(500).json({
+        ok: false,
+        error: "INTERNAL_ERROR",
+        message: "An unexpected error occurred.",
+      });
+    }
+
+    // ── Step 8: Route event by type ──
+    try {
+      if (event.type === "checkout.session.completed") {
+        const { handleCheckoutCompleted } = await import(
+          "../lib/report-payment-webhook-service.js"
+        );
+        await handleCheckoutCompleted(event.data.object, sql);
+      }
+
+      // Mark processed for all successful events (including unsupported types)
+      const { markWebhookProcessed } = await import(
+        "../lib/stripe-webhook-event-service.js"
+      );
+      await markWebhookProcessed(event.id, sql);
+
+      return res.status(200).json({
+        received: true,
+        eventType: event.type,
+        ignored: event.type !== "checkout.session.completed",
+      });
+    } catch (processErr) {
+      // ── Step 9: Processing failure — mark failed, return 500 for retry ──
+      console.error("[stripe-report-webhook] processing failed:", processErr.message);
+      try {
+        const { markWebhookFailed } = await import(
+          "../lib/stripe-webhook-event-service.js"
+        );
+        await markWebhookFailed(event.id, processErr.message, sql);
+      } catch (markErr) {
+        console.error("[stripe-report-webhook] markWebhookFailed also failed:", markErr.message);
+      }
+      return res.status(500).json({
+        ok: false,
+        error: "INTERNAL_ERROR",
+        message: "An unexpected error occurred.",
+      });
+    }
   } catch (error) {
     console.error("[stripe-report-webhook]", error.message);
     return res.status(500).json({
@@ -141,12 +230,6 @@ export default async function handler(req, res) {
 
 // ── Raw body reader (for bodyParser: false in Vercel) ───────────────
 
-/**
- * Read the raw body from the IncomingMessage stream as a Buffer.
- *
- * @param {import("http").IncomingMessage} req
- * @returns {Promise<Buffer>}
- */
 /**
  * Read the raw body from the IncomingMessage stream as a Buffer.
  * Enforces a maxBytes limit — the response must use the `res` object

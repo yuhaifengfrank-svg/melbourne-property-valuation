@@ -39,16 +39,10 @@ function computeStripeSignature(rawBodyOrString, secret, timestamp) {
 
 const TEST_EVENT_PAYLOAD = JSON.stringify({
   id: "evt_test_" + crypto.randomBytes(8).toString("hex"),
-  type: "checkout.session.completed",
+  type: "charge.succeeded",
   data: {
     object: {
-      id: "cs_test_webhook_" + crypto.randomBytes(6).toString("hex"),
-      mode: "payment",
-      status: "complete",
-      metadata: {
-        report_id: "rp_test_from_webhook",
-        purchase_intent_key: "pik_test_webhook",
-      },
+      id: "ch_test_" + crypto.randomBytes(6).toString("hex"),
     },
   },
 });
@@ -186,9 +180,18 @@ async function setupTestEnv() {
   const { setMockStripe } = await import("../lib/stripe-client.js");
   setMockStripe(createMockStripe());
 
-  // Cache-bust import
-  const mod = await import(`../api/stripe-report-webhook.js?t=${Date.now()}`);
-  return { handler: mod.default };
+  // Inject mock SQL into the webhook handler
+  // Must import FIRST to call setTestSql BEFORE the handler runs.
+  const ts = Date.now();
+  const whMod = await import(`../api/stripe-report-webhook.js?t=${ts}`);
+  whMod.setTestSql(makeWhMockSql());
+
+  // Re-import same module (cache-busting with same timestamp ensures fresh but
+  // the setTestSql above was on a different instance. We need ONE import.
+  // Actually, Node.js module cache means the second import with same URL returns
+  // the same cached module. So the setTestSql on the first import persists.
+  // Let's import once and use the same reference.
+  return { handler: whMod.default };
 }
 
 async function setupNoStripeEnv() {
@@ -202,8 +205,66 @@ async function setupNoStripeEnv() {
   resetStripeClient();
   setMockStripe(null);
 
-  const mod = await import(`../api/stripe-report-webhook.js?t=${Date.now() + 1}`);
-  return { handler: mod.default };
+  const ts = Date.now() + 1;
+  const whMod = await import(`../api/stripe-report-webhook.js?t=${ts}`);
+  whMod.setTestSql(makeWhMockSql());
+  return { handler: whMod.default };
+}
+
+// ── Mock SQL for webhook tests ─────────────────────────────────────
+// Provides in-memory stripe_webhook_events + report_payments + report_entitlements
+// so the handler can process events without real DB.
+
+const mockWhEvents = [];
+const mockWHPayments = [];
+const mockWHEntitlements = [];
+
+function makeWhMockSql() {
+  // A simple mock that handles stripe_webhook_events + the services
+  // the webhook handler needs. For signature-only tests, it just
+  // returns a no-op function that accepts claim/process calls.
+  return async function whSql(strings, ...values) {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+
+    // Insert into stripe_webhook_events (ON CONFLICT DO NOTHING)
+    if (raw.includes("INSERT INTO stripe_webhook_events") && raw.includes("DO NOTHING")) {
+      const eventId = values[0];
+      const existing = mockWhEvents.find(e => e.stripe_event_id === eventId);
+      if (existing) return [];
+      mockWhEvents.push({
+        stripe_event_id: eventId,
+        event_type: values[1],
+        processing_status: "received",
+      });
+      return [{ stripe_event_id: eventId, processing_status: "received" }];
+    }
+
+    // Select from stripe_webhook_events
+    if (raw.includes("FROM stripe_webhook_events") && !raw.includes("UPDATE")) {
+      const eventId = values[0];
+      const match = mockWhEvents.find(e => e.stripe_event_id === eventId);
+      if (match) return [{ processing_status: match.processing_status }];
+      return [];
+    }
+
+    // UPDATE stripe_webhook_events SET processing_status
+    if (raw.includes("UPDATE stripe_webhook_events") && raw.includes("processing_status")) {
+      const eventId = values[values.length - 1]; // usually last value
+      const match = mockWhEvents.find(e => e.stripe_event_id === eventId);
+      if (match) {
+        match.processing_status = raw.includes("'processed'") ? "processed" : "failed";
+      }
+      return match ? [{ stripe_event_id: eventId }] : [];
+    }
+
+    // CREATE TABLE / ALTER TABLE / CREATE INDEX — no-op
+    if (raw.includes("CREATE TABLE") || raw.includes("ALTER TABLE") || raw.includes("CREATE INDEX")) {
+      return [];
+    }
+
+    // All other queries — return empty
+    return [];
+  };
 }
 
 function makeRes() {
@@ -242,7 +303,7 @@ test("correct signature returns 200 with received and eventType", async () => {
   assert.equal(res.getStatus(), 200);
   const data = res.getData();
   assert.equal(data.received, true, "Must set received: true");
-  assert.equal(data.eventType, "checkout.session.completed", "Must return eventType");
+  assert.equal(data.eventType, "charge.succeeded", "Must return eventType");
 });
 
 test("incorrect signature returns 400 with SIGNATURE_INVALID", async () => {
@@ -347,27 +408,45 @@ test("OPTIONS returns 204", async () => {
   assert.equal(res.getStatus(), 204);
 });
 
-test("successful webhook does NOT write to database (no payment/entitlement created)", async () => {
+test("successful webhook creates webhook event record", async () => {
   const { handler } = await setupTestEnv();
-  const dbCallCount = mockDbInvocations.length;
+  const beforeCount = mockWhEvents.length;
 
-  const { header } = computeStripeSignature(TEST_EVENT_PAYLOAD, TEST_WEBHOOK_SECRET);
-  const req = makeStreamReq(TEST_EVENT_PAYLOAD, { "stripe-signature": header });
+  // Use an unsupported event type
+  const payload = JSON.stringify({
+    id: "evt_test_" + crypto.randomBytes(8).toString("hex"),
+    type: "charge.refunded",
+    data: { object: { id: "ch_test_" + crypto.randomBytes(6).toString("hex") } },
+  });
+
+  const { header } = computeStripeSignature(payload, TEST_WEBHOOK_SECRET);
+  const req = makeStreamReq(payload, { "stripe-signature": header });
   const res = makeRes();
 
   await handler(req, res);
 
   assert.equal(res.getStatus(), 200);
-  // No DB calls should have been made
-  assert.equal(mockDbInvocations.length, dbCallCount, "No DB writes should occur in Phase 1D1");
+  // Should have created an event record
+  assert.equal(mockWhEvents.length, beforeCount + 1,
+    "Webhook should create a stripe_webhook_events record");
+  const event = mockWhEvents[mockWhEvents.length - 1];
+  assert.equal(event.processing_status, "processed",
+    "Successful event should be marked processed");
 });
 
 test("handler uses raw body, not req.body", async () => {
   const { handler } = await setupTestEnv();
 
+  // Use an unsupported event type
+  const payload = JSON.stringify({
+    id: "evt_test_" + crypto.randomBytes(8).toString("hex"),
+    type: "charge.succeeded",
+    data: { object: { id: "ch_test_" + crypto.randomBytes(6).toString("hex") } },
+  });
+
   // req.body should be undefined — the handler reads from stream
-  const { header } = computeStripeSignature(TEST_EVENT_PAYLOAD, TEST_WEBHOOK_SECRET);
-  const req = makeStreamReq(TEST_EVENT_PAYLOAD, { "stripe-signature": header });
+  const { header } = computeStripeSignature(payload, TEST_WEBHOOK_SECRET);
+  const req = makeStreamReq(payload, { "stripe-signature": header });
   // Explicitly add req.body to verify it's ignored
   req.body = { type: "INJECTED.type" };
   const res = makeRes();
@@ -379,7 +458,7 @@ test("handler uses raw body, not req.body", async () => {
   // If handler used req.body instead of raw body, the signature would not match
   // (raw body is the JSON string, not the parsed object)
   // Since it returned 200, it correctly used raw body
-  assert.equal(data.eventType, "checkout.session.completed",
+  assert.equal(data.eventType, "charge.succeeded",
     "Handler must use raw body for signature verification, not req.body");
 });
 
