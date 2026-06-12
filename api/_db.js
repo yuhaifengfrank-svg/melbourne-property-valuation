@@ -140,6 +140,10 @@ export async function ensureCustomerFunnelSchema(sql) {
 /**
  * Migration 010: Report payment tables (independent from existing lead/customer tables)
  * Created in Phase 1A — no Stripe API calls, no frontend changes.
+ *
+ * ⚠️ report_snapshots is NOT created on every free valuation.
+ * It is created at checkout initiation: when user clicks "Unlock Full Report",
+ * the service locks the current valuation output into a snapshot.
  */
 export async function ensureReportPaymentSchema(sql) {
   if (reportPaymentInitialized) return;
@@ -160,7 +164,7 @@ export async function ensureReportPaymentSchema(sql) {
   await sql`CREATE TABLE IF NOT EXISTS report_payments (
     id BIGSERIAL PRIMARY KEY,
     report_id TEXT NOT NULL REFERENCES report_snapshots(report_id),
-    lead_contact_id BIGINT REFERENCES lead_contacts(id) ON DELETE SET NULL,
+    lead_contact_id BIGINT NOT NULL REFERENCES lead_contacts(id),
     stripe_customer_id TEXT,
     stripe_checkout_session_id TEXT UNIQUE,
     stripe_payment_intent_id TEXT UNIQUE,
@@ -182,11 +186,12 @@ export async function ensureReportPaymentSchema(sql) {
   await sql`CREATE TABLE IF NOT EXISTS report_entitlements (
     id BIGSERIAL PRIMARY KEY,
     report_id TEXT NOT NULL REFERENCES report_snapshots(report_id),
-    lead_contact_id BIGINT REFERENCES lead_contacts(id) ON DELETE SET NULL,
+    lead_contact_id BIGINT NOT NULL REFERENCES lead_contacts(id),
     status TEXT NOT NULL DEFAULT 'active'
         CHECK (status IN ('active', 'refunded', 'revoked', 'disputed')),
     granted_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     revoked_at TIMESTAMPTZ,
+    UNIQUE (report_id),
     UNIQUE (report_id, lead_contact_id)
   )`;
 
