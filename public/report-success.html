@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Payment Confirmation — AusHomeValue</title>
+  <link rel="stylesheet" href="/shared-responsive.css">
+  <style>
+    /* ── Report Success page overrides ── */
+
+    .rs-topbar {
+      background: var(--accent);
+      color: white;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--topbar-pad-v) var(--topbar-pad-h);
+      box-sizing: border-box;
+    }
+    .rs-topbar a {
+      color: white;
+      text-decoration: none;
+      min-height: var(--touch-min);
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 10px;
+    }
+    .rs-topbar a:hover { text-decoration: underline; }
+
+    .rs-hero {
+      text-align: center;
+      padding: clamp(32px, 8vw, 64px) var(--content-pad) 0;
+    }
+    .rs-hero h1 {
+      font-size: clamp(1.25rem, 4vw, 1.75rem);
+      margin: 0 0 12px;
+      font-weight: 700;
+    }
+    .rs-hero p {
+      color: var(--text-muted);
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ── Status card ── */
+    .rs-card {
+      max-width: 480px;
+      margin: clamp(24px, 6vw, 48px) auto;
+      padding: clamp(24px, 5vw, 40px) clamp(16px, 4vw, 32px);
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+
+    .rs-icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .rs-icon svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .rs-title {
+      font-size: clamp(1.1rem, 3.5vw, 1.35rem);
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+    .rs-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin: 0 0 24px;
+      line-height: 1.5;
+    }
+
+    /* ── Actions ── */
+    .rs-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .rs-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: var(--touch-min);
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s, opacity 0.15s;
+    }
+    .rs-btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+    .rs-btn-primary:hover {
+      background: var(--accent-light);
+    }
+    .rs-btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid #dbe2de;
+    }
+    .rs-btn-ghost:hover {
+      background: #f0f2f0;
+    }
+    .rs-btn-link {
+      background: none;
+      color: var(--accent);
+      padding: 8px 12px;
+      text-decoration: underline;
+    }
+    .rs-btn-link:hover {
+      opacity: 0.8;
+    }
+
+    /* ── Status-specific icon colours ── */
+    .rs-icon-confirming {
+      background: #e8f4fd;
+    }
+    .rs-icon-confirming svg { stroke: #1a73e8; }
+    .rs-icon-confirming .spin { animation: spin 1.4s linear infinite; transform-origin: center; }
+
+    .rs-icon-ready {
+      background: #e6f7e6;
+    }
+    .rs-icon-ready svg { stroke: #2e7d32; }
+
+    .rs-icon-pending {
+      background: #fff4e5;
+    }
+    .rs-icon-pending svg { stroke: #e65100; }
+
+    .rs-icon-error {
+      background: #fdecea;
+    }
+    .rs-icon-error svg { stroke: #c62828; }
+
+    .rs-icon-refunded {
+      background: #f5f5f5;
+    }
+    .rs-icon-refunded svg { stroke: #757575; }
+
+    .rs-icon-revoked {
+      background: #f5f5f5;
+    }
+    .rs-icon-revoked svg { stroke: #757575; }
+
+    .rs-icon-data-unavailable {
+      background: #fff4e5;
+    }
+    .rs-icon-data-unavailable svg { stroke: #e65100; }
+
+    .rs-icon-session-expired {
+      background: #fdecea;
+    }
+    .rs-icon-session-expired svg { stroke: #c62828; }
+
+    .rs-icon-not-found {
+      background: #f5f5f5;
+    }
+    .rs-icon-not-found svg { stroke: #757575; }
+
+    .rs-icon-owner-conflict {
+      background: #fdecea;
+    }
+    .rs-icon-owner-conflict svg { stroke: #c62828; }
+
+    .rs-icon-generic-error {
+      background: #fdecea;
+    }
+    .rs-icon-generic-error svg { stroke: #c62828; }
+
+    /* ── Support notice ── */
+    .rs-support {
+      text-align: center;
+      margin: 16px auto 32px;
+      max-width: 480px;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Spinner ── */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ── Hide all statuses by default ── */
+    .rs-page { display: none; }
+
+    /* ── Footer ── */
+    .rs-footer {
+      text-align: center;
+      padding: 32px var(--content-pad);
+      color: #8a9b93;
+      font-size: 0.8rem;
+      border-top: 1px solid #dbe2de;
+      margin-top: 48px;
+    }
+    .rs-footer a {
+      color: #4a5650;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ Navigation ══ -->
+  <header class="rs-topbar" aria-label="Site header">
+    <a href="/" class="rs-logo" aria-label="AusHomeValue home">AusHomeValue</a>
+    <nav class="topbar-nav" aria-label="Navigation">
+      <a href="/">Home</a>
+      <a href="/#valuation">Valuation</a>
+      <a href="/#research">Research</a>
+      <a href="/#about">About</a>
+    </nav>
+  </header>
+
+  <!-- ══ Hero ══ -->
+  <section class="rs-hero">
+    <h1>Payment Confirmation</h1>
+    <p>Your property report is being prepared. You'll be able to view it here once confirmed.</p>
+  </section>
+
+  <!-- ══ Status Container ══ -->
+  <div id="rs-root">
+
+    <!-- Confirming (default) -->
+    <div class="rs-page rs-page-confirming" data-status="confirming">
+      <div class="rs-card">
+        <div class="rs-icon rs-icon-confirming" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path class="spin" d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+        </div>
+        <h2 class="rs-title">Confirming your payment…</h2>
+        <p class="rs-desc">Please wait while we verify your payment. This usually takes a moment.</p>
+        <div class="rs-actions">
+          <button class="rs-btn rs-btn-primary" type="button" id="btn-retry-confirming">Check again</button>
+          <a href="/" class="rs-btn rs-btn-ghost">Return to home</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ready -->
+    <div class="rs-page rs-page-ready" data-status="ready">
+      <div class="rs-card">
+        <div class="rs-icon rs-icon-ready" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22 4 12 14.01 9 11.01"/>
+          </svg>
+        </div>
+        <h2 class="rs-title">Your report is ready</h2>
+        <p class="rs-desc">Your property report is ready to view. Click the button below to open it.</p>
+        <div class="rs-actions">
+          <a href="#" class="rs-btn rs-btn-primary" id="btn-view-report">View report</a>
+          <a href="/" class="rs-btn rs-btn-ghost">Return to home</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending -->
+    <div class="rs-page rs-page-pending" data-status="pending">
+      <div class="rs-card">
+        <div class="rs-icon rs-icon-pending" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h2 class="rs-title">Payment confirmation is taking a little longer</h2>
+        <p class="rs-desc">Your payment has been received but the confirmation is still being processed. Please check again shortly.</p>
+        <div class="rs-actions">
+          <button class="rs-btn rs-btn-primary" type="button" id="btn-retry-pending">Check again</button>
+          <a href="/" class="rs-btn rs-btn-ghost">Return to home</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data unavailable -->
+    <div class="rs-page rs-page-data-unavailable" data-status="data_unavailable">
+      <div class="rs-card">
+        <div class="rs-icon rs-icon-data-unavailable" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <h2 class="rs-title">Report temporarily unavailable</h2>
+        <p class="rs-desc">We're experiencing a temporary issue loading your report. Please try again later or contact support if the problem persists.</p>
+        <div class="rs-actions">
+          <button class="rs-btn rs-btn-primary" type="button" id="btn-retry-data-unavailable">Try again</button>
+          <a href="/" class="rs-btn rs-btn-ghost">Return to home</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Refunded -->
+    <div class="rs-page rs-page-refunded" data-status="refunded">
+      <div class="rs-card">
+        <div class="rs-icon rs-icon-refunded" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <h2 class="rs-title">Payment refunded</h2>
+        <p class="rs-desc">This report payment has been refunded. If you believe this is an error, please contact our support team.</p>
+        <div class="rs-actions">
+          <a href="/" class="rs-btn rs-btn-primary">Return to home</a>
+          <a href="mailto:info@aushomevalue.com.au" class="rs-btn rs-btn-link">Contact support</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revoked -->
+    <div class="rs-page rs-page-revoked" data-status="revoked">
+      <div class="rs-card">
+        <div class="rs-icon rs-icon-revoked" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+          </svg>
+        </div>
+        <h2 class="rs-title">Report access revoked</h2>
+        <p class="rs-desc">Access to this report has been revoked. If you believe this is an error, please contact our support team.</p>
+        <div class="rs-actions">
+          <a href="/" class="rs-btn rs-btn-primary">Return to home</a>
+          <a href="mailto:info@aushomevalue.com.au" class="rs-btn rs-btn-link">Contact support</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session expired -->
+    <div class="rs-page rs-page-session-expired" data-status="session_expired">
+      <div class="rs-card">
+        <div class="rs-icon rs-icon-session-expired" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <h2 class="rs-title">Session expired</h2>
+        <p class="rs-desc">Your session has expired. Please complete the checkout process again to access your report.</p>
+        <div class="rs-actions">
+          <a href="/" class="rs-btn rs-btn-primary">Return to home</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Not found -->
+    <div class="rs-page rs-page-not-found" data-status="not_found">
+      <div class="rs-card">
+        <div class="rs-icon rs-icon-not-found" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+        </div>
+        <h2 class="rs-title">Report not found</h2>
+        <p class="rs-desc">We couldn't find this report. It may have been removed or the link may be incorrect.</p>
+        <div class="rs-actions">
+          <a href="/" class="rs-btn rs-btn-primary">Return to home</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Owner conflict -->
+    <div class="rs-page rs-page-owner-conflict" data-status="owner_conflict">
+      <div class="rs-card">
+        <div class="rs-icon rs-icon-owner-conflict" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <h2 class="rs-title">Access denied</h2>
+        <p class="rs-desc">This report does not belong to your account. If you believe this is an error, please contact our support team.</p>
+        <div class="rs-actions">
+          <a href="/" class="rs-btn rs-btn-primary">Return to home</a>
+          <a href="mailto:info@aushomevalue.com.au" class="rs-btn rs-btn-link">Contact support</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generic error -->
+    <div class="rs-page rs-page-generic-error" data-status="generic_error">
+      <div class="rs-card">
+        <div class="rs-icon rs-icon-generic-error" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+        </div>
+        <h2 class="rs-title">Something went wrong</h2>
+        <p class="rs-desc">An unexpected error occurred. Please try again or return to home.</p>
+        <div class="rs-actions">
+          <button class="rs-btn rs-btn-primary" type="button" id="btn-retry-generic-error">Try again</button>
+          <a href="/" class="rs-btn rs-btn-ghost">Return to home</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ Support notice ══ -->
+  <div class="rs-support">
+    Need help? Email us at <a href="mailto:info@aushomevalue.com.au">info@aushomevalue.com.au</a>
+  </div>
+
+  <!-- ══ Footer ══ -->
+  <footer class="rs-footer" aria-label="Site footer">
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="/">Home</a>
+      <a href="/#about">About</a>
+      <a href="/#valuation">Valuation</a>
+    </nav>
+    <p>&copy; 2026 AusHomeValue. Authorised Representatives: <a href="mailto:info@aushomevalue.com.au">info@aushomevalue.com.au</a></p>
+    <p>This website provides general property information and research for educational purposes. Not financial advice, not a credit assessment, not a formal valuation. Always consult licensed professionals for legal, tax and lending decisions.</p>
+  </footer>
+
+  <script src="/report-success.js"></script>
+
+</body>
+</html>
