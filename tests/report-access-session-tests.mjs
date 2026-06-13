@@ -128,6 +128,153 @@ test("tampered token rejected", async () => {
   assert.equal(verifyReportAccessSession(null, { mockSecret: MOCK_SECRET }), null);
 });
 
+test("token with missing expiresAt returns null", async () => {
+  const { verifyReportAccessSession } = await loadMod();
+  const reportId = makeReportId();
+  const payload = {
+    version: 1,
+    purpose: "report_access",
+    reportId,
+    leadContactId: 123,
+    issuedAt: Date.now(),
+  };
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", MOCK_SECRET).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+
+  assert.equal(verifyReportAccessSession(token, { mockSecret: MOCK_SECRET }), null);
+});
+
+test("token with expiresAt=0 returns null", async () => {
+  const { verifyReportAccessSession } = await loadMod();
+  const reportId = makeReportId();
+  const payload = {
+    version: 1,
+    purpose: "report_access",
+    reportId,
+    leadContactId: 123,
+    issuedAt: Date.now(),
+    expiresAt: 0,
+  };
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", MOCK_SECRET).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+
+  assert.equal(verifyReportAccessSession(token, { mockSecret: MOCK_SECRET }), null);
+});
+
+test("token with string expiresAt returns null", async () => {
+  const { verifyReportAccessSession } = await loadMod();
+  const reportId = makeReportId();
+  const payload = {
+    version: 1,
+    purpose: "report_access",
+    reportId,
+    leadContactId: 123,
+    issuedAt: Date.now(),
+    expiresAt: "far-future",
+  };
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", MOCK_SECRET).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+
+  assert.equal(verifyReportAccessSession(token, { mockSecret: MOCK_SECRET }), null);
+});
+
+test("token with missing issuedAt returns null", async () => {
+  const { verifyReportAccessSession } = await loadMod();
+  const reportId = makeReportId();
+  const payload = {
+    version: 1,
+    purpose: "report_access",
+    reportId,
+    leadContactId: 123,
+    expiresAt: Date.now() + TTL_MS,
+  };
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", MOCK_SECRET).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+
+  assert.equal(verifyReportAccessSession(token, { mockSecret: MOCK_SECRET }), null);
+});
+
+test("token with future issuedAt (>60s clock skew) returns null", async () => {
+  const { verifyReportAccessSession } = await loadMod();
+  const reportId = makeReportId();
+  const futureIssue = Date.now() + 120000; // 2 minutes in the future
+  const payload = {
+    version: 1,
+    purpose: "report_access",
+    reportId,
+    leadContactId: 123,
+    issuedAt: futureIssue,
+    expiresAt: futureIssue + TTL_MS,
+  };
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", MOCK_SECRET).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+
+  assert.equal(verifyReportAccessSession(token, { mockSecret: MOCK_SECRET }), null);
+});
+
+test("token with TTL > 30 minutes returns null", async () => {
+  const { verifyReportAccessSession } = await loadMod();
+  const reportId = makeReportId();
+  const now = Date.now();
+  const payload = {
+    version: 1,
+    purpose: "report_access",
+    reportId,
+    leadContactId: 123,
+    issuedAt: now,
+    expiresAt: now + TTL_MS + 1,
+  };
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", MOCK_SECRET).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+
+  assert.equal(verifyReportAccessSession(token, { mockSecret: MOCK_SECRET }), null);
+});
+
+test("token with TTL < 30 minutes returns null", async () => {
+  const { verifyReportAccessSession } = await loadMod();
+  const reportId = makeReportId();
+  const now = Date.now();
+  const payload = {
+    version: 1,
+    purpose: "report_access",
+    reportId,
+    leadContactId: 123,
+    issuedAt: now,
+    expiresAt: now + TTL_MS - 1,
+  };
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", MOCK_SECRET).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+
+  assert.equal(verifyReportAccessSession(token, { mockSecret: MOCK_SECRET }), null);
+});
+
+test("token with expiresAt equal to current time returns null", async () => {
+  const { verifyReportAccessSession } = await loadMod();
+  const reportId = makeReportId();
+  const now = Date.now();
+  // expiresAt == now triggers the `<=` check
+  const payload = {
+    version: 1,
+    purpose: "report_access",
+    reportId,
+    leadContactId: 123,
+    issuedAt: now - TTL_MS,
+    expiresAt: now,
+  };
+  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const sig = crypto.createHmac("sha256", MOCK_SECRET).update(encoded).digest("base64url");
+  const token = `${encoded}.${sig}`;
+
+  assert.equal(verifyReportAccessSession(token, { mockSecret: MOCK_SECRET }), null);
+});
+
 test("expired token rejected", async () => {
   const { createReportAccessSession, verifyReportAccessSession } = await loadMod();
   const reportId = makeReportId();
