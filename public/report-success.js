@@ -38,6 +38,9 @@
     createAbortController: function () { return new window.AbortController(); },
   };
 
+  // Test hook — overrideable navigate (must be before hook check so hoisting doesn't overwrite)
+  var testNavigate = null;
+
   // Test hook — only present in test environment
   if (typeof window !== "undefined" && window.__REPORT_SUCCESS_TEST_RUNTIME__) {
     var hook = window.__REPORT_SUCCESS_TEST_RUNTIME__; // eslint-disable-line no-var
@@ -45,6 +48,7 @@
     if (typeof hook.setTimeout === "function") runtime.setTimeout = hook.setTimeout;
     if (typeof hook.clearTimeout === "function") runtime.clearTimeout = hook.clearTimeout;
     if (typeof hook.createAbortController === "function") runtime.createAbortController = hook.createAbortController;
+    if (typeof hook.navigateTo === "function") testNavigate = hook.navigateTo;
   }
 
   // ── State ─────────────────────────────────────────────────────────
@@ -107,6 +111,9 @@
 
     // Update aria-live region
     updateAriaLive(target);
+
+    // Update View Full Report button
+    updateViewButton(target);
   }
 
   // ── Aria-live ─────────────────────────────────────────────────────
@@ -303,6 +310,41 @@
     }
   }
 
+  // ── View report button ──────────────────────────────────────────
+
+  let viewReportId = null;
+  let hasNavigated = false;
+
+  function updateViewButton(status) {
+    const btn = document.getElementById("btn-view-report");
+    if (!btn) return;
+
+    const enabled = status === "ready";
+
+    btn.disabled = !enabled;
+    btn.setAttribute("aria-disabled", String(!enabled));
+
+    if (enabled) {
+      updateAriaLive(status);
+    }
+  }
+
+  function navigateTo(target) {
+    if (testNavigate) { testNavigate(target); return; }
+    window.location.href = target;
+  }
+
+  function handleViewReport(e) {
+    if (e) e.preventDefault();
+    if (!viewReportId || hasNavigated) return;
+    hasNavigated = true;
+    var navTarget = "/report-viewer.html?report_id=" + encodeURIComponent(viewReportId);
+    navigateTo(navTarget);
+  }
+
+  // Test hook — overrideable navigation
+
+
   // ── Retry handler (called by retry buttons) ───────────────────────
 
   function handleRetry() {
@@ -355,6 +397,9 @@
       return;
     }
 
+    // Store report ID for view navigation
+    viewReportId = reportId;
+
     // Ensure aria-live region exists
     ensureAriaLive();
 
@@ -368,12 +413,16 @@
       btns[i].addEventListener("click", handleRetry);
     }
 
-    // View report button: disabled placeholder
+    // View report button
     const viewBtn = document.getElementById("btn-view-report");
     if (viewBtn) {
-      viewBtn.addEventListener("click", function (e) {
-        e.preventDefault();
-        // Placeholder — Phase 1E3C-3 will wire this
+      viewBtn.addEventListener("click", handleViewReport);
+      viewBtn.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          // Prevent scroll on Space
+          if (e.key === " ") e.preventDefault();
+          handleViewReport(e);
+        }
       });
     }
 
