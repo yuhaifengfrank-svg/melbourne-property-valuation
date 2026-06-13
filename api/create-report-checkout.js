@@ -167,7 +167,6 @@ export default async function handler(req, res) {
         error: ERR.PAYMENT_AWAITING_ENTITLEMENT,
         message: "Payment received but report is not yet available. Please try again shortly.",
         reportId: snapshotOutcome.report_id,
-        checkoutSessionId: checkoutResult.checkoutSessionId,
       });
     }
 
@@ -196,7 +195,6 @@ export default async function handler(req, res) {
         ok: true,
         alreadyPurchased: false,
         reportId: snapshotOutcome.report_id,
-        checkoutSessionId: checkoutResult.checkoutSessionId,
         checkoutUrl: checkoutResult.checkoutUrl,
       });
     }

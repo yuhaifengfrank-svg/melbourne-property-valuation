@@ -396,10 +396,15 @@ function makeReqRes(body, opts = {}) {
   let statusCode = 200;
   let responseData = null;
   const headers = {};
+  const setHeaderCalls = {};
   const res = {
     status: (code) => { statusCode = code; return res; },
     json: (data) => { responseData = { statusCode, data }; return res; },
-    setHeader: (name, value) => { headers[name] = value; return res; },
+    setHeader: (name, value) => {
+      headers[name] = value;
+      setHeaderCalls[name] = (setHeaderCalls[name] || 0) + 1;
+      return res;
+    },
     end: () => {},
   };
 
@@ -409,6 +414,7 @@ function makeReqRes(body, opts = {}) {
     getData: () => responseData?.data,
     getHeader: (name) => headers[name],
     getAllHeaders: () => ({ ...headers }),
+    getSetHeaderCount: (name) => setHeaderCalls[name] || 0,
   };
 }
 
@@ -431,7 +437,8 @@ test("creates checkout successfully with valid email and draft token", async () 
   assert.ok(data.checkoutUrl, "Must return checkout URL");
   assert.ok(data.checkoutUrl.startsWith("https://checkout.stripe.com/"),
     "Checkout URL must be from Stripe");
-  assert.ok(data.checkoutSessionId, "Must return checkout session ID");
+  assert.equal(data.checkoutSessionId, undefined,
+    "checkoutSessionId must not appear in response body");
   assert.equal(data.alreadyPurchased, false);
 
   // Must NOT create entitlement
@@ -1042,7 +1049,7 @@ test("response body must not contain cookie token, email, or leadContactId", asy
   assert.ok(!bodyStr.includes("leadContactId"),
     "Body must not contain leadContactId");
 
-  // Stripe session ID must not be in the cookie header
+  // Stripe session ID must not be in body or cookie header
   const cookie = ctx.getHeader("Set-Cookie");
   assert.ok(cookie, "Cookie must be set");
   assert.ok(!cookie.includes("cs_test_"),
@@ -1051,6 +1058,15 @@ test("response body must not contain cookie token, email, or leadContactId", asy
     "Cookie must not contain payment intent");
   assert.ok(!cookie.includes("secret"),
     "Cookie must not contain secrets");
+
+  // Body must not contain checkoutSessionId or raw Stripe session values
+  assert.ok(!bodyStr.includes("checkoutSessionId"),
+    "Body must not contain checkoutSessionId");
+
+  // checkoutUrl is a Stripe URL and may contain cs_test_ in query params — that's OK.
+  // But there must be no top-level checkoutSessionId field.
+  assert.equal(body.checkoutSessionId, undefined,
+    "checkoutSessionId must not be a property in the response");
 });
 
 test("OPTIONS does not set purchase session cookie", async () => {
@@ -1231,58 +1247,77 @@ test("alreadyPurchased sets verifiable purchase session cookie", async () => {
   assert.equal(payload.purpose, "report_access");
 });
 
-test("PAYMENT_AWAITING_ENTITLEMENT sets verifiable purchase session cookie", async () => {
+test("PAYMENT_AWAITING_ENTITLEMENT response has no checkoutSessionId and sets verifiable cookie", async () => {
   const { verifyReportAccessSession } = await import("../lib/report-access-session.js");
-  const { handler } = await setupTestEnv();
+
+  resetMockDb();
+  resetMockStripe();
+  process.env.STRIPE_PRICE_ID_REPORT_399 = "price_test_399";
+
+  const email = "awaiting-payment@example.com";
+  const leadContact = { id: 2001, email_lower: email };
+  mockDb.leadContacts.push(leadContact);
+
+  // Create a draft token — we'll consume it to get its generated reportId
   const token = await makeDraftToken();
 
-  // Override mock payment creation to trigger PAYMENT_AWAITING_ENTITLEMENT
-  // by making the checkout service create a session with existing paid payment
-  const ctx = makeReqRes({
-    email: "awaiting@example.com",
-    reportDraftToken: token,
-  });
+  // First, call handler to create snapshot + payment. Then inject a paid payment
+  // for the same (reportId, leadContactId) so the second call hits PAYMENT_AWAITING_ENTITLEMENT.
+  const sql = createMockSql();
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 400}`);
+  mod.setTestSql(sql);
 
-  await handler(ctx.req, ctx.res);
+  // First round: normal checkout → creates snapshot + pending payment
+  const r1 = makeReqRes({ email, reportDraftToken: token });
+  await mod.default(r1.req, r1.res);
 
-  assert.equal(ctx.getStatus(), 200);
-  const data = ctx.getData();
-  assert.equal(data.alreadyPurchased, false);
+  assert.equal(r1.getStatus(), 200);
+  const reportId = r1.getData().reportId;
+  assert.ok(reportId, "First call must return a reportId");
 
-  // Now simulate that a second request finds existing payment awaiting entitlement
-  // The checkout service returns PAYMENT_AWAITING_ENTITLEMENT when a payment
-  // exists with status=paid but no entitlement yet
-  const mockPay = {
-    ok: true,
-    alreadyPurchased: false,
-    error: "PAYMENT_AWAITING_ENTITLEMENT",
-    checkoutSessionId: "cs_exists",
-    reportId: ctx.getData().reportId,
-  };
+  // Convert the first call's pending payment to "paid" with no entitlement
+  const pendingPayment = mockDb.payments.find(p => p.report_id === reportId);
+  assert.ok(pendingPayment, "Must have a payment from the first call");
+  pendingPayment.status = "paid";
 
-  // Directly inject via mock: mockPay for the second call
-  // Actually, easier: just create a second request using same token+email
-  // which triggers the existing payment branch
-  const r2 = makeReqRes({
-    email: "awaiting@example.com",
-    reportDraftToken: token,
-  });
-  await handler(r2.req, r2.res);
+  // Second round: same token  → checkout service finds paid payment, no entitlement yet
+  const r2 = makeReqRes({ email, reportDraftToken: token });
+  await mod.default(r2.req, r2.res);
 
-  assert.equal(r2.getStatus(), 200);
-  const r2Data = r2.getData();
-  assert.equal(r2Data.alreadyPurchased, false);
+  assert.equal(r2.getStatus(), 200, "Status must be 200");
+  const data = r2.getData();
 
-  // If it's PAYMENT_AWAITING_ENTITLEMENT — cookie must be set
-  // If it's alreadyPurchased — cookie must also be set (both are allowed)
-  // Either way, cookie exists
+  // Must be PAYMENT_AWAITING_ENTITLEMENT — not alreadyPurchased, not normal checkout
+  assert.equal(data.ok, false, "ok must be false for PAYMENT_AWAITING_ENTITLEMENT");
+  assert.equal(data.alreadyPurchased, false, "alreadyPurchased must be false");
+  assert.equal(data.error, "PAYMENT_AWAITING_ENTITLEMENT",
+    "Must return PAYMENT_AWAITING_ENTITLEMENT error");
+  assert.ok(data.message, "Must have a user-facing message");
+  assert.equal(data.reportId, reportId, "Must return correct reportId");
+
+  // checkoutSessionId must NOT appear in the response body
+  assert.equal(data.checkoutSessionId, undefined,
+    "checkoutSessionId must not appear in response body");
+  assert.ok(!JSON.stringify(data).includes("cs_test_"),
+    "Stripe session IDs must not appear in response body");
+
+  // Cookie must be set and verifiable
   const cookie = r2.getHeader("Set-Cookie");
-  assert.ok(cookie, "Repeat request must set cookie");
+  assert.ok(cookie, "PAYMENT_AWAITING_ENTITLEMENT must set purchase session cookie");
+  assert.ok(cookie.startsWith("aushomevalue_report_access="),
+    "Cookie must have correct name");
 
-  // Verify the token is well-formed
+  // Verify cookie token
   const tokenValue = cookie.split(";")[0].split("=")[1];
   const payload = verifyReportAccessSession(tokenValue);
   assert.ok(payload, "Cookie token must be verifiable");
+  assert.equal(payload.reportId, reportId, "Cookie must reference correct reportId");
+  assert.equal(payload.leadContactId, 2001, "Cookie must reference correct leadContactId");
+  assert.equal(payload.purpose, "report_access", "Cookie purpose must be report_access");
+
+  // Verify Set-Cookie was set exactly once on the second call
+  assert.equal(r2.getSetHeaderCount("Set-Cookie"), 1,
+    "Set-Cookie must be set exactly once on PAYMENT_AWAITING_ENTITLEMENT");
 });
 
 test("successful checkout sets purchase session cookie exactly once", async () => {
@@ -1298,9 +1333,11 @@ test("successful checkout sets purchase session cookie exactly once", async () =
 
   assert.equal(ctx.getStatus(), 200);
 
-  // The mock res.setHeader stores only the last value, so Set-Cookie
-  // appears once. If it were set multiple times, the later call would
-  // overwrite — but we verify it exists with correct format
+  // setHeader("Set-Cookie") must be called exactly once
+  const callCount = ctx.getSetHeaderCount("Set-Cookie");
+  assert.equal(callCount, 1,
+    "Set-Cookie header must be set exactly once");
+
   const cookie = ctx.getHeader("Set-Cookie");
   assert.ok(cookie, "Successful checkout must set cookie");
   assert.ok(cookie.startsWith("aushomevalue_report_access="),
