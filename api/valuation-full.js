@@ -9,7 +9,7 @@
 //   2. Parse and validate JSON body.
 //   3. ensureCustomerFunnelSchema + ensureReportPaymentSchema.
 //   4. checkReportEntitlement({ reportId, email }, sql)
-//   5. allowed=true → return stored snapshot.
+//   5. allowed=true → return stored snapshot (with sensitive fields stripped).
 //   6. Does NOT re-run valuation model.
 //   7. Does NOT accept address, propertyType, landSize, client estimates.
 //   8. Does NOT trust client-side allowed/status/paymentStatus.
@@ -20,6 +20,16 @@
 
 import { ensureCustomerFunnelSchema, ensureReportPaymentSchema, getSql } from "./_db.js";
 import { checkReportEntitlement } from "../lib/report-entitlement-service.js";
+
+// ── Vercel body parser config (16 KB limit) ─────────────────────────
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "16kb",
+    },
+  },
+};
 
 // ── Test-injectable SQL ─────────────────────────────────────────────
 
@@ -32,7 +42,29 @@ export function setTestSql(sqlFn) {
   _testSql = sqlFn;
 }
 
-// ── Input validation ────────────────────────────────────────────────
+// ── Input format validation (API layer — no service call) ──────────
+//
+// reportId must match rp_<timestamp_ms>_<hex_16plus>
+// email must match basic email pattern
+// Whitespace-only strings are invalid.
+
+function validateFormat(reportId, email) {
+  if (typeof reportId !== "string" || reportId.trim().length === 0) {
+    return false;
+  }
+  if (!/^rp_\d+_[0-9a-f]{16,}$/i.test(reportId.trim())) {
+    return false;
+  }
+  if (typeof email !== "string" || email.trim().length === 0) {
+    return false;
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+    return false;
+  }
+  return true;
+}
+
+// ── Body existence check (before format) ───────────────────────────
 
 function isValidRequest(body) {
   if (!body || typeof body !== "object") return false;
@@ -73,9 +105,53 @@ const COMMON_HEADERS = {
   "Content-Type": "application/json",
 };
 
-// ── JSON body size limit (16 KB) ────────────────────────────────────
+// ── JSON body size limit (16 KB, secondary defence) ────────────────
 
 const MAX_BODY_BYTES = 16384;
+
+// ── Sensitive fields to strip from snapshot response ───────────────
+
+const SENSITIVE_FIELDS = new Set([
+  "stripe_customer_id",
+  "stripe_payment_intent_id",
+  "stripe_checkout_session_id",
+  "purchase_intent_key",
+  "lead_contact_id",
+  "snapshot_hash",
+]);
+
+/**
+ * Recursively strip sensitive fields from an object tree.
+ * Modifies a deep clone — original snapshot is never mutated.
+ *
+ * @param {*} value  — Any value (primitive, object, array, null)
+ * @returns {*}  — Cleaned copy with sensitive keys removed
+ */
+function sanitizeSnapshot(value) {
+  if (value === null || value === undefined) {
+    return value;
+  }
+
+  // Array: recurse into each element
+  if (Array.isArray(value)) {
+    return value.map(sanitizeSnapshot);
+  }
+
+  // Plain object: strip sensitive keys, recurse into values
+  if (typeof value === "object") {
+    const cleaned = {};
+    for (const key of Object.keys(value)) {
+      if (SENSITIVE_FIELDS.has(key)) {
+        continue; // skip sensitive keys at any depth
+      }
+      cleaned[key] = sanitizeSnapshot(value[key]);
+    }
+    return cleaned;
+  }
+
+  // Primitives: pass through
+  return value;
+}
 
 // ── Handler ─────────────────────────────────────────────────────────
 
@@ -101,7 +177,7 @@ export default async function handler(request, response) {
   }
 
   try {
-    // ── Read raw body for size limit ──────────────────────────
+    // ── Read raw body for size limit (secondary check) ─────────
     const rawBody = typeof request.body === "string"
       ? request.body
       : JSON.stringify(request.body || {});
@@ -128,7 +204,7 @@ export default async function handler(request, response) {
       });
     }
 
-    // ── Validate reportId and email ───────────────────────────
+    // ── Validate body has expected fields ─────────────────────
     if (!isValidRequest(body)) {
       return response.status(400).json({
         ok: false,
@@ -137,9 +213,21 @@ export default async function handler(request, response) {
       });
     }
 
-    // ── Sanitise email ───────────────────────────────────────
-    const email = body.email.trim().toLowerCase();
-    const reportId = body.reportId;
+    // ── Format validation (strict — 400, never 404) ───────────
+    const rawReportId = body.reportId.trim();
+    const rawEmail = body.email.trim();
+
+    if (!validateFormat(rawReportId, rawEmail)) {
+      return response.status(400).json({
+        ok: false,
+        error: "BAD_REQUEST",
+        message: "Invalid reportId or email format.",
+      });
+    }
+
+    // ── Normalise ─────────────────────────────────────────────
+    const email = rawEmail.toLowerCase();
+    const reportId = rawReportId;
 
     // ── Initialise database schemas ───────────────────────────
     const sql = getApiSql();
@@ -181,6 +269,9 @@ export default async function handler(request, response) {
       });
     }
 
+    // ── Sanitise snapshot (deep clone, strip sensitive fields) ──
+    const cleanReport = sanitizeSnapshot(entitlementResult.snapshot);
+
     // ── Return stored snapshot (NEVER re-run valuation model) ──
     return response.status(200).json({
       ok: true,
@@ -190,7 +281,7 @@ export default async function handler(request, response) {
       paymentStatus: entitlementResult.paymentStatus,
       valuationVersion: entitlementResult.valuationVersion,
       purchasedAt: entitlementResult.purchasedAt,
-      report: entitlementResult.snapshot,
+      report: cleanReport,
     });
   } catch (error) {
     // ── Unexpected errors → safe 500 ──────────────────────────

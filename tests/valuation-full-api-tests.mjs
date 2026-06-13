@@ -331,6 +331,49 @@ test("empty body → 400", async () => {
   assert.equal(res._body.error, "BAD_REQUEST");
 });
 
+test("malformed reportId → 400", async () => {
+  await loadHandler();
+  setTestSql(makeMockSql({}));
+  const { req, res } = makeRequestResponse({ reportId: "not-a-valid-id", email: "test@example.com" });
+
+  await handler(req, res);
+
+  assert.equal(res._status, 400);
+  assert.equal(res._body.error, "BAD_REQUEST");
+  // Must NOT be 404 (service layer) — caught at API layer as 400
+  assert.notEqual(res._status, 404);
+});
+
+test("malformed email → 400", async () => {
+  await loadHandler();
+  setTestSql(makeMockSql({}));
+  const reportId = makeReportId();
+  const { req, res } = makeRequestResponse({ reportId, email: "not-an-email" });
+
+  await handler(req, res);
+
+  assert.equal(res._status, 400);
+  assert.equal(res._body.error, "BAD_REQUEST");
+  assert.notEqual(res._status, 404);
+});
+
+test("whitespace-only fields → 400", async () => {
+  await loadHandler();
+  setTestSql(makeMockSql({}));
+  const reportId = makeReportId();
+  // Spaces only — should be rejected before DB
+  const { req: r1, res: res1 } = makeRequestResponse({ reportId: "   ", email: "test@example.com" });
+  const { req: r2, res: res2 } = makeRequestResponse({ reportId, email: "   " });
+
+  await handler(r1, res1);
+  await handler(r2, res2);
+
+  assert.equal(res1._status, 400);
+  assert.equal(res2._status, 400);
+  assert.equal(res1._body.error, "BAD_REQUEST");
+  assert.equal(res2._body.error, "BAD_REQUEST");
+});
+
 test("unknown report → 404", async () => {
   await loadHandler();
   const reportId = makeReportId();
@@ -543,6 +586,133 @@ test("no Stripe/internal fields leaked in response", async () => {
   assert.ok(!body.includes("purchase_intent_key"));
   assert.ok(!body.includes("lead_contact_id"));
   assert.ok(!body.includes("snapshot_hash"));
+});
+
+test("snapshot top-level sensitive fields stripped", async () => {
+  await loadHandler();
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const sql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: {
+        midpoint: 825000,
+        stripe_customer_id: "cus_abc123",
+        stripe_payment_intent_id: "pi_secret",
+        stripe_checkout_session_id: "cs_test",
+        purchase_intent_key: "pik_test",
+        lead_contact_id: 42,
+        snapshot_hash: "abc123",
+      },
+    }],
+  });
+  setTestSql(sql);
+  const { req, res } = makeRequestResponse({ reportId, email });
+
+  await handler(req, res);
+
+  assert.equal(res._status, 200);
+  const body = JSON.stringify(res._body);
+  assert.ok(!body.includes("cus_abc123"), "stripe_customer_id value leaked");
+  assert.ok(!body.includes("pi_secret"), "stripe_payment_intent_id value leaked");
+  assert.ok(!body.includes("cs_test"), "stripe_checkout_session_id value leaked");
+  assert.ok(!body.includes("pik_test"), "purchase_intent_key value leaked");
+  assert.ok(!body.includes("snapshot_hash"), "snapshot_hash key leaked");
+  // Midpoint should still be present
+  assert.equal(res._body.report.midpoint, 825000);
+});
+
+test("snapshot nested sensitive fields stripped", async () => {
+  await loadHandler();
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const sql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: {
+        midpoint: 825000,
+        paymentDetails: {
+          stripe_customer_id: "cus_nested",
+          purchase_intent_key: "pik_nested",
+        },
+        comparables: [
+          { address: "1 Test St", salePrice: 800000 },
+          { address: "2 Test St", salePrice: 850000, lead_contact_id: 99 },
+        ],
+      },
+    }],
+  });
+  setTestSql(sql);
+  const { req, res } = makeRequestResponse({ reportId, email });
+
+  await handler(req, res);
+
+  assert.equal(res._status, 200);
+  const body = JSON.stringify(res._body);
+  assert.ok(!body.includes("cus_nested"), "nested stripe_customer_id leaked");
+  assert.ok(!body.includes("pik_nested"), "nested purchase_intent_key leaked");
+  assert.equal(res._body.report.midpoint, 825000);
+  assert.equal(res._body.report.comparables.length, 2);
+  assert.equal(res._body.report.comparables[1].salePrice, 850000);
+  assert.equal(res._body.report.comparables[1].address, "2 Test St");
+  // lead_contact_id must be gone from comparables[1]
+  assert.ok(!("lead_contact_id" in res._body.report.comparables[1]));
+});
+
+test("original snapshot object not mutated", async () => {
+  await loadHandler();
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const originalSnapshot = {
+    midpoint: 825000,
+    stripe_customer_id: "cus_keepme",
+    nested: {
+      stripe_payment_intent_id: "pi_keepme",
+    },
+  };
+
+  // Deep freeze to catch mutation
+  Object.freeze(originalSnapshot);
+  Object.freeze(originalSnapshot.nested);
+
+  const sql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: originalSnapshot,
+    }],
+  });
+  setTestSql(sql);
+  const { req, res } = makeRequestResponse({ reportId, email });
+
+  // Should not throw — sanitizeSnapshot creates a deep clone
+  await handler(req, res);
+
+  assert.equal(res._status, 200);
+  assert.equal(res._body.report.midpoint, 825000);
+  // Sensitive fields stripped from response
+  assert.ok(!("stripe_customer_id" in res._body.report));
+  assert.ok(!("stripe_payment_intent_id" in res._body.report.nested));
+  // Original still intact
+  assert.equal(originalSnapshot.stripe_customer_id, "cus_keepme");
+  assert.equal(originalSnapshot.nested.stripe_payment_intent_id, "pi_keepme");
 });
 
 test("client-side allowed/status cannot override", async () => {
