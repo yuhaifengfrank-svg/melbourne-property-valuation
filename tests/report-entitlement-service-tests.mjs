@@ -107,26 +107,23 @@ function makeMockSql(initialState = {}) {
       return [];
     }
 
-    // ── report_payments lookup by report_id ───────────────────────
+    // ── report_payments lookup by report_id (returns ALL rows) ────
     const payMatch = raw.match(
       /FROM\s+report_payments\s+WHERE\s+report_id\s*=\s*\$(\d+)/i
     );
     if (payMatch) {
       const idx = parseInt(payMatch[1], 10);
       const reportId = idx < values.length ? values[idx] : null;
-      const match = payments.find((p) => p.report_id === reportId);
-      if (match) {
-        return [{
-          id: match.id,
-          status: match.status,
-          lead_contact_id: match.lead_contact_id,
-          report_id: match.report_id,
-          amount_cents: match.amount_cents,
-          currency: match.currency,
-          created_at: match.created_at,
-        }];
-      }
-      return [];
+      const matches = payments.filter((p) => p.report_id === reportId);
+      return matches.map((m) => ({
+        id: m.id,
+        status: m.status,
+        lead_contact_id: m.lead_contact_id,
+        report_id: m.report_id,
+        amount_cents: m.amount_cents,
+        currency: m.currency,
+        created_at: m.created_at,
+      }));
     }
 
     // ── report_snapshots lookup by report_id ──────────────────────
@@ -830,6 +827,176 @@ test("Promise.all concurrent queries are stable", async () => {
   assert.equal(results[2].allowed, true);
   assert.deepEqual(results[0], results[1]);
   assert.deepEqual(results[1], results[2]);
+});
+
+test("mixed payments: other customer pending + this customer paid → allowed", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [
+      { report_id: reportId, lead_contact_id: 99, status: "pending" },
+      { report_id: reportId, lead_contact_id: contactId, status: "paid" },
+    ],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  const result = await checkReportEntitlement({ reportId, email }, mockSql);
+  assert.equal(result.allowed, true);
+  assert.equal(result.reportId, reportId);
+  assert.equal(result.paymentStatus, "paid");
+});
+
+test("data order reversed: same result", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [
+      { report_id: reportId, lead_contact_id: contactId, status: "paid" },
+    ],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  const r1 = await checkReportEntitlement({ reportId, email }, mockSql);
+  const r2 = await checkReportEntitlement({ reportId, email }, mockSql);
+  assert.deepEqual(r1, r2);
+  assert.equal(r1.allowed, true);
+});
+
+test("only other customer payments → REPORT_OWNER_CONFLICT", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [
+      { report_id: reportId, lead_contact_id: 99, status: "paid" },
+      { report_id: reportId, lead_contact_id: 100, status: "paid" },
+    ],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
+    (err) => {
+      assert.equal(err.code, REJECTION.REPORT_OWNER_CONFLICT);
+      return true;
+    }
+  );
+});
+
+test("entitlement ownership null → REPORT_OWNER_CONFLICT", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: null, status: "active" }],
+    payments: [{ report_id: reportId, lead_contact_id: contactId, status: "paid" }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
+    (err) => {
+      assert.equal(err.code, REJECTION.REPORT_OWNER_CONFLICT);
+      return true;
+    }
+  );
+});
+
+test("snapshot ownership null → REPORT_OWNER_CONFLICT", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [{ report_id: reportId, lead_contact_id: contactId, status: "paid" }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: null,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
+    (err) => {
+      assert.equal(err.code, REJECTION.REPORT_OWNER_CONFLICT);
+      return true;
+    }
+  );
+});
+
+test("snapshot_json is Array → REPORT_DATA_UNAVAILABLE", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [{ report_id: reportId, lead_contact_id: contactId, status: "paid" }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: [1, 2, 3],
+    }],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
+    (err) => {
+      assert.equal(err.code, REJECTION.REPORT_DATA_UNAVAILABLE);
+      return true;
+    }
+  );
 });
 
 test("does not connect to real Stripe or production DB", async () => {
