@@ -1,13 +1,14 @@
 // ── api/stripe-report-webhook.js ──
-// Phase 1D1: Stripe Webhook — Signature Verification Only.
+// Phase 1D5B: Stripe Webhook — Payment + Refund Event Routing.
 //
 // POST only. Reads raw body (bodyParser: false), verifies Stripe signature
-// via stripe.webhooks.constructEvent(), returns {"received": true, "eventType": "..."}.
+// via stripe.webhooks.constructEvent(), routes to handlers:
+//   - checkout.session.completed → handleCheckoutCompleted
+//   - charge.refunded            → handleChargeRefunded
+// All other events are safely ignored (still marked processed for idempotency).
 //
-// Does NOT update payment status.
-// Does NOT create entitlement.
-// Does NOT handle refunds.
-// Does NOT write to database.
+// Uses stripe-webhook-event-service for idempotent event claiming.
+// Handlers receive `event.data.object` + `sql`.
 //
 // Vercel config: bodyParser disabled so we get the raw Buffer.
 
@@ -208,6 +209,11 @@ export default async function handler(req, res) {
           "../lib/report-payment-webhook-service.js"
         );
         await handleCheckoutCompleted(event.data.object, sql);
+      } else if (event.type === "charge.refunded") {
+        const { handleChargeRefunded } = await import(
+          "../lib/report-refund-webhook-service.js"
+        );
+        await handleChargeRefunded(event.data.object, sql);
       }
 
       // Mark processed for all successful events (including unsupported types)
@@ -228,10 +234,11 @@ export default async function handler(req, res) {
         });
       }
 
+      const handledTypes = ["checkout.session.completed", "charge.refunded"];
       return res.status(200).json({
         received: true,
         eventType: event.type,
-        ignored: event.type !== "checkout.session.completed",
+        ignored: !handledTypes.includes(event.type),
       });
     } catch (processErr) {
       // ── Step 9: Processing failure — mark failed, return 500 for retry ──

@@ -415,7 +415,7 @@ test("successful webhook creates webhook event record", async () => {
   // Use an unsupported event type
   const payload = JSON.stringify({
     id: "evt_test_" + crypto.randomBytes(8).toString("hex"),
-    type: "charge.refunded",
+    type: "charge.succeeded",
     data: { object: { id: "ch_test_" + crypto.randomBytes(6).toString("hex") } },
   });
 
