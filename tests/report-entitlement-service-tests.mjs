@@ -123,6 +123,7 @@ function makeMockSql(initialState = {}) {
         amount_cents: m.amount_cents,
         currency: m.currency,
         created_at: m.created_at,
+        updated_at: m.updated_at,
       }));
     }
 
@@ -482,6 +483,162 @@ test("disputed payment → REFUNDED", async () => {
     () => checkReportEntitlement({ reportId: state.reportId, email: state.email }, sql),
     (err) => {
       assert.equal(err.code, REJECTION.REFUNDED);
+      return true;
+    }
+  );
+});
+
+test("resolvePaymentForContact: this customer old paid + new pending → still allowed", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+  const oldDate = new Date(Date.now() - 86400000); // 1 day ago
+  const now = new Date();
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [
+      { id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid", created_at: oldDate, updated_at: oldDate },
+      { id: 2, report_id: reportId, lead_contact_id: contactId, status: "pending", created_at: now, updated_at: now },
+    ],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  const result = await checkReportEntitlement({ reportId, email }, mockSql);
+  assert.equal(result.allowed, true, "Old paid should be selected over new pending");
+  assert.equal(result.paymentStatus, "paid");
+});
+
+test("resolvePaymentForContact: this customer old refunded + new paid → uses new paid", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+  const oldDate = new Date(Date.now() - 86400000);
+  const now = new Date();
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [
+      { id: 1, report_id: reportId, lead_contact_id: contactId, status: "refunded", created_at: oldDate, updated_at: oldDate },
+      { id: 2, report_id: reportId, lead_contact_id: contactId, status: "paid", created_at: now, updated_at: now },
+    ],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  const result = await checkReportEntitlement({ reportId, email }, mockSql);
+  assert.equal(result.allowed, true, "New paid should win over old refunded");
+  assert.equal(result.paymentStatus, "paid");
+});
+
+test("resolvePaymentForContact: this customer old paid + new refunded → REFUNDED", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+  const oldDate = new Date(Date.now() - 86400000);
+  const now = new Date();
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [
+      { id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid", created_at: oldDate, updated_at: oldDate },
+      { id: 2, report_id: reportId, lead_contact_id: contactId, status: "refunded", created_at: now, updated_at: now },
+    ],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
+    (err) => {
+      assert.equal(err.code, REJECTION.REFUNDED);
+      return true;
+    }
+  );
+});
+
+test("resolvePaymentForContact only uses allPayments (one fetch, no SQL inside)", async () => {
+  // Verify resolvePaymentForContact is called directly from the fetched array
+  // by verifying the mock does NOT get a second report_payments query.
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  let queryCount = 0;
+  const trackedSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+
+  // Wrap to count queries
+  const wrappingSql = async (strings, ...values) => {
+    queryCount++;
+    return trackedSql(strings, ...values);
+  };
+
+  const { checkReportEntitlement } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  const result = await checkReportEntitlement({ reportId, email }, wrappingSql);
+  assert.equal(result.allowed, true);
+  // Service makes 3 parallel queries: ent, payments, snapshots — no more
+  // 4 queries: lead_contacts, entitlements (LIMIT 1),
+  // payments (ALL rows), snapshots (LIMIT 1)
+  assert.equal(queryCount, 4, "Must query payments exactly once, no second payment query");
+});
+
+test("resolvePaymentForContact: payment owner null, no this-customer payment → REPORT_OWNER_CONFLICT", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [{ report_id: reportId, lead_contact_id: null, status: "paid" }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
+    (err) => {
+      assert.equal(err.code, REJECTION.REPORT_OWNER_CONFLICT);
       return true;
     }
   );
