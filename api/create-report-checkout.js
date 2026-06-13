@@ -148,11 +148,9 @@ export default async function handler(req, res) {
     // ── Step 5: Call checkout service ──
     const checkoutResult = await createReportCheckout({ reportId: snapshotOutcome.report_id, leadContactId }, sql);
 
-    // ── Step 6: Set purchase session cookie (before any success response) ──
-    setPurchaseSessionCookie(res, snapshotOutcome.report_id, leadContactId);
-
     // Already purchased (active entitlement exists)
     if (checkoutResult.alreadyPurchased) {
+      setPurchaseSessionCookie(res, snapshotOutcome.report_id, leadContactId);
       return res.status(200).json({
         ok: true,
         alreadyPurchased: true,
@@ -160,8 +158,9 @@ export default async function handler(req, res) {
       });
     }
 
-    // Payment made but awaiting entitlement grant
+    // Payment made but awaiting entitlement grant — set cookie for polling
     if (checkoutResult.error === "PAYMENT_AWAITING_ENTITLEMENT") {
+      setPurchaseSessionCookie(res, snapshotOutcome.report_id, leadContactId);
       return res.status(200).json({
         ok: false,
         alreadyPurchased: false,
@@ -192,6 +191,7 @@ export default async function handler(req, res) {
 
     // Success — checkout session created
     if (checkoutResult.ok && checkoutResult.checkoutUrl) {
+      setPurchaseSessionCookie(res, snapshotOutcome.report_id, leadContactId);
       return res.status(200).json({
         ok: true,
         alreadyPurchased: false,
