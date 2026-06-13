@@ -10,7 +10,8 @@
 //   3. Upsert lead_contact by email_lower (atomic ON CONFLICT)
 //   4. consumeDraftIntoSnapshot → immutable report_id
 //   5. createReportCheckout() (from Phase 1C4 service)
-//   6. Return checkoutUrl/checkoutSessionId or error
+//   6. Set purchase session cookie
+//   7. Return checkoutUrl/checkoutSessionId or error
 //
 // Does NOT create entitlement.
 // Does NOT use Opportunity cookie.
@@ -19,6 +20,7 @@
 import { ensureCustomerFunnelSchema, ensureReportPaymentSchema, getSql } from "./_db.js";
 import { verifyReportDraftToken, consumeDraftIntoSnapshot } from "../lib/report-snapshot-service.js";
 import { createReportCheckout } from "../lib/report-checkout-service.js";
+import { createReportAccessSession, buildReportAccessCookie } from "../lib/report-access-session.js";
 
 // ── Error codes ─────────────────────────────────────────────────────
 
@@ -57,6 +59,19 @@ function isValidEmail(email) {
   if (local.length === 0 || domain.length < 3) return false;
   if (!domain.includes(".")) return false;
   return true;
+}
+
+// ── Purchase session cookie helper ──────────────────────────────────
+
+/**
+ * Create and set the purchase session cookie on the response.
+ * Only called on successful/retryable checkout paths.
+ * The cookie is set via Set-Cookie header — it does NOT appear in the JSON body.
+ */
+function setPurchaseSessionCookie(res, reportId, leadContactId) {
+  const token = createReportAccessSession({ reportId, leadContactId });
+  const cookie = buildReportAccessCookie(token);
+  res.setHeader("Set-Cookie", cookie);
 }
 
 // ── Handler ─────────────────────────────────────────────────────────
@@ -130,19 +145,18 @@ export default async function handler(req, res) {
       throw consumeErr;
     }
 
-    const reportId = snapshotOutcome.report_id;
-
     // ── Step 5: Call checkout service ──
-    const checkoutResult = await createReportCheckout({ reportId, leadContactId }, sql);
+    const checkoutResult = await createReportCheckout({ reportId: snapshotOutcome.report_id, leadContactId }, sql);
 
-    // ── Step 6: Transform service result to API response ──
+    // ── Step 6: Set purchase session cookie (before any success response) ──
+    setPurchaseSessionCookie(res, snapshotOutcome.report_id, leadContactId);
 
     // Already purchased (active entitlement exists)
     if (checkoutResult.alreadyPurchased) {
       return res.status(200).json({
         ok: true,
         alreadyPurchased: true,
-        reportId,
+        reportId: snapshotOutcome.report_id,
       });
     }
 
@@ -153,7 +167,7 @@ export default async function handler(req, res) {
         alreadyPurchased: false,
         error: ERR.PAYMENT_AWAITING_ENTITLEMENT,
         message: "Payment received but report is not yet available. Please try again shortly.",
-        reportId,
+        reportId: snapshotOutcome.report_id,
         checkoutSessionId: checkoutResult.checkoutSessionId,
       });
     }
@@ -181,7 +195,7 @@ export default async function handler(req, res) {
       return res.status(200).json({
         ok: true,
         alreadyPurchased: false,
-        reportId,
+        reportId: snapshotOutcome.report_id,
         checkoutSessionId: checkoutResult.checkoutSessionId,
         checkoutUrl: checkoutResult.checkoutUrl,
       });

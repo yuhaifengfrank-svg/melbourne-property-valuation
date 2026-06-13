@@ -395,10 +395,11 @@ function makeReqRes(body, opts = {}) {
 
   let statusCode = 200;
   let responseData = null;
+  const headers = {};
   const res = {
     status: (code) => { statusCode = code; return res; },
     json: (data) => { responseData = { statusCode, data }; return res; },
-    setHeader: () => res,
+    setHeader: (name, value) => { headers[name] = value; return res; },
     end: () => {},
   };
 
@@ -406,6 +407,8 @@ function makeReqRes(body, opts = {}) {
     req, res,
     getStatus: () => responseData?.statusCode,
     getData: () => responseData?.data,
+    getHeader: (name) => headers[name],
+    getAllHeaders: () => ({ ...headers }),
   };
 }
 
@@ -844,7 +847,7 @@ test("Promise.all two emails compete for NULL-owner snapshot: one wins, one 409"
 
   // Simulate an old snapshot with NULL lead_contact_id (pre-1C6)
   const draft = mockDb.drafts.find((d) => !d.consumed_at);
-  const existingReportId = "legacy_rp_" + Date.now();
+  const existingReportId = "rp_" + Date.now() + "_" + crypto.randomBytes(16).toString("hex");
   mockDb.snapshots.push({
     report_id: existingReportId,
     draft_id: draft.draft_id,
@@ -885,7 +888,7 @@ test("snapshot with NULL lead_contact_id binds atomically on first access", asyn
 
   const draft = mockDb.drafts.find((d) => !d.consumed_at);
   mockDb.snapshots.push({
-    report_id: "legacy_rp_" + Date.now(),
+    report_id: "rp_" + Date.now() + "_" + crypto.randomBytes(16).toString("hex"),
     draft_id: draft.draft_id,
     property_key: draft.property_key,
     valuation_version: draft.valuation_version,
@@ -916,4 +919,167 @@ test("snapshot with NULL lead_contact_id binds atomically on first access", asyn
   assert.equal(rRepeat.getStatus(), 200, "Original owner must still get 200 (idempotent)");
   assert.equal(rRepeat.getData()?.reportId, snap.report_id,
     "Must return same report_id for original owner");
+});
+
+// ── Phase 1E3B-1: Purchase session cookie tests ─────────────────────
+
+let _verifyReportAccessSessionFn;
+
+async function getSessionTools() {
+  if (!_verifyReportAccessSessionFn) {
+    const mod = await import("../lib/report-access-session.js");
+    _verifyReportAccessSessionFn = mod.verifyReportAccessSession;
+  }
+  return { verifyReportAccessSession: _verifyReportAccessSessionFn };
+}
+
+test("successful checkout sets purchase session cookie", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const ctx = makeReqRes({
+    email: "session@example.com",
+    reportDraftToken: token,
+  });
+
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 200);
+
+  const cookie = ctx.getHeader("Set-Cookie");
+  assert.ok(cookie, "Must set Set-Cookie header");
+  assert.ok(cookie.startsWith("aushomevalue_report_access="),
+    "Cookie must start with correct name");
+  assert.ok(cookie.includes("HttpOnly"), "Cookie must be HttpOnly");
+  assert.ok(cookie.includes("SameSite=Lax"), "Cookie must be SameSite=Lax");
+  assert.ok(cookie.includes("Path=/"), "Cookie must have Path=/");
+  assert.ok(cookie.includes("Max-Age=1800"), "Cookie must have Max-Age=1800");
+  assert.ok(!cookie.includes("Secure"),
+    "Cookie must NOT include Secure in test environment");
+});
+
+test("purchase session cookie can be verified and binds correct reportId + leadContactId", async () => {
+  const { handler } = await setupTestEnv();
+  const { verifyReportAccessSession } = await getSessionTools();
+  const token = await makeDraftToken();
+
+  const ctx = makeReqRes({
+    email: "bind-check@example.com",
+    reportDraftToken: token,
+  });
+
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 200);
+
+  // Extract token from Set-Cookie header
+  const cookie = ctx.getHeader("Set-Cookie");
+  const tokenValue = cookie.split(";")[0].split("=")[1];
+
+  // Verify the signed token
+  const payload = verifyReportAccessSession(tokenValue);
+  assert.ok(payload, "Cookie token must be verifiable");
+  assert.equal(payload.reportId, ctx.getData().reportId,
+    "Cookie must bind to the same reportId");
+  assert.equal(payload.leadContactId, mockDb.leadContacts.find(c => c.email_lower === "bind-check@example.com")?.id,
+    "Cookie must bind to the correct leadContactId");
+  assert.equal(payload.version, 1);
+  assert.equal(payload.purpose, "report_access");
+  assert.ok(payload.issuedAt > 0);
+  assert.ok(payload.expiresAt > 0);
+  assert.equal(payload.expiresAt - payload.issuedAt, 1800000,
+    "Cookie TTL must be exactly 30 minutes");
+});
+
+test("repeat request (already purchased) still sets cookie", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const body = { email: "repeat-cookie@example.com", reportDraftToken: token };
+
+  const r1 = makeReqRes(body);
+  await handler(r1.req, r1.res);
+  assert.equal(r1.getStatus(), 200);
+  assert.ok(r1.getHeader("Set-Cookie"), "First request must set cookie");
+
+  const r2 = makeReqRes(body);
+  await handler(r2.req, r2.res);
+  assert.equal(r2.getStatus(), 200);
+  assert.ok(r2.getHeader("Set-Cookie"), "Repeat request must also set cookie");
+
+  const cookie1 = r1.getHeader("Set-Cookie");
+  const cookie2 = r2.getHeader("Set-Cookie");
+  assert.ok(cookie1.startsWith("aushomevalue_report_access="),
+    "First cookie must have correct name");
+  assert.ok(cookie2.startsWith("aushomevalue_report_access="),
+    "Repeat cookie must have correct name");
+});
+
+test("response body must not contain cookie token, email, or leadContactId", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const ctx = makeReqRes({
+    email: "no-leak@example.com",
+    reportDraftToken: token,
+  });
+
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 200);
+  const body = ctx.getData();
+  const bodyStr = JSON.stringify(body);
+
+  // Token must not appear in body
+  assert.ok(!bodyStr.includes("report_access_session"),
+    "Body must not contain cookie token field");
+  assert.ok(!bodyStr.includes("aushomevalue_report_access"),
+    "Body must not contain cookie name");
+
+  // Email must not appear in body
+  assert.ok(!bodyStr.includes("no-leak@example.com"),
+    "Body must not contain email");
+  assert.ok(!bodyStr.includes("leadContactId"),
+    "Body must not contain leadContactId");
+
+  // Stripe session ID must not be in the cookie header
+  const cookie = ctx.getHeader("Set-Cookie");
+  assert.ok(cookie, "Cookie must be set");
+  assert.ok(!cookie.includes("cs_test_"),
+    "Cookie must not contain Stripe session IDs");
+  assert.ok(!cookie.includes("payment_intent"),
+    "Cookie must not contain payment intent");
+  assert.ok(!cookie.includes("secret"),
+    "Cookie must not contain secrets");
+});
+
+test("OPTIONS does not set purchase session cookie", async () => {
+  const { handler } = await setupTestEnv();
+
+  const ctx = makeReqRes({}, { method: "OPTIONS" });
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getHeader("Set-Cookie"), undefined,
+    "OPTIONS must not set a session cookie");
+});
+
+test("GET does not set purchase session cookie", async () => {
+  const { handler } = await setupTestEnv();
+
+  const ctx = makeReqRes({}, { method: "GET" });
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getHeader("Set-Cookie"), undefined,
+    "GET must not set a session cookie");
+});
+
+test("error paths do not set purchase session cookie", async () => {
+  const { handler } = await setupTestEnv();
+
+  // Invalid email — no cookie
+  const ctx = makeReqRes({ email: "bad", reportDraftToken: "x" });
+  await handler(ctx.req, ctx.res);
+  assert.equal(ctx.getStatus(), 400);
+  assert.equal(ctx.getHeader("Set-Cookie"), undefined,
+    "Invalid email must not set cookie");
 });
