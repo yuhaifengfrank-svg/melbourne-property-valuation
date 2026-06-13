@@ -59,7 +59,7 @@ test("quantity is 1 (fixed)", () => {
   assert.equal(params.line_items[0].quantity, 1);
 });
 
-test("success_url uses getAppBaseUrl with session_id template", () => {
+test("success_url uses getAppBaseUrl with report_id, no Stripe placeholder", () => {
   const params = buildReportCheckoutParams({
     reportId: TEST_REPORT_ID,
     purchaseIntentKey: TEST_PURCHASE_KEY,
@@ -67,13 +67,21 @@ test("success_url uses getAppBaseUrl with session_id template", () => {
 
   assert.ok(params.success_url.startsWith("https://test.aushomevalue.com.au"),
     "Must start with test base URL");
-  assert.ok(params.success_url.includes("/payment-success.html"),
-    "Must point to payment-success page");
-  assert.ok(params.success_url.includes("{CHECKOUT_SESSION_ID}"),
-    "Must contain Stripe session_id template variable");
+  assert.ok(params.success_url.includes("/report-success.html"),
+    "Must point to report-success page");
+  assert.ok(params.success_url.includes(`report_id=${encodeURIComponent(TEST_REPORT_ID)}`),
+    "Must contain report_id query param");
+  assert.ok(!params.success_url.includes("{CHECKOUT_SESSION_ID}"),
+    "Must NOT contain Stripe session_id placeholder");
+  assert.ok(!params.success_url.includes("email"),
+    "success_url must not contain email");
+  assert.ok(!params.success_url.includes("leadContactId"),
+    "success_url must not contain leadContactId");
+  assert.ok(!params.success_url.includes("cs_test_"),
+    "success_url must not contain Stripe session ID");
 });
 
-test("cancel_url uses getAppBaseUrl with payment=cancelled", () => {
+test("cancel_url uses getAppBaseUrl with payment=cancelled and report_id", () => {
   const params = buildReportCheckoutParams({
     reportId: TEST_REPORT_ID,
     purchaseIntentKey: TEST_PURCHASE_KEY,
@@ -83,6 +91,53 @@ test("cancel_url uses getAppBaseUrl with payment=cancelled", () => {
     "Must start with test base URL");
   assert.ok(params.cancel_url.includes("payment=cancelled"),
     "Must indicate cancelled payment");
+  assert.ok(params.cancel_url.includes(`report_id=${encodeURIComponent(TEST_REPORT_ID)}`),
+    "Must contain report_id query param");
+  assert.ok(!params.cancel_url.includes("email"),
+    "cancel_url must not contain email");
+  assert.ok(!params.cancel_url.includes("leadContactId"),
+    "cancel_url must not contain leadContactId");
+  assert.ok(!params.cancel_url.includes("{CHECKOUT_SESSION_ID}"),
+    "cancel_url must not contain Stripe placeholder");
+});
+
+test("special characters in reportId are safely encoded in URLs", () => {
+  const specialId = "rp_1712345678901_a1:b2c3d4e5f6";
+  const params = buildReportCheckoutParams({
+    reportId: specialId,
+    purchaseIntentKey: `special:1:valuation_report_399`,
+  });
+
+  // The colon in the reportId should be percent-encoded
+  assert.ok(params.success_url.includes(encodeURIComponent(specialId)),
+    "Special chars in reportId must be percent-encoded in success_url");
+  assert.ok(params.cancel_url.includes(encodeURIComponent(specialId)),
+    "Special chars in reportId must be percent-encoded in cancel_url");
+  // Raw colon in URL is ambiguous — confirm it's encoded
+  assert.ok(!params.success_url.includes(specialId),
+    "Raw special chars must not appear unencoded in success_url");
+  assert.ok(!params.cancel_url.includes(specialId),
+    "Raw special chars must not appear unencoded in cancel_url");
+});
+
+test("client-supplied success_url/cancel_url are ignored", () => {
+  const clientInput = {
+    success_url: "https://evil.com/phish",
+    cancel_url: "https://evil.com/cancel",
+  };
+  const params = buildReportCheckoutParams(
+    { reportId: TEST_REPORT_ID, purchaseIntentKey: TEST_PURCHASE_KEY },
+    clientInput
+  );
+
+  assert.ok(params.success_url.startsWith("https://test.aushomevalue.com.au"),
+    "success_url must be server-generated, not from client");
+  assert.ok(params.cancel_url.startsWith("https://test.aushomevalue.com.au"),
+    "cancel_url must be server-generated, not from client");
+  assert.ok(!params.success_url.includes("evil.com"),
+    "Client-supplied success_url must be ignored");
+  assert.ok(!params.cancel_url.includes("evil.com"),
+    "Client-supplied cancel_url must be ignored");
 });
 
 test("metadata contains only report_id, purchase_intent_key, product_code", () => {

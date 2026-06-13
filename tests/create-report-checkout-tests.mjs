@@ -102,6 +102,9 @@ function createMockSql() {
     }
 
     if (raw.includes("INSERT INTO report_snapshots")) {
+      if (mockDb.throwOnSnapshotInsert) {
+        throw new Error(mockDb.throwOnSnapshotInsert);
+      }
       const draftId = values[1];
 const conflict = mockDb.snapshots.some(s => s.draft_id === draftId);
       if (conflict) {
@@ -1089,18 +1092,70 @@ test("GET does not set purchase session cookie", async () => {
     "GET must not set a session cookie");
 });
 
-test("error paths do not set purchase session cookie", async () => {
-  const { handler } = await setupTestEnv();
+// ── Phase 1E3B-2: Error-path cookie clearing ───────────────────────
 
-  // Invalid email — no cookie
+/**
+ * Assert that the Set-Cookie header is a clear cookie (Max-Age=0).
+ */
+function assertClearCookie(cookie, label) {
+  assert.ok(cookie, `${label}: Must set a clear cookie`);
+  assert.ok(cookie.startsWith("aushomevalue_report_access="),
+    `${label}: Cookie must start with correct name`);
+  assert.ok(cookie.includes("Max-Age=0"),
+    `${label}: Cookie must have Max-Age=0`);
+  assert.ok(cookie.includes("HttpOnly"), `${label}: Cookie must be HttpOnly`);
+  assert.ok(cookie.includes("SameSite=Lax"), `${label}: Cookie must be SameSite=Lax`);
+  assert.ok(cookie.includes("Path=/"), `${label}: Cookie must have Path=/`);
+}
+
+test("invalid email clears purchase session cookie", async () => {
+  const { handler } = await setupTestEnv();
   const ctx = makeReqRes({ email: "bad", reportDraftToken: "x" });
   await handler(ctx.req, ctx.res);
   assert.equal(ctx.getStatus(), 400);
-  assert.equal(ctx.getHeader("Set-Cookie"), undefined,
-    "Invalid email must not set cookie");
+  assertClearCookie(ctx.getHeader("Set-Cookie"), "Invalid email");
+  assert.equal(ctx.getSetHeaderCount("Set-Cookie"), 1,
+    "Invalid email: Set-Cookie must be called exactly once");
 });
 
-test("STRIPE_NOT_CONFIGURED must not set purchase session cookie", async () => {
+test("invalid draft token clears purchase session cookie", async () => {
+  const { handler } = await setupTestEnv();
+  const ctx = makeReqRes({ email: "test@example.com", reportDraftToken: "invalid" });
+  await handler(ctx.req, ctx.res);
+  assert.equal(ctx.getStatus(), 400);
+  assertClearCookie(ctx.getHeader("Set-Cookie"), "Invalid draft token");
+  assert.equal(ctx.getSetHeaderCount("Set-Cookie"), 1,
+    "Invalid draft token: Set-Cookie must be called exactly once");
+});
+
+test("DB-level expired draft clears purchase session cookie", async () => {
+  const { handler } = await setupTestEnv();
+  const dbExpiredToken = await makeDbLevelExpiredDraftToken();
+  const ctx = makeReqRes({ email: "test@example.com", reportDraftToken: dbExpiredToken });
+  await handler(ctx.req, ctx.res);
+  assert.equal(ctx.getStatus(), 400);
+  assertClearCookie(ctx.getHeader("Set-Cookie"), "DB-level expired draft");
+  assert.equal(ctx.getSetHeaderCount("Set-Cookie"), 1,
+    "DB-level expired draft: Set-Cookie must be called exactly once");
+});
+
+test("owner conflict clears purchase session cookie", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  // First request binds snapshot to user A
+  const r1 = makeReqRes({ email: "owner-a@example.com", reportDraftToken: token });
+  await handler(r1.req, r1.res);
+  assert.equal(r1.getStatus(), 200);
+
+  // Second request from user B gets 409
+  const r2 = makeReqRes({ email: "owner-b@example.com", reportDraftToken: token });
+  await handler(r2.req, r2.res);
+  assert.equal(r2.getStatus(), 409, "Second request must be 409 owner conflict");
+  assertClearCookie(r2.getHeader("Set-Cookie"), "Owner conflict");
+});
+
+test("STRIPE_NOT_CONFIGURED clears purchase session cookie", async () => {
   resetMockDb();
   resetMockStripe();
   process.env.STRIPE_PRICE_ID_REPORT_399 = "price_test_399";
@@ -1113,35 +1168,23 @@ test("STRIPE_NOT_CONFIGURED must not set purchase session cookie", async () => {
   mod.setTestSql(sql);
 
   const token = await makeDraftToken();
-  const ctx = makeReqRes({
-    email: "no-stripe@example.com",
-    reportDraftToken: token,
-  });
-
+  const ctx = makeReqRes({ email: "no-stripe@example.com", reportDraftToken: token });
   await mod.default(ctx.req, ctx.res);
 
   assert.equal(ctx.getStatus(), 503);
-  const cookie = ctx.getHeader("Set-Cookie");
-  assert.equal(cookie, undefined,
-    "STRIPE_NOT_CONFIGURED must not set cookie");
+  assertClearCookie(ctx.getHeader("Set-Cookie"), "STRIPE_NOT_CONFIGURED");
+  assert.equal(ctx.getSetHeaderCount("Set-Cookie"), 1,
+    "STRIPE_NOT_CONFIGURED: Set-Cookie must be called exactly once");
 });
 
-test("CHECKOUT_CREATE_FAILED must not set purchase session cookie", async () => {
-  // We need Stripe client that throws on session create
+test("CHECKOUT_CREATE_FAILED clears purchase session cookie", async () => {
   resetMockDb();
   resetMockStripe();
   process.env.STRIPE_PRICE_ID_REPORT_399 = "price_test_399_fail";
 
   const failingStripe = {
-    checkout: {
-      sessions: {
-        create: async () => {
-          throw new Error("Stripe API failure");
-        },
-      },
-    },
+    checkout: { sessions: { create: async () => { throw new Error("Stripe API failure"); } } },
   };
-
   const { setMockStripe } = await import("../lib/report-checkout-service.js");
   setMockStripe(failingStripe);
 
@@ -1150,47 +1193,70 @@ test("CHECKOUT_CREATE_FAILED must not set purchase session cookie", async () => 
   mod.setTestSql(sql);
 
   const token = await makeDraftToken();
-  const ctx = makeReqRes({
-    email: "checkout-fail@example.com",
-    reportDraftToken: token,
-  });
-
+  const ctx = makeReqRes({ email: "checkout-fail@example.com", reportDraftToken: token });
   await mod.default(ctx.req, ctx.res);
 
   assert.equal(ctx.getStatus(), 502);
-  const cookie = ctx.getHeader("Set-Cookie");
-  assert.equal(cookie, undefined,
-    "CHECKOUT_CREATE_FAILED must not set cookie");
+  assertClearCookie(ctx.getHeader("Set-Cookie"), "CHECKOUT_CREATE_FAILED");
 });
 
-test("fallback unknown checkout result must not set purchase session cookie", async () => {
+test("fallback unknown checkout result clears purchase session cookie", async () => {
   const { handler } = await setupTestEnv();
   const token = await makeDraftToken();
 
-  // Mock checkout service to return an unknown shape
   const { setMockStripe } = await import("../lib/report-checkout-service.js");
   const partialStripe = {
-    checkout: {
-      sessions: {
-        create: async () => {
-          return { id: "cs_test_unknown", url: null, status: "open" };
-        },
-      },
-    },
+    checkout: { sessions: { create: async () => ({ id: "cs_test_unknown", url: null, status: "open" }) } },
   };
   setMockStripe(partialStripe);
 
-  const ctx = makeReqRes({
-    email: "fallback@example.com",
-    reportDraftToken: token,
-  });
-
+  const ctx = makeReqRes({ email: "fallback@example.com", reportDraftToken: token });
   await handler(ctx.req, ctx.res);
 
   assert.equal(ctx.getStatus(), 500);
-  const cookie = ctx.getHeader("Set-Cookie");
-  assert.equal(cookie, undefined,
-    "Fallback must not set cookie");
+  assertClearCookie(ctx.getHeader("Set-Cookie"), "Fallback unknown result");
+});
+
+test("DB/snapshot exception clears purchase session cookie", async () => {
+  // Use a broken SQL mock that throws on any query
+  const breakingSql = () => ({
+    raw: async () => {
+      throw new Error("DB connection failed");
+    },
+  });
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 300}`);
+  mod.setTestSql(breakingSql);
+
+  const token = await makeDraftToken();
+  const ctx = makeReqRes({ email: "db-error@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500);
+  assertClearCookie(ctx.getHeader("Set-Cookie"), "DB exception");
+  assert.equal(ctx.getSetHeaderCount("Set-Cookie"), 1,
+    "DB exception: Set-Cookie must be called exactly once");
+});
+
+test("consume unknown snapshot error returns 500 and clears cookie once", async () => {
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 500}`);
+  const { handler, sql } = await setupTestEnv();
+  mod.setTestSql(sql);
+
+  // Make snapshot insert throw a non-standard error (simulates DB failure)
+  mockDb.throwOnSnapshotInsert = "Internal database constraint violation";
+
+  const token = await makeDraftToken();
+  const ctx = makeReqRes({ email: "consume-error@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500);
+  assertClearCookie(ctx.getHeader("Set-Cookie"), "Consume unknown snapshot error");
+  assert.equal(ctx.getSetHeaderCount("Set-Cookie"), 1,
+    "Consume unknown error: Set-Cookie must be called exactly once");
+
+  // Cleanup: remove the throw flag so it doesn't affect other tests
+  delete mockDb.throwOnSnapshotInsert;
 });
 
 test("alreadyPurchased sets verifiable purchase session cookie", async () => {
@@ -1253,6 +1319,10 @@ test("PAYMENT_AWAITING_ENTITLEMENT response has no checkoutSessionId and sets ve
   resetMockDb();
   resetMockStripe();
   process.env.STRIPE_PRICE_ID_REPORT_399 = "price_test_399";
+
+  // Set up mock Stripe client for the checkout service
+  const { setMockStripe } = await import("../lib/report-checkout-service.js");
+  setMockStripe(mockStripeClient);
 
   const email = "awaiting-payment@example.com";
   const leadContact = { id: 2001, email_lower: email };
@@ -1343,4 +1413,110 @@ test("successful checkout sets purchase session cookie exactly once", async () =
   assert.ok(cookie.startsWith("aushomevalue_report_access="),
     "Cookie name must be correct");
   assert.ok(cookie.includes("HttpOnly"), "Cookie must be HttpOnly");
+});
+
+test("production without REPORT_ACCESS_SESSION_SECRET returns 503 with clear cookie", async () => {
+  const origNodeEnv = process.env.NODE_ENV;
+  const origSecret = process.env.REPORT_ACCESS_SESSION_SECRET;
+  const origTokenSigningSecret = process.env.TOKEN_SIGNING_SECRET;
+
+  try {
+    // Set production env — token creation must use the same secret as handler
+    process.env.NODE_ENV = "production";
+    process.env.TOKEN_SIGNING_SECRET = "production-signing-secret-for-test";
+    delete process.env.REPORT_ACCESS_SESSION_SECRET;
+
+    // Create token using getDraftSecret() from report-snapshot-service
+    // (so the HMAC matches what the handler's verifyReportDraftToken expects)
+    const { hashSnapshot, verifyReportDraftToken, stableStringify } = await import("../lib/report-snapshot-service.js")
+      .then(m => m);
+
+    const draftId = "rd_" + crypto.randomBytes(12).toString("hex");
+    const now = Date.now();
+    const snapObj = { test: "data", estimate: { midpoint: 850000, low: 800000, high: 900000 } };
+    const stableJson = JSON.stringify(snapObj);
+    const snapHash = hashSnapshot(stableJson);
+    const payload = {
+      draft_id: draftId,
+      property_key: "test|Suburb|VIC|3000|house",
+      valuation_version: "1.0.0",
+      snapshot_hash: snapHash,
+      issued_at: now,
+      expires_at: now + 30 * 60 * 1000,
+    };
+    const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
+
+    // Use same derivation as getDraftSecret() to sign the token
+    const secret = "production-signing-secret-for-test";
+    const derivedKey = crypto.createHmac("sha256", secret).update("report-draft-v1").digest("hex");
+    const sig = crypto.createHmac("sha256", derivedKey).update(encoded).digest("base64url");
+    const token = `${encoded}.${sig}`;
+
+    // Insert draft into mockDb so consumeDraftIntoSnapshot can find it
+    mockDb.drafts.push({
+      draft_id: draftId,
+      property_key: payload.property_key,
+      valuation_version: payload.valuation_version,
+      snapshot_json: stableJson,
+      snapshot_hash: snapHash,
+      expires_at: new Date(now + 30 * 60 * 1000).toISOString(),
+      consumed_at: null,
+      created_at: new Date(now - 1000).toISOString(),
+    });
+
+    // Quick sanity check: token verifies in the handler's environment
+    const tokenPayload = verifyReportDraftToken(token);
+    assert.ok(tokenPayload, "Token must be verifiable in production env");
+    assert.equal(tokenPayload.draft_id, draftId);
+
+    const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 999}`);
+    // Reuse the existing sql from a previous test — mockDb has the draft already
+    // We need a fresh sql that references the current mockDb. Use createMockSql
+    // after pushing the draft.
+    const sql = createMockSql();
+    mod.setTestSql(sql);
+
+    const ctx = makeReqRes({ email: "prod-no-secret@example.com", reportDraftToken: token });
+    await mod.default(ctx.req, ctx.res);
+
+    assert.equal(ctx.getStatus(), 503,
+      "Must return 503 when session secret is missing in production");
+
+    const body = ctx.getData();
+    assert.ok(body, "Must have response body");
+    assert.equal(body.ok, false);
+    assert.equal(body.error, "REPORT_SESSION_NOT_CONFIGURED",
+      "Error code must be REPORT_SESSION_NOT_CONFIGURED");
+    assert.equal(body.checkoutUrl, undefined,
+      "Must not have checkoutUrl when session is not configured");
+    assert.equal(body.checkoutSessionId, undefined,
+      "Must not expose checkoutSessionId");
+    assert.equal(body.reportId, undefined,
+      "Must not expose reportId when checkout is blocked");
+
+    // Verify cookie is cleared exactly once
+    assert.equal(ctx.getSetHeaderCount("Set-Cookie"), 1,
+      "Set-Cookie must be called exactly once");
+    const cookie = ctx.getHeader("Set-Cookie");
+    assertClearCookie(cookie, "Production missing session secret");
+    // In production, the clear cookie should also include Secure
+    assert.ok(cookie.includes("Secure"),
+      "Production clear cookie must include Secure");
+
+    // Stripe was never called because the session config guard runs
+    // BEFORE createReportCheckout. With cache-busting dynamic imports,
+    // the module-level stripeCallCount is unreliable, so we trust the
+    // code path: 503 REPORT_SESSION_NOT_CONFIGURED exits before
+    // doCheckout. The absence of checkoutUrl confirms this.
+  } finally {
+    if (origTokenSigningSecret !== undefined) {
+      process.env.TOKEN_SIGNING_SECRET = origTokenSigningSecret;
+    } else {
+      delete process.env.TOKEN_SIGNING_SECRET;
+    }
+    process.env.NODE_ENV = origNodeEnv;
+    if (origSecret !== undefined) {
+      process.env.REPORT_ACCESS_SESSION_SECRET = origSecret;
+    }
+  }
 });

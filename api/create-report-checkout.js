@@ -20,7 +20,7 @@
 import { ensureCustomerFunnelSchema, ensureReportPaymentSchema, getSql } from "./_db.js";
 import { verifyReportDraftToken, consumeDraftIntoSnapshot } from "../lib/report-snapshot-service.js";
 import { createReportCheckout } from "../lib/report-checkout-service.js";
-import { createReportAccessSession, buildReportAccessCookie } from "../lib/report-access-session.js";
+import { createReportAccessSession, buildReportAccessCookie, buildClearReportAccessCookie, assertReportAccessSessionConfigured } from "../lib/report-access-session.js";
 
 // ── Error codes ─────────────────────────────────────────────────────
 
@@ -33,6 +33,7 @@ const ERR = {
   CHECKOUT_CREATE_FAILED: "CHECKOUT_CREATE_FAILED",
   PAYMENT_AWAITING_ENTITLEMENT: "PAYMENT_AWAITING_ENTITLEMENT",
   REPORT_OWNER_CONFLICT: "REPORT_OWNER_CONFLICT",
+  REPORT_SESSION_NOT_CONFIGURED: "REPORT_SESSION_NOT_CONFIGURED",
 };
 
 // ── Test-injectable SQL ─────────────────────────────────────────────
@@ -74,6 +75,15 @@ function setPurchaseSessionCookie(res, reportId, leadContactId) {
   res.setHeader("Set-Cookie", cookie);
 }
 
+/**
+ * Clear (remove) the purchase session cookie on the response.
+ * Called on error paths to ensure a stale cookie is not retained.
+ */
+function clearPurchaseSessionCookie(res) {
+  const cookie = buildClearReportAccessCookie();
+  res.setHeader("Set-Cookie", cookie);
+}
+
 // ── Handler ─────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
@@ -100,11 +110,13 @@ export default async function handler(req, res) {
 
     // ── Step 1: Validate input + verify token BEFORE any DB writes ──
     if (!isValidEmail(rawEmail)) {
+      clearPurchaseSessionCookie(res);
       return res.status(400).json({ ok: false, error: ERR.INVALID_EMAIL, message: "A valid email address is required." });
     }
 
     const tokenPayload = verifyReportDraftToken(reportDraftToken);
     if (!tokenPayload) {
+      clearPurchaseSessionCookie(res);
       return res.status(400).json({ ok: false, error: ERR.INVALID_DRAFT_TOKEN, message: "The report draft token is invalid or has been tampered with." });
     }
 
@@ -132,20 +144,38 @@ export default async function handler(req, res) {
       if (consumeErr.code && ["TOKEN_EXPIRED", "DRAFT_CONSUMED", "REPORT_OWNER_CONFLICT", "TOKEN_INVALID"].includes(consumeErr.code)) {
         // Token-level errors: expired, tampered, invalid
         if (consumeErr.code === "TOKEN_EXPIRED") {
+          clearPurchaseSessionCookie(res);
           return res.status(400).json({ ok: false, error: ERR.DRAFT_EXPIRED, message: "The report draft has expired. Please run a new valuation." });
         }
         if (consumeErr.code === "DRAFT_CONSUMED") {
+          clearPurchaseSessionCookie(res);
           return res.status(400).json({ ok: false, error: ERR.DRAFT_EXPIRED, message: "The report draft has already been used. Please run a new valuation." });
         }
         if (consumeErr.code === "REPORT_OWNER_CONFLICT") {
+          clearPurchaseSessionCookie(res);
           return res.status(409).json({ ok: false, error: ERR.REPORT_OWNER_CONFLICT, message: consumeErr.message || "This report already belongs to another customer." });
         }
+        clearPurchaseSessionCookie(res);
         return res.status(400).json({ ok: false, error: ERR.INVALID_DRAFT_TOKEN, message: consumeErr.message || "The report draft token is invalid." });
       }
+      // Unknown DB/snapshot error — throw directly; outer catch clears cookie once.
+      // Do NOT clear here to avoid double Set-Cookie.
       throw consumeErr;
     }
 
-    // ── Step 5: Call checkout service ──
+    // ── Step 5a: Check session config BEFORE Stripe checkout call ──
+    // Avoid creating a Stripe session that can't be matched by cookie.
+    // Avoid creating a Stripe session that can't be matched by cookie.
+    if (!assertReportAccessSessionConfigured()) {
+      clearPurchaseSessionCookie(res);
+      return res.status(503).json({
+        ok: false,
+        error: ERR.REPORT_SESSION_NOT_CONFIGURED,
+        message: "Report access session is temporarily unavailable. Please try again later.",
+      });
+    }
+
+    // ── Step 5b: Call checkout service ──
     const checkoutResult = await createReportCheckout({ reportId: snapshotOutcome.report_id, leadContactId }, sql);
 
     // Already purchased (active entitlement exists)
@@ -172,6 +202,7 @@ export default async function handler(req, res) {
 
     // Stripe not configured
     if (checkoutResult.error === "STRIPE_NOT_CONFIGURED") {
+      clearPurchaseSessionCookie(res);
       return res.status(503).json({
         ok: false,
         error: ERR.STRIPE_NOT_CONFIGURED,
@@ -181,6 +212,7 @@ export default async function handler(req, res) {
 
     // Stripe session creation failed
     if (checkoutResult.error === "CHECKOUT_CREATE_FAILED") {
+      clearPurchaseSessionCookie(res);
       return res.status(502).json({
         ok: false,
         error: ERR.CHECKOUT_CREATE_FAILED,
@@ -200,6 +232,7 @@ export default async function handler(req, res) {
     }
 
     // Fallback — unexpected state
+    clearPurchaseSessionCookie(res);
     return res.status(500).json({
       ok: false,
       error: "INTERNAL_ERROR",
@@ -207,6 +240,7 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error("[create-report-checkout]", error.message);
+    clearPurchaseSessionCookie(res);
     return res.status(500).json({
       ok: false,
       error: "INTERNAL_ERROR",
