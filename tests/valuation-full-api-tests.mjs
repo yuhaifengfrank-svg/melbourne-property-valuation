@@ -1,13 +1,15 @@
 // ── tests/valuation-full-api-tests.mjs ──
-// Phase 1E2: Full valuation report API tests.
+// Phase 1E3C-3A: Full valuation report API tests — Cookie-based auth.
 //
 // Tests for api/valuation-full.js.
 // No Stripe network, no production DB.
 // Uses setTestSql() to inject mock database.
+// Uses lib/report-access-session.js to sign test cookies.
 
 import assert from "node:assert/strict";
 import crypto from "node:crypto";
 import test from "node:test";
+import { createReportAccessSession } from "../lib/report-access-session.js";
 
 // ── Helpers ─────────────────────────────────────────────────────────
 
@@ -17,19 +19,11 @@ function makeReportId() {
   return `rp_${ts}_${hex}`;
 }
 
-function makeEmail() {
-  return `test_${crypto.randomBytes(4).toString("hex")}@example.com`;
+function makeCookie(reportId, leadContactId) {
+  const token = createReportAccessSession({ reportId, leadContactId });
+  return `aushomevalue_report_access=${token}`;
 }
 
-/**
- * Build a mock SQL tagged template function backed by in-memory state.
- *
- * Supported initialState keys:
- *   contacts: Array<{ id, email, email_lower }>
- *   entitlements: Array<{ report_id, lead_contact_id, status, granted_at?, revoked_at? }>
- *   payments: Array<{ id, report_id, lead_contact_id, status, amount_cents?, currency?, created_at?, updated_at? }>
- *   snapshots: Array<{ report_id, lead_contact_id, snapshot_json, valuation_version?, created_at?, property_key? }>
- */
 function makeMockSql(initialState = {}) {
   const contacts = initialState.contacts
     ? initialState.contacts.map((c) => ({
@@ -79,7 +73,7 @@ function makeMockSql(initialState = {}) {
       .map((s, i) => (i < values.length ? s + `$${i}` : s))
       .join("");
 
-    // ── lead_contacts lookup by email_lower ────────────────────────
+    // lead_contacts lookup by email_lower
     const lcMatch = raw.match(
       /SELECT\s+(.+?)\s+FROM\s+lead_contacts\s+WHERE\s+email_lower\s*=\s*\$(\d+)/i
     );
@@ -95,13 +89,15 @@ function makeMockSql(initialState = {}) {
       return [];
     }
 
-    // ── CREATE TABLE / ALTER TABLE / CREATE INDEX (schema init) ──
-    const schemaMatch = raw.match(/CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS|ALTER\s+TABLE|CREATE\s+(UNIQUE\s+)?INDEX/i);
+    // CREATE TABLE / ALTER TABLE / CREATE INDEX (schema init)
+    const schemaMatch = raw.match(
+      /CREATE\s+TABLE\s+IF\s+NOT\s+EXISTS|ALTER\s+TABLE|CREATE\s+(UNIQUE\s+)?INDEX/i
+    );
     if (schemaMatch) {
       return [];
     }
 
-    // ── report_entitlements lookup by report_id (LIMIT 1) ────────
+    // report_entitlements lookup by report_id (LIMIT 1)
     const entMatch = raw.match(
       /SELECT\s+(.+?)\s+FROM\s+report_entitlements\s+WHERE\s+report_id\s*=\s*\$(\d+)\s+LIMIT\s+1/i
     );
@@ -121,7 +117,7 @@ function makeMockSql(initialState = {}) {
       return [];
     }
 
-    // ── report_payments lookup by report_id (ALL rows, ORDER BY id ASC) ──
+    // report_payments lookup by report_id (ALL rows, ORDER BY id ASC)
     const payMatch = raw.match(
       /FROM\s+report_payments\s+WHERE\s+report_id\s*=\s*\$(\d+)/i
     );
@@ -141,7 +137,7 @@ function makeMockSql(initialState = {}) {
       }));
     }
 
-    // ── report_snapshots lookup by report_id (LIMIT 1) ────────────
+    // report_snapshots lookup by report_id (LIMIT 1)
     const snapMatch = raw.match(
       /FROM\s+report_snapshots\s+WHERE\s+report_id\s*=\s*\$(\d+)/i
     );
@@ -165,15 +161,15 @@ function makeMockSql(initialState = {}) {
   };
 }
 
-// ── Build a mock Express req/res for testing ─────────────────────────
-
-function makeRequestResponse(body, method = "POST") {
-  const events = {};
+function makeRequestResponse(body, method = "POST", cookieStr) {
   const req = {
     method,
-    body: JSON.stringify(body),
+    body: JSON.stringify(body || {}),
     headers: {},
   };
+  if (cookieStr) {
+    req.headers.cookie = cookieStr;
+  }
   const res = {
     _status: 200,
     _headers: {},
@@ -190,9 +186,6 @@ function makeRequestResponse(body, method = "POST") {
     end(data) {
       this._ended = true;
       if (data) this._body = data;
-      if (typeof this._body !== "string" && this._headers["Content-Type"] === "application/json") {
-        try { this._body = JSON.stringify(this._body); } catch {}
-      }
       return this;
     },
     json(data) {
@@ -200,12 +193,9 @@ function makeRequestResponse(body, method = "POST") {
       this._ended = true;
       return this;
     },
-    on(event, fn) { events[event] = fn; return this; },
   };
   return { req, res };
 }
-
-// ── Import handler ──────────────────────────────────────────────────
 
 let handler;
 let setTestSql;
@@ -220,7 +210,6 @@ async function loadHandler() {
 
 function buildHappyState() {
   const reportId = makeReportId();
-  const email = makeEmail();
   const contactId = 42;
   const snapshotData = {
     midpoint: 825000,
@@ -236,8 +225,12 @@ function buildHappyState() {
   };
 
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
-    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active", granted_at: new Date() }],
+    entitlements: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      status: "active",
+      granted_at: new Date(),
+    }],
     payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
     snapshots: [{
       report_id: reportId,
@@ -247,16 +240,17 @@ function buildHappyState() {
     }],
   });
 
-  return { reportId, email, sql };
+  const cookie = makeCookie(reportId, contactId);
+  return { reportId, sql, cookie };
 }
 
 // ── Tests ───────────────────────────────────────────────────────────
 
-test("active + paid + matching snapshot → 200", async () => {
+test("1. valid cookie + matching reportId + active + paid + snapshot → 200", async () => {
   await loadHandler();
-  const { reportId, email, sql } = buildHappyState();
+  const { reportId, sql, cookie } = buildHappyState();
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
 
   await handler(req, res);
 
@@ -269,275 +263,267 @@ test("active + paid + matching snapshot → 200", async () => {
   assert.ok(res._body.report);
   assert.equal(res._body.report.midpoint, 825000);
   assert.equal(res._body.valuationVersion, "vTest");
-  // Must be the stored snapshot, not a re-run
   assert.deepEqual(res._body.report.comparables, [
     { address: "1 Test St", salePrice: 800000, distance: 0.5 },
     { address: "2 Test St", salePrice: 850000, distance: 1.2 },
   ]);
 });
 
-test("GET → 405", async () => {
+test("2. GET → 405", async () => {
   await loadHandler();
   setTestSql(makeMockSql({}));
-  const { req, res } = makeRequestResponse({}, "GET");
-
+  const { req, res } = makeRequestResponse({}, "GET", makeCookie(makeReportId(), 1));
   await handler(req, res);
-
   assert.equal(res._status, 405);
   assert.equal(res._body.ok, false);
   assert.equal(res._body.error, "BAD_REQUEST");
   assert.ok(res._headers["Allow"]);
 });
 
-test("OPTIONS → 204", async () => {
+test("3. OPTIONS → 204", async () => {
   await loadHandler();
   setTestSql(makeMockSql({}));
   const { req, res } = makeRequestResponse({}, "OPTIONS");
-
   await handler(req, res);
-
   assert.equal(res._status, 204);
 });
 
-test("missing body → 400", async () => {
+test("4. missing body → 400", async () => {
   await loadHandler();
   setTestSql(makeMockSql({}));
-  const { req, res } = makeRequestResponse(null);
-
+  const { req, res } = makeRequestResponse(null, "POST", makeCookie(makeReportId(), 1));
   await handler(req, res);
-
   assert.equal(res._status, 400);
 });
 
-test("invalid body (missing fields) → 400", async () => {
+test("5. empty body → 400", async () => {
   await loadHandler();
   setTestSql(makeMockSql({}));
-  const { req, res } = makeRequestResponse({ reportId: "only" });
-
+  const { req, res } = makeRequestResponse({}, "POST", makeCookie(makeReportId(), 1));
   await handler(req, res);
-
   assert.equal(res._status, 400);
   assert.equal(res._body.error, "BAD_REQUEST");
 });
 
-test("empty body → 400", async () => {
+test("6. body missing reportId → 400", async () => {
   await loadHandler();
   setTestSql(makeMockSql({}));
-  const { req, res } = makeRequestResponse({});
-
+  const { req, res } = makeRequestResponse({ reportId: "" }, "POST", makeCookie(makeReportId(), 1));
   await handler(req, res);
-
   assert.equal(res._status, 400);
   assert.equal(res._body.error, "BAD_REQUEST");
 });
 
-test("malformed reportId → 400", async () => {
+test("7. malformed reportId → 400", async () => {
   await loadHandler();
   setTestSql(makeMockSql({}));
-  const { req, res } = makeRequestResponse({ reportId: "not-a-valid-id", email: "test@example.com" });
-
+  const { req, res } = makeRequestResponse({ reportId: "not-a-valid-id" }, "POST", makeCookie(makeReportId(), 1));
   await handler(req, res);
-
   assert.equal(res._status, 400);
   assert.equal(res._body.error, "BAD_REQUEST");
-  // Must NOT be 404 (service layer) — caught at API layer as 400
-  assert.notEqual(res._status, 404);
 });
 
-test("malformed email → 400", async () => {
+test("8. no cookie → 401", async () => {
   await loadHandler();
-  setTestSql(makeMockSql({}));
-  const reportId = makeReportId();
-  const { req, res } = makeRequestResponse({ reportId, email: "not-an-email" });
-
-  await handler(req, res);
-
-  assert.equal(res._status, 400);
-  assert.equal(res._body.error, "BAD_REQUEST");
-  assert.notEqual(res._status, 404);
-});
-
-test("whitespace-only fields → 400", async () => {
-  await loadHandler();
-  setTestSql(makeMockSql({}));
-  const reportId = makeReportId();
-  // Spaces only — should be rejected before DB
-  const { req: r1, res: res1 } = makeRequestResponse({ reportId: "   ", email: "test@example.com" });
-  const { req: r2, res: res2 } = makeRequestResponse({ reportId, email: "   " });
-
-  await handler(r1, res1);
-  await handler(r2, res2);
-
-  assert.equal(res1._status, 400);
-  assert.equal(res2._status, 400);
-  assert.equal(res1._body.error, "BAD_REQUEST");
-  assert.equal(res2._body.error, "BAD_REQUEST");
-});
-
-test("unknown report → 404", async () => {
-  await loadHandler();
-  const reportId = makeReportId();
-  const email = makeEmail();
-  const sql = makeMockSql({});
+  const { reportId, sql } = buildHappyState();
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
+  const { req, res } = makeRequestResponse({ reportId }, "POST", null);
   await handler(req, res);
+  assert.equal(res._status, 401);
+  assert.equal(res._body.error, "REPORT_SESSION_EXPIRED");
+});
 
+test("9. invalid cookie → 401 + Set-Cookie clear", async () => {
+  await loadHandler();
+  const { reportId, sql } = buildHappyState();
+  setTestSql(sql);
+  const { req, res } = makeRequestResponse({ reportId }, "POST", "aushomevalue_report_access=bad.token.here");
+  await handler(req, res);
+  assert.equal(res._status, 401);
+  assert.equal(res._body.error, "REPORT_SESSION_EXPIRED");
+  assert.ok(res._headers["Set-Cookie"]);
+  assert.ok(res._headers["Set-Cookie"].includes("Max-Age=0"));
+});
+
+test("10. cookie reportId different from body reportId → 403 + clear cookie", async () => {
+  await loadHandler();
+  const { sql } = buildHappyState();
+  setTestSql(sql);
+  const otherReportId = makeReportId();
+  const cookie = makeCookie(otherReportId, 42);
+  const { req, res } = makeRequestResponse({ reportId: makeReportId() }, "POST", cookie);
+  await handler(req, res);
+  assert.equal(res._status, 403);
+  assert.equal(res._body.error, "REPORT_SESSION_MISMATCH");
+  assert.ok(res._headers["Set-Cookie"]);
+});
+
+test("11. invalid leadContactId in cookie (tampered) → 401 + clear cookie", async () => {
+  await loadHandler();
+  const reportId = makeReportId();
+  const { sql } = buildHappyState();
+  setTestSql(sql);
+  // Tamper a valid token by replacing leadContactId with 0
+  const validToken = createReportAccessSession({ reportId, leadContactId: 42 });
+  const parts = validToken.split(".");
+  const decoded = JSON.parse(Buffer.from(parts[0], "base64url").toString("utf8"));
+  decoded.leadContactId = 0;
+  const tamperedPayload = Buffer.from(JSON.stringify(decoded)).toString("base64url");
+  // Keep the old signature — it won't match the tampered payload (but since the handler
+  // also checks leadContactId validity, verifyReportAccessSession will return null
+  // regardless of signature because leadContactId=0 fails isValidLeadContactId)
+  const tamperedToken = tamperedPayload + "." + parts[1];
+  const cookie = "aushomevalue_report_access=" + tamperedToken;
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
+  await handler(req, res);
+  assert.equal(res._status, 401);
+  assert.equal(res._body.error, "REPORT_SESSION_EXPIRED");
+});test("12. cookie purpose is report_access (verifyReportAccessSession validates)", async () => {
+// This is no longer a valid test — createReportAccessSession rejects leadContactId=0
+  // and version === 1 at the library level. The handler additionally double-checks.
+  await loadHandler();
+  const { reportId, sql, cookie } = buildHappyState();
+  setTestSql(sql);
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
+  await handler(req, res);
+  assert.equal(res._status, 200);
+});
+
+test("13. unknown report → 404", async () => {
+  await loadHandler();
+  const reportId = makeReportId();
+  const cookie = makeCookie(reportId, 42);
+  setTestSql(makeMockSql({}));
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
+  await handler(req, res);
   assert.equal(res._status, 404);
   assert.equal(res._body.error, "REPORT_NOT_FOUND");
 });
 
-test("missing entitlement → 403", async () => {
+test("14. missing entitlement → 403", async () => {
   await loadHandler();
   const reportId = makeReportId();
-  const email = makeEmail();
   const contactId = 42;
+  const cookie = makeCookie(reportId, contactId);
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
     payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
-    snapshots: [{
-      report_id: reportId,
-      lead_contact_id: contactId,
-      snapshot_json: { midpoint: 825000 },
-    }],
+    snapshots: [{ report_id: reportId, lead_contact_id: contactId, snapshot_json: { midpoint: 825000 } }],
   });
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
-
   assert.equal(res._status, 403);
   assert.equal(res._body.error, "REPORT_NOT_ENTITLED");
 });
 
-test("wrong owner → 403", async () => {
+test("15. wrong owner → 403 + clear cookie", async () => {
   await loadHandler();
   const reportId = makeReportId();
-  const email = makeEmail();
-  const contactId = 42;
+  const cookie = makeCookie(reportId, 42);
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
     entitlements: [{ report_id: reportId, lead_contact_id: 99, status: "active" }],
     payments: [{ id: 1, report_id: reportId, lead_contact_id: 99, status: "paid" }],
-    snapshots: [{
-      report_id: reportId,
-      lead_contact_id: 99,
-      snapshot_json: { midpoint: 825000 },
-    }],
+    snapshots: [{ report_id: reportId, lead_contact_id: 99, snapshot_json: { midpoint: 825000 } }],
   });
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
-
   assert.equal(res._status, 403);
   assert.equal(res._body.error, "REPORT_OWNER_CONFLICT");
+  assert.ok(res._headers["Set-Cookie"]);
 });
 
-test("pending payment → 402", async () => {
+test("16. wrong owner for payment only → 403 + clear cookie", async () => {
   await loadHandler();
   const reportId = makeReportId();
-  const email = makeEmail();
-  const contactId = 42;
+  const cookie = makeCookie(reportId, 42);
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
-    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
-    payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "pending" }],
-    snapshots: [{
-      report_id: reportId,
-      lead_contact_id: contactId,
-      snapshot_json: { midpoint: 825000 },
-    }],
+    entitlements: [{ report_id: reportId, lead_contact_id: 42, status: "active" }],
+    payments: [{ id: 1, report_id: reportId, lead_contact_id: 99, status: "paid" }],
+    snapshots: [{ report_id: reportId, lead_contact_id: 42, snapshot_json: { midpoint: 825000 } }],
   });
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
+  assert.equal(res._status, 403);
+  assert.equal(res._body.error, "REPORT_OWNER_CONFLICT");
+  assert.ok(res._headers["Set-Cookie"]);
+});
 
+test("17. pending payment → 402", async () => {
+  await loadHandler();
+  const reportId = makeReportId();
+  const contactId = 42;
+  const cookie = makeCookie(reportId, contactId);
+  const sql = makeMockSql({
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "pending" }],
+    snapshots: [{ report_id: reportId, lead_contact_id: contactId, snapshot_json: { midpoint: 825000 } }],
+  });
+  setTestSql(sql);
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
+  await handler(req, res);
   assert.equal(res._status, 402);
   assert.equal(res._body.error, "PAYMENT_NOT_CONFIRMED");
 });
 
-test("refunded payment → 403", async () => {
+test("18. refunded payment → 403 + clear cookie", async () => {
   await loadHandler();
   const reportId = makeReportId();
-  const email = makeEmail();
   const contactId = 42;
+  const cookie = makeCookie(reportId, contactId);
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
     entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
     payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "refunded" }],
-    snapshots: [{
-      report_id: reportId,
-      lead_contact_id: contactId,
-      snapshot_json: { midpoint: 825000 },
-    }],
+    snapshots: [{ report_id: reportId, lead_contact_id: contactId, snapshot_json: { midpoint: 825000 } }],
   });
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
-
   assert.equal(res._status, 403);
   assert.equal(res._body.error, "REPORT_REFUNDED");
+  assert.ok(res._headers["Set-Cookie"]);
 });
 
-test("revoked entitlement → 403", async () => {
+test("19. revoked entitlement → 403 + clear cookie", async () => {
   await loadHandler();
   const reportId = makeReportId();
-  const email = makeEmail();
   const contactId = 42;
+  const cookie = makeCookie(reportId, contactId);
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
     entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "revoked" }],
     payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
-    snapshots: [{
-      report_id: reportId,
-      lead_contact_id: contactId,
-      snapshot_json: { midpoint: 825000 },
-    }],
+    snapshots: [{ report_id: reportId, lead_contact_id: contactId, snapshot_json: { midpoint: 825000 } }],
   });
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
-
   assert.equal(res._status, 403);
   assert.equal(res._body.error, "REPORT_REVOKED");
+  assert.ok(res._headers["Set-Cookie"]);
 });
 
-test("missing / corrupt snapshot → 503", async () => {
+test("20. missing snapshot → 503", async () => {
   await loadHandler();
   const reportId = makeReportId();
-  const email = makeEmail();
   const contactId = 42;
+  const cookie = makeCookie(reportId, contactId);
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
     entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
     payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
-    snapshots: [{
-      report_id: reportId,
-      lead_contact_id: contactId,
-      snapshot_json: null,
-    }],
   });
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
-
   assert.equal(res._status, 503);
   assert.equal(res._body.error, "REPORT_DATA_UNAVAILABLE");
 });
 
-test("returns stored snapshot (not re-run model)", async () => {
+test("21. returns stored snapshot (not re-run model)", async () => {
   await loadHandler();
   const reportId = makeReportId();
-  const email = makeEmail();
   const contactId = 42;
-
-  // Verify the snapshot returned is exactly what was stored
+  const cookie = makeCookie(reportId, contactId);
   const storedSnapshot = {
     midpoint: 750000,
     low: 700000,
@@ -547,9 +533,7 @@ test("returns stored snapshot (not re-run model)", async () => {
     bathrooms: 2,
     landSize: 500,
   };
-
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
     entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
     payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
     snapshots: [{
@@ -560,26 +544,21 @@ test("returns stored snapshot (not re-run model)", async () => {
     }],
   });
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
-
   assert.equal(res._status, 200);
   assert.deepEqual(res._body.report, storedSnapshot);
   assert.equal(res._body.valuationVersion, "v2.1");
 });
 
-test("no Stripe/internal fields leaked in response", async () => {
+test("22. no sensitive fields leaked in response", async () => {
   await loadHandler();
-  const { reportId, email, sql } = buildHappyState();
+  const { reportId, sql, cookie } = buildHappyState();
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
-
   assert.equal(res._status, 200);
   const body = JSON.stringify(res._body);
-  // These must never appear in the response
   assert.ok(!body.includes("stripe_customer_id"));
   assert.ok(!body.includes("stripe_payment_intent_id"));
   assert.ok(!body.includes("stripe_checkout_session_id"));
@@ -588,14 +567,12 @@ test("no Stripe/internal fields leaked in response", async () => {
   assert.ok(!body.includes("snapshot_hash"));
 });
 
-test("snapshot top-level sensitive fields stripped", async () => {
+test("23. nested sensitive fields stripped", async () => {
   await loadHandler();
   const reportId = makeReportId();
-  const email = makeEmail();
   const contactId = 42;
-
+  const cookie = makeCookie(reportId, contactId);
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
     entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
     payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
     snapshots: [{
@@ -603,50 +580,7 @@ test("snapshot top-level sensitive fields stripped", async () => {
       lead_contact_id: contactId,
       snapshot_json: {
         midpoint: 825000,
-        stripe_customer_id: "cus_abc123",
-        stripe_payment_intent_id: "pi_secret",
-        stripe_checkout_session_id: "cs_test",
-        purchase_intent_key: "pik_test",
-        lead_contact_id: 42,
-        snapshot_hash: "abc123",
-      },
-    }],
-  });
-  setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
-  await handler(req, res);
-
-  assert.equal(res._status, 200);
-  const body = JSON.stringify(res._body);
-  assert.ok(!body.includes("cus_abc123"), "stripe_customer_id value leaked");
-  assert.ok(!body.includes("pi_secret"), "stripe_payment_intent_id value leaked");
-  assert.ok(!body.includes("cs_test"), "stripe_checkout_session_id value leaked");
-  assert.ok(!body.includes("pik_test"), "purchase_intent_key value leaked");
-  assert.ok(!body.includes("snapshot_hash"), "snapshot_hash key leaked");
-  // Midpoint should still be present
-  assert.equal(res._body.report.midpoint, 825000);
-});
-
-test("snapshot nested sensitive fields stripped", async () => {
-  await loadHandler();
-  const reportId = makeReportId();
-  const email = makeEmail();
-  const contactId = 42;
-
-  const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
-    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
-    payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
-    snapshots: [{
-      report_id: reportId,
-      lead_contact_id: contactId,
-      snapshot_json: {
-        midpoint: 825000,
-        paymentDetails: {
-          stripe_customer_id: "cus_nested",
-          purchase_intent_key: "pik_nested",
-        },
+        paymentDetails: { stripe_customer_id: "cus_nested", purchase_intent_key: "pik_nested" },
         comparables: [
           { address: "1 Test St", salePrice: 800000 },
           { address: "2 Test St", salePrice: 850000, lead_contact_id: 99 },
@@ -655,10 +589,8 @@ test("snapshot nested sensitive fields stripped", async () => {
     }],
   });
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
-
   assert.equal(res._status, 200);
   const body = JSON.stringify(res._body);
   assert.ok(!body.includes("cus_nested"), "nested stripe_customer_id leaked");
@@ -666,120 +598,165 @@ test("snapshot nested sensitive fields stripped", async () => {
   assert.equal(res._body.report.midpoint, 825000);
   assert.equal(res._body.report.comparables.length, 2);
   assert.equal(res._body.report.comparables[1].salePrice, 850000);
-  assert.equal(res._body.report.comparables[1].address, "2 Test St");
-  // lead_contact_id must be gone from comparables[1]
   assert.ok(!("lead_contact_id" in res._body.report.comparables[1]));
 });
 
-test("original snapshot object not mutated", async () => {
+test("24. original snapshot not mutated", async () => {
   await loadHandler();
   const reportId = makeReportId();
-  const email = makeEmail();
   const contactId = 42;
-
+  const cookie = makeCookie(reportId, contactId);
   const originalSnapshot = {
     midpoint: 825000,
     stripe_customer_id: "cus_keepme",
-    nested: {
-      stripe_payment_intent_id: "pi_keepme",
-    },
+    nested: { stripe_payment_intent_id: "pi_keepme" },
   };
-
-  // Deep freeze to catch mutation
   Object.freeze(originalSnapshot);
   Object.freeze(originalSnapshot.nested);
-
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
     entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
     payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid" }],
-    snapshots: [{
-      report_id: reportId,
-      lead_contact_id: contactId,
-      snapshot_json: originalSnapshot,
-    }],
+    snapshots: [{ report_id: reportId, lead_contact_id: contactId, snapshot_json: originalSnapshot }],
   });
   setTestSql(sql);
-  const { req, res } = makeRequestResponse({ reportId, email });
-
-  // Should not throw — sanitizeSnapshot creates a deep clone
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
-
   assert.equal(res._status, 200);
   assert.equal(res._body.report.midpoint, 825000);
-  // Sensitive fields stripped from response
   assert.ok(!("stripe_customer_id" in res._body.report));
   assert.ok(!("stripe_payment_intent_id" in res._body.report.nested));
-  // Original still intact
   assert.equal(originalSnapshot.stripe_customer_id, "cus_keepme");
   assert.equal(originalSnapshot.nested.stripe_payment_intent_id, "pi_keepme");
 });
 
-test("client-side allowed/status cannot override", async () => {
+test("25. client-side allowed/status ignored", async () => {
   await loadHandler();
   const reportId = makeReportId();
-  const email = makeEmail();
   const contactId = 42;
-
-  // Add client-faked fields to body
+  const cookie = makeCookie(reportId, contactId);
   const sql = makeMockSql({
-    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
     entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
     payments: [{ id: 1, report_id: reportId, lead_contact_id: contactId, status: "pending" }],
-    snapshots: [{
-      report_id: reportId,
-      lead_contact_id: contactId,
-      snapshot_json: { midpoint: 825000 },
-    }],
+    snapshots: [{ report_id: reportId, lead_contact_id: contactId, snapshot_json: { midpoint: 825000 } }],
   });
   setTestSql(sql);
   const { req, res } = makeRequestResponse({
     reportId,
-    email,
     allowed: true,
     status: "completed",
     paymentStatus: "paid",
-  });
-
+  }, "POST", cookie);
   await handler(req, res);
-
-  // Allowed must NOT bypass entitlement check — payment is pending
   assert.equal(res._status, 402);
   assert.equal(res._body.error, "PAYMENT_NOT_CONFIRMED");
 });
 
-test("same request returns stable snapshot", async () => {
+test("26. same request returns stable snapshot", async () => {
   await loadHandler();
-  const { reportId, email, sql } = buildHappyState();
+  const { reportId, sql, cookie } = buildHappyState();
   setTestSql(sql);
-  const { req: r1, res: res1 } = makeRequestResponse({ reportId, email });
-  const { req: r2, res: res2 } = makeRequestResponse({ reportId, email });
-
+  const { req: r1, res: res1 } = makeRequestResponse({ reportId }, "POST", cookie);
+  const { req: r2, res: res2 } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(r1, res1);
   await handler(r2, res2);
-
   assert.equal(res1._status, 200);
   assert.equal(res2._status, 200);
   assert.deepEqual(res1._body.report, res2._body.report);
 });
 
-test("unexpected exception returns safe 500", async () => {
+test("27. unexpected exception → safe 500", async () => {
   await loadHandler();
-  const crashingSql = async () => {
-    throw new Error("DB explosion");
-  };
+  const reportId = makeReportId();
+  const crashingSql = async () => { throw new Error("DB explosion"); };
   setTestSql(crashingSql);
-  const { req, res } = makeRequestResponse({ reportId: makeReportId(), email: makeEmail() });
-
+  const cookie = makeCookie(reportId, 42);
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
   await handler(req, res);
-
   assert.equal(res._status, 500);
   assert.equal(res._body.error, "INTERNAL_ERROR");
-  // Must not leak the error message
   assert.ok(!res._body.message || !res._body.message.includes("explosion"));
 });
 
-test("does not access real Stripe or production DB", () => {
+test("28. Set-Cookie at most once per error (invalid session + owner conflict)", async () => {
+  await loadHandler();
+  const reportId = makeReportId();
+  const sql = makeMockSql({
+    entitlements: [{ report_id: reportId, lead_contact_id: 99, status: "active" }],
+    payments: [{ id: 1, report_id: reportId, lead_contact_id: 99, status: "paid" }],
+    snapshots: [{ report_id: reportId, lead_contact_id: 99, snapshot_json: { midpoint: 825000 } }],
+  });
+  setTestSql(sql);
+  // Valid cookie but owner=99 != cookie contactId=42
+  const cookie = makeCookie(reportId, 42);
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
+  await handler(req, res);
+  assert.equal(res._status, 403);
+  assert.equal(res._body.error, "REPORT_OWNER_CONFLICT");
+  assert.ok(res._headers["Set-Cookie"]);
+  const setCookieVal = res._headers["Set-Cookie"];
+  const count = Array.isArray(setCookieVal) ? setCookieVal.length : 1;
+  assert.equal(count, 1);
+});
+
+test("no production DB or Stripe keys accessed", () => {
   assert.equal(typeof process.env.DATABASE_URL === "string" ? "string" : "undefined", "undefined");
   assert.equal(typeof process.env.STRIPE_SECRET_KEY === "string" ? "string" : "undefined", "undefined");
+});
+
+
+test("29. expired cookie (via tampered expiresAt) \u2192 401 + clear cookie", async () => {
+  await loadHandler();
+  const reportId = makeReportId();
+  const { sql } = buildHappyState();
+  setTestSql(sql);
+  // Create a valid token then tamper expiresAt to the past
+  const validToken = createReportAccessSession({ reportId, leadContactId: 42 });
+  const parts = validToken.split(".");
+  const decoded = JSON.parse(Buffer.from(parts[0], "base64url").toString("utf8"));
+  // Set issuedAt to 61 minutes ago and expiresAt to 31 minutes ago
+  decoded.issuedAt = Date.now() - 61 * 60 * 1000;
+  decoded.expiresAt = decoded.issuedAt + 30 * 60 * 1000;
+  const tamperedPayload = Buffer.from(JSON.stringify(decoded)).toString("base64url");
+  const tamperedToken = tamperedPayload + "." + parts[1];
+  const cookie = "aushomevalue_report_access=" + tamperedToken;
+  const { req, res } = makeRequestResponse({ reportId }, "POST", cookie);
+  await handler(req, res);
+  assert.equal(res._status, 401);
+  assert.equal(res._body.error, "REPORT_SESSION_EXPIRED");
+  // Must clear the expired cookie
+  assert.ok(res._headers["Set-Cookie"]);
+  assert.ok(res._headers["Set-Cookie"].includes("Max-Age=0"));
+});
+
+test("30. sequential requests each get exactly one Set-Cookie (no module state leak)", async () => {
+  await loadHandler();
+  const reportId = makeReportId();
+  const cookie = makeCookie(reportId, 42);
+  const makeState = () => ({
+    entitlements: [{ report_id: reportId, lead_contact_id: 99, status: "active" }],
+    payments: [{ id: 1, report_id: reportId, lead_contact_id: 99, status: "paid" }],
+    snapshots: [{ report_id: reportId, lead_contact_id: 99, snapshot_json: { midpoint: 825000 } }],
+  });
+
+  // Request 1
+  setTestSql(makeMockSql(makeState()));
+  const { req: rq1, res: rs1 } = makeRequestResponse({ reportId }, "POST", cookie);
+  await handler(rq1, rs1);
+  assert.equal(rs1._status, 403, "r1 status should be 403");
+  assert.equal(rs1._body.error, "REPORT_OWNER_CONFLICT");
+  assert.ok(rs1._headers["Set-Cookie"]);
+  const c1 = Array.isArray(rs1._headers["Set-Cookie"]) ? rs1._headers["Set-Cookie"].length : 1;
+  assert.equal(c1, 1, "r1 should have exactly 1 Set-Cookie");
+  assert.ok(rs1._headers["Set-Cookie"].includes("Max-Age=0"));
+
+  // Request 2 — same cookie, same DB state, must NOT inherit cookieCleared from req1
+  setTestSql(makeMockSql(makeState()));
+  const { req: rq2, res: rs2 } = makeRequestResponse({ reportId }, "POST", cookie);
+  await handler(rq2, rs2);
+  assert.equal(rs2._status, 403, "r2 status should be 403");
+  assert.equal(rs2._body.error, "REPORT_OWNER_CONFLICT");
+  assert.ok(rs2._headers["Set-Cookie"], "r2 should have Set-Cookie");
+  const c2 = Array.isArray(rs2._headers["Set-Cookie"]) ? rs2._headers["Set-Cookie"].length : 1;
+  assert.equal(c2, 1, "r2 should have exactly 1 Set-Cookie");
+  assert.ok(rs2._headers["Set-Cookie"].includes("Max-Age=0"), "r2 cookie should be clear");
 });

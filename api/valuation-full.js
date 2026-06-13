@@ -1,25 +1,30 @@
 // ── api/valuation-full.js ──
-// Phase 1E2: Full valuation report API.
+// Phase 1E3C-3A: Full valuation report API — HttpOnly Cookie auth.
 //
 // POST only.
-// Body: { "reportId": "rp_...", "email": "customer@example.com" }
+// Body: { "reportId": "rp_..." }
 //
-// Flow:
-//   1. POST only. OPTIONS → 204.
-//   2. Parse and validate JSON body.
-//   3. ensureCustomerFunnelSchema + ensureReportPaymentSchema.
-//   4. checkReportEntitlement({ reportId, email }, sql)
-//   5. allowed=true → return stored snapshot (with sensitive fields stripped).
-//   6. Does NOT re-run valuation model.
-//   7. Does NOT accept address, propertyType, landSize, client estimates.
-//   8. Does NOT trust client-side allowed/status/paymentStatus.
-//   9. Does NOT use Opportunity cookie, Opportunity token, or localStorage.
-//  10. Does NOT call Stripe.
-//  11. Does NOT write to payment, entitlement, or snapshot tables.
-//  12. Does NOT auto-create lead_contact.
+// Auth flow:
+//   1. Read aushomevalue_report_access HttpOnly cookie
+//   2. Verify cookie signature and 30-minute expiry
+//   3. Verify cookie.reportId matches body.reportId
+//   4. Verify cookie.leadContactId is valid positive integer
+//   5. Database entitlement check via leadContactId (the sole authority)
+//   6. Return sanitized stored snapshot
+//
+// Does NOT accept email as authentication.
+// Does NOT accept client-supplied allowed/status/leadContactId.
+// Does NOT re-run valuation model.
+// Does NOT call Stripe.
+// Does NOT write to payment, entitlement, or snapshot tables.
 
 import { ensureCustomerFunnelSchema, ensureReportPaymentSchema, getSql } from "./_db.js";
-import { checkReportEntitlement } from "../lib/report-entitlement-service.js";
+import { checkReportEntitlementByContactId } from "../lib/report-entitlement-service.js";
+import {
+  verifyReportAccessSession,
+  extractReportAccessCookie,
+  buildClearReportAccessCookie,
+} from "../lib/report-access-session.js";
 
 // ── Vercel body parser config (16 KB limit) ─────────────────────────
 
@@ -42,34 +47,18 @@ export function setTestSql(sqlFn) {
   _testSql = sqlFn;
 }
 
-// ── Input format validation (API layer — no service call) ──────────
-//
-// reportId must match rp_<timestamp_ms>_<hex_16plus>
-// email must match basic email pattern
-// Whitespace-only strings are invalid.
+// ── reportId format validation ──────────────────────────────────────
 
-function validateFormat(reportId, email) {
-  if (typeof reportId !== "string" || reportId.trim().length === 0) {
-    return false;
-  }
-  if (!/^rp_\d+_[0-9a-f]{16,}$/i.test(reportId.trim())) {
-    return false;
-  }
-  if (typeof email !== "string" || email.trim().length === 0) {
-    return false;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-    return false;
-  }
-  return true;
+function isValidReportId(value) {
+  return typeof value === "string" && /^rp_\d+_[0-9a-f]{16,}$/i.test(value.trim());
 }
 
-// ── Body existence check (before format) ───────────────────────────
+// ── Body existence check (minimal — only reportId required) ─────────
 
 function isValidRequest(body) {
   if (!body || typeof body !== "object") return false;
-  if (typeof body.reportId !== "string" || body.reportId.length === 0) return false;
-  if (typeof body.email !== "string" || body.email.length === 0) return false;
+  if (typeof body.reportId !== "string" || body.reportId.trim().length === 0) return false;
+  // email, leadContactId, allowed, status, paymentStatus — all ignored at API layer
   return true;
 }
 
@@ -95,7 +84,7 @@ const ERROR_MAP = {
   REPORT_DATA_UNAVAILABLE: "REPORT_DATA_UNAVAILABLE",
 };
 
-// ── Allowed headers ─────────────────────────────────────────────────
+// ── CORS headers ────────────────────────────────────────────────────
 
 const COMMON_HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -104,8 +93,6 @@ const COMMON_HEADERS = {
   "Cache-Control": "no-store",
   "Content-Type": "application/json",
 };
-
-// ── JSON body size limit (16 KB, secondary defence) ────────────────
 
 const MAX_BODY_BYTES = 16384;
 
@@ -118,44 +105,50 @@ const SENSITIVE_FIELDS = new Set([
   "purchase_intent_key",
   "lead_contact_id",
   "snapshot_hash",
+  "email",
+  "phone",
+  "token",
+  "session_id",
 ]);
 
 /**
  * Recursively strip sensitive fields from an object tree.
- * Modifies a deep clone — original snapshot is never mutated.
- *
- * @param {*} value  — Any value (primitive, object, array, null)
- * @returns {*}  — Cleaned copy with sensitive keys removed
+ * Deep clones — original snapshot never mutated.
  */
 function sanitizeSnapshot(value) {
   if (value === null || value === undefined) {
     return value;
   }
 
-  // Array: recurse into each element
   if (Array.isArray(value)) {
     return value.map(sanitizeSnapshot);
   }
 
-  // Plain object: strip sensitive keys, recurse into values
   if (typeof value === "object") {
     const cleaned = {};
     for (const key of Object.keys(value)) {
       if (SENSITIVE_FIELDS.has(key)) {
-        continue; // skip sensitive keys at any depth
+        continue;
       }
       cleaned[key] = sanitizeSnapshot(value[key]);
     }
     return cleaned;
   }
 
-  // Primitives: pass through
   return value;
 }
 
 // ── Handler ─────────────────────────────────────────────────────────
 
 export default async function handler(request, response) {
+  // ── Request-level clearCookie guard (no shared module state) ──
+  let _cookieCleared = false;
+  function clearCookieOnce() {
+    if (_cookieCleared) return;
+    _cookieCleared = true;
+    response.setHeader("Set-Cookie", buildClearReportAccessCookie());
+  }
+
   // ── CORS headers (always set) ────────────────────────────────
   for (const [k, v] of Object.entries(COMMON_HEADERS)) {
     response.setHeader(k, v);
@@ -204,30 +197,78 @@ export default async function handler(request, response) {
       });
     }
 
-    // ── Validate body has expected fields ─────────────────────
+    // ── Validate body has required fields ─────────────────────
     if (!isValidRequest(body)) {
       return response.status(400).json({
         ok: false,
         error: "BAD_REQUEST",
-        message: "Both reportId and email are required.",
+        message: "reportId is required.",
       });
     }
 
-    // ── Format validation (strict — 400, never 404) ───────────
-    const rawReportId = body.reportId.trim();
-    const rawEmail = body.email.trim();
+    const reportId = body.reportId.trim();
 
-    if (!validateFormat(rawReportId, rawEmail)) {
+    // ── reportId format validation ─────────────────────────────
+    if (!isValidReportId(reportId)) {
       return response.status(400).json({
         ok: false,
         error: "BAD_REQUEST",
-        message: "Invalid reportId or email format.",
+        message: "Invalid reportId format.",
       });
     }
 
-    // ── Normalise ─────────────────────────────────────────────
-    const email = rawEmail.toLowerCase();
-    const reportId = rawReportId;
+    // ── Extract and verify session cookie ─────────────────────
+    const token = extractReportAccessCookie(request);
+
+    if (!token) {
+      return response.status(401).json({
+        ok: false,
+        error: "REPORT_SESSION_EXPIRED",
+        message: "Session expired. Please complete checkout again.",
+      });
+    }
+
+    const session = verifyReportAccessSession(token);
+
+    if (!session) {
+      clearCookieOnce();
+      return response.status(401).json({
+        ok: false,
+        error: "REPORT_SESSION_EXPIRED",
+        message: "Session expired. Please complete checkout again.",
+      });
+    }
+
+    // ── Session purpose check — only report_access ────────────
+    if (session.purpose !== "report_access" || session.version !== 1) {
+      clearCookieOnce();
+      return response.status(401).json({
+        ok: false,
+        error: "REPORT_SESSION_EXPIRED",
+        message: "Session expired. Please complete checkout again.",
+      });
+    }
+
+    // ── Verify session reportId matches body reportId ─────────
+    if (session.reportId !== reportId) {
+      clearCookieOnce();
+      return response.status(403).json({
+        ok: false,
+        error: "REPORT_SESSION_MISMATCH",
+        message: "Request reportId does not match session.",
+      });
+    }
+
+    // ── Validate leadContactId from cookie ────────────────────
+    const leadContactId = session.leadContactId;
+    if (typeof leadContactId !== "number" || !Number.isInteger(leadContactId) || leadContactId <= 0) {
+      clearCookieOnce();
+      return response.status(401).json({
+        ok: false,
+        error: "REPORT_SESSION_EXPIRED",
+        message: "Session expired. Please complete checkout again.",
+      });
+    }
 
     // ── Initialise database schemas ───────────────────────────
     const sql = getApiSql();
@@ -243,21 +284,27 @@ export default async function handler(request, response) {
       });
     }
 
-    // ── Check entitlement (this is the ONLY authority) ────────
+    // ── Check entitlement by contactId (database is sole authority) ──
     let entitlementResult;
     try {
-      entitlementResult = await checkReportEntitlement({ reportId, email }, sql);
+      entitlementResult = await checkReportEntitlementByContactId({ reportId, leadContactId }, sql);
     } catch (entErr) {
       if (entErr.name === "EntitlementCheckError" && ERROR_MAP[entErr.code]) {
         const httpCode = HTTP_CODE[entErr.code] || 500;
         const errorCode = ERROR_MAP[entErr.code];
+
+        // Clear cookie on terminal states: refunded, revoked, owner_conflict
+        if (errorCode === "REPORT_REFUNDED" || errorCode === "REPORT_REVOKED" || errorCode === "REPORT_OWNER_CONFLICT") {
+          clearCookieOnce();
+        }
+
         return response.status(httpCode).json({
           ok: false,
           error: errorCode,
           message: safeErrorMessage(errorCode),
         });
       }
-      throw entErr; // unexpected → fall to outer catch
+      throw entErr;
     }
 
     // ── Only allowed=true reaches here ─────────────────────────
@@ -272,7 +319,7 @@ export default async function handler(request, response) {
     // ── Sanitise snapshot (deep clone, strip sensitive fields) ──
     const cleanReport = sanitizeSnapshot(entitlementResult.snapshot);
 
-    // ── Return stored snapshot (NEVER re-run valuation model) ──
+    // ── Return stored snapshot ─────────────────────────────────
     return response.status(200).json({
       ok: true,
       status: "completed",
@@ -284,7 +331,6 @@ export default async function handler(request, response) {
       report: cleanReport,
     });
   } catch (error) {
-    // ── Unexpected errors → safe 500 ──────────────────────────
     console.error("[valuation-full]", error.message);
     return response.status(500).json({
       ok: false,
@@ -294,7 +340,7 @@ export default async function handler(request, response) {
   }
 }
 
-// ── Safe error messages (no leak) ───────────────────────────────────
+// ── Safe error messages ─────────────────────────────────────────────
 
 function safeErrorMessage(errorCode) {
   const messages = {
