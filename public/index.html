@@ -2288,8 +2288,8 @@ th {
           <aside class="side-panel" aria-label="Valuation checks">
           <section class="panel lead-panel">
             <p class="eyebrow">Full report</p>
-            <h2>Coming Soon</h2>
-            <p>Full report - Coming Soon</p>
+            <h2 data-i18n="checkout-title">Unlock Full Valuation Report</h2>
+            <p data-i18n="checkout-subtitle">One-time payment. Access applies to this report only.</p>
             <form class="lead-form">
               <label for="lead-email">Email</label>
               <input id="lead-email" type="email" placeholder="you@example.com" />
@@ -2301,12 +2301,10 @@ th {
                 <input id="lead-consent" type="checkbox" />
                 <span>You may contact me about this property report.</span>
               </label>
-              <button id="unlock-report" type="button">Coming Soon</button>
+              <button id="unlock-report" type="button" style="min-width:44px;min-height:44px;" aria-disabled="true">Unlock Full Report — AUD $3.99</button>
               <p class="form-provider-note">Submission details are securely stored for report delivery and customer follow-up. We may record an approximate visitor region, but do not display your full IP address.</p>
               <p class="form-message" id="lead-message" aria-live="polite"></p>
-              <p class="existing-unlock">
-                <a id="existing-unlock-link" href="#">Full report - Coming Soon</a>
-              </p>
+              <p class="existing-unlock"><span id="existing-unlock-link" style="color:#66736d;font-size:0.85rem;">One-time payment to unlock the full report.</span></p>
             </form>
             <div class="report-guide hidden" id="report-guide">
               <p class="eyebrow">Report unlocked</p>
@@ -2803,6 +2801,35 @@ th {
         <div class="modal-actions">
           <button id="modal-register" type="button">Register to unlock</button>
           <button class="ghost" id="modal-close" type="button">Not now</button>
+        </div>
+      </div>
+    </dialog>
+    <!-- ── Phase 1E3D-1A: Checkout modal ── -->
+    <dialog class="unlock-modal" id="checkout-modal" aria-modal="true" aria-labelledby="checkout-title">
+      <div class="modal-content">
+        <p class="eyebrow">Unlock Full Report</p>
+        <h2 id="checkout-title">Complete your purchase</h2>
+        <div style="margin:16px 0;padding:16px;background:#f8faf9;border-radius:8px;border:1px solid #e8eeec;">
+          <p><strong>Product:</strong> Full Valuation Report</p>
+          <p><strong>Price:</strong> AUD $3.99 one-time</p>
+          <p><strong>Property:</strong> <span id="checkout-address"></span></p>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label for="checkout-email" style="display:block;font-weight:600;margin-bottom:4px;">Email <span style="color:#c62828;">*</span></label>
+          <input id="checkout-email" type="email" placeholder="you@example.com" required
+            style="width:100%;padding:10px 12px;font-size:16px;border:1px solid #c8d2cc;border-radius:6px;box-sizing:border-box;" />
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:0.9rem;">
+            <input id="checkout-consent" type="checkbox" style="margin-top:2px;" />
+            <span>I understand this is a one-time payment for access to this valuation report.</span>
+          </label>
+        </div>
+        <p style="font-size:0.8rem;color:#66736d;margin-bottom:12px;">You will be redirected to Stripe Checkout, a secure payment page. No card details are collected on this site. For refunds or help, <a href="mailto:info@aushomevalue.com.au" style="color:#0d6b57;">contact us</a>.</p>
+        <p id="checkout-message" aria-live="polite" style="font-size:0.85rem;color:#c62828;margin-bottom:8px;"></p>
+        <div class="modal-actions">
+          <button id="checkout-submit" type="button">Continue to Secure Checkout</button>
+          <button class="ghost" id="checkout-cancel" type="button">Cancel</button>
         </div>
       </div>
     </dialog>

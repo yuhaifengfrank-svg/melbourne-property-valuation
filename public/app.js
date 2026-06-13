@@ -128,9 +128,18 @@ let unlocked = false;
 let currentValuation = emptyValuation;
 let selectedLvr = 0.6;
 let language = "en";
+
+// Phase 1E3D-1A: Report draft token (memory only, never localStorage/sessionStorage/Cookie)
+var currentReportDraft = null;
+// { token, expiresAt (ISO string), address }
 let activeInvestorTheme = null;
 let uploadedEvidenceSummary = [];
 const sentLeadNotificationKeys = new Set();
+
+// Checkout state (Phase 1E3D-1A)
+var checkoutAbortController = null;
+var checkoutPending = false;
+var checkoutGeneration = 0;
 
 const marketSourceGroups = [
   {
@@ -517,14 +526,14 @@ const uiText = {
       ".mobile-confidence-label": "Confidence",
       "#mobile-report-cta": "Unlock full report details",
       ".lead-panel .eyebrow": "Full report",
-      ".lead-panel h2": "Leave details to unlock",
-      ".lead-panel > p:not(.eyebrow)": "Basic estimate is free. Register to view comparable adjustments, planning notes and report download options.",
+      '[data-i18n="checkout-title"]': "Unlock Full Valuation Report",
+      '[data-i18n="checkout-subtitle"]': "One-time payment. Access applies to this report only.",
       'label[for="lead-email"]': "Email",
       'label[for="lead-name"]': "Name",
       'label[for="lead-phone"]': "Phone optional",
       ".form-provider-note": "Submission details are securely stored for report delivery and customer follow-up. We may record an approximate visitor region, but do not display your full IP address.",
       ".consent span": "You may contact me about this property report.",
-      "#unlock-report": "Register and unlock",
+      "#unlock-report": "Unlock Full Report — AUD $3.99",
       ".side-panel .panel:nth-of-type(2) h2": "Check Status",
       ".summary-main .eyebrow": "First-layer desktop valuation",
       ".value-band div:nth-child(1) span": "Estimated value",
@@ -673,14 +682,14 @@ const uiText = {
       ".mobile-confidence-label": "置信度",
       "#mobile-report-cta": "解锁完整报告详情",
       ".lead-panel .eyebrow": "完整报告",
-      ".lead-panel h2": "留下资料解锁",
-      ".lead-panel > p:not(.eyebrow)": "基础估值免费。注册后可查看可比成交调整、规划说明和报告下载选项。",
+      '[data-i18n="checkout-title"]': "解锁完整估值报告",
+      '[data-i18n="checkout-subtitle"]': "一次性支付。仅适用于本报告。",
       'label[for="lead-email"]': "邮箱",
       'label[for="lead-name"]': "姓名",
       'label[for="lead-phone"]': "电话 选填",
       ".form-provider-note": "提交资料将安全保存，用于发送报告和客户跟进。系统可能记录大致访问地区，但不会在后台显示你的完整 IP 地址。",
       ".consent span": "我同意你可以就这份房产报告联系我。",
-      "#unlock-report": "注册并解锁",
+      "#unlock-report": "解锁完整报告 — AUD $3.99",
       ".side-panel .panel:nth-of-type(2) h2": "检查状态",
       ".side-panel .panel:nth-of-type(3) h2": "手工上传",
       ".summary-main .eyebrow": "第一层桌面估值",
@@ -1284,6 +1293,8 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         map: {},
         mapZh: {},
         evidenceSummary: "",
+        reportDraftToken: result.reportDraftToken || null,
+        draftExpiresAt: result.draftExpiresAt || null,
         evidenceSummaryZh: ""
       };
     }
@@ -1340,6 +1351,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
 
   } catch (error) {
     console.warn("Live valuation unavailable:", error.message);
+    currentReportDraft = null; // Phase 1E3D-1A: clear draft on valuation failure
     return createUnavailableValuation(address, inferredType, resolvedState, normalizedSuburb);
   }
 }
@@ -1657,8 +1669,28 @@ function renderValuation(data) {
   };
   currentValuation.builtFormVerification = buildBuiltFormVerification(currentValuation);
   data = currentValuation;
+
+  // Phase 1E3D-1A: Capture report draft token from valuation (memory only)
+  if (data.reportDraftToken) {
+    currentReportDraft = {
+      token: data.reportDraftToken,
+      expiresAt: data.draftExpiresAt || null,
+      address: data.address || ""
+    };
+  } else if (data.addressMismatch) {
+    // Address mismatch — clear regardless
+    currentReportDraft = null;
+  } else if (!data.reportDraftToken && currentValuation.status === "Pending") {
+    // No new token and status is Pending (init/error flow):
+    // only clear if we don't already have a valid unexpired token.
+    var _hasValidDraft = currentReportDraft && currentReportDraft.expiresAt && new Date(currentReportDraft.expiresAt) > new Date();
+    if (!_hasValidDraft) {
+      currentReportDraft = null;
+    }
+  }
   const planningLabels = getPlanningLabels(data);
   // 地址核验冲突：显示警告消息而非地址
+  // Phase 1E3D-1A: Clear draft token on address mismatch or error
   if (data.addressMismatch) {
     const warnMsg = data.mismatchMessage || (language === "zh" ? "地址核验不一致，请确认" : "Address verification failed");
     byId("property-address").textContent = "⚠ " + warnMsg;
@@ -1708,6 +1740,7 @@ function renderValuation(data) {
     renderLoanScenario();
   renderMarketCrosscheck(data);
   renderLockState();
+  updatePurchaseButton();
   renderEvidenceReview(language === "zh" && data.evidenceSummaryZh ? data.evidenceSummaryZh : data.evidenceSummary);
   // 估值模式标签（大块地/标准）
   const modeBadge = byId("valuation-mode-badge");
@@ -1783,7 +1816,12 @@ function applyLanguage() {
   byId("lead-phone").placeholder = language === "zh" ? "下载 PDF 时需要" : "For PDF download";
   var existingLink = byId("existing-unlock-link");
   if (existingLink) {
-    existingLink.textContent = language === "zh" ? "完整报告即将推出..." : "Full report -- Coming Soon...";
+    existingLink.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+  }
+  // Phase 1E3D-1A: Also update i18n for unlock button text
+  var unlockBtn2 = byId("unlock-report");
+  if (unlockBtn2) {
+    unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
   }
   byId("manual-data-notes").placeholder =
     language === "zh"
@@ -2363,6 +2401,12 @@ async function downloadDemoReport() {
 }
 
 byId("start-valuation").addEventListener("click", async () => {
+  // Phase 1E3D-1A: Cancel any pending checkout when new valuation starts
+  cancelCheckoutRequest();
+  // Also clear draft token — new valuation may overwrite it
+  currentReportDraft = null;
+  updatePurchaseButton();
+
   const button = byId("start-valuation");
   const originalText = button.textContent;
   button.disabled = true;
@@ -2412,21 +2456,323 @@ byId("language-toggle").addEventListener("click", () => {
   applyLanguage();
 });
 
-const unlockBtn = byId("unlock-report");
+// ── Phase 1E3D-1A: Purchase button & checkout ───────────────────────
+
+/**
+ * Update the purchase button state based on currentReportDraft validity.
+ */
+function updatePurchaseButton() {
+  var btn = byId("unlock-report");
+  if (!btn) return;
+  var draftValid = false;
+  if (currentReportDraft && currentReportDraft.token) {
+    if (currentReportDraft.expiresAt) {
+      var expires = new Date(currentReportDraft.expiresAt);
+      draftValid = expires > new Date();
+    } else {
+      draftValid = true; // no expiry info means assume valid
+    }
+  }
+  btn.disabled = !draftValid;
+  btn.setAttribute("aria-disabled", draftValid ? "false" : "true");
+}
+
+/**
+ * Validate that a URL is a secure Stripe Checkout URL (white-list).
+ * @param {string} urlStr
+ * @returns {boolean}
+ */
+function isValidCheckoutUrl(urlStr) {
+  try {
+    var url = new URL(urlStr);
+    return url.protocol === "https:" && url.hostname === "checkout.stripe.com";
+  } catch (_) {
+    return false;
+  }
+}
+
+/**
+ * Navigate to a checkout URL. Extracted so tests can replace the navigator.
+ * @param {string} url - must already pass isValidCheckoutUrl
+ */
+window._navigateTo = function (url) {
+  window.location.href = url;
+};
+var _navigateTo = window._navigateTo; // aliased for closure access below
+
+/**
+ * Open the checkout modal. Called from purchase button click.
+ */
+function openCheckoutModal() {
+  var modal = byId("checkout-modal");
+  if (!modal || typeof modal.showModal !== "function") return;
+  // Populate address
+  var addrEl = byId("checkout-address");
+  if (addrEl && currentReportDraft) {
+    addrEl.textContent = currentReportDraft.address || "";
+  }
+  // Clear previous errors
+  var msgEl = byId("checkout-message");
+  if (msgEl) msgEl.textContent = "";
+  // Enable submit button
+  var submitBtn = byId("checkout-submit");
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = language === "zh" ? "前往安全支付" : "Continue to Secure Checkout";
+  }
+  modal.showModal();
+}
+
+/**
+ * Cancel any pending checkout request.
+ */
+function cancelCheckoutRequest() {
+  // Bump generation so stale finally blocks become no-ops
+  checkoutGeneration++;
+  if (checkoutAbortController) {
+    checkoutAbortController.abort();
+    checkoutAbortController = null;
+  }
+  checkoutPending = false;
+  window.checkoutPending = checkoutPending; // test reflection
+}
+
+/**
+ * Handle the checkout form submission — POST /api/create-report-checkout
+ */
+async function handleCheckoutSubmit() {
+  if (checkoutPending) return;
+
+  // Generation guard: track which "generation" this request belongs to
+  // so the finally of an older generation can't corrupt a newer one.
+  var gen = ++checkoutGeneration;
+
+  var email = byId("checkout-email").value.trim();
+  var consentCheck = byId("checkout-consent");
+  var msgEl = byId("checkout-message");
+  var submitBtn = byId("checkout-submit");
+
+  // ── Validate email ──
+  if (!email || email.indexOf("@") < 1 || email.indexOf(".") < email.indexOf("@") + 2) {
+    if (msgEl) msgEl.textContent = language === "zh" ? "请输入有效的邮箱地址。" : "Please enter a valid email address.";
+    byId("checkout-email").focus();
+    return;
+  }
+
+  // ── Validate service processing consent ──
+  if (!consentCheck || !consentCheck.checked) {
+    if (msgEl) msgEl.textContent = language === "zh" ? "请勾选服务处理授权。" : "Please confirm the service processing consent.";
+    return;
+  }
+
+  // ── Validate draft token ──
+  if (!currentReportDraft || !currentReportDraft.token) {
+    if (msgEl) msgEl.textContent = language === "zh" ? "估值会话已过期，请重新搜索地址。" : "This valuation session is no longer valid. Please run a new valuation.";
+    cancelCheckoutRequest();
+    return;
+  }
+
+  // Mark pending, disable button
+  checkoutPending = true;
+  window.checkoutPending = checkoutPending; // test reflection
+  if (submitBtn) submitBtn.disabled = true;
+  if (msgEl) msgEl.textContent = "";
+
+  // ── Create AbortController ──
+  // Cancel any previous request WITHOUT resetting checkoutPending
+  // (cancelCheckoutRequest also resets checkoutPending, so we inline the abort)
+  if (checkoutAbortController) {
+    checkoutAbortController.abort();
+    checkoutAbortController = null;
+  }
+  checkoutAbortController = new AbortController();
+
+  try {
+    var response = await fetch("/api/create-report-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      signal: checkoutAbortController.signal,
+      body: JSON.stringify({
+        email: email,
+        reportDraftToken: currentReportDraft.token
+      })
+    });
+
+    // ── Parse response ──
+    var data;
+    try {
+      data = await response.json();
+    } catch (_parseErr) {
+      throw new Error("PARSE_FAILED");
+    }
+
+    // ── Success: has checkoutUrl ──
+    if (data.ok && data.checkoutUrl) {
+      if (!isValidCheckoutUrl(data.checkoutUrl)) {
+        throw new Error("INVALID_CHECKOUT_URL");
+      }
+      // Navigate current window — guard: only one navigation per page load
+      window._navigateTo(data.checkoutUrl);
+      return;
+    }
+
+    // ── Already purchased (entitlement exists) ──
+    if (data.ok && data.alreadyPurchased) {
+      if (data.reportId) {
+        window.location.href = "/report-success.html?report_id=" + encodeURIComponent(data.reportId);
+        return;
+      }
+      // No reportId — still success but can't navigate directly
+      if (msgEl) msgEl.textContent = language === "zh" ? "报告已解锁，即将跳转…" : "Report already unlocked, redirecting…";
+      return;
+    }
+
+    // ── Payment awaiting entitlement ──
+    if (data.error === "PAYMENT_AWAITING_ENTITLEMENT") {
+      if (data.reportId) {
+        window.location.href = "/report-success.html?report_id=" + encodeURIComponent(data.reportId);
+        return;
+      }
+      if (msgEl) msgEl.textContent = language === "zh" ? "支付正在确认中，请稍后再试。" : "Payment is being confirmed. Please try again shortly.";
+      return;
+    }
+
+    // ── Error mapping ──
+    var errorMsg = handleCheckoutError(data.error);
+
+    // DRAFT_EXPIRED / INVALID_DRAFT_TOKEN — disable purchase button
+    if (data.error === "DRAFT_EXPIRED" || data.error === "INVALID_DRAFT_TOKEN") {
+      currentReportDraft = null;
+      updatePurchaseButton();
+    }
+
+    if (msgEl) msgEl.textContent = errorMsg;
+  } catch (err) {
+    if (err.name === "AbortError") {
+      // Request cancelled — do nothing
+      return;
+    }
+    if (err.message === "INVALID_CHECKOUT_URL") {
+      if (msgEl) msgEl.textContent = language === "zh" ? "支付连接无效，请重试。" : "Invalid checkout URL. Please try again.";
+    } else if (err.message === "PARSE_FAILED") {
+      if (msgEl) msgEl.textContent = language === "zh" ? "服务器响应异常，请重试。" : "Unexpected server response. Please try again.";
+    } else {
+      if (msgEl) msgEl.textContent = language === "zh" ? "无法启动支付，请重试。" : "Unable to start checkout. Please try again.";
+    }
+  } finally {
+    // Generation guard: if a newer request started, don't mutate state
+    if (gen !== checkoutGeneration) return;
+    checkoutPending = false;
+    window.checkoutPending = checkoutPending; // test reflection
+    if (checkoutAbortController) {
+      checkoutAbortController = null;
+    }
+    if (submitBtn) submitBtn.disabled = false;
+  }
+}
+
+/**
+ * Map API error codes to user-facing messages (safe — never expose raw message).
+ */
+function handleCheckoutError(errCode) {
+  switch (errCode) {
+    case "INVALID_EMAIL":
+      return language === "zh" ? "请输入有效的邮箱地址。" : "Please enter a valid email address.";
+    case "INVALID_DRAFT_TOKEN":
+    case "DRAFT_EXPIRED":
+      return language === "zh" ? "估值会话已过期，请重新搜索地址。" : "This valuation session is no longer valid. Please run a new valuation.";
+    case "REPORT_OWNER_CONFLICT":
+      return language === "zh" ? "该报告已关联到另一个邮箱。" : "This report is linked to another email.";
+    case "STRIPE_NOT_CONFIGURED":
+      return language === "zh" ? "安全支付暂时不可用。" : "Secure checkout is temporarily unavailable.";
+    case "CHECKOUT_CREATE_FAILED":
+      return language === "zh" ? "无法启动支付，请重试。" : "Unable to start checkout. Please try again.";
+    case "PAYMENT_AWAITING_ENTITLEMENT":
+      return language === "zh" ? "支付正在确认中，请稍后再试。" : "Payment is being confirmed. Please try again shortly.";
+    default:
+      return language === "zh" ? "发生未知错误，请重试。" : "An unexpected error occurred. Please try again.";
+  }
+}
+
+// Expose for testing
+// Expose for testing
+window.cancelCheckoutRequest = cancelCheckoutRequest;
+window.handleCheckoutError = handleCheckoutError;
+window.renderValuation = renderValuation;
+window.handleCheckoutSubmit = handleCheckoutSubmit;
+window.updatePurchaseButton = updatePurchaseButton;
+window.openCheckoutModal = openCheckoutModal;
+window.isValidCheckoutUrl = isValidCheckoutUrl;
+// Reflection-only — safe for tests; production code MUST NOT read/write window.checkoutPending
+window.checkoutPending = false;
+// _navigateTo already assigned at declaration site — no need to reassign here
+
+// ── Wire up purchase button ──
+var unlockBtn = byId("unlock-report");
 if (unlockBtn) {
-  unlockBtn.addEventListener("click", async function () {
-    alert(language === "zh" ? "完整报告即将推出，敬请期待。" : "Full report coming soon.");
+  unlockBtn.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+  // Keyboard: Enter / Space
+  unlockBtn.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (!unlockBtn.disabled) openCheckoutModal();
+    }
+  });
+  unlockBtn.addEventListener("click", function () {
+    if (!unlockBtn.disabled) openCheckoutModal();
+  });
+}
+
+// ── Wire up checkout modal ──
+var checkoutModal = byId("checkout-modal");
+if (checkoutModal) {
+  // Close on cancel button
+  var checkoutCancel = byId("checkout-cancel");
+  if (checkoutCancel) {
+    checkoutCancel.addEventListener("click", function () {
+      cancelCheckoutRequest();
+      checkoutModal.close();
+    });
+  }
+  // Close on backdrop click
+  checkoutModal.addEventListener("click", function (e) {
+    if (e.target === checkoutModal) {
+      cancelCheckoutRequest();
+      checkoutModal.close();
+    }
+  });
+  // Close on Esc
+  checkoutModal.addEventListener("cancel", function () {
+    cancelCheckoutRequest();
+  });
+  // Focus first input on open
+  checkoutModal.addEventListener("close", function () {
+    // Return focus to purchase button
+    if (unlockBtn) unlockBtn.focus();
+  });
+}
+
+// ── Wire up checkout submit ──
+var checkoutSubmit = byId("checkout-submit");
+if (checkoutSubmit) {
+  checkoutSubmit.addEventListener("click", handleCheckoutSubmit);
+}
+
+// ── Wire up checkout email on Enter in the modal ──
+var checkoutEmail = byId("checkout-email");
+if (checkoutEmail) {
+  checkoutEmail.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleCheckoutSubmit();
+    }
   });
 }
 
 /* Full report and PDF — Coming Soon only */
-const existingLink = byId("existing-unlock-link");
-if (existingLink) {
-  existingLink.addEventListener("click", async (e) => {
-    e.preventDefault();
-    alert(language === "zh" ? "完整报告即将推出，敬请期待。" : "Full report coming soon.");
-  });
-}
+// existing-unlock-link is now a span — no longer needs click handler
+// The purchase flow is triggered via #unlock-report button
 
 const mobileBtn = byId("mobile-report-cta");
 if (mobileBtn) {
