@@ -203,6 +203,19 @@
       to { transform: rotate(360deg); }
     }
 
+    /* ── Screen-reader only ── */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+
     /* ── Hide all statuses by default ── */
     .rs-page { display: none; }
 
@@ -271,7 +284,7 @@
         <h2 class="rs-title">Your report is ready</h2>
         <p class="rs-desc">Your property report is ready to view. Click the button below to open it.</p>
         <div class="rs-actions">
-          <a href="#" class="rs-btn rs-btn-primary" id="btn-view-report">View report</a>
+          <button class="rs-btn rs-btn-primary" id="btn-view-report" aria-disabled="true" type="button">Report ready — viewer connecting next</button>
           <a href="/" class="rs-btn rs-btn-ghost">Return to home</a>
         </div>
       </div>
@@ -441,6 +454,8 @@
     <p>&copy; 2026 AusHomeValue. Authorised Representatives: <a href="mailto:info@aushomevalue.com.au">info@aushomevalue.com.au</a></p>
     <p>This website provides general property information and research for educational purposes. Not financial advice, not a credit assessment, not a formal valuation. Always consult licensed professionals for legal, tax and lending decisions.</p>
   </footer>
+
+  <div id="rs-aria-live" aria-live="polite" aria-atomic="true" class="sr-only"></div>
 
   <script src="/report-success.js"></script>
 

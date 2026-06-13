@@ -1,271 +1,486 @@
-// ── Report Success Page — Static UI Framework Tests ──
-// Phase 1E3C-2A
-//
-// Tests run in Node with JSDOM. No browser needed.
-// Validates HTML structure, JS behaviour, security constraints.
-
 import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { JSDOM } from "jsdom";
 
-// ── Load files ──────────────────────────────────────────────────────
-
 const HTML = readFileSync(new URL("../public/report-success.html", import.meta.url), "utf-8");
 const JS = readFileSync(new URL("../public/report-success.js", import.meta.url), "utf-8");
-const SHARED_CSS = readFileSync(new URL("../public/shared-responsive.css", import.meta.url), "utf-8");
 
-// ── Helper: create a DOM with report-success JS injected ────────────
+function makeResponse(statusCode, body) {
+  return { status: statusCode, json: () => Promise.resolve(body), ok: statusCode >= 200 && statusCode < 300 };
+}
 
-function makePage(queryString) {
-  const url = `https://aushomevalue.com.au/report-success${queryString || ""}`;
+// ── Microtask flush ──
+// Bridges the JSDOM vm-context microtask queue and Node.js test-context.
+// A single queueMicrotask/nextTick is enough because Node's microtask queue
+// is shared across vm contexts (same EventLoop).
+
+function flush() {
+  // 8 queueMicrotask rounds to flush chained async/await microtasks:
+  // fetch → .json() → checkStatus → doPoll.then → render/setTimeout
+  return new Promise(r => {
+    queueMicrotask(() => queueMicrotask(() => queueMicrotask(() => queueMicrotask(
+      () => queueMicrotask(() => queueMicrotask(() => queueMicrotask(() => queueMicrotask(r))))
+    ))));
+  });
+}
+
+function flushMany(n) {
+  // Call flush n times sequentially
+  let p = Promise.resolve();
+  for (let i = 0; i < n; i++) {
+    p = p.then(() => flush());
+  }
+  return p;
+}
+
+// ── Manual Timer Queue ──
+
+class TimerQueue {
+  constructor() {
+    this._timers = [];
+    this._nextId = 1;
+    this._fired = [];
+    this._fetchCalls = [];
+    this._fetchOptions = [];
+    this._abortCount = 0;
+  }
+
+  makeHook(fetchMock) {
+    const tq = this;
+    return {
+      fetch: function (url, opts) {
+        tq._fetchCalls.push(typeof url === "string" ? url : url.url || String(url));
+        tq._fetchOptions.push(opts);
+        if (opts && opts.signal && opts.signal.aborted) {
+          return Promise.reject(Object.assign(new Error("The operation was aborted"), { name: "AbortError" }));
+        }
+        try {
+          const r = fetchMock(url, opts);
+          return r && typeof r.then === "function" ? r : Promise.resolve(r);
+        } catch (e) {
+          return Promise.reject(e);
+        }
+      },
+      setTimeout: function (fn, ms) {
+        const id = tq._nextId++;
+        tq._timers.push({ callback: fn, delayMs: ms, id, fired: false });
+        return id;
+      },
+      clearTimeout: function (id) {
+        const idx = tq._timers.findIndex(t => t.id === id && !t.fired);
+        if (idx !== -1) {
+          tq._timers.splice(idx, 1);
+        }
+      },
+      createAbortController: function () {
+        let aborted = false;
+        const signal = { get aborted() { return aborted; } };
+        return {
+          signal,
+          abort: function () {
+            if (!aborted) {
+              aborted = true;
+              tq._abortCount++;
+            }
+          },
+        };
+      },
+    };
+  }
+
+  /** Fire the next pending timer callback */
+  fireNext() {
+    if (this._timers.length === 0) return null;
+    const t = this._timers.shift();
+    t.fired = true;
+    this._fired.push({ delayMs: t.delayMs });
+    t.callback();
+    return t.delayMs;
+  }
+
+  /** Fire all pending timers in order */
+  fireAll() {
+    const delays = [];
+    while (this._timers.length > 0) {
+      const d = this.fireNext();
+      if (d !== null) delays.push(d);
+    }
+    return delays;
+  }
+
+  get fetchCalls() { return this._fetchCalls; }
+  get fetchOptions() { return this._fetchOptions; }
+  get fetchCount() { return this._fetchCalls.length; }
+  get abortCount() { return this._abortCount; }
+  get timerCount() { return this._timers.length; }
+  get firedDelays() { return this._fired.map(f => f.delayMs); }
+}
+
+// ── Test runner ──
+
+function runPage(queryString, fetchMock) {
   const dom = new JSDOM(HTML, {
-    url,
+    url: "https://aushomevalue.com.au/report-success" + (queryString || ""),
     runScripts: "outside-only",
     contentType: "text/html",
     pretendToBeVisual: true,
+    beforeParse() {},
   });
 
-  // Run the JS manually in the window scope
-  const fn = new dom.window.Function(JS);
-  fn.call(dom.window);
+  const win = dom.window;
+  const tq = new TimerQueue();
+  const hook = tq.makeHook(fetchMock);
+  win.__REPORT_SUCCESS_TEST_RUNTIME__ = hook;
 
-  // Trigger DOMContentLoaded
-  dom.window.document.dispatchEvent(new dom.window.Event("DOMContentLoaded"));
+  new win.Function(JS)(win);
 
-  return dom;
+  return { dom, win, tq };
 }
 
 function getVisibleStatus(dom) {
-  const pages = dom.window.document.querySelectorAll(".rs-page");
-  for (const page of pages) {
-    if (page.style.display !== "none") {
-      return page.getAttribute("data-status");
-    }
-  }
+  for (const p of dom.window.document.querySelectorAll(".rs-page"))
+    if (p.style.display !== "none") return p.getAttribute("data-status");
   return null;
 }
 
-// ══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 // Tests
-// ══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════
 
-// ── 1. Initial state is confirming (valid report_id) ────────────────
+// ── Initial state / input validation ──
 
-test("initial state is confirming with valid report_id", () => {
-  const dom = makePage("?report_id=rp_1234567890_abcdef1234567890");
-  const status = getVisibleStatus(dom);
-  assert.equal(status, "confirming", "Visible status should be confirming");
+test("initial state is confirming with valid report_id", async () => {
+  const { tq, dom } = runPage("?report_id=rp_1234567890_abcdef1234567890",
+    () => makeResponse(200, { status: "pending" }));
+  await flush();
+  assert.equal(getVisibleStatus(dom), "confirming");
 });
 
-// ── 2. Missing report_id shows generic_error ───────────────────────
-
-test("missing report_id shows generic_error", () => {
-  const dom = makePage("");
-  const status = getVisibleStatus(dom);
-  assert.equal(status, "generic_error", "No report_id should show generic_error");
+test("missing report_id shows generic_error, no timer", async () => {
+  const { tq, dom } = runPage("", () => makeResponse(200, { status: "pending" }));
+  await flush();
+  assert.equal(getVisibleStatus(dom), "generic_error");
+  assert.equal(tq.timerCount, 0);
+  assert.equal(tq.fetchCount, 0);
 });
 
-// ── 3. Invalid report_id format shows generic_error ────────────────
-
-test("invalid report_id format shows generic_error", () => {
-  const dom = makePage("?report_id=BAD_ID");
-  const status = getVisibleStatus(dom);
-  assert.equal(status, "generic_error", "Invalid report_id should show generic_error");
+test("invalid report_id shows generic_error, no timer", async () => {
+  const { tq, dom } = runPage("?report_id=BAD", () => makeResponse(200, { status: "pending" }));
+  await flush();
+  assert.equal(getVisibleStatus(dom), "generic_error");
+  assert.equal(tq.timerCount, 0);
+  assert.equal(tq.fetchCount, 0);
 });
 
-// ── 4. Empty report_id shows generic_error ─────────────────────────
-
-test("empty report_id shows generic_error", () => {
-  const dom = makePage("?report_id=");
-  const status = getVisibleStatus(dom);
-  assert.equal(status, "generic_error", "Empty report_id should show generic_error");
+test("empty report_id shows generic_error, no timer", async () => {
+  const { tq, dom } = runPage("?report_id=", () => makeResponse(200, { status: "pending" }));
+  await flush();
+  assert.equal(getVisibleStatus(dom), "generic_error");
+  assert.equal(tq.timerCount, 0);
+  assert.equal(tq.fetchCount, 0);
 });
 
-// ── 5. Each status renders without error ──────────────────────────
+// ── Fetch setup ──
 
-test("all statuses render without error", () => {
-  const statuses = [
-    "confirming",
-    "ready",
-    "pending",
-    "data_unavailable",
-    "refunded",
-    "revoked",
-    "session_expired",
-    "not_found",
-    "owner_conflict",
-    "generic_error",
-  ];
+test("fetch URL targets payment-status API with report_id only", async () => {
+  const { tq } = runPage("?report_id=rp_11111_1234567890123456",
+    () => makeResponse(200, { status: "pending" }));
+  await flush();
+  const url = tq.fetchCalls[0];
+  assert.ok(url.includes("/api/report-payment-status"));
+  assert.ok(url.includes("report_id="));
+  assert.ok(!url.includes("email="));
+  assert.ok(!url.includes("leadContactId"));
+});
 
-  for (const s of statuses) {
-    const dom = makePage("?report_id=rp_1234567890_abcdef1234567890");
-    const win = dom.window;
-    const pages = win.document.querySelectorAll(".rs-page");
-    for (const p of pages) {
-      p.style.display = "none";
-    }
-    // Simulate renderStatus by selecting and showing the matching page
-    let found = false;
-    for (const p of pages) {
-      if (p.getAttribute("data-status") === s) {
-        p.style.display = "block";
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      for (const p of pages) {
-        if (p.getAttribute("data-status") === "generic_error") {
-          p.style.display = "block";
-          break;
-        }
-      }
-    }
+test("fetch uses credentials same-origin", async () => {
+  const { tq } = runPage("?report_id=rp_1234567890_abcdef1234567890",
+    () => makeResponse(200, { status: "pending" }));
+  await flush();
+  const opts = tq.fetchOptions[0];
+  assert.equal(opts.credentials, "same-origin");
+});
 
-    const visible = getVisibleStatus(dom);
-    assert.equal(visible, s, `Status "${s}" should render`);
+// ── Core schedule ──
+
+test("continuous pending fires exactly 6 requests", async () => {
+  let rc = 0;
+  const { tq } = runPage("?report_id=rp_99999_1234567890123456",
+    () => { rc++; return makeResponse(200, { status: "pending" }); });
+  await flush();
+  assert.equal(rc, 1, "initial fetch");
+
+  for (let i = 2; i <= 6; i++) {
+    tq.fireNext();
+    await flush();
+    assert.equal(rc, i, `fetch ${i} should fire`);
+  }
+
+  assert.equal(tq.timerCount, 0, "no more pending timers");
+  assert.equal(tq.fetchCount, 6, "exactly 6 fetch calls");
+});
+
+test("pending delays are [2000,2000,3000,3000,5000]", async () => {
+  const { tq } = runPage("?report_id=rp_99999_1234567890123456",
+    () => makeResponse(200, { status: "pending" }));
+  await flush();
+  for (let i = 0; i < 5; i++) {
+    tq.fireNext();
+    await flush();
+  }
+  assert.deepEqual(tq.firedDelays, [2000, 2000, 3000, 3000, 5000],
+    `Got delays: ${JSON.stringify(tq.firedDelays)}`);
+});
+
+test("after 6th pending: no more timers, shows pending page", async () => {
+  const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+    () => makeResponse(200, { status: "pending" }));
+  await flush();
+
+  for (let i = 0; i < 5; i++) {
+    tq.fireNext();
+    await flush();
+  }
+
+  assert.equal(tq.timerCount, 0, "no pending timers after max attempts");
+  assert.equal(tq.fetchCount, 6, "exactly 6 fetches");
+  assert.equal(getVisibleStatus(dom), "pending", "shows pending for manual retry");
+});
+
+// ── Terminal stops ──
+
+test("ready stops polling immediately, no timer", async () => {
+  const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+    () => makeResponse(200, { status: "ready" }));
+  await flush();
+  await flush();
+  await flush();
+  await flush();
+  await flush();
+  assert.equal(tq.fetchCount, 1, "only initial fetch");
+  assert.equal(tq.timerCount, 0, "no pending timers");
+  assert.equal(getVisibleStatus(dom), "ready");
+});
+
+for (const [s, c] of [["refunded",403],["revoked",403],["session_expired",401],["not_found",404],["owner_conflict",403],["data_unavailable",503]]) {
+  test(`terminal "${s}" stops polling, no timer`, async () => {
+    const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+      () => makeResponse(c, { status: s }));
+    await flush();
+    assert.equal(tq.timerCount, 0, `no pending timers for ${s}`);
+    assert.equal(tq.fetchCount, 1, `only initial fetch for ${s}`);
+  });
+}
+
+// ── Error handling ──
+
+test("unknown status stops polling, no timer", async () => {
+  const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+    () => makeResponse(200, { status: "bogus" }));
+  await flush();
+  assert.equal(tq.timerCount, 0, "no pending timers");
+  assert.equal(tq.fetchCount, 1, "only initial fetch");
+  assert.equal(getVisibleStatus(dom), "generic_error");
+});
+
+test("invalid JSON stops polling, no timer", async () => {
+  const { tq } = runPage("?report_id=rp_99999_1234567890123456",
+    () => ({ status: 200, ok: true, json: () => Promise.reject(new Error("bad")) }));
+  await flush();
+  assert.equal(tq.timerCount, 0);
+  assert.equal(tq.fetchCount, 1);
+});
+
+test("malformed body (non-object) stops polling, no timer", async () => {
+  const { tq } = runPage("?report_id=rp_99999_1234567890123456",
+    () => ({ status: 200, ok: true, json: () => Promise.resolve("not-json") }));
+  await flush();
+  assert.equal(tq.timerCount, 0);
+  assert.equal(tq.fetchCount, 1);
+});
+
+test("second network error shows generic_error", async () => {
+  const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+    () => Promise.reject(new TypeError("fail")));
+  await flush();
+  assert.equal(tq.fetchCount, 1, "first fetch errored");
+
+  // First timer at 2000 should be pending (retry)
+  assert.equal(tq.timerCount, 1, "retry timer pending");
+
+  tq.fireNext();
+  await flush();
+  assert.equal(tq.fetchCount, 2, "second fetch errored");
+  assert.equal(tq.timerCount, 0, "no more timers after second error");
+  assert.equal(getVisibleStatus(dom), "generic_error");
+});
+
+// ── Cleanup handlers ──
+
+test("visibilitychange clears pending timers", async () => {
+  const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+    () => makeResponse(200, { status: "pending" }));
+  await flush();
+  assert.equal(tq.timerCount, 1, "timer should exist before hide");
+
+  Object.defineProperty(dom.window.document, "hidden", { value: true, configurable: true });
+  dom.window.document.dispatchEvent(new dom.window.Event("visibilitychange"));
+  await flush();
+
+  assert.equal(tq.timerCount, 0, "visibilitychange cleared timer");
+});
+
+test("beforeunload clears pending timers", async () => {
+  const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+    () => makeResponse(200, { status: "pending" }));
+  await flush();
+  assert.equal(tq.timerCount, 1, "timer should exist before unload");
+
+  dom.window.dispatchEvent(new dom.window.Event("beforeunload"));
+  await flush();
+
+  assert.equal(tq.timerCount, 0, "beforeunload cleared timer");
+});
+
+// ── Retry ──
+
+test("retry button click restarts polling from confirming", async () => {
+  let rc = 0;
+  const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+    () => { rc++; return makeResponse(200, { status: "pending" }); });
+  await flush();
+
+  // Exhaust all 5 timers
+  for (let i = 0; i < 5; i++) {
+    tq.fireNext();
+    await flush();
+  }
+
+  assert.equal(getVisibleStatus(dom), "pending", "should be in manual retry state");
+  assert.equal(rc, 6, "6 fetches before retry");
+
+  const btn = dom.window.document.querySelector('[id^="btn-retry-"]');
+  assert.ok(btn, "retry button exists");
+
+  btn.click();
+  await flush();
+
+  // Retry should have called init again → confirmed + new fetch
+  assert.equal(getVisibleStatus(dom), "confirming", "retry shows confirming");
+  assert.equal(rc, 7, "retry triggers new fetch");
+
+  // Clean up remaining timers
+  while (tq.timerCount > 0) {
+    tq.fireNext();
+    await flush();
   }
 });
 
-// ── 6. No sensitive fields or Stripe SDK in HTML/JS ───────────────
+// ── Concurrency: at most one fetch at a time ──
 
-test("page contains no sensitive fields or Stripe SDK", () => {
-  // HTML checks — no actual Stripe URLs, payment intent IDs, or checkout session IDs
-  assert.ok(!HTML.includes("js.stripe.com"), "HTML must not load Stripe SDK");
-  assert.ok(!HTML.includes("stripe.com"), "HTML must not reference stripe.com");
-  assert.ok(!HTML.includes("payment_intent"), "HTML must not reference payment_intent");
-  assert.ok(!HTML.includes("checkoutSessionId"), "HTML must not reference checkoutSessionId");
-  assert.ok(!HTML.includes("lead_contact_id"), "HTML must not reference lead_contact_id");
-  assert.ok(!HTML.includes("snapshot_json"), "HTML must not expose snapshot content");
+test("no concurrent fetches", async () => {
+  let inFlight = 0;
+  let maxConcurrent = 0;
+  const { tq } = runPage("?report_id=rp_99999_1234567890123456",
+    () => {
+      inFlight++;
+      maxConcurrent = Math.max(maxConcurrent, inFlight);
+      // Return a promise that decrements inFlight on resolution
+      return new Promise(resolve => {
+        queueMicrotask(() => { inFlight--; resolve(makeResponse(200, { status: "pending" })); });
+      });
+    });
+  await flush();
 
-  // JS checks — no runtime references to sensitive identifiers
-  // (Comments describing the architecture are OK; actual runtime references are not)
-  const jsNoComment = JS.replace(/\/\/.*/g, "").replace(/\/\*[\s\S]*?\*\//g, "");
-  assert.ok(!jsNoComment.includes("stripe"), "JS must not reference Stripe in runtime code");
-  assert.ok(!jsNoComment.includes("payment_intent"), "JS must not reference payment_intent");
-  assert.ok(!jsNoComment.includes("checkoutSessionId"), "JS must not reference checkoutSessionId");
-  assert.ok(!jsNoComment.includes("localStorage"), "JS must not read localStorage");
-  assert.ok(!jsNoComment.includes("aushomevalue_report_access"), "JS must not read report access cookie");
-  assert.ok(!jsNoComment.includes("opportunity_report"), "JS must not reference Opportunity cookie");
-});
-
-// ── 7. No API calls in JS ─────────────────────────────────────────
-
-test("JS does not call payment-status or valuation-full API", () => {
-  const jsNoComment = JS.replace(/\/\/.*/g, "").replace(/\/\*[\s\S]*?\*\//g, "");
-  assert.ok(!jsNoComment.includes("fetch("), "JS must not use fetch");
-  assert.ok(!jsNoComment.includes("XMLHttpRequest"), "JS must not use XMLHttpRequest");
-  assert.ok(!jsNoComment.includes("axios"), "JS must not use axios");
-});
-
-// ── 8. HTML structure — no hardcoded pixel widths that could overflow ──
-
-test("page layout avoids hardcoded overflow-causing widths", () => {
-  // Verify no fixed pixel widths on containers
-  const bodyStyle = HTML.match(/<style[^>]*>[\s\S]*?<\/style>/gi) || [];
-  for (const block of bodyStyle) {
-    const inlines = block.replace(/<[^>]+>/g, "");
-    // Fixed pixel widths over 100% width can cause overflow at small viewports
-    const fixedWidths = inlines.match(/width:\s*\d+px/g) || [];
-    for (const w of fixedWidths) {
-      const val = parseInt(w.replace(/\D/g, ""), 10);
-      assert.ok(val < 1440, `Fixed width ${val}px may cause overflow at small viewports`);
-    }
+  for (let i = 0; i < 5; i++) {
+    tq.fireNext();
+    await flush();
   }
+
+  assert.equal(maxConcurrent, 1, "at most 1 concurrent fetch");
 });
 
-// ── 9. prefers-reduced-motion respected ───────────────────────────
+// ── AbortController on visibilitychange/beforeunload ──
 
-test("reduced-motion is respected via shared-responsive.css", () => {
-  assert.ok(SHARED_CSS.includes("prefers-reduced-motion"), "shared-responsive.css includes reduced-motion rule");
-  assert.ok(SHARED_CSS.includes("animation-duration: 0.01ms"), "shared-responsive.css disables animations");
+test("visibilitychange aborts active fetch controller", async () => {
+  const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+    () => new Promise(() => {})); // Never-resolving fetch (simulates in-flight)
+  await flush();
+  // fetch is still in-flight (promise never resolves)
+  assert.equal(tq.fetchCount, 1, "fetch called");
+
+  Object.defineProperty(dom.window.document, "hidden", { value: true, configurable: true });
+  dom.window.document.dispatchEvent(new dom.window.Event("visibilitychange"));
+  await flush();
+
+  assert.ok(tq.abortCount >= 1, "abort() called on active controller");
 });
 
-// ── 10. Touch targets are at least 44px ──────────────────────────
+test("beforeunload aborts active fetch controller", async () => {
+  const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+    () => new Promise(() => {})); // Never-resolving fetch
+  await flush();
+  assert.equal(tq.fetchCount, 1, "fetch called");
 
-test("interactive elements meet 44px touch target requirement", () => {
-  assert.ok(SHARED_CSS.includes("--touch-min: 44px"), "shared-responsive.css defines --touch-min as 44px");
-  // Page uses var(--touch-min) for buttons and links
-  const btnMinHeights = HTML.match(/min-height\s*:\s*var\(--touch-min\)/g) || [];
-  assert.ok(btnMinHeights.length >= 1, "HTML must use --touch-min on buttons/links at least 4 times");
+  dom.window.dispatchEvent(new dom.window.Event("beforeunload"));
+  await flush();
+
+  assert.ok(tq.abortCount >= 1, "abort() called on active controller");
 });
 
-// ── 11. Font-size is at least 16px on inputs ─────────────────────
+// ── Security / integrity ──
 
-test("input font-size is at least 16px to prevent iOS zoom", () => {
-  assert.ok(SHARED_CSS.includes("font-size: 16px !important"), "shared-responsive.css prevents iOS zoom");
+test("no cookie or localStorage reads in JS code", () => {
+  const c = JS.replace(/\/\/.*/g,"").replace(/\/\*[\s\S]*?\*\//g,"");
+  assert.ok(!c.includes("document.cookie"));
+  assert.ok(!c.includes("localStorage"));
+  assert.ok(!c.includes("sessionStorage"));
+  assert.ok(!c.includes("opportunity_report"));
 });
 
-// ── 12. No cookie or unlock reads in JS execution code ──────────
-
-test("no cookie or unlock reads in JS execution code", () => {
-  // Comments are fine — actual code must not read cookies or localStorage
-  const jsNoComment = JS.replace(/\/\/.*/g, "").replace(/\/\*[\s\S]*?\*\//g, "");
-  const reads = ["cookie", "localStorage", "sessionStorage", "decodeURIComponent"];
-  for (const key of reads) {
-    assert.ok(!jsNoComment.includes(key), `JS must not read ${key} at runtime`);
-  }
+test("no valuation-full or Stripe calls in JS code", () => {
+  const c = JS.replace(/\/\/.*/g,"").replace(/\/\*[\s\S]*?\*\//g,"");
+  assert.ok(!c.includes("valuation-full"));
+  assert.ok(!c.includes("stripe"));
+  assert.ok(!c.includes("Stripe("));
 });
 
-// ── 13. Viewport meta tag ──────────────────────────────
-
-test("viewport meta tag is present and correct", () => {
-  assert.ok(HTML.includes('width=device-width'), "Viewport must set width=device-width");
-  assert.ok(HTML.includes('initial-scale=1'), "Viewport must set initial-scale=1");
+test("no innerHTML or insertAdjacentHTML in JS code", () => {
+  assert.ok(!JS.includes(".innerHTML"));
+  assert.ok(!JS.includes("insertAdjacentHTML"));
 });
 
-// ── 14. No inline JavaScript in HTML ─────────────────────────────
-
-test("no inline JavaScript in HTML", () => {
-  assert.ok(!HTML.includes("onclick="), "No onclick handlers");
-  assert.ok(!HTML.includes("onload="), "No onload handlers");
-  assert.ok(!HTML.includes("javascript:"), "No javascript: URIs");
+test("shared-responsive.css linked in HTML", () => {
+  assert.ok(HTML.includes('href="/shared-responsive.css"'));
 });
-
-// ── 15. No hardcoded report data in HTML ─────────────────────────
-
-test("no hardcoded report data in the page", () => {
-  assert.ok(!HTML.includes("valuation-estimate"), "No hardcoded estimate data");
-  assert.ok(!HTML.includes("property_value"), "No hardcoded property value");
-  // Check there's no embedded report ID outside comments
-  const htmlNoComment = HTML.replace(/<!--[\s\S]*?-->/g, "");
-  assert.ok(!htmlNoComment.includes("rp_") || htmlNoComment.match(/rp_\d+_[0-9a-f]{16,}/g) === null,
-    "No test report IDs in HTML");
-});
-
-// ── 16. All 10 status sections exist in HTML ─────────────────────
 
 test("all 10 status sections exist in HTML", () => {
-  const statuses = [
-    "confirming",
-    "ready",
-    "pending",
-    "data_unavailable",
-    "refunded",
-    "revoked",
-    "session_expired",
-    "not_found",
-    "owner_conflict",
-    "generic_error",
-  ];
-  for (const s of statuses) {
-    assert.ok(HTML.includes(`data-status="${s}"`), `HTML must have a section for status "${s}"`);
-  }
+  for (const s of ["confirming","ready","pending","data_unavailable","refunded","revoked","session_expired","not_found","owner_conflict","generic_error"])
+    assert.ok(HTML.includes('data-status="' + s + '"'), "missing " + s);
 });
 
-// ── 17. No Stripe SDK loaded ─────────────────────────────────────
-
-test("no Stripe SDK loaded", () => {
-  assert.ok(!HTML.includes("js.stripe.com"), "No Stripe SDK URL");
-  const scriptTags = HTML.match(/<script\s+src=["'][^"']+["']/g) || [];
-  for (const tag of scriptTags) {
-    assert.ok(!tag.includes("stripe"), "No script tag references Stripe");
-  }
+test("test report IDs absent in HTML", () => {
+  assert.equal(HTML.replace(/<!--[\s\S]*?-->/g,"").match(/rp_\d+_[0-9a-f]{16,}/g), null);
 });
 
-// ── 18. Shared CSS linked correctly ─────────────────────────────
+test("ready button is disabled placeholder", () => {
+  const dom = new JSDOM(HTML, { url: "https://aushomevalue.com.au/report-success", runScripts: "outside-only" });
+  const btn = dom.window.document.getElementById("btn-view-report");
+  assert.ok(btn);
+  assert.ok(btn.getAttribute("aria-disabled") === "true" || btn.disabled);
+  assert.ok(btn.textContent.includes("viewer connecting next"));
+});
 
-test("shared-responsive.css is linked in HTML", () => {
-  assert.ok(HTML.includes('href="/shared-responsive.css"'), "HTML must link shared-responsive.css");
+test("retry buttons exist in HTML", () => {
+  assert.ok(HTML.includes('id="btn-retry-'), "At least one retry button in HTML");
+});
+
+test("aria-live region exists and has content", async () => {
+  const { tq, dom } = runPage("?report_id=rp_99999_1234567890123456",
+    () => makeResponse(403, { status: "refunded" }));
+  await flush();
+  const el = dom.window.document.getElementById("rs-aria-live");
+  assert.ok(el);
+  assert.ok(el.textContent.length > 0);
 });

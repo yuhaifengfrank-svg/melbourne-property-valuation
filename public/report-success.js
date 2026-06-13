@@ -1,26 +1,25 @@
-// ── Report Success Page — Static UI Framework ──
-// Phase 1E3C-2A
+// ── Report Success Page — Payment Status Polling ──
+// Phase 1E3C-2B
 //
-// No network requests, no Stripe SDK, no API calls.
-// Renders status views based on URL params only.
-// Does NOT read Opportunity cookie, localStorage unlock state,
-// or accept email / leadContactId / payment status from client.
+// Fetches /api/report-payment-status with limited polling.
+// Never calls /api/valuation-full, never reads cookies/localStorage.
+// No Stripe SDK.
 
 (function () {
   "use strict";
 
-  // ── reportId format validation ──
-  // Must match api/report-payment-status.js isValidReportId()
+  // ── Constants ─────────────────────────────────────────────────────
+
+  // Matches api/report-payment-status.js isValidReportId()
   const REPORT_ID_RE = /^rp_\d+_[0-9a-f]{16,}$/i;
 
-  // ── Status page mapping ──
-  // Maps status → CSS class / data-status to show
-  // All documented statuses plus generic_error for missing/invalid report_id
+  // Polling schedule (seconds between attempts)
+  const POLL_INTERVALS = [2, 2, 3, 3, 5];
+  const MAX_ATTEMPTS = POLL_INTERVALS.length + 1; // 5 intervals → 6 fetches total
 
-  const STATUS_PAGES = [
-    "confirming",
+  // Statuses that stop polling (terminal states)
+  const TERMINAL_STATUSES = new Set([
     "ready",
-    "pending",
     "data_unavailable",
     "refunded",
     "revoked",
@@ -28,14 +27,42 @@
     "not_found",
     "owner_conflict",
     "generic_error",
-  ];
+  ]);
+
+  // ── Runtime (test-injectable) ──────────────────────────────────────
+
+  const runtime = {
+    fetch: function () { return window.fetch.apply(window, arguments); },
+    setTimeout: function () { return window.setTimeout.apply(window, arguments); },
+    clearTimeout: function () { return window.clearTimeout.apply(window, arguments); },
+    createAbortController: function () { return new window.AbortController(); },
+  };
+
+  // Test hook — only present in test environment
+  if (typeof window !== "undefined" && window.__REPORT_SUCCESS_TEST_RUNTIME__) {
+    var hook = window.__REPORT_SUCCESS_TEST_RUNTIME__; // eslint-disable-line no-var
+    if (typeof hook.fetch === "function") runtime.fetch = hook.fetch;
+    if (typeof hook.setTimeout === "function") runtime.setTimeout = hook.setTimeout;
+    if (typeof hook.clearTimeout === "function") runtime.clearTimeout = hook.clearTimeout;
+    if (typeof hook.createAbortController === "function") runtime.createAbortController = hook.createAbortController;
+  }
+
+  // ── State ─────────────────────────────────────────────────────────
+
+  let state = {
+    polling: false,
+    cancelled: false,
+    attempt: 0,
+    timerId: null,
+    fetchController: null,
+    networkErrorRetried: false,
+  };
 
   // DOM cache
   const root = document.getElementById("rs-root");
+  let ariaLive = document.getElementById("rs-aria-live");
 
-  // ── Get report_id from URL ──
-  // Only reads from URL — never from cookie, localStorage, or DOM.
-  // Validates format. Malformed → generic_error.
+  // ── Helpers ───────────────────────────────────────────────────────
 
   function getReportIdFromUrl() {
     const params = new URLSearchParams(window.location.search);
@@ -46,12 +73,9 @@
     return typeof value === "string" && REPORT_ID_RE.test(value);
   }
 
-  // ── Render a status page ──
-  // Shows only the matching status page; hides all others.
-  // Falls back to confirming if status is unrecognised.
+  // ── Status page rendering ─────────────────────────────────────────
 
   function renderStatus(status) {
-    // Normalise
     const target = (typeof status === "string" && status.length > 0)
       ? status
       : "confirming";
@@ -62,12 +86,10 @@
       pages[i].style.display = "none";
     }
 
-    // Show the matching page (fallback to generic_error)
-    const match = target.replace(/_/g, "-");
+    // Show matching page (fallback to generic_error)
     let found = false;
     for (let i = 0; i < pages.length; i++) {
-      const dataStatus = pages[i].getAttribute("data-status");
-      if (dataStatus === target) {
+      if (pages[i].getAttribute("data-status") === target) {
         pages[i].style.display = "block";
         found = true;
         break;
@@ -75,7 +97,6 @@
     }
 
     if (!found) {
-      // Unknown status → generic_error
       for (let i = 0; i < pages.length; i++) {
         if (pages[i].getAttribute("data-status") === "generic_error") {
           pages[i].style.display = "block";
@@ -83,48 +104,286 @@
         }
       }
     }
+
+    // Update aria-live region
+    updateAriaLive(target);
   }
 
-  // ── Retry / retry handlers ──
-  // Retry and "Try again" buttons reload the page so the cookie and
-  // query string are re-evaluated by the server. This keeps the UI
-  // stateless — no polling state, no timers.
+  // ── Aria-live ─────────────────────────────────────────────────────
 
-  function attachRetryHandlers() {
-    const btns = root.querySelectorAll('[id^="btn-retry-"]');
-    for (let i = 0; i < btns.length; i++) {
-      btns[i].addEventListener("click", function () {
-        window.location.reload();
-      });
+  function ensureAriaLive() {
+    if (!ariaLive) {
+      ariaLive = document.getElementById("rs-aria-live");
+    }
+    if (!ariaLive) {
+      ariaLive = document.createElement("div");
+      ariaLive.id = "rs-aria-live";
+      ariaLive.setAttribute("aria-live", "polite");
+      ariaLive.setAttribute("aria-atomic", "true");
+      ariaLive.className = "sr-only";
+      // Screen-reader-only styling
+      ariaLive.style.cssText = "position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;";
+      document.body.appendChild(ariaLive);
+    }
+  }
+
+  function updateAriaLive(status) {
+    if (!ariaLive) return;
+    const labels = {
+      confirming: "Confirming your payment.",
+      ready: "Your report is ready.",
+      pending: "Payment confirmation is taking a little longer. Please check again.",
+      data_unavailable: "Report temporarily unavailable.",
+      refunded: "This payment has been refunded.",
+      revoked: "Report access has been revoked.",
+      session_expired: "Your session has expired.",
+      not_found: "Report not found.",
+      owner_conflict: "Access denied.",
+      generic_error: "An error occurred.",
+    };
+    ariaLive.textContent = labels[status] || "Status updated.";
+  }
+
+  // ── Get status title/desc for a status (used internally) ─────────
+
+  function getStatusLabel(status) {
+    const labels = {
+      confirming: "Confirming your payment…",
+      ready: "Your report is ready",
+      pending: "Payment confirmation is taking a little longer",
+      data_unavailable: "Report temporarily unavailable",
+      refunded: "Payment refunded",
+      revoked: "Report access revoked",
+      session_expired: "Session expired",
+      not_found: "Report not found",
+      owner_conflict: "Access denied",
+      generic_error: "Something went wrong",
+    };
+    return labels[status] || "Something went wrong";
+  }
+
+  // ── API call ──────────────────────────────────────────────────────
+
+  /**
+   * Make a single status API request.
+   * Returns { status, ok } on success, throws on network error.
+   */
+  async function fetchStatus(reportId) {
+    const url = "/api/report-payment-status?report_id=" + encodeURIComponent(reportId);
+    const controller = runtime.createAbortController();
+    state.fetchController = controller;
+
+    const resp = await runtime.fetch(url, {
+      method: "GET",
+      credentials: "same-origin",
+      signal: controller.signal,
+    });
+
+    // Parse JSON — any failure → generic_error
+    let body;
+    try {
+      body = await resp.json();
+    } catch {
+      return { status: "generic_error", isTerminal: true };
     }
 
-    // View report button is a placeholder — will be wired in Phase 1E3C-3
+    if (!body || typeof body !== "object" || typeof body.status !== "string") {
+      return { status: "generic_error", isTerminal: true };
+    }
+
+    // Whitelist of allowed status values
+    const ALLOWED = new Set([
+      "pending", "ready", "data_unavailable",
+      "refunded", "revoked", "session_expired",
+      "not_found", "owner_conflict",
+    ]);
+
+    if (!ALLOWED.has(body.status)) {
+      return { status: "generic_error", isTerminal: true };
+    }
+
+    // HTTP 401/403/404/503 → always terminal even if body says pending
+    // (cookie cleared server-side, no point retrying)
+    const terminalHttp = new Set([401, 403, 404, 503]);
+    if (terminalHttp.has(resp.status)) {
+      return { status: body.status, isTerminal: true };
+    }
+
+    const isTerminal = TERMINAL_STATUSES.has(body.status);
+    return { status: body.status, isTerminal };
+  }
+
+  // ── Polling logic ─────────────────────────────────────────────────
+
+  function startPolling(reportId) {
+    // Cancel any existing polling
+    stopPolling();
+
+    state.cancelled = false;
+    state.attempt = 0;
+    state.networkErrorRetried = false;
+    state.polling = true;
+
+    // Ensure confirming is shown
+    renderStatus("confirming");
+
+    doPoll(reportId);
+  }
+
+  function doPoll(reportId) {
+    if (state.cancelled || !state.polling) return;
+
+    const attempt = state.attempt + 1;
+    state.attempt = attempt;
+
+    fetchStatus(reportId)
+      .then((result) => {
+        if (state.cancelled) return;
+
+        if (result.isTerminal) {
+          // Stop polling, show the status
+          state.polling = false;
+          renderStatus(result.status);
+          return;
+        }
+
+        // Only pending continues polling
+        if (result.status === "pending") {
+          if (attempt < MAX_ATTEMPTS) {
+            const delayMs = (POLL_INTERVALS[attempt - 1] || 5) * 1000;
+            state.timerId = runtime.setTimeout(function () {
+              doPoll(reportId);
+            }, delayMs);
+            return;
+          }
+
+          // Max attempts reached — stay on pending, show manual retry
+          state.polling = false;
+          renderStatus("pending");
+          return;
+        }
+
+        // Unknown non-terminal status → stop with generic_error
+        state.polling = false;
+        renderStatus("generic_error");
+      })
+      .catch((err) => {
+        if (state.cancelled) return;
+
+        // AbortError = stopped intentionally by user or visibility change
+        if (err.name === "AbortError") return;
+
+        // Network error: allow one automatic retry
+        if (!state.networkErrorRetried) {
+          state.networkErrorRetried = true;
+          state.timerId = runtime.setTimeout(function () {
+            doPoll(reportId);
+          }, 2000);
+          return;
+        }
+
+        // Second network error → generic_error, stop polling
+        state.polling = false;
+        renderStatus("generic_error");
+      });
+  }
+
+  function stopPolling() {
+    state.polling = false;
+    state.cancelled = true;
+
+    if (state.timerId) {
+      runtime.clearTimeout(state.timerId);
+      state.timerId = null;
+    }
+
+    if (state.fetchController) {
+      state.fetchController.abort();
+      state.fetchController = null;
+    }
+  }
+
+  // ── Retry handler (called by retry buttons) ───────────────────────
+
+  function handleRetry() {
+    const reportId = getReportIdFromUrl();
+    if (!reportId || !isValidReportId(reportId)) {
+      renderStatus("generic_error");
+      return;
+    }
+
+    // Disable all retry buttons during retry
+    disableRetryButtons(true);
+
+    // Start fresh polling
+    startPolling(reportId);
+
+    // Re-enable buttons after a short delay (they'll be hidden by renderStatus anyway)
+    runtime.setTimeout(function () { disableRetryButtons(false); }, 500);
+  }
+
+  function disableRetryButtons(disabled) {
+    const btns = root.querySelectorAll('[id^="btn-retry-"]');
+    for (let i = 0; i < btns.length; i++) {
+      btns[i].disabled = disabled;
+    }
+  }
+
+  // ── Visibility change handler ─────────────────────────────────────
+
+  function handleVisibilityChange() {
+    if (document.hidden) {
+      // Page hidden → stop polling (resume on show via init)
+      stopPolling();
+    }
+  }
+
+  // ── Beforeunload handler ──────────────────────────────────────────
+
+  function handleBeforeUnload() {
+    stopPolling();
+  }
+
+  // ── Init ──────────────────────────────────────────────────────────
+
+  function init() {
+    const reportId = getReportIdFromUrl();
+    const isValid = reportId && isValidReportId(reportId);
+
+    if (!isValid) {
+      renderStatus("generic_error");
+      return;
+    }
+
+    // Ensure aria-live region exists
+    ensureAriaLive();
+
+    // Show confirming, then start polling
+    renderStatus("confirming");
+    startPolling(reportId);
+
+    // Bind retry buttons
+    const btns = root.querySelectorAll('[id^="btn-retry-"]');
+    for (let i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", handleRetry);
+    }
+
+    // View report button: disabled placeholder
     const viewBtn = document.getElementById("btn-view-report");
     if (viewBtn) {
       viewBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        // Placeholder — will navigate to report viewer in Phase 1E3C-3
+        // Placeholder — Phase 1E3C-3 will wire this
       });
     }
+
+    // Visibility and unload handlers
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
   }
 
-  // ── Init ──
+  // ── Run ──────────────────────────────────────────────────────────
 
-  function init() {
-    const reportId = getReportIdFromUrl();
-
-    if (!reportId || !isValidReportId(reportId)) {
-      // Missing or invalid report_id → generic_error
-      renderStatus("generic_error");
-    } else {
-      // report_id present and valid → start at confirming
-      renderStatus("confirming");
-    }
-
-    attachRetryHandlers();
-  }
-
-  // Run on DOM ready
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {

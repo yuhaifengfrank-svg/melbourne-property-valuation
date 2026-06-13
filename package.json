@@ -50,5 +50,9 @@
   "homepage": "https://github.com/yuhaifengfrank-svg/melbourne-property-valuation#readme",
   "engines": {
     "node": ">=20.x"
+  },
+  "devDependencies": {
+    "jsdom": "^29.1.1",
+    "sinon": "^22.0.0"
   }
 }
