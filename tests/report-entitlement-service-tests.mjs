@@ -87,48 +87,66 @@ function makeMockSql(initialState = {}) {
       return [];
     }
 
-    // ── Joint query: re INNER JOIN rp INNER JOIN rs ────────────────
-    const jointMatch = raw.match(
-      /FROM\s+report_entitlements\s+re\s+INNER\s+JOIN\s+report_payments\s+rp\s+ON\s+rp\.report_id\s*=\s*re\.report_id\s+INNER\s+JOIN\s+report_snapshots\s+rs\s+ON\s+rs\.report_id\s*=\s*re\.report_id\s+WHERE\s+re\.report_id\s*=\s*\$(\d+)/i
+    // ── report_entitlements lookup by report_id ───────────────────
+    const entMatch = raw.match(
+      /FROM\s+report_entitlements\s+WHERE\s+report_id\s*=\s*\$(\d+)/i
     );
-
-    if (jointMatch) {
-      const idx = parseInt(jointMatch[1], 10);
+    if (entMatch) {
+      const idx = parseInt(entMatch[1], 10);
       const reportId = idx < values.length ? values[idx] : null;
+      const match = entitlements.find((e) => e.report_id === reportId);
+      if (match) {
+        return [{
+          id: match.id,
+          status: match.status,
+          granted_at: match.granted_at,
+          revoked_at: match.revoked_at,
+          lead_contact_id: match.lead_contact_id,
+        }];
+      }
+      return [];
+    }
 
-      // Find matching records
-      const ent = entitlements.find((e) => e.report_id === reportId);
-      if (!ent) return [];
+    // ── report_payments lookup by report_id ───────────────────────
+    const payMatch = raw.match(
+      /FROM\s+report_payments\s+WHERE\s+report_id\s*=\s*\$(\d+)/i
+    );
+    if (payMatch) {
+      const idx = parseInt(payMatch[1], 10);
+      const reportId = idx < values.length ? values[idx] : null;
+      const match = payments.find((p) => p.report_id === reportId);
+      if (match) {
+        return [{
+          id: match.id,
+          status: match.status,
+          lead_contact_id: match.lead_contact_id,
+          report_id: match.report_id,
+          amount_cents: match.amount_cents,
+          currency: match.currency,
+          created_at: match.created_at,
+        }];
+      }
+      return [];
+    }
 
-      const pay = payments.find((p) => p.report_id === reportId);
-      if (!pay) return [];
-
-      const snap = snapshots.find((s) => s.report_id === reportId);
-      if (!snap) return [];
-
-      return [
-        {
-          ent_id: ent.id,
-          ent_status: ent.status,
-          ent_granted_at: ent.granted_at,
-          ent_revoked_at: ent.revoked_at,
-          ent_lead_contact_id: ent.lead_contact_id,
-
-          pay_id: pay.id,
-          pay_status: pay.status,
-          pay_lead_contact_id: pay.lead_contact_id,
-          pay_report_id: pay.report_id,
-          pay_amount_cents: pay.amount_cents,
-          pay_currency: pay.currency,
-          pay_created_at: pay.created_at,
-
-          snapshot_json: snap.snapshot_json,
-          valuation_version: snap.valuation_version,
-          snapshot_created_at: snap.created_at,
-          snapshot_lead_contact_id: snap.lead_contact_id,
-          snapshot_property_key: snap.property_key,
-        },
-      ];
+    // ── report_snapshots lookup by report_id ──────────────────────
+    const snapMatch = raw.match(
+      /FROM\s+report_snapshots\s+WHERE\s+report_id\s*=\s*\$(\d+)/i
+    );
+    if (snapMatch) {
+      const idx = parseInt(snapMatch[1], 10);
+      const reportId = idx < values.length ? values[idx] : null;
+      const match = snapshots.find((s) => s.report_id === reportId);
+      if (match) {
+        return [{
+          snapshot_json: match.snapshot_json,
+          valuation_version: match.valuation_version,
+          created_at: match.created_at,
+          lead_contact_id: match.lead_contact_id,
+          property_key: match.property_key,
+        }];
+      }
+      return [];
     }
 
     // ── Generic SELECT (for any unmatched queries) ────────────────
@@ -493,7 +511,91 @@ test("snapshot missing → REPORT_DATA_UNAVAILABLE", async () => {
     "../lib/report-entitlement-service.js"
   );
 
-  // The joint query (INNER JOIN) will return 0 rows when snapshot is missing
+  // Snapshot is missing → should report REPORT_DATA_UNAVAILABLE
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
+    (err) => {
+      assert.equal(err.code, REJECTION.REPORT_DATA_UNAVAILABLE);
+      return true;
+    }
+  );
+});
+
+test("missing entitlement → NOT_ENTITLED", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [], // no entitlement for this report
+    payments: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      status: "paid",
+    }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
+    (err) => {
+      assert.equal(err.code, REJECTION.NOT_ENTITLED);
+      return true;
+    }
+  );
+});
+
+test("missing payment → PAYMENT_NOT_CONFIRMED", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [], // no payment for this report
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: { midpoint: 800000 },
+    }],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
+    (err) => {
+      assert.equal(err.code, REJECTION.PAYMENT_NOT_CONFIRMED);
+      return true;
+    }
+  );
+});
+
+test("all three tables missing → NOT_FOUND", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [],
+    payments: [],
+    snapshots: [],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
   await assert.rejects(
     () => checkReportEntitlement({ reportId, email }, mockSql),
     (err) => {
@@ -512,6 +614,86 @@ test("snapshot_json is null → REPORT_DATA_UNAVAILABLE", async () => {
 
   await assert.rejects(
     () => checkReportEntitlement({ reportId: state.reportId, email: state.email }, sql),
+    (err) => {
+      assert.equal(err.code, REJECTION.REPORT_DATA_UNAVAILABLE);
+      return true;
+    }
+  );
+});
+
+test("malformed snapshot_json string → REPORT_DATA_UNAVAILABLE", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      status: "paid",
+    }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: "{invalid: json!!!}",
+    }],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
+    (err) => {
+      assert.equal(err.code, REJECTION.REPORT_DATA_UNAVAILABLE);
+      // Must NOT expose original JSON syntax error
+      assert.equal(
+        err.message.includes("SyntaxError"),
+        false,
+        "Must not leak SyntaxError in error message"
+      );
+      assert.equal(
+        err.message.includes("Unexpected token"),
+        false,
+        "Must not leak JSON parse details in error message"
+      );
+      assert.equal(
+        err.message.includes("invalid"),
+        false,
+        "Must not leak the original invalid content in error message"
+      );
+      return true;
+    }
+  );
+});
+
+test("snapshot_json is primitive number → REPORT_DATA_UNAVAILABLE", async () => {
+  const reportId = makeReportId();
+  const email = makeEmail();
+  const contactId = 42;
+
+  const mockSql = makeMockSql({
+    contacts: [{ id: contactId, email, email_lower: email.toLowerCase() }],
+    entitlements: [{ report_id: reportId, lead_contact_id: contactId, status: "active" }],
+    payments: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      status: "paid",
+    }],
+    snapshots: [{
+      report_id: reportId,
+      lead_contact_id: contactId,
+      snapshot_json: 42,
+    }],
+  });
+  const { checkReportEntitlement, REJECTION } = await import(
+    "../lib/report-entitlement-service.js"
+  );
+
+  await assert.rejects(
+    () => checkReportEntitlement({ reportId, email }, mockSql),
     (err) => {
       assert.equal(err.code, REJECTION.REPORT_DATA_UNAVAILABLE);
       return true;
