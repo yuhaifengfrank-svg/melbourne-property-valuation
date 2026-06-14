@@ -52,7 +52,11 @@ function buildFixture() {
       factorAdjustments: 1.03, factorTotal: 0.97, customerHalfRange: 150000, sigma: 0.10
     },
     confidence: { label: "High", score: 85, dataScore: 80,
-      reasons: ["Sufficient comparable sales data"] },
+      reasons: [
+        "Sufficient comparable sales data",
+        "Property located in high-demand school zone with multiple recent sales within 500m",
+        "Limited recent sales of similar land size properties in this micro-market area"
+      ] },
     valuationMode: "standard_house",
     acceptedComparables: comps,
     rejectedComparables: [],
@@ -127,32 +131,83 @@ async function main() {
       await page.waitForSelector('[data-state="report"]', { timeout: 5000 });
       await page.waitForTimeout(300);
 
-      const overflow = await page.evaluate(() => ({
-        scrollWidth: document.documentElement.scrollWidth,
-        innerWidth: window.innerWidth,
-        hasOverflow: document.documentElement.scrollWidth > window.innerWidth
-      }));
+      const checks = await page.evaluate(() => {
+        const doc = document.documentElement;
+        const overflow = { scrollWidth: doc.scrollWidth, innerWidth: window.innerWidth, hasOverflow: doc.scrollWidth > window.innerWidth };
 
-      const isMobile = vp.w < 768;
-      const tableDisplay = await page.evaluate(() => {
-        const t = document.querySelector(".rv-comparables-table");
-        return t ? getComputedStyle(t).display : "none";
+        // ── rv-info-row CSS checks ──
+        const rows = document.querySelectorAll(".rv-info-row");
+        const labels = document.querySelectorAll(".rv-info-label");
+        const values = document.querySelectorAll(".rv-info-value");
+
+        let rowDisplay = null, labelDisplay = null, valueDisplay = null;
+        if (rows.length > 0) rowDisplay = getComputedStyle(rows[0]).display;
+        if (labels.length > 0) labelDisplay = getComputedStyle(labels[0]).display;
+        if (values.length > 0) valueDisplay = getComputedStyle(values[0]).display;
+
+        // ── Confidence Factors overflow check ──
+        const allInfoValues = document.querySelectorAll(".rv-info-value");
+        let confidenceOverflow = false;
+        for (const el of allInfoValues) {
+          if (el.textContent && el.textContent.length > 40) {
+            // Check if content overflows its container
+            confidenceOverflow = confidenceOverflow || el.scrollWidth > el.clientWidth;
+          }
+        }
+
+        // ── Label-value adjacency (not stuck together) ──
+        let labelValueGap = true; // assume fine
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          const childLabels = row.querySelectorAll(".rv-info-label, .rv-info-value");
+          // Check that display:flex gives them gap
+          const rowStyle = getComputedStyle(row);
+          if (rowStyle.display === "flex") {
+            // gap should be >= 6px on desktop, but on mobile it wraps so it's fine too
+            const gapPx = parseFloat(rowStyle.gap) || 0;
+            if (window.innerWidth >= 768 && gapPx < 4) {
+              labelValueGap = false;
+            }
+          }
+        }
+
+        // ── Comparables table/cards ──
+        const isMobile = innerWidth < 768;
+        const table = document.querySelector(".rv-comparables-table");
+        const cards = document.querySelector(".rv-comparable-cards");
+        const tableDisplay = table ? getComputedStyle(table).display : "none";
+        const cardsDisplay = cards ? getComputedStyle(cards).display : "none";
+
+        return {
+          overflow, rowDisplay, labelDisplay, valueDisplay,
+          confidenceOverflow, labelValueGap, isMobile,
+          tableDisplay, cardsDisplay,
+          totalRows: rows.length
+        };
       });
-      const cardsDisplay = await page.evaluate(() => {
-        const c = document.querySelector(".rv-comparable-cards");
-        return c ? getComputedStyle(c).display : "none";
+
+      const noOverflow = !checks.overflow.hasOverflow;
+      const tableOk = checks.isMobile ? checks.tableDisplay === "none" : checks.tableDisplay !== "none";
+      const cardsOk = checks.isMobile ? checks.cardsDisplay !== "none" : checks.cardsDisplay === "none";
+      const cssOk = checks.rowDisplay === "flex";
+      const adjOk = checks.labelValueGap;
+      const longTextOk = !checks.confidenceOverflow;
+      const passed = noOverflow && tableOk && cardsOk && cssOk && adjOk && longTextOk;
+
+      results.push({
+        vp: vp.name, noOverflow, tableOk, cardsOk, cssOk, adjOk, longTextOk, passed,
+        totalRows: checks.totalRows, tableDisplay: checks.tableDisplay, cardsDisplay: checks.cardsDisplay
       });
 
-      const noOverflow = !overflow.hasOverflow;
-      const tableOk = isMobile ? tableDisplay === "none" : tableDisplay !== "none";
-      const cardsOk = isMobile ? cardsDisplay !== "none" : cardsDisplay === "none";
-      const passed = noOverflow && tableOk && cardsOk;
-
-      results.push({ vp: vp.name, noOverflow, tableDisplay, cardsDisplay, tableOk, cardsOk, passed });
       const status = passed ? "\u2705" : "\u274c";
-      console.log(status, vp.name,
-        noOverflow ? "scroll=" + overflow.scrollWidth + " <= win=" + overflow.innerWidth : "OVERFLOW",
-        "table=" + tableDisplay, "cards=" + cardsDisplay);
+      let msg = status + " " + vp.name;
+      msg += noOverflow ? " clean" : " OVERFLOW";
+      msg += " css=" + (cssOk ? "Y" : "N");
+      msg += " adj=" + (adjOk ? "Y" : "N");
+      msg += " long=" + (longTextOk ? "Y" : "N");
+      msg += " rows=" + checks.totalRows;
+      msg += " tbl=" + checks.tableDisplay + " crd=" + checks.cardsDisplay;
+      console.log(msg);
 
       await ctx.close();
     }
@@ -161,8 +216,17 @@ async function main() {
     server.close();
   }
 
+  console.log("");
   const allPassed = results.every(r => r.passed);
-  console.log("\n" + (allPassed ? "\u2705 ALL OVERFLOW TESTS PASSED" : "\u274c SOME FAILED"));
+  if (allPassed) {
+    console.log("\u2705 ALL OVERFLOW + CSS TESTS PASSED");
+    results.forEach(r => console.log("  " + r.vp + ": rows=" + r.totalRows + " overflow=" + !r.noOverflow + " css=" + r.cssOk + " adj=" + r.adjOk + " long=" + r.longTextOk));
+  } else {
+    console.log("\u274c SOME FAILED");
+    results.filter(r => !r.passed).forEach(r => {
+      console.log("  FAIL " + r.vp + ": overflow=" + !r.noOverflow + " css=" + r.cssOk + " adj=" + r.adjOk + " long=" + r.longTextOk);
+    });
+  }
   process.exit(allPassed ? 0 : 1);
 }
 

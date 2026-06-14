@@ -224,6 +224,58 @@
       font-weight: 700;
     }
 
+    /* ── Info Row (used by Executive Summary, Methodology, etc.) ── */
+    .rv-info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 7px 0;
+      gap: 10px;
+    }
+    .rv-info-row + .rv-info-row {
+      border-top: 1px solid #f4f6f5;
+    }
+    .rv-info-label {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+      width: 140px;
+    }
+    .rv-info-value {
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-align: right;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+    .rv-info-value.rv-na {
+      color: var(--text-muted);
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    /* ── Info Row — Mobile (≤767px) ── */
+    @media (max-width: 767px) {
+      .rv-info-row {
+        flex-wrap: wrap;
+        gap: 2px 10px;
+        padding: 8px 0;
+      }
+      .rv-info-label {
+        width: auto;
+        min-width: 100px;
+        flex-basis: 38%;
+      }
+      .rv-info-value {
+        text-align: left;
+        flex-basis: 55%;
+        flex-grow: 1;
+      }
+    }
+
     /* ── Estimated Value Box ── */
     .rv-estimate-box {
       background: #eef6f3;
