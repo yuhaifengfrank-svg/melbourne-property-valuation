@@ -129,17 +129,32 @@
     p.confidenceReasons = conf.reasons || null;
 
     // ── Subject ──
+    // Precedence (highest first):
+    //   1. New format input.subject (from buildReportSnapshot)
+    //   2. Legacy format input.addressVerification / input.customerData
+    //   3. Top-level fallback fields
     var sub = input.subject || {};
-    p.address = sub.address || input.address || null;
-    p.suburb = sub.suburb || null;
-    p.state = sub.state || null;
-    p.propertyType = input.propertyType || sub.propertyType || null;
-    p.bedrooms = input.bedrooms || sub.bedrooms || null;
-    p.bathrooms = input.bathrooms || sub.bathrooms || null;
-    p.carSpaces = input.carSpaces || sub.carSpaces || null;
-    p.landSize = input.landSize || sub.landSize || null;
-    p.buildingArea = input.buildingArea || sub.buildingArea || null;
-    p.zoning = input.zoning || sub.zoning || null;
+    var av = input.addressVerification || {};
+    var cd = input.customerData || {};
+
+    // Use != null to preserve legitimate 0 values (bedrooms, carSpaces)
+    function firstDefined(/* ...args */) {
+      for (var i = 0; i < arguments.length; i++) {
+        if (arguments[i] != null) return arguments[i];
+      }
+      return null;
+    }
+
+    p.address = firstDefined(sub.address, av.address, input.address);
+    p.suburb = firstDefined(sub.suburb, av.suburb);
+    p.state = firstDefined(sub.state, av.state);
+    p.propertyType = firstDefined(sub.propertyType, av.propertyType, input.propertyType);
+    p.bedrooms = firstDefined(sub.bedrooms, cd.bedrooms, input.bedrooms);
+    p.bathrooms = firstDefined(sub.bathrooms, cd.bathrooms, input.bathrooms);
+    p.carSpaces = firstDefined(sub.carSpaces, cd.carSpaces, input.carSpaces);
+    p.landSize = firstDefined(sub.landSize, av.landSize, input.landSize);
+    p.buildingArea = firstDefined(sub.buildingArea, input.buildingArea);
+    p.zoning = firstDefined(sub.zoning, input.zoning);
 
     // ── Valuation mode ──
     p.valuationMode = input.valuationMode || null;
