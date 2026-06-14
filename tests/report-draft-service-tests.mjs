@@ -231,6 +231,64 @@ test("hashSnapshot is stable regardless of key ordering", () => {
     "Hash must be stable regardless of key insertion order");
 });
 
+test("stableStringify produces valid JSON for production-style undefined values", () => {
+  const value = {
+    address: "18 Moresby St",
+    optionalTopLevel: undefined,
+    comparables: [
+      {
+        address: "20 Moresby St",
+        buildingArea: undefined,
+        distanceMeters: 50,
+      },
+      undefined,
+    ],
+    generatedAt: new Date("2026-06-14T00:00:00.000Z"),
+    nonFinite: Number.NaN,
+  };
+
+  const encoded = svc.stableStringify(value);
+  const parsed = JSON.parse(encoded);
+
+  assert.equal(Object.hasOwn(parsed, "optionalTopLevel"), false,
+    "Undefined object properties must be omitted");
+  assert.equal(Object.hasOwn(parsed.comparables[0], "buildingArea"), false,
+    "Nested undefined object properties must be omitted");
+  assert.equal(parsed.comparables[1], null,
+    "Undefined array entries must become null");
+  assert.equal(parsed.generatedAt, "2026-06-14T00:00:00.000Z",
+    "Date values must use their JSON representation");
+  assert.equal(parsed.nonFinite, null,
+    "Non-finite numbers must become null");
+});
+
+test("createReportDraft accepts undefined fields in production comparables", async () => {
+  const result = makeProductionValuationResult();
+  result.valuation.acceptedComparables[0].buildingArea = undefined;
+  result.valuation.acceptedComparables[0].optionalEvidence = undefined;
+  result.valuation.factorAdjustments = {
+    location: 1.2,
+    optionalSignal: undefined,
+  };
+
+  const sql = createMockSql();
+  const draft = await svc.createReportDraft(result, sql);
+  const payload = svc.verifyReportDraftToken(draft.draftToken);
+  const stored = sql.__drafts.get(payload.draft_id);
+
+  assert.ok(stored, "Draft must be stored");
+  assert.equal(
+    Object.hasOwn(stored.snapshot_json.comparables[0], "buildingArea"),
+    false,
+    "Undefined comparable fields must not be written into JSONB"
+  );
+  assert.equal(
+    Object.hasOwn(stored.snapshot_json.factorAdjustments, "optionalSignal"),
+    false,
+    "Undefined nested factor fields must not be written into JSONB"
+  );
+});
+
 test("createReportDraft returns a signed token with production structure (midpoint not null)", async () => {
   const result = makeProductionValuationResult();
   const sql = createMockSql();
