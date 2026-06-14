@@ -1640,6 +1640,8 @@ function renderValuation(data) {
       customerDataStatus: data.customerDataStatus || "unavailable",
       dataLimitations: data.dataLimitations || [],
       lockedPreview: data.lockedPreview || null,
+      reportDraftToken: data.reportDraftToken || null,
+      draftExpiresAt: data.draftExpiresAt || null,
       propertyState: data.propertyState || stateFromAddress(data.address),
       propertySuburb: data.propertySuburb || suburbFromAddress(data.address)
     };
@@ -1862,6 +1864,20 @@ function renderLockState() {
   var lockedPreviewEl = byId("locked-preview-cta");
   if (lockedPreview && lockedPreview.chapters && lockedPreview.chapters.length && locked) {
     if (lockedPreviewEl) {
+      // Phase 1E3D-2-F: Override CTA text when a valid draft token exists
+      var hasDraftWithToken = currentReportDraft && currentReportDraft.token;
+      var draftValid = false;
+      if (hasDraftWithToken) {
+        if (currentReportDraft.expiresAt) {
+          draftValid = new Date(currentReportDraft.expiresAt) > new Date();
+        } else {
+          draftValid = true;
+        }
+      }
+      if (draftValid) {
+        lockedPreview = JSON.parse(JSON.stringify(lockedPreview));
+        lockedPreview.cta = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+      }
       var ctaHtml = renderLockedPreviewHTML(lockedPreview);
       lockedPreviewEl.innerHTML = ctaHtml;
       lockedPreviewEl.classList.remove("hidden");
