@@ -684,3 +684,39 @@ test("own paid payments not overridden by other customer payments", async () => 
   assert.equal(ctx.getStatus(), 200, "Own paid should not be overridden by other customer's refunded");
   assert.equal(ctx.getData().status, "ready");
 });
+
+// ── 28. Source contract: MUST NOT SELECT id FROM report_snapshots ───
+test("source contract: no SELECT id FROM report_snapshots", async () => {
+  const fs = await import("node:fs");
+  const source = fs.readFileSync("./api/report-payment-status.js", "utf8");
+  const code = source.replace(/'[^']*'/g, "").replace(/"[^"`]*"/g, "");
+  const lines = code.split("\n");
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (/SELECT\s+id\b/i.test(line) && /report_snapshots/i.test(line)) {
+      assert.fail(`Line ${i + 1}: forbidden SELECT id… FROM report_snapshots — use report_id instead`);
+    }
+  }
+});
+
+// ── 29. Regression: snapshot without id column still returns ready ──
+test("ready status when snapshot mock has no id column", async () => {
+  const { handler } = await setupTestEnv();
+  const reportId = makeReportId("no-id-snapshot");
+  const contactId = 42;
+  const cookie = makeSessionCookie({ reportId, leadContactId: contactId });
+
+  resetMockDb();
+  mockDb.snapshots.push({
+    report_id: reportId,
+    lead_contact_id: contactId,
+    snapshot_json: JSON.stringify({ some: "data" }),
+  });
+  mockDb.payments.push({ id: 1, report_id: reportId, lead_contact_id: contactId, status: "paid", updated_at: new Date().toISOString() });
+  mockDb.entitlements.push({ id: 1, report_id: reportId, lead_contact_id: contactId, status: "active" });
+
+  const ctx = makeReq(`/api/report-payment-status?report_id=${reportId}`, cookie);
+  await handler(ctx.req, ctx.res);
+  assert.equal(ctx.getStatus(), 200, "Should return 200 with snapshot missing id");
+  assert.equal(ctx.getData().status, "ready");
+});

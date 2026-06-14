@@ -255,7 +255,7 @@ export default async function handler(req, res) {
         LIMIT 1
       `,
       sql`
-        SELECT id, lead_contact_id, snapshot_json
+        SELECT report_id, lead_contact_id, snapshot_json
         FROM report_snapshots
         WHERE report_id = ${queryReportId}
         LIMIT 1
