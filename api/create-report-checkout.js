@@ -7,7 +7,7 @@
 // Flow:
 //   1. Validate email + verify draft token FIRST (before any DB writes)
 //   2. Ensure customer funnel + report payment schemas
-//   3. Upsert lead_contact by email_lower (atomic ON CONFLICT)
+//   3. Upsert lead_contact by email_lower (SELECT + INSERT/UPDATE)
 //   4. consumeDraftIntoSnapshot → immutable report_id
 //   5. createReportCheckout() (from Phase 1C4 service)
 //   6. Set purchase session cookie
@@ -34,6 +34,7 @@ const ERR = {
   PAYMENT_AWAITING_ENTITLEMENT: "PAYMENT_AWAITING_ENTITLEMENT",
   REPORT_OWNER_CONFLICT: "REPORT_OWNER_CONFLICT",
   REPORT_SESSION_NOT_CONFIGURED: "REPORT_SESSION_NOT_CONFIGURED",
+  PAYMENTS_TEMPORARILY_UNAVAILABLE: "PAYMENTS_TEMPORARILY_UNAVAILABLE",
 };
 
 // ── Test-injectable SQL ─────────────────────────────────────────────
@@ -103,6 +104,15 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: ERR.BAD_REQUEST, message: "Method not allowed" });
   }
 
+  // Payments gate: disabled on Production
+  if (process.env.VERCEL_ENV === "production") {
+    return res.status(503).json({
+      ok: false,
+      error: ERR.PAYMENTS_TEMPORARILY_UNAVAILABLE,
+      message: "Payments are temporarily unavailable. Please try again later."
+    });
+  }
+
   try {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
     const rawEmail = (body.email || "").trim().toLowerCase();
@@ -126,14 +136,23 @@ export default async function handler(req, res) {
     await ensureReportPaymentSchema(sql);
 
     // ── Step 3: Upsert lead_contact (atomic — no SELECT-before-INSERT race) ──
-    const contactResult = await sql`
-      INSERT INTO lead_contacts (email, email_lower)
-      VALUES (${rawEmail}, ${rawEmail})
-      ON CONFLICT (email_lower)
-      DO UPDATE SET updated_at = NOW()
-      RETURNING id
-    `;
-    const leadContactId = contactResult[0].id;
+    // Upsert lead_contact by email_lower — use explicit lookup + insert/update
+    // to avoid reliance on DB schema constraints (may not exist in older tables)
+    let leadContactId;
+    const existing = await sql`SELECT id FROM lead_contacts WHERE email_lower = ${rawEmail} LIMIT 1`;
+    if (existing.length > 0) {
+      // Coerce BigInt → Number (PostgreSQL BIGSERIAL returns BigInt via neon)
+      leadContactId = Number(existing[0].id);
+      await sql`UPDATE lead_contacts SET updated_at = NOW() WHERE id = ${leadContactId}`;
+    } else {
+      const result = await sql`
+        INSERT INTO lead_contacts (email, email_lower)
+        VALUES (${rawEmail}, ${rawEmail})
+        RETURNING id
+      `;
+      // Coerce BigInt → Number
+      leadContactId = Number(result[0].id);
+    }
 
     // ── Step 4: Consume draft into immutable snapshot ──
     let snapshotOutcome;
@@ -240,6 +259,7 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error("[create-report-checkout]", error.message);
+    console.error("[create-report-checkout-ctupyiks4] VERSION=4 SELECT+INSERT path");
     clearPurchaseSessionCookie(res);
     return res.status(500).json({
       ok: false,

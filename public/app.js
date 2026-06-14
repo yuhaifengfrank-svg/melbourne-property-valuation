@@ -131,6 +131,8 @@ let language = "en";
 
 // Phase 1E3D-1A: Report draft token (memory only, never localStorage/sessionStorage/Cookie)
 var currentReportDraft = null;
+// Payments gate: set by renderValuation from server `paymentsEnabled` field
+var paymentsEnabled = true;
 // { token, expiresAt (ISO string), address }
 let activeInvestorTheme = null;
 let uploadedEvidenceSummary = [];
@@ -1642,6 +1644,7 @@ function renderValuation(data) {
       lockedPreview: data.lockedPreview || null,
       reportDraftToken: data.reportDraftToken || null,
       draftExpiresAt: data.draftExpiresAt || null,
+      paymentsEnabled: data.paymentsEnabled !== false,
       propertyState: data.propertyState || stateFromAddress(data.address),
       propertySuburb: data.propertySuburb || suburbFromAddress(data.address)
     };
@@ -1741,6 +1744,29 @@ function renderValuation(data) {
   }
     renderLoanScenario();
   renderMarketCrosscheck(data);
+
+  // Payments gate: server-driven (Production = hidden, Preview = visible)
+  paymentsEnabled = data.paymentsEnabled !== false;
+  var unlockBtn2 = byId("unlock-report");
+  var leadPanel = document.querySelector(".lead-panel");
+  if (unlockBtn2) {
+    if (!paymentsEnabled) {
+      unlockBtn2.style.display = "none";
+      unlockBtn2.disabled = true;
+      // Hide the entire lead panel's purchase section
+      if (leadPanel) {
+        leadPanel.style.display = "none";
+      }
+      // Clear draft token so locked preview CTA doesn't show pay buttons
+      currentReportDraft = null;
+    } else {
+      unlockBtn2.style.display = "";
+      if (leadPanel) {
+        leadPanel.style.display = "";
+      }
+    }
+  }
+
   renderLockState();
   updatePurchaseButton();
   renderEvidenceReview(language === "zh" && data.evidenceSummaryZh ? data.evidenceSummaryZh : data.evidenceSummary);
@@ -1874,7 +1900,7 @@ function renderLockState() {
           draftValid = true;
         }
       }
-      if (draftValid) {
+      if (draftValid && paymentsEnabled) {
         lockedPreview = JSON.parse(JSON.stringify(lockedPreview));
         lockedPreview.cta = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
       }
@@ -2480,6 +2506,12 @@ byId("language-toggle").addEventListener("click", () => {
 function updatePurchaseButton() {
   var btn = byId("unlock-report");
   if (!btn) return;
+  // Payments gate: if disabled, never enable the button
+  if (!paymentsEnabled) {
+    btn.disabled = true;
+    btn.setAttribute("aria-disabled", "true");
+    return;
+  }
   var draftValid = false;
   if (currentReportDraft && currentReportDraft.token) {
     if (currentReportDraft.expiresAt) {
@@ -2520,6 +2552,8 @@ var _navigateTo = window._navigateTo; // aliased for closure access below
  * Open the checkout modal. Called from purchase button click.
  */
 function openCheckoutModal() {
+  // Payments gate: do not open checkout modal if payments disabled
+  if (!paymentsEnabled) return;
   var modal = byId("checkout-modal");
   if (!modal || typeof modal.showModal !== "function") return;
   // Populate address
@@ -2557,6 +2591,8 @@ function cancelCheckoutRequest() {
  * Handle the checkout form submission — POST /api/create-report-checkout
  */
 async function handleCheckoutSubmit() {
+  // Payments gate: do not submit checkout if payments disabled
+  if (!paymentsEnabled) return;
   if (checkoutPending) return;
 
   // Generation guard: track which "generation" this request belongs to
@@ -2794,6 +2830,11 @@ const mobileBtn = byId("mobile-report-cta");
 if (mobileBtn) {
   mobileBtn.addEventListener("click", () => {
     if (unlocked) {
+      scrollToSection("#comparables");
+      return;
+    }
+    // Payments gate: do not scroll to hidden lead panel on Production
+    if (!paymentsEnabled) {
       scrollToSection("#comparables");
       return;
     }

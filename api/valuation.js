@@ -203,6 +203,9 @@ export default async function handler(request, response) {
     freeSummary.reportDraftToken = draftToken;
     freeSummary.draftExpiresAt = draftExpiresAt;
 
+    // Payments gate: disabled on Production, enabled on Preview
+    freeSummary.paymentsEnabled = process.env.VERCEL_ENV !== "production";
+
     return response.status(result.ok ? 200 : 400)
       .setHeader("Content-Type", "application/json")
       .setHeader("Cache-Control", "no-store")
