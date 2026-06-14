@@ -609,3 +609,183 @@ test("migration-010 has report_drafts table", () => {
   assert.ok(sql.includes("consumed_at"), "Must track consumption");
   assert.ok(sql.includes("draft_id TEXT REFERENCES report_drafts(draft_id)"));
 });
+
+// ══════════════════════════════════════════════════════════════
+//  Contract tests — 90266d6 field mapping fix scope
+// ══════════════════════════════════════════════════════════════
+
+test("Production without TOKEN_SIGNING_SECRET must reject draft creation", async () => {
+  // Test that createReportDraft throws when TOKEN_SIGNING_SECRET is unset
+  // and NODE_ENV is "production" (not development/test).
+  const origEnv = process.env.NODE_ENV;
+  const origSecret = process.env.TOKEN_SIGNING_SECRET;
+  delete process.env.TOKEN_SIGNING_SECRET;
+  process.env.NODE_ENV = "production";
+
+  // Reload module to get fresh getDraftSecret with production env
+  try {
+    const prodSvc = await import(
+      path.join(projectRoot, "lib/report-snapshot-service.js") + "?prod=" + Date.now()
+    );
+    const result = makeProductionValuationResult();
+    const sql = createMockSql();
+    let threw = false;
+    try {
+      await prodSvc.createReportDraft(result, sql);
+    } catch (e) {
+      threw = true;
+      assert.ok(e.message.includes("TOKEN_SIGNING_SECRET"),
+        "Error must mention TOKEN_SIGNING_SECRET");
+    }
+    assert.ok(threw, "Must throw in production when TOKEN_SIGNING_SECRET is missing");
+  } finally {
+    process.env.NODE_ENV = origEnv;
+    if (origSecret) process.env.TOKEN_SIGNING_SECRET = origSecret;
+  }
+});
+
+test("STRIPE_WEBHOOK_SECRET must NOT be used as draft token secret", async () => {
+  // Only TOKEN_SIGNING_SECRET or SESSION_SECRET should produce valid
+  // draft token signatures. STRIPE_WEBHOOK_SECRET must NOT work.
+  const origTokenSecret = process.env.TOKEN_SIGNING_SECRET;
+  const origSession = process.env.SESSION_SECRET;
+  const origWebhook = process.env.STRIPE_WEBHOOK_SECRET;
+  delete process.env.TOKEN_SIGNING_SECRET;
+  delete process.env.SESSION_SECRET;
+  process.env.STRIPE_WEBHOOK_SECRET = "stripe-webhook-secret-value";
+  process.env.NODE_ENV = "development";
+
+  try {
+    const svc2 = await import(
+      path.join(projectRoot, "lib/report-snapshot-service.js") + "?webhook=" + Date.now()
+    );
+    const result = makeProductionValuationResult();
+    const sql = createMockSql();
+    // When only STRIPE_WEBHOOK_SECRET is set (no TOKEN_SIGNING_SECRET, no SESSION_SECRET),
+    // getDraftSecret should fall back to the dev secret in dev/test env
+    // but must NOT use STRIPE_WEBHOOK_SECRET
+    const draft = await svc2.createReportDraft(result, sql);
+    assert.ok(draft.draftToken, "Must produce a draft token with dev fallback");
+
+    // Verify the token was NOT signed with STRIPE_WEBHOOK_SECRET by checking
+    // that a signature computed with STRIPE_WEBHOOK_SECRET doesn't match
+    const parts = draft.draftToken.split(".");
+    const stripeSig = crypto.createHmac("sha256", "stripe-webhook-secret-value")
+      .update(parts[0])
+      .digest("base64url");
+    assert.notEqual(parts[1], stripeSig,
+      "STRIPE_WEBHOOK_SECRET must not produce a valid signature");
+  } finally {
+    process.env.TOKEN_SIGNING_SECRET = origTokenSecret;
+    process.env.SESSION_SECRET = origSession;
+    process.env.STRIPE_WEBHOOK_SECRET = origWebhook;
+    process.env.NODE_ENV = "test";
+  }
+});
+
+test("snapshot must retain multiSourceAnalysis, keyFactors, dataLimitations", async () => {
+  // The snapshot produced by buildReportSnapshot (via createReportDraft) must
+  // include multiSourceAnalysis, keyFactors, and dataLimitations fields.
+  // We verify by checking that two valuation results with different
+  // multiSourceAnalysis values produce different snapshot hashes.
+  const resultA = makeProductionValuationResult({
+    valuation: {
+      ...makeProductionValuationResult().valuation,
+      multiSourceAnalysis: { sources: ["rea", "domain"], confidence: "high" },
+      keyFactors: ["proximity to schools"],
+      dataLimitations: ["limited recent sales"],
+    },
+  });
+  const resultB = makeProductionValuationResult({
+    valuation: {
+      ...makeProductionValuationResult().valuation,
+      multiSourceAnalysis: { sources: ["domain"], confidence: "medium" },
+      keyFactors: ["renovated kitchen"],
+      dataLimitations: ["no recent sales"],
+    },
+  });
+
+  const sql = createMockSql();
+  const draftA = await svc.createReportDraft(resultA, sql);
+  const draftB = await svc.createReportDraft(resultB, sql);
+  const payloadA = svc.verifyReportDraftToken(draftA.draftToken);
+  const payloadB = svc.verifyReportDraftToken(draftB.draftToken);
+
+  assert.notEqual(payloadA.snapshot_hash, payloadB.snapshot_hash,
+    "Different multiSourceAnalysis must produce different hashes (field must be in snapshot)");
+});
+
+test("snapshot subject block fields affect snapshot hash", async () => {
+  // Verify that the subject block fields (like landSize) actually end up in
+  // the snapshot by checking hash changes.
+  const resultA = makeProductionValuationResult({
+    subject: { ...makeProductionValuationResult().subject, landSize: 500 },
+  });
+  const resultB = makeProductionValuationResult({
+    subject: { ...makeProductionValuationResult().subject, landSize: 750 },
+  });
+
+  const sql = createMockSql();
+  const draftA = await svc.createReportDraft(resultA, sql);
+  const draftB = await svc.createReportDraft(resultB, sql);
+  const payloadA = svc.verifyReportDraftToken(draftA.draftToken);
+  const payloadB = svc.verifyReportDraftToken(draftB.draftToken);
+
+  assert.notEqual(payloadA.snapshot_hash, payloadB.snapshot_hash,
+    "Different landSize must produce different hashes");
+});
+
+test("snapshot preserves valuationMode, largeLotDetect, largeLotResult", async () => {
+  const resultA = makeProductionValuationResult();
+  const resultB = makeProductionValuationResult({
+    valuationMode: "large_lot",
+    largeLotDetect: { ratio: 0.87, threshold: 0.8 },
+    largeLotResult: { adjustedFactor: -0.05, reason: "lot size > 1000m2" },
+  });
+
+  const sql = createMockSql();
+  const draftA = await svc.createReportDraft(resultA, sql);
+  const draftB = await svc.createReportDraft(resultB, sql);
+  const payloadA = svc.verifyReportDraftToken(draftA.draftToken);
+  const payloadB = svc.verifyReportDraftToken(draftB.draftToken);
+
+  assert.notEqual(payloadA.snapshot_hash, payloadB.snapshot_hash,
+    "Different valuationMode must produce different hashes");
+});
+
+test("snapshot with 0 bedrooms/carSpaces produces valid hash (not dropped)", async () => {
+  const result = makeProductionValuationResult({
+    subject: {
+      address: "99 Zero Bed St",
+      suburb: "Testville",
+      state: "VIC",
+      propertyType: "House",
+      bedrooms: 0,
+      carSpaces: 0,
+    },
+  });
+  // Override top-level fields so they're null (proving subject is read)
+  // Note: makeProductionValuationResult doesn't set top-level bedrooms,
+  // so this implicitly tests subject-only resolution.
+
+  const sql = createMockSql();
+  const draft = await svc.createReportDraft(result, sql);
+  const payload = svc.verifyReportDraftToken(draft.draftToken);
+  assert.ok(payload.snapshot_hash, "Must produce hash even with 0 bedrooms");
+
+  // Verify that the snapshot differs from one where bedrooms is explicitly absent
+  const resultNoBed = makeProductionValuationResult({
+    subject: {
+      address: "99 Zero Bed St",
+      suburb: "Testville",
+      state: "VIC",
+      propertyType: "House",
+      // bedrooms omitted
+      carSpaces: 0,
+    },
+  });
+  const draftNoBed = await svc.createReportDraft(resultNoBed, sql);
+  const payloadNoBed = svc.verifyReportDraftToken(draftNoBed.draftToken);
+  assert.notEqual(payload.snapshot_hash, payloadNoBed.snapshot_hash,
+    "0 bedrooms must produce different hash from undefined bedrooms");
+});
