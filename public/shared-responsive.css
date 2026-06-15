@@ -186,7 +186,7 @@ input[type="button"],
    ════════════════════════════════════════════════════════════ */
 .summary-main {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0,1fr);
   gap: 12px;
 }
 
@@ -323,9 +323,7 @@ input[type="button"],
   .search-panel {
     grid-template-columns: minmax(220px, 0.7fr) minmax(300px, 1.3fr);
   }
-  .summary-main {
-    grid-template-columns: 1fr 1fr;
-  }
+  /* .summary-main stays single-column */
   .results-grid {
     grid-template-columns: 1fr 1fr;
   }
@@ -506,4 +504,86 @@ textarea {
   align-items: center;
   min-height: var(--touch-min);
   padding: 8px 4px;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Address — prevent word-break on long street names
+   ════════════════════════════════════════════════════════════ */
+#property-address,
+#mobile-property-address {
+  overflow-wrap: break-word;
+  word-break: normal;
+  hyphens: none;
+  min-width: 0;
+}
+
+/* ════════════════════════════════════════════════════════════
+   Layout — side-panel + main content area (valuation page)
+   ════════════════════════════════════════════════════════════ */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 260px minmax(0,1fr);
+  }
+}
+
+@media (min-width: 1440px) {
+  .layout {
+    grid-template-columns: 300px minmax(0,1fr);
+  }
+}
+
+/* ── side-panel: default hidden on mobile, visible on desktop ── */
+.side-panel {
+  display: none;
+  order: -1;
+}
+
+@media (min-width: 1024px) {
+  .side-panel {
+    display: block;
+  }
+}
+
+/* ── summary-main inside .content (single-column content area) ── */
+.content .summary-main {
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  gap: 12px;
+}
+
+@media (min-width: 1024px) {
+  .content .summary-main {
+    grid-template-columns: 1fr 340px;
+  }
+}
+
+/* ── summary-card (Why this estimate) ── */
+.summary-card {
+  min-width: 0;
+}
+
+/* ── Check Status panel in side-panel ── */
+.side-panel .panel {
+  margin-bottom: 16px;
+}
+
+/* ── When payments disabled, unlock/lead section hidden, only check-status visible ── */
+.payments-disabled .lead-panel {
+  display: none;
+}
+
+.payments-disabled .locked-strip {
+  display: none;
+}
+
+.payments-disabled .locked-preview-cta {
+  display: none;
 }

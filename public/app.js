@@ -1755,15 +1755,19 @@ function renderValuation(data) {
   renderMarketCrosscheck(data);
   // Payments gate: fail-closed — controls purchase UI visibility
   paymentsEnabled = data.paymentsEnabled;
+  var layoutEl = document.querySelector(".layout");
   var unlockBtn2 = byId("unlock-report");
   var leadPanel2 = document.querySelector(".lead-panel");
   if (!paymentsEnabled) {
+    // Add class to gate CSS — hides lead-panel, keeps check-status
+    if (layoutEl) { layoutEl.classList.add("payments-disabled"); }
     // Hide purchase button and lead panel
     if (unlockBtn2) { unlockBtn2.style.display = "none"; unlockBtn2.disabled = true; }
     if (leadPanel2) { leadPanel2.style.display = "none"; }
     // Clear draft token to prevent locked preview showing pay CTA
     currentReportDraft = null;
   } else {
+    if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
     // Show purchase UI (default state from HTML)
     if (unlockBtn2) { unlockBtn2.style.display = ""; }
     if (leadPanel2) { leadPanel2.style.display = ""; }
