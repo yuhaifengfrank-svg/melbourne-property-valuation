@@ -48,6 +48,73 @@ export function setTestSql(sqlFn) {
   _testSql = sqlFn;
 }
 
+// ── Lead Contact ID Normalization ───────────────────────────────────
+
+/**
+ * Normalize lead_contact_id from PostgreSQL BIGSERIAL RETURNING.
+ *
+ * Neon / pg >=14 returns BIGINT/BIGSERIAL columns as strings (not numbers)
+ * from RETURNING clauses. This function converts the raw DB value to a safe
+ * positive integer before passing it to downstream services (which expect
+ * a number).
+ *
+ * Accepts:
+ *   - positive integer number           → returned as-is
+ *   - string of pure decimal digits     → parsed to number ("42" → 42)
+ *
+ * Rejects:
+ *   - null / undefined
+ *   - negative numbers, zero, decimals
+ *   - scientific notation, hex, empty/whitespace strings
+ *   - BigInt / boolean / object / array / symbol
+ *   - values exceeding Number.MAX_SAFE_INTEGER
+ *
+ * @param {*} value - Raw lead_contact_id from DB (typically string or number)
+ * @returns {number} Positive safe integer
+ * @throws {TypeError} With descriptive message for invalid input
+ */
+function normalizeLeadContactId(value) {
+  if (value === null || value === undefined) {
+    throw new TypeError("leadContactId is required");
+  }
+
+  if (typeof value === "number") {
+    if (!Number.isInteger(value) || value <= 0) {
+      throw new TypeError(
+        `leadContactId must be a positive integer, got ${value}`
+      );
+    }
+    if (!Number.isSafeInteger(value)) {
+      throw new TypeError(
+        `leadContactId exceeds safe integer range: ${value}`
+      );
+    }
+    return value;
+  }
+
+  if (typeof value === "string") {
+    // Reject empty, scientific notation (1e2), hex (0x1F), decimals (3.14),
+    // leading zero ("012"), and non-numeric strings ("abc").
+    if (!/^[1-9]\d*$/.test(value)) {
+      throw new TypeError(
+        `leadContactId must be a positive integer string, got "${value}"`
+      );
+    }
+    const num = Number(value);
+    if (!Number.isSafeInteger(num) || num <= 0) {
+      throw new TypeError(
+        `leadContactId exceeds safe integer range: ${value}`
+      );
+    }
+    return num;
+  }
+
+  // boolean, bigint, symbol, object, array, function, undefined (caught above)
+  throw new TypeError(
+    `leadContactId must be a number or numeric string, got ${typeof value}`
+  );
+}
+
 // ── Email validation ────────────────────────────────────────────────
 
 function isValidEmail(email) {
@@ -160,7 +227,7 @@ export default async function handler(req, res) {
       DO UPDATE SET updated_at = NOW()
       RETURNING id
     `;
-    const leadContactId = contactResult[0].id;
+    const leadContactId = normalizeLeadContactId(contactResult?.[0]?.id);
 
     // ── Step 4: Consume draft into immutable snapshot ──
     let snapshotOutcome;

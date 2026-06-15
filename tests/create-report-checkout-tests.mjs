@@ -81,7 +81,8 @@ function createMockSql() {
       };
       mockDb.leadContacts.push(contact);
       mockDb.upsertLeadContactLog.push({ action: "insert", id: contact.id, email: emailLower });
-      return [{ id: contact.id }];
+      const returnedId = mockDb.returnLeadIdAsString ? String(contact.id) : contact.id;
+      return [{ id: returnedId }];
     }
 
     // SELECT … FROM lead_contacts — only here for schema-safety SELECT
@@ -1691,4 +1692,420 @@ test("gate rejects when VERCEL_ENV=production STRIPE_MODE=test", async () => {
     else delete process.env.STRIPE_MODE;
     process.env.NODE_ENV = origNodeEnv;
   }
+});
+
+// ── Phase Migration-011a: BIGSERIAL leadContactId normalization ──────
+//
+// Neon (pg >=14) returns BIGINT/BIGSERIAL columns as strings from RETURNING.
+// normalizeLeadContactId must convert "1" → 1 at the API boundary.
+
+async function setupTestEnvWithStringIds() {
+  resetMockDb();
+  resetMockStripe();
+  process.env.STRIPE_PRICE_ID_REPORT_399 = "price_test_string_id_" + Date.now();
+  process.env.VERCEL_ENV = "preview";
+  process.env.STRIPE_MODE = "test";
+  nextLeadContactId = 1;
+
+  const { setMockStripe } = await import("../lib/report-checkout-service.js");
+  setMockStripe(mockStripeClient);
+
+  mockDb.returnLeadIdAsString = true;
+  const sql = createMockSql();
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 5000}`);
+  mod.setTestSql(sql);
+
+  return { handler: mod.default };
+}
+
+test("RETURNING id as string \"1\" — full checkout succeeds", async () => {
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  const ctx = makeReqRes({ email: "neon-string@example.com", reportDraftToken: token });
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 200, "Checkout must succeed with string ID from Neon");
+  const data = ctx.getData();
+  assert.equal(data.ok, true, "Must return ok=true");
+  assert.ok(data.checkoutUrl, "Must return Stripe checkout URL");
+  assert.ok(data.checkoutUrl.startsWith("https://checkout.stripe.com/"), "URL must be from Stripe");
+
+  // Exactly one snapshot and one payment
+  assert.equal(mockDb.snapshots.length, 1, "Exactly one snapshot created");
+  assert.equal(mockDb.snapshots[0].lead_contact_id, 1,
+    "Snapshot lead_contact_id must be number 1, not string");
+
+  assert.equal(mockDb.payments.length, 1, "Exactly one payment created");
+  assert.equal(mockDb.payments[0].lead_contact_id, 1,
+    "Payment lead_contact_id must be number 1, not string");
+
+  // Stripe session created
+  assert.equal(stripeSessions.length, 1, "One Stripe session created");
+});
+
+test("string ID — same email idempotent reuse returns 200", async () => {
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  const b = { email: "idempotent-string@example.com", reportDraftToken: token };
+
+  const r1 = makeReqRes(b);
+  await handler(r1.req, r1.res);
+  assert.equal(r1.getStatus(), 200, "First request must succeed");
+  const reportId1 = r1.getData()?.reportId;
+
+  const r2 = makeReqRes(b);
+  await handler(r2.req, r2.res);
+  assert.equal(r2.getStatus(), 200, "Same token+email repeat must succeed (idempotent)");
+  assert.equal(r2.getData()?.reportId, reportId1, "Must return same report_id");
+
+  // Still only one snapshot, one payment
+  assert.equal(mockDb.snapshots.length, 1, "Exactly one snapshot (idempotent)");
+  assert.equal(mockDb.snapshots[0].lead_contact_id, 1, "Snapshot owner must be number");
+  assert.equal(mockDb.payments.length, 1, "Exactly one payment (idempotent)");
+  assert.equal(mockDb.payments[0].lead_contact_id, 1, "Payment owner must be number");
+});
+
+test("string ID — different email on same draft returns 409", async () => {
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  // First customer
+  const r1 = makeReqRes({ email: "first-string@example.com", reportDraftToken: token });
+  await handler(r1.req, r1.res);
+  assert.equal(r1.getStatus(), 200, "First customer must succeed");
+
+  // Second customer — must get 409
+  const r2 = makeReqRes({ email: "intruder-string@example.com", reportDraftToken: token });
+  await handler(r2.req, r2.res);
+  assert.equal(r2.getStatus(), 409, "Different email must return 409");
+  assert.equal(r2.getData()?.error, "REPORT_OWNER_CONFLICT", "Error code must be REPORT_OWNER_CONFLICT");
+
+  // Snapshot owner still number 1
+  assert.equal(mockDb.snapshots[0].lead_contact_id, 1,
+    "Snapshot owner unchanged after conflict");
+});
+
+test("string ID — Cookie payload has number leadContactId", async () => {
+  const { verifyReportAccessSession } = await getSessionTools();
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  const ctx = makeReqRes({ email: "cookie-string@example.com", reportDraftToken: token });
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 200);
+
+  const cookie = ctx.getHeader("Set-Cookie");
+  assert.ok(cookie, "Must set purchase session cookie");
+  assert.ok(cookie.startsWith("aushomevalue_report_access="),
+    "Cookie name must be aushomevalue_report_access");
+  assert.ok(!cookie.startsWith("report_access="),
+    "Must not use old cookie name without aushomevalue_ prefix");
+
+  // Extract token from cookie and verify leadContactId is number
+  const match = cookie.match(/aushomevalue_report_access=([^;]+)/);
+  assert.ok(match, "Must extract cookie token");
+  const cookieToken = decodeURIComponent(match[1]);
+  const payload = verifyReportAccessSession(cookieToken);
+  assert.ok(payload, "Cookie token must be verifiable");
+  assert.equal(typeof payload.leadContactId, "number",
+    "Cookie payload leadContactId must be a number");
+  assert.equal(payload.leadContactId, 1,
+    "Cookie payload leadContactId must be 1");
+
+  // No checkoutSessionId or checkoutUrl in body
+  const data = ctx.getData();
+  assert.equal(data.checkoutSessionId, undefined,
+    "Must not expose checkoutSessionId in response");
+  assert.ok(data.checkoutUrl, "Must return checkoutUrl in response");
+});
+
+test("RETURNING id as number also works (backward compat)", async () => {
+  // Default mock returns numbers — re-use normal setup
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const ctx = makeReqRes({ email: "numeric-id@example.com", reportDraftToken: token });
+  await handler(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 200, "Number ID must still work");
+  const data = ctx.getData();
+  assert.equal(data.ok, true);
+  assert.ok(data.checkoutUrl, "Must return checkout URL");
+
+  // Snapshot owner must be number
+  assert.equal(typeof mockDb.snapshots[0]?.lead_contact_id, "number",
+    "Snapshot lead_contact_id must be number");
+});
+
+test("null leadContactId from DB returns 500", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const origSql = createMockSql();
+  const nullIdSql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{ id: null }];
+    }
+    return origSql(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 6000}`);
+  mod.setTestSql(nullIdSql);
+
+  const ctx = makeReqRes({ email: "null-id@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "Null leadContactId must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB internals");
+
+  // No snapshot, no payment, no Stripe session
+  assert.equal(mockDb.snapshots.length, 0, "No snapshot for invalid lead_contact");
+  assert.equal(mockDb.payments.length, 0, "No payment for invalid lead_contact");
+  assert.equal(stripeSessions.length, 0, "No Stripe session for invalid lead_contact");
+});
+
+test("negative lead_contact_id returns 500 without leaking DB value", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const negSql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{ id: -5 }];
+    }
+    return createMockSql()(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 7000}`);
+  mod.setTestSql(negSql);
+
+  const ctx = makeReqRes({ email: "neg-id@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "Negative leadContactId must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB value");
+  assert.equal(mockDb.snapshots.length, 0, "No snapshot for negative id");
+});
+
+test("zero lead_contact_id returns 500", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const zeroSql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{ id: 0 }];
+    }
+    return createMockSql()(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 8000}`);
+  mod.setTestSql(zeroSql);
+
+  const ctx = makeReqRes({ email: "zero-id@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "Zero leadContactId must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB value");
+  assert.equal(mockDb.snapshots.length, 0, "No snapshot for zero id");
+});
+
+test("decimal lead_contact_id string returns 500 without leaking", async () => {
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  const decSql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{ id: "3.14" }];
+    }
+    return createMockSql()(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 9000}`);
+  mod.setTestSql(decSql);
+
+  const ctx = makeReqRes({ email: "decimal-id@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "Decimal string id must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB value");
+  assert.equal(mockDb.snapshots.length, 0, "No snapshot for decimal id");
+});
+
+test("sci-notation string \"1e2\" returns 500", async () => {
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  const sciSql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{ id: "1e2" }];
+    }
+    return createMockSql()(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 10000}`);
+  mod.setTestSql(sciSql);
+
+  const ctx = makeReqRes({ email: "sci-id@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "Sci-notation string must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB value");
+});
+
+test("non-numeric string like \"abc\" returns 500", async () => {
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  const abcSql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{ id: "abc" }];
+    }
+    return createMockSql()(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 11000}`);
+  mod.setTestSql(abcSql);
+
+  const ctx = makeReqRes({ email: "abc-id@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "Non-numeric string must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB value");
+});
+
+test("negative string \"-42\" returns 500", async () => {
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  const negStrSql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{ id: "-42" }];
+    }
+    return createMockSql()(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 12000}`);
+  mod.setTestSql(negStrSql);
+
+  const ctx = makeReqRes({ email: "negstr-id@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "Negative string must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB value");
+});
+
+test("leading zero string \"0123\" returns 500 (not octal)", async () => {
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  const leadingZeroSql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{ id: "0123" }];
+    }
+    return createMockSql()(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 13000}`);
+  mod.setTestSql(leadingZeroSql);
+
+  const ctx = makeReqRes({ email: "leading-zero@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "Leading zero string must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB value");
+});
+
+test("empty string lead_contact_id returns 500", async () => {
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  const emptySql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{ id: "" }];
+    }
+    return createMockSql()(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 14000}`);
+  mod.setTestSql(emptySql);
+
+  const ctx = makeReqRes({ email: "empty-id@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "Empty string id must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB value");
+});
+
+test("undefined lead_contact_id from DB returns 500", async () => {
+  const { handler } = await setupTestEnv();
+  const token = await makeDraftToken();
+
+  const undefSql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{}]; // no 'id' property
+    }
+    return createMockSql()(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 15000}`);
+  mod.setTestSql(undefSql);
+
+  const ctx = makeReqRes({ email: "undefined-id@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "Undefined id must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB value");
+});
+
+test("BIGINT exceeds MAX_SAFE_INTEGER returns 500", async () => {
+  const { handler } = await setupTestEnvWithStringIds();
+  const token = await makeDraftToken();
+
+  const bigSql = async (strings, ...values) => {
+    const raw = strings.map((s, i) => (i < values.length ? s + `$${i}` : s)).join("");
+    if (raw.includes("ON CONFLICT") && raw.includes("email_lower")) {
+      return [{ id: "9007199254740993" }]; // > MAX_SAFE_INTEGER
+    }
+    return createMockSql()(strings, ...values);
+  };
+
+  const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 16000}`);
+  mod.setTestSql(bigSql);
+
+  const ctx = makeReqRes({ email: "big-id@example.com", reportDraftToken: token });
+  await mod.default(ctx.req, ctx.res);
+
+  assert.equal(ctx.getStatus(), 500, "ID > MAX_SAFE_INTEGER must return 500");
+  assert.equal(ctx.getData().error, "INTERNAL_ERROR", "Must not leak DB value");
+});
+
+test("no static analysis red flags for normalizeLeadContactId", () => {
+  const source = fs.readFileSync(
+    path.join(projectRoot, "api/create-report-checkout.js"),
+    "utf8"
+  );
+
+  assert.ok(source.includes("normalizeLeadContactId(contactResult?.[0]?.id)"),
+    "leadContactId must be normalized at the single assignment point");
+
+  assert.ok(!source.includes("contactResult[0].id;"),
+    "Must not have non-normalized leadContactId assignment");
+
+  assert.ok(!source.includes('"leadContactId"'),
+    "Error responses must not reference leadContactId in the JSON message");
+
+  assert.ok(source.includes("INTERNAL_ERROR"),
+    "Outer catch must return INTERNAL_ERROR");
 });
