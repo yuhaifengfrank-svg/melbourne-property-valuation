@@ -799,6 +799,25 @@ test("_db.js does NOT contain DROP INDEX idx_rs_draft_id", () => {
   assert.ok(!db.includes("DROP INDEX"), "_db.js must not drop/recreate index on every cold start");
 });
 
+test("_db.js does NOT modify lead_contacts or customer funnel schema", () => {
+  const db = fs.readFileSync(path.join(projectRoot, "api/_db.js"), "utf8");
+  // The only changes from 694cff6 baseline should be in ensureReportPaymentSchema
+  // No lead_contacts constraint changes
+  assert.ok(!db.includes("lead_contacts_email_key"), "Must not add email key constraint");
+  assert.ok(!db.includes("lead_contacts_email_lower_key"), "Must not add email_lower key constraint");
+  // ensureCustomerFunnelSchema must be unmodified
+  const funnelStart = db.indexOf("export async function ensureCustomerFunnelSchema");
+  const reportStart = db.indexOf("export async function ensureReportPaymentSchema");
+  assert.ok(funnelStart >= 0, "ensureCustomerFunnelSchema must exist");
+  assert.ok(reportStart >= 0, "ensureReportPaymentSchema must exist");
+  // Check the block between funnel and report — no DDL for lead_contacts
+  const funnelBlock = db.slice(funnelStart, reportStart);
+  assert.ok(!funnelBlock.includes("ALTER TABLE lead_contacts"),
+    "ensureCustomerFunnelSchema must not contain ALTER TABLE lead_contacts");
+  assert.ok(!funnelBlock.includes("ADD CONSTRAINT"),
+    "ensureCustomerFunnelSchema must not add constraints");
+});
+
 test("_db.js CREATE UNIQUE INDEX IF NOT EXISTS (not DROP+CREATE)", () => {
   const db = fs.readFileSync(path.join(projectRoot, "api/_db.js"), "utf8");
   assert.ok(db.includes("CREATE UNIQUE INDEX IF NOT EXISTS idx_rs_draft_id ON report_snapshots (draft_id)"),
@@ -812,6 +831,8 @@ test("migration-011 exists and contains safety checks", () => {
   );
   assert.ok(m11.includes("Migration 011"), "Must be present");
   assert.ok(m11.includes("BEGIN"), "Uses transaction");
+  assert.ok(m11.includes("LOCK TABLE report_snapshots IN ACCESS EXCLUSIVE MODE"),
+    "Must use ACCESS EXCLUSIVE LOCK");
   assert.ok(m11.includes("COMMIT"), "Commits transaction");
 });
 
@@ -824,6 +845,15 @@ test("migration-011 checks for duplicate non-NULL draft_id before modifying inde
   assert.ok(m11.includes("COUNT(*) > 1"), "Must detect duplicates");
   assert.ok(m11.includes("RAISE EXCEPTION"), "Must fail explicitly on duplicates");
   assert.ok(m11.includes("Manual cleanup"), "Must tell operator to fix manually");
+  // Error message must NOT include individual draft_id values
+  const lines = m11.split("\n");
+  const raiseLine = lines.find(l => l.includes("RAISE EXCEPTION"));
+  assert.ok(raiseLine, "RAISE EXCEPTION line must exist");
+  assert.ok(!raiseLine.includes("string_agg"), "Error must not aggregate draft_id values");
+  assert.ok(!raiseLine.includes("draft_id, "), "Error must not concatenate draft_id");
+  // Only the count placeholder is present
+  assert.ok(raiseLine.includes("%"), "Error must include count placeholder");
+  assert.ok(!raiseLine.includes("%. Manual"), "Only one placeholder for count");
 });
 
 test("migration-011 has no DELETE, TRUNCATE or data repair", () => {
@@ -874,23 +904,29 @@ test("lib/report-snapshot-service.js uses ON CONFLICT (draft_id) without WHERE",
   assert.ok(!svc.includes("ON CONFLICT (draft_id) WHERE"), "No WHERE in ON CONFLICT");
 });
 
-test("migration-011 execution order: duplicate check before DROP", () => {
+test("migration-011 execution order: LOCK before duplicate check before DROP before CREATE", () => {
   const m11 = fs.readFileSync(
     path.join(projectRoot, "db/migration-011-full-draft-id-unique.sql"),
     "utf8"
   );
   const lines = m11.split("\n");
-  // Use line number (0-indexed) for ordering, ignoring comments
-  let checkLine = -1, dropLine = -1, createLine = -1;
+  // Use active SQL line number (0-indexed) for ordering, ignoring comments
+  let lockLine = -1, checkLine = -1, dropLine = -1, createLine = -1, commitLine = -1;
   for (let i = 0; i < lines.length; i++) {
     const l = lines[i];
+    if (l.startsWith("LOCK TABLE")) lockLine = i;
     if (l.includes("HAVING COUNT(*) > 1")) checkLine = i;
     if (l.includes("DROP INDEX IF EXISTS")) dropLine = i;
     if (l.startsWith("CREATE UNIQUE INDEX")) createLine = i;
+    if (l.startsWith("COMMIT")) commitLine = i;
   }
+  assert.ok(lockLine >= 0, "LOCK TABLE present");
   assert.ok(checkLine >= 0, "Duplicate check present");
   assert.ok(dropLine >= 0, "DROP present");
   assert.ok(createLine >= 0, "CREATE present");
+  assert.ok(commitLine >= 0, "COMMIT present");
+  assert.ok(lockLine < checkLine, "LOCK BEFORE duplicate check");
   assert.ok(checkLine < dropLine, "Duplicate check BEFORE DROP");
   assert.ok(dropLine < createLine, "DROP BEFORE CREATE");
+  assert.ok(createLine < commitLine, "CREATE BEFORE COMMIT");
 });

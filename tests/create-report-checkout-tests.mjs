@@ -373,10 +373,20 @@ const mockStripeClient = {
 
 // ── Test environment setup ──────────────────────────────────────────
 
+/**
+ * Save env vars that setupTestEnv may overwrite, so they can be restored.
+ */
+const _origVercelEnv = process.env.VERCEL_ENV;
+const _origStripeMode = process.env.STRIPE_MODE;
+
 async function setupTestEnv() {
   resetMockDb();
   resetMockStripe();
   process.env.STRIPE_PRICE_ID_REPORT_399 = "price_test_399_" + Date.now();
+  // Payments gate requires preview+test for checkout success paths.
+  // Exported so gate-blocked tests can explicitly override them.
+  process.env.VERCEL_ENV = "preview";
+  process.env.STRIPE_MODE = "test";
   nextLeadContactId = 1;
 
   const { setMockStripe } = await import("../lib/report-checkout-service.js");
@@ -387,6 +397,14 @@ async function setupTestEnv() {
   mod.setTestSql(sql);
 
   return { handler: mod.default };
+}
+
+/** Restore env to original state after test. */
+function restoreDefaultEnv() {
+  if (_origVercelEnv !== undefined) process.env.VERCEL_ENV = _origVercelEnv;
+  else delete process.env.VERCEL_ENV;
+  if (_origStripeMode !== undefined) process.env.STRIPE_MODE = _origStripeMode;
+  else delete process.env.STRIPE_MODE;
 }
 
 function makeReqRes(body, opts = {}) {
@@ -1518,5 +1536,159 @@ test("production without REPORT_ACCESS_SESSION_SECRET returns 503 with clear coo
     if (origSecret !== undefined) {
       process.env.REPORT_ACCESS_SESSION_SECRET = origSecret;
     }
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// Payments Gate — Production vs Preview behaviour
+// ═══════════════════════════════════════════════════════════════
+
+test("default env (no VERCEL_ENV/STRIPE_MODE) returns 503 PAYMENTS_GATE_BLOCKED", async () => {
+  // Save and clear env vars for a "default/production" scenario
+  const origVercelEnv = process.env.VERCEL_ENV;
+  const origStripeMode = process.env.STRIPE_MODE;
+  const origNodeEnv = process.env.NODE_ENV;
+  const origTokenSigningSecret = process.env.TOKEN_SIGNING_SECRET;
+  const origSecret = process.env.REPORT_ACCESS_SESSION_SECRET;
+
+  try {
+    delete process.env.VERCEL_ENV;
+    delete process.env.STRIPE_MODE;
+    process.env.NODE_ENV = "production";
+    process.env.TOKEN_SIGNING_SECRET = "test-prod-gate-secret";
+    process.env.REPORT_ACCESS_SESSION_SECRET = "test-prod-session-secret";
+
+    const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 1000}`);
+    const sql = createMockSql();
+    mod.setTestSql(sql);
+
+    const ctx = makeReqRes({ email: "default-env@example.com", reportDraftToken: "any-token" });
+    await mod.default(ctx.req, ctx.res);
+
+    assert.equal(ctx.getStatus(), 503);
+    assert.equal(ctx.getData().error, "PAYMENTS_GATE_BLOCKED");
+    assert.equal(ctx.getData().ok, false);
+  } finally {
+    // Restore
+    if (origVercelEnv !== undefined) process.env.VERCEL_ENV = origVercelEnv;
+    else delete process.env.VERCEL_ENV;
+    if (origStripeMode !== undefined) process.env.STRIPE_MODE = origStripeMode;
+    else delete process.env.STRIPE_MODE;
+    process.env.NODE_ENV = origNodeEnv;
+    if (origTokenSigningSecret !== undefined) process.env.TOKEN_SIGNING_SECRET = origTokenSigningSecret;
+    else delete process.env.TOKEN_SIGNING_SECRET;
+    if (origSecret !== undefined) process.env.REPORT_ACCESS_SESSION_SECRET = origSecret;
+    else delete process.env.REPORT_ACCESS_SESSION_SECRET;
+  }
+});
+
+test("VERCEL_ENV=preview STRIPE_MODE=test passes the gate (checkout success)", async () => {
+  const origVercelEnv = process.env.VERCEL_ENV;
+  const origStripeMode = process.env.STRIPE_MODE;
+  const origNodeEnv = process.env.NODE_ENV;
+  const origTokenSigningSecret = process.env.TOKEN_SIGNING_SECRET;
+  const origSecret = process.env.REPORT_ACCESS_SESSION_SECRET;
+
+  try {
+    // Enable payments gate — this test verifies the gate passes
+    // and a full checkout flow succeeds.
+    process.env.VERCEL_ENV = "preview";
+    process.env.STRIPE_MODE = "test";
+    process.env.NODE_ENV = "test";
+    // Keep TOKEN_SIGNING_SECRET unset so verifyReportDraftToken falls
+    // through to the default derivation (matching makeDraftToken).
+    delete process.env.TOKEN_SIGNING_SECRET;
+    process.env.REPORT_ACCESS_SESSION_SECRET = "test-preview-session-secret";
+
+    // Setup mock DB + Stripe
+    resetMockDb();
+    resetMockStripe();
+    process.env.STRIPE_PRICE_ID_REPORT_399 = "price_preview_399";
+    nextLeadContactId = 1;
+
+    const { setMockStripe } = await import("../lib/report-checkout-service.js");
+    setMockStripe(mockStripeClient);
+
+    const sql = createMockSql();
+    const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 2000}`);
+    mod.setTestSql(sql);
+
+    const token = await makeDraftToken();
+    const ctx = makeReqRes({ email: "preview-success@example.com", reportDraftToken: token });
+    await mod.default(ctx.req, ctx.res);
+
+    assert.equal(ctx.getStatus(), 200);
+    const data = ctx.getData();
+    assert.equal(data.ok, true);
+    assert.ok(data.checkoutUrl, "Must have checkout URL in preview");
+    assert.ok(data.checkoutUrl.startsWith("https://checkout.stripe.com/"),
+      "Checkout URL must be from Stripe");
+  } finally {
+    // Restore
+    if (origVercelEnv !== undefined) process.env.VERCEL_ENV = origVercelEnv;
+    else delete process.env.VERCEL_ENV;
+    if (origStripeMode !== undefined) process.env.STRIPE_MODE = origStripeMode;
+    else delete process.env.STRIPE_MODE;
+    process.env.NODE_ENV = origNodeEnv;
+    if (origTokenSigningSecret !== undefined) process.env.TOKEN_SIGNING_SECRET = origTokenSigningSecret;
+    else delete process.env.TOKEN_SIGNING_SECRET;
+    if (origSecret !== undefined) process.env.REPORT_ACCESS_SESSION_SECRET = origSecret;
+    else delete process.env.REPORT_ACCESS_SESSION_SECRET;
+  }
+});
+
+test("VERCEL_ENV=preview without STRIPE_MODE=test returns 503 PAYMENTS_GATE_BLOCKED", async () => {
+  const origVercelEnv = process.env.VERCEL_ENV;
+  const origStripeMode = process.env.STRIPE_MODE;
+  const origNodeEnv = process.env.NODE_ENV;
+
+  try {
+    process.env.VERCEL_ENV = "preview";
+    delete process.env.STRIPE_MODE;
+    process.env.NODE_ENV = "test";
+
+    const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 3000}`);
+    const sql = createMockSql();
+    mod.setTestSql(sql);
+
+    const ctx = makeReqRes({ email: "preview-nontest@example.com", reportDraftToken: "any-token" });
+    await mod.default(ctx.req, ctx.res);
+
+    assert.equal(ctx.getStatus(), 503);
+    assert.equal(ctx.getData().error, "PAYMENTS_GATE_BLOCKED");
+  } finally {
+    if (origVercelEnv !== undefined) process.env.VERCEL_ENV = origVercelEnv;
+    else delete process.env.VERCEL_ENV;
+    if (origStripeMode !== undefined) process.env.STRIPE_MODE = origStripeMode;
+    else delete process.env.STRIPE_MODE;
+    process.env.NODE_ENV = origNodeEnv;
+  }
+});
+
+test("gate rejects when VERCEL_ENV=production STRIPE_MODE=test", async () => {
+  const origVercelEnv = process.env.VERCEL_ENV;
+  const origStripeMode = process.env.STRIPE_MODE;
+  const origNodeEnv = process.env.NODE_ENV;
+
+  try {
+    process.env.VERCEL_ENV = "production";
+    process.env.STRIPE_MODE = "test";
+    process.env.NODE_ENV = "test";
+
+    const mod = await import(`../api/create-report-checkout.js?t=${Date.now() + 4000}`);
+    const sql = createMockSql();
+    mod.setTestSql(sql);
+
+    const ctx = makeReqRes({ email: "prod-stripe-test@example.com", reportDraftToken: "any-token" });
+    await mod.default(ctx.req, ctx.res);
+
+    assert.equal(ctx.getStatus(), 503);
+    assert.equal(ctx.getData().error, "PAYMENTS_GATE_BLOCKED");
+  } finally {
+    if (origVercelEnv !== undefined) process.env.VERCEL_ENV = origVercelEnv;
+    else delete process.env.VERCEL_ENV;
+    if (origStripeMode !== undefined) process.env.STRIPE_MODE = origStripeMode;
+    else delete process.env.STRIPE_MODE;
+    process.env.NODE_ENV = origNodeEnv;
   }
 });

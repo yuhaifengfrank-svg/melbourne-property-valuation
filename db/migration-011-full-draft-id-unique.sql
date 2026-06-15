@@ -11,21 +11,30 @@
 -- rows with draft_id IS NULL are not a problem.
 --
 -- Safety:
+--   - ACCESS EXCLUSIVE LOCK prevents concurrent writes during the swap.
 --   - Checks for duplicate non-NULL draft_id before modifying indexes.
 --   - Fails explicitly if duplicates exist — never auto-merges or deletes data.
---   - Uses a transaction with ACCESS EXCLUSIVE lock on report_snapshots
---     during the index swap to avoid a no-uniqueness window.
---   - Idempotent: second run does nothing (partial index already gone,
---     full index already exists).
+--   - Error message reports the count only; never outputs full draft_id values.
+--   - Idempotent: second run does nothing — DROP IF EXISTS already done,
+--     full unique index already exists (IF NOT EXISTS).
 --   - Does not modify snapshot, payment or entitlement business data.
+--   - Does not touch lead_contacts or any customer-funnel table.
 
 BEGIN;
 
--- Step 1: Check for duplicate non-NULL draft_id
+-- Step 1: Lock the table before any check or index change.
+-- ACCESS EXCLUSIVE prevents all concurrent reads and writes during the
+-- no-uniqueness window between DROP and CREATE.  The lock is held for
+-- the remaining duration of the transaction.
+LOCK TABLE report_snapshots IN ACCESS EXCLUSIVE MODE;
+
+-- Step 2: Check for duplicate non-NULL draft_id.
+-- If duplicates exist, fail explicitly.  Never auto-merge or delete data.
+-- Only the count is reported; individual draft_id values are never
+-- included in the error message to avoid leaking internal identifiers.
 DO $$
 DECLARE
   dup_count INTEGER;
-  dup_records TEXT;
 BEGIN
   SELECT COUNT(*) INTO dup_count
   FROM (
@@ -36,21 +45,14 @@ BEGIN
   ) dups;
 
   IF dup_count > 0 THEN
-    SELECT string_agg(draft_id, ', ') INTO dup_records
-    FROM (
-      SELECT draft_id FROM report_snapshots
-      WHERE draft_id IS NOT NULL
-      GROUP BY draft_id
-      HAVING COUNT(*) > 1
-    ) dups;
-    RAISE EXCEPTION 'Migration 011 failed: found % duplicate non-NULL draft_id(s): %. Manual cleanup required before migration.', dup_count, dup_records;
+    RAISE EXCEPTION 'Migration 011 failed: found % duplicate non-NULL draft_id(s). Manual cleanup required before migration.', dup_count;
   END IF;
 END $$;
 
--- Step 2: Drop the old partial unique index (safe — IF EXISTS)
+-- Step 3: Drop the old partial unique index (safe — IF EXISTS)
 DROP INDEX IF EXISTS idx_rs_draft_id;
 
--- Step 3: Create the full unique index (supports ON CONFLICT (draft_id))
+-- Step 4: Create the full unique index (supports ON CONFLICT (draft_id))
 CREATE UNIQUE INDEX IF NOT EXISTS idx_rs_draft_id ON report_snapshots (draft_id);
 
 COMMIT;

@@ -123,10 +123,6 @@ export async function ensureCustomerFunnelSchema(sql) {
 
   /* Indexes */
   await sql`CREATE INDEX IF NOT EXISTS idx_lead_contacts_email_lower ON lead_contacts (email_lower)`;
-  /* Migration: Ensure email and email_lower have UNIQUE constraints (for on-conflict upsert) */
-  // These may fail (constraint already exists, or duplicates) — safe to ignore
-  try { await sql`ALTER TABLE lead_contacts ADD CONSTRAINT lead_contacts_email_key UNIQUE (email)`; } catch (_) {}
-  try { await sql`ALTER TABLE lead_contacts ADD CONSTRAINT lead_contacts_email_lower_key UNIQUE (email_lower)`; } catch (_) {};
   await sql`CREATE INDEX IF NOT EXISTS idx_lead_contacts_created_at ON lead_contacts (created_at DESC)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_lead_preferences_contact ON lead_preferences (lead_contact_id)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_lead_preferences_session ON lead_preferences (session_id)`;
