@@ -539,14 +539,14 @@ test("free valuation API must NOT return snapshot_json", () => {
   );
 });
 
-test("migration has UNIQUE index on report_snapshots.draft_id", () => {
+test("migration-010: full (not partial) UNIQUE index on report_snapshots.draft_id", () => {
   const sql = fs.readFileSync(
     path.join(projectRoot, "db/migration-010-report-payments.sql"),
     "utf8"
   );
   assert.ok(sql.includes("idx_rs_draft_id"), "Must define idx_rs_draft_id index");
   assert.ok(sql.includes("UNIQUE"), "Index must be unique");
-  assert.ok(sql.includes("draft_id IS NOT NULL"), "Must be a partial unique index");
+  assert.ok(!sql.includes("draft_id IS NOT NULL"), "Must be a FULL unique index (not partial)");
 });
 
 test("_db.js has UNIQUE index on report_snapshots.draft_id", () => {
@@ -556,7 +556,7 @@ test("_db.js has UNIQUE index on report_snapshots.draft_id", () => {
   );
   assert.ok(db.includes("idx_rs_draft_id"), "_db.js must define idx_rs_draft_id index");
   assert.ok(db.includes("UNIQUE"), "Index must be unique");
-  assert.ok(db.includes("draft_id IS NOT NULL"), "Must be a partial unique index");
+  assert.ok(!db.includes("WHERE draft_id IS NOT NULL"), "Must be a full (not partial) unique index for ON CONFLICT support");
 });
 
 test("_db.js ALTER TABLE order: draft_id before lead_contact_id", () => {
@@ -788,4 +788,109 @@ test("snapshot with 0 bedrooms/carSpaces produces valid hash (not dropped)", asy
   const payloadNoBed = svc.verifyReportDraftToken(draftNoBed.draftToken);
   assert.notEqual(payload.snapshot_hash, payloadNoBed.snapshot_hash,
     "0 bedrooms must produce different hash from undefined bedrooms");
+});
+
+// ═══════════════════════════════════════════════════════════════
+// Migration 011 — full unique index on draft_id
+// ═══════════════════════════════════════════════════════════════
+
+test("_db.js does NOT contain DROP INDEX idx_rs_draft_id", () => {
+  const db = fs.readFileSync(path.join(projectRoot, "api/_db.js"), "utf8");
+  assert.ok(!db.includes("DROP INDEX"), "_db.js must not drop/recreate index on every cold start");
+});
+
+test("_db.js CREATE UNIQUE INDEX IF NOT EXISTS (not DROP+CREATE)", () => {
+  const db = fs.readFileSync(path.join(projectRoot, "api/_db.js"), "utf8");
+  assert.ok(db.includes("CREATE UNIQUE INDEX IF NOT EXISTS idx_rs_draft_id ON report_snapshots (draft_id)"),
+    "Must use CREATE UNIQUE INDEX IF NOT EXISTS with full index (no DROP first)");
+});
+
+test("migration-011 exists and contains safety checks", () => {
+  const m11 = fs.readFileSync(
+    path.join(projectRoot, "db/migration-011-full-draft-id-unique.sql"),
+    "utf8"
+  );
+  assert.ok(m11.includes("Migration 011"), "Must be present");
+  assert.ok(m11.includes("BEGIN"), "Uses transaction");
+  assert.ok(m11.includes("COMMIT"), "Commits transaction");
+});
+
+test("migration-011 checks for duplicate non-NULL draft_id before modifying index", () => {
+  const m11 = fs.readFileSync(
+    path.join(projectRoot, "db/migration-011-full-draft-id-unique.sql"),
+    "utf8"
+  );
+  assert.ok(m11.includes("draft_id IS NOT NULL"), "Must filter for non-NULL");
+  assert.ok(m11.includes("COUNT(*) > 1"), "Must detect duplicates");
+  assert.ok(m11.includes("RAISE EXCEPTION"), "Must fail explicitly on duplicates");
+  assert.ok(m11.includes("Manual cleanup"), "Must tell operator to fix manually");
+});
+
+test("migration-011 has no DELETE, TRUNCATE or data repair", () => {
+  const m11 = fs.readFileSync(
+    path.join(projectRoot, "db/migration-011-full-draft-id-unique.sql"),
+    "utf8"
+  );
+  assert.ok(!m11.includes("DELETE"), "No DELETE allowed");
+  assert.ok(!m11.includes("TRUNCATE"), "No TRUNCATE allowed");
+  assert.ok(!m11.includes("UPDATE"), "No UPDATE allowed");
+  assert.ok(!m11.includes("repair"), "No auto-repair");
+});
+
+test("migration-011 drops partial then creates full unique index", () => {
+  const m11 = fs.readFileSync(
+    path.join(projectRoot, "db/migration-011-full-draft-id-unique.sql"),
+    "utf8"
+  );
+  // DROP the partial first
+  assert.ok(m11.includes("DROP INDEX IF EXISTS idx_rs_draft_id"), "Drops old partial index");
+  // Then CREATE full (must match only the active SQL line, not comment)
+  const lines = m11.split("\n");
+  const createLine = lines.find(l => l.startsWith("CREATE"));
+  assert.ok(createLine && createLine.includes("idx_rs_draft_id ON report_snapshots (draft_id)"),
+    "Active CREATE line with full unique index");
+  // CREATE must NOT have WHERE
+  assert.ok(!createLine.includes("WHERE"), "Active CREATE must use full (not partial) index");
+  assert.ok(!createLine.includes("IS NOT NULL"), "Active CREATE must not have IS NOT NULL");
+});
+
+test("migration-011 is idempotent (second run safe)", () => {
+  const m11 = fs.readFileSync(
+    path.join(projectRoot, "db/migration-011-full-draft-id-unique.sql"),
+    "utf8"
+  );
+  // DROP INDEX IF EXISTS is idempotent
+  assert.ok(m11.includes("DROP INDEX IF EXISTS"), "DROP is IF EXISTS");
+  // CREATE UNIQUE INDEX IF NOT EXISTS is idempotent
+  assert.ok(m11.includes("IF NOT EXISTS"), "CREATE has IF NOT EXISTS");
+});
+
+test("lib/report-snapshot-service.js uses ON CONFLICT (draft_id) without WHERE", () => {
+  const svc = fs.readFileSync(
+    path.join(projectRoot, "lib/report-snapshot-service.js"),
+    "utf8"
+  );
+  assert.ok(svc.includes("ON CONFLICT (draft_id)"), "Uses ON CONFLICT (draft_id)");
+  assert.ok(!svc.includes("ON CONFLICT (draft_id) WHERE"), "No WHERE in ON CONFLICT");
+});
+
+test("migration-011 execution order: duplicate check before DROP", () => {
+  const m11 = fs.readFileSync(
+    path.join(projectRoot, "db/migration-011-full-draft-id-unique.sql"),
+    "utf8"
+  );
+  const lines = m11.split("\n");
+  // Use line number (0-indexed) for ordering, ignoring comments
+  let checkLine = -1, dropLine = -1, createLine = -1;
+  for (let i = 0; i < lines.length; i++) {
+    const l = lines[i];
+    if (l.includes("HAVING COUNT(*) > 1")) checkLine = i;
+    if (l.includes("DROP INDEX IF EXISTS")) dropLine = i;
+    if (l.startsWith("CREATE UNIQUE INDEX")) createLine = i;
+  }
+  assert.ok(checkLine >= 0, "Duplicate check present");
+  assert.ok(dropLine >= 0, "DROP present");
+  assert.ok(createLine >= 0, "CREATE present");
+  assert.ok(checkLine < dropLine, "Duplicate check BEFORE DROP");
+  assert.ok(dropLine < createLine, "DROP BEFORE CREATE");
 });

@@ -84,7 +84,7 @@ CREATE INDEX IF NOT EXISTS idx_rd_consumed ON report_drafts (consumed_at) WHERE 
 -- Add draft_id FK to report_snapshots (Phase 1B)
 -- UNIQUE(draft_id) ensures at most one snapshot per draft (atomic guarantee)
 ALTER TABLE report_snapshots ADD COLUMN IF NOT EXISTS draft_id TEXT REFERENCES report_drafts(draft_id);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_rs_draft_id ON report_snapshots (draft_id) WHERE draft_id IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS idx_rs_draft_id ON report_snapshots (draft_id);
 
 -- Add lead_contact_id to report_snapshots (Phase 1C6)
 -- Links snapshot to the customer who first consumed the draft.
