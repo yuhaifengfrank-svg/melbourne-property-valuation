@@ -1303,6 +1303,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         map: {},
         mapZh: {},
         evidenceSummary: "",
+        paymentsEnabled: result.paymentsEnabled === true,
         reportDraftToken: result.reportDraftToken || null,
         draftExpiresAt: result.draftExpiresAt || null,
         evidenceSummaryZh: ""
@@ -1356,6 +1357,9 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
       map: {},
       mapZh: {},
       evidenceSummary: "",
+      paymentsEnabled: result.paymentsEnabled === true,
+      reportDraftToken: result.reportDraftToken || null,
+      draftExpiresAt: result.draftExpiresAt || null,
       evidenceSummaryZh: ""
     };
 
@@ -2760,6 +2764,7 @@ window.handleCheckoutSubmit = handleCheckoutSubmit;
 window.updatePurchaseButton = updatePurchaseButton;
 window.openCheckoutModal = openCheckoutModal;
 window.isValidCheckoutUrl = isValidCheckoutUrl;
+window.runAddressValuation = runAddressValuation;
 // Reflection-only — safe for tests; production code MUST NOT read/write window.checkoutPending
 window.checkoutPending = false;
 // _navigateTo already assigned at declaration site — no need to reassign here

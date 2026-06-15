@@ -67,6 +67,7 @@ function makeValuation(overrides) {
     mismatchMessage: "",
     reportDraftToken: null,
     draftExpiresAt: null,
+    paymentsEnabled: true,
     ...overrides,
   };
 }
@@ -94,6 +95,8 @@ function createPage() {
 
 function loadApp(dom) {
   new dom.window.Function(JS)(dom.window);
+  // Payments gate: enable for checkout flow tests
+  dom.window.paymentsEnabled = true;
 }
 
 function tick() {
@@ -597,4 +600,150 @@ test("T23: button in index.html", () => {
 
 test("T24: checkout modal in index.html", () => {
   assert.ok(HTML.includes('id="checkout-modal"'));
+});
+
+// ── Phase Migration-011b: Payments-enabled pipeline test ─────────────
+//
+// Verifies that when the API returns paymentsEnabled=true, the value
+// propagates through runAddressValuation → renderValuation → unlock
+// button visible & enabled with the correct price label.
+
+function makeApiResponse(overrides = {}) {
+  return {
+    status: 200,
+    ok: true,
+    estimate: {
+      midpoint: 1065332,
+      low: 960000,
+      high: 1170000,
+    },
+    confidence: { label: "Moderate", dataScore: 74 },
+    comparableCount: 12,
+    reportDraftToken: VALID_TOKEN,
+    draftExpiresAt: VALID_EXPIRES,
+    paymentsEnabled: true,
+    address: "8 Melrose Ct, Scoresby VIC 3179",
+    propertyType: "house",
+    ...overrides,
+  };
+}
+
+test("paymentsEnabled=true thru runAddressValuation yields unlock button", async () => {
+  const dom = createPage();
+
+  // Override fetch BEFORE loadApp: the app init fires on startup
+  dom.window.fetch = function () {
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(makeApiResponse()),
+    });
+  };
+
+  loadApp(dom);
+  dom.window.paymentsEnabled = false;
+  await drainInit(dom);
+
+  // Direct call to runAddressValuation
+  const result = await dom.window.runAddressValuation(
+    "8 Melrose Ct, Scoresby VIC 3179",
+    "house",
+    "VIC",
+    "Scoresby"
+  );
+
+  // 1) runAddressValuation forwarded paymentsEnabled
+  assert.equal(result.paymentsEnabled, true,
+    "runAddressValuation must forward paymentsEnabled=true from API");
+
+  // 2) renderValuation processes it
+  dom.window.renderValuation(result);
+
+  const btn = getBtn(dom);
+  assert.ok(btn, "unlock-report button must exist");
+  assert.ok(!btn.disabled, "button must be enabled");
+  assert.equal(btn.getAttribute("aria-disabled"), "false");
+
+  // 3) Price label shows AUD $3.99
+  assert.ok(btn.textContent.includes("$3.99") || btn.textContent.includes("3.99"),
+    "Button must show AUD $3.99 price");
+
+  // 4) Draft token captured — verify via updatePurchaseButton enabling the button
+  //    (currentReportDraft is in Function closure scope, not on dom.window)
+  //    Button enabled + paymentsEnabled=true + draft token present = token captured
+  assert.ok(!btn.disabled, "button must be enabled (proxies token capture)");
+  assert.equal(btn.getAttribute("aria-disabled"), "false",
+    "aria-disabled must be false (proxies token capture)");
+});
+
+test("paymentsEnabled=false or missing keeps button disabled (fail-closed)", async () => {
+  const dom = createPage();
+
+  dom.window.fetch = function () {
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: undefined })),
+    });
+  };
+
+  loadApp(dom);
+  dom.window.paymentsEnabled = false;
+  await drainInit(dom);
+
+  const result = await dom.window.runAddressValuation(
+    "8 Melrose Ct, Scoresby VIC 3179",
+    "house",
+    "VIC",
+    "Scoresby"
+  );
+
+  assert.equal(result.paymentsEnabled, false,
+    "missing paymentsEnabled must default to false");
+
+  dom.window.renderValuation(result);
+
+  const btn = getBtn(dom);
+  if (btn) {
+    assert.ok(btn.disabled || btn.getAttribute("aria-disabled") === "true",
+      "button must remain disabled when paymentsEnabled is false");
+  }
+
+  // payments-disabled is added to .layout, not .summary
+  const layoutEl = dom.window.document.querySelector(".layout");
+  if (layoutEl) {
+    assert.ok(layoutEl.classList.contains("payments-disabled"),
+      "layout must have payments-disabled when payments disabled");
+  }
+});
+
+test("paymentsEnabled=false explicit keeps fail-closed", async () => {
+  const dom = createPage();
+
+  dom.window.fetch = function () {
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: false })),
+    });
+  };
+
+  loadApp(dom);
+  dom.window.paymentsEnabled = false;
+  await drainInit(dom);
+
+  const result = await dom.window.runAddressValuation(
+    "8 Melrose Ct, Scoresby VIC 3179",
+    "house",
+    "VIC",
+    "Scoresby"
+  );
+
+  assert.equal(result.paymentsEnabled, false,
+    "explicit paymentsEnabled=false must be forwarded as false");
+
+  dom.window.renderValuation(result);
+
+  const btn = getBtn(dom);
+  if (btn) {
+    assert.ok(btn.disabled || btn.getAttribute("aria-disabled") === "true",
+      "button must remain disabled when paymentsEnabled is false");
+  }
 });
