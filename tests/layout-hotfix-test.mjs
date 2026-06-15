@@ -47,21 +47,19 @@ let browserTestResults = {};
 // 1. CSS: .summary-main always single-column
 // ═══════════════════════════════════════════════════════════════════
 
-describe("CSS — summary-main single-column", () => {
-  it("base rule uses grid-template-columns: minmax(0,1fr)", () => {
+describe("CSS — summary-main always single-column, .summary parent for desktop", () => {
+  it(".summary-main base rule uses grid-template-columns: minmax(0,1fr)", () => {
     const match = CSS.match(/\.summary-main\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/);
     assert.ok(match, "base rule has minmax(0,1fr)");
   });
 
-  it("768px media query does NOT override to 1fr 1fr", () => {
+  it("768px media query does NOT override .summary-main to 1fr 1fr", () => {
     const after768 = CSS.split("@media (min-width: 768px)")[1] || "";
-    // After 768px breakpoint, check for .summary-main override
     const overrideMatch = after768.match(/\.summary-main\s*\{[\s\S]*?grid-template-columns:\s*1fr\s+1fr/);
     assert.ok(!overrideMatch, "768px override not present");
   });
 
-  it("base rule does NOT use 1fr (bare)", () => {
-    // The .summary-main base rule must be minmax(0,1fr) not bare 1fr
+  it("no bare 1fr on .summary-main", () => {
     const ruleMatch = CSS.match(/\.summary-main\s*\{[\s\}]*/g);
     const hasBare1fr = ruleMatch && ruleMatch.some(r => 
       /grid-template-columns:\s*1fr\s*[;}]/.test(r) && 
@@ -70,13 +68,22 @@ describe("CSS — summary-main single-column", () => {
     assert.ok(!hasBare1fr, "base rule not bare 1fr (uses minmax)");
   });
 
-  it("content .summary-main has layout for desktop", () => {
-    // The content-scoped .summary-main 1fr 340px at 1024px
-    const match = CSS.match(/@media \(min-width:\s*1024px\)[\s\S]*?\.content\s*\.summary-main\s*\{[\s\S]*?grid-template-columns:\s*1fr\s+340px/);
-    assert.ok(match, "desktop summary-main uses 1fr 340px for est + why");
-    // Also check no override at other breakpoints
+  it(".summary parent uses 1fr 340px at 1024px for desktop side-by-side", () => {
+    // Desktop: .summary (parent) grid-template-columns: 1fr 340px
+    const match1024 = CSS.match(/@media \(min-width:\s*1024px\)[\s\S]*?\.summary\s*\{[\s\S]*?grid-template-columns:\s*1fr\s+340px/);
+    assert.ok(match1024, "desktop .summary has 1fr 340px for summary-main + summary-card");
+    // No .content .summary-main (old wrong selector)
+    assert.ok(!CSS.includes(".content .summary-main"), "no .content .summary-main selector (moved to .summary parent)");
+  });
+
+  it(".summary base is single-column (mobile)", () => {
+    const baseMatch = CSS.match(/\.summary\s*\{[\s\S]*?grid-template-columns:\s*minmax\(0,\s*1fr\)/);
+    assert.ok(baseMatch, ".summary mobile: grid-template-columns: minmax(0,1fr)");
+  });
+
+  it("no 1440px override of .summary layout", () => {
     const after1440 = CSS.split("@media (min-width: 1440px)")[1] || "";
-    assert.ok(!after1440.includes(".summary-main"), "no 1440px override of summary-main");
+    assert.ok(!after1440.includes(".summary"), "no 1440px override of .summary");
   });
 });
 
@@ -241,9 +248,9 @@ describe("Static analysis — no regression", () => {
     assert.ok(desktopMatdch, "side-panel visible on desktop");
   });
 
-  it("1024px layout summary-main uses 1fr 340px (est + why)", () => {
-    const match = CSS.match(/@media \(min-width: 1024px\)[\s\S]*?\.content\s*\.summary-main\s*\{[\s\S]*?grid-template-columns:\s*1fr\s+340px/);
-    assert.ok(match, "desktop summary columns");
+  it("1024px .summary parent uses 1fr 340px (est + why)", () => {
+    const match = CSS.match(/@media \(min-width: 1024px\)[\s\S]*?\.summary\s*\{[\s\S]*?grid-template-columns:\s*1fr\s+340px/);
+    assert.ok(match, "desktop .summary columns");
   });
 
   it("1024px AND 1440px layout columns preserved", () => {

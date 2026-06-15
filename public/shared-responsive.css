@@ -552,17 +552,22 @@ textarea {
   }
 }
 
-/* ── summary-main inside .content (single-column content area) ── */
-.content .summary-main {
+/* ── summary section (parent): desktop side-by-side layout ── */
+.summary {
   display: grid;
   grid-template-columns: minmax(0,1fr);
-  gap: 12px;
+  gap: 20px;
 }
 
 @media (min-width: 1024px) {
-  .content .summary-main {
+  .summary {
     grid-template-columns: 1fr 340px;
   }
+}
+
+/* ── summary-main: single-column at ALL breakpoints ── */
+.summary-main {
+  min-width: 0;
 }
 
 /* ── summary-card (Why this estimate) ── */
