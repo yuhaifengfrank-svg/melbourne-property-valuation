@@ -1,3 +1,11 @@
+// Initialise payments gate — fail-closed on page load
+(function() {
+  var unlockBtn = document.getElementById("unlock-report");
+  var leadPanel = document.querySelector(".lead-panel");
+  if (unlockBtn) { unlockBtn.style.display = "none"; unlockBtn.disabled = true; }
+  if (leadPanel) { leadPanel.style.display = "none"; }
+})();
+
 let mapInstance = null;
 
 const valuations = [
@@ -131,8 +139,8 @@ let language = "en";
 
 // Phase 1E3D-1A: Report draft token (memory only, never localStorage/sessionStorage/Cookie)
 var currentReportDraft = null;
-// Payments gate: set by renderValuation from server `paymentsEnabled` field
-var paymentsEnabled = true;
+// Payments gate: fail-closed — only enabled when API returns paymentsEnabled === true
+var paymentsEnabled = false;
 // { token, expiresAt (ISO string), address }
 let activeInvestorTheme = null;
 let uploadedEvidenceSummary = [];
@@ -1644,7 +1652,8 @@ function renderValuation(data) {
       lockedPreview: data.lockedPreview || null,
       reportDraftToken: data.reportDraftToken || null,
       draftExpiresAt: data.draftExpiresAt || null,
-      paymentsEnabled: data.paymentsEnabled !== false,
+      // Payments gate: fail-closed — only true when API explicitly says so
+      paymentsEnabled: data.paymentsEnabled === true,
       propertyState: data.propertyState || stateFromAddress(data.address),
       propertySuburb: data.propertySuburb || suburbFromAddress(data.address)
     };
@@ -1744,27 +1753,20 @@ function renderValuation(data) {
   }
     renderLoanScenario();
   renderMarketCrosscheck(data);
-
-  // Payments gate: server-driven (Production = hidden, Preview = visible)
-  paymentsEnabled = data.paymentsEnabled !== false;
+  // Payments gate: fail-closed — controls purchase UI visibility
+  paymentsEnabled = data.paymentsEnabled;
   var unlockBtn2 = byId("unlock-report");
-  var leadPanel = document.querySelector(".lead-panel");
-  if (unlockBtn2) {
-    if (!paymentsEnabled) {
-      unlockBtn2.style.display = "none";
-      unlockBtn2.disabled = true;
-      // Hide the entire lead panel's purchase section
-      if (leadPanel) {
-        leadPanel.style.display = "none";
-      }
-      // Clear draft token so locked preview CTA doesn't show pay buttons
-      currentReportDraft = null;
-    } else {
-      unlockBtn2.style.display = "";
-      if (leadPanel) {
-        leadPanel.style.display = "";
-      }
-    }
+  var leadPanel2 = document.querySelector(".lead-panel");
+  if (!paymentsEnabled) {
+    // Hide purchase button and lead panel
+    if (unlockBtn2) { unlockBtn2.style.display = "none"; unlockBtn2.disabled = true; }
+    if (leadPanel2) { leadPanel2.style.display = "none"; }
+    // Clear draft token to prevent locked preview showing pay CTA
+    currentReportDraft = null;
+  } else {
+    // Show purchase UI (default state from HTML)
+    if (unlockBtn2) { unlockBtn2.style.display = ""; }
+    if (leadPanel2) { leadPanel2.style.display = ""; }
   }
 
   renderLockState();
@@ -2506,12 +2508,6 @@ byId("language-toggle").addEventListener("click", () => {
 function updatePurchaseButton() {
   var btn = byId("unlock-report");
   if (!btn) return;
-  // Payments gate: if disabled, never enable the button
-  if (!paymentsEnabled) {
-    btn.disabled = true;
-    btn.setAttribute("aria-disabled", "true");
-    return;
-  }
   var draftValid = false;
   if (currentReportDraft && currentReportDraft.token) {
     if (currentReportDraft.expiresAt) {
@@ -2521,8 +2517,14 @@ function updatePurchaseButton() {
       draftValid = true; // no expiry info means assume valid
     }
   }
-  btn.disabled = !draftValid;
-  btn.setAttribute("aria-disabled", draftValid ? "false" : "true");
+  // Payments gate: fail-closed — never enable purchase when payments disabled
+  if (!paymentsEnabled) {
+    btn.disabled = true;
+    btn.setAttribute("aria-disabled", "true");
+  } else {
+    btn.disabled = !draftValid;
+    btn.setAttribute("aria-disabled", draftValid ? "false" : "true");
+  }
 }
 
 /**
@@ -2552,7 +2554,6 @@ var _navigateTo = window._navigateTo; // aliased for closure access below
  * Open the checkout modal. Called from purchase button click.
  */
 function openCheckoutModal() {
-  // Payments gate: do not open checkout modal if payments disabled
   if (!paymentsEnabled) return;
   var modal = byId("checkout-modal");
   if (!modal || typeof modal.showModal !== "function") return;
@@ -2591,7 +2592,6 @@ function cancelCheckoutRequest() {
  * Handle the checkout form submission — POST /api/create-report-checkout
  */
 async function handleCheckoutSubmit() {
-  // Payments gate: do not submit checkout if payments disabled
   if (!paymentsEnabled) return;
   if (checkoutPending) return;
 
@@ -2833,7 +2833,7 @@ if (mobileBtn) {
       scrollToSection("#comparables");
       return;
     }
-    // Payments gate: do not scroll to hidden lead panel on Production
+    // Payments gate: if disabled, skip lead panel (hidden)
     if (!paymentsEnabled) {
       scrollToSection("#comparables");
       return;

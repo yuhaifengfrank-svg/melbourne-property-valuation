@@ -7,7 +7,7 @@
 // Flow:
 //   1. Validate email + verify draft token FIRST (before any DB writes)
 //   2. Ensure customer funnel + report payment schemas
-//   3. Upsert lead_contact by email_lower (SELECT + INSERT/UPDATE)
+//   3. Upsert lead_contact by email_lower (atomic ON CONFLICT)
 //   4. consumeDraftIntoSnapshot → immutable report_id
 //   5. createReportCheckout() (from Phase 1C4 service)
 //   6. Set purchase session cookie
@@ -34,7 +34,7 @@ const ERR = {
   PAYMENT_AWAITING_ENTITLEMENT: "PAYMENT_AWAITING_ENTITLEMENT",
   REPORT_OWNER_CONFLICT: "REPORT_OWNER_CONFLICT",
   REPORT_SESSION_NOT_CONFIGURED: "REPORT_SESSION_NOT_CONFIGURED",
-  PAYMENTS_TEMPORARILY_UNAVAILABLE: "PAYMENTS_TEMPORARILY_UNAVAILABLE",
+  PAYMENTS_GATE_BLOCKED: "PAYMENTS_GATE_BLOCKED",
 };
 
 // ── Test-injectable SQL ─────────────────────────────────────────────
@@ -85,6 +85,23 @@ function clearPurchaseSessionCookie(res) {
   res.setHeader("Set-Cookie", cookie);
 }
 
+// ── Payments gate predicate ────────────────────────────────────────
+
+/**
+ * Payments are only enabled when ALL of the following are true:
+ * - VERCEL_ENV === "preview"
+ * - STRIPE_MODE === "test"
+ *
+ * All other environments (production, development, undefined, etc.)
+ * return false — including Preview with live/production Stripe mode.
+ */
+function isPaymentsEnabled() {
+  return (
+    process.env.VERCEL_ENV === "preview" &&
+    process.env.STRIPE_MODE === "test"
+  );
+}
+
 // ── Handler ─────────────────────────────────────────────────────────
 
 export default async function handler(req, res) {
@@ -104,11 +121,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: ERR.BAD_REQUEST, message: "Method not allowed" });
   }
 
-  // Payments gate: disabled on Production
-  if (process.env.VERCEL_ENV === "production") {
+  // Payments gate: fail-closed — 503 before any DB or Stripe calls
+  if (!isPaymentsEnabled()) {
     return res.status(503).json({
       ok: false,
-      error: ERR.PAYMENTS_TEMPORARILY_UNAVAILABLE,
+      error: ERR.PAYMENTS_GATE_BLOCKED,
       message: "Payments are temporarily unavailable. Please try again later."
     });
   }
@@ -136,23 +153,14 @@ export default async function handler(req, res) {
     await ensureReportPaymentSchema(sql);
 
     // ── Step 3: Upsert lead_contact (atomic — no SELECT-before-INSERT race) ──
-    // Upsert lead_contact by email_lower — use explicit lookup + insert/update
-    // to avoid reliance on DB schema constraints (may not exist in older tables)
-    let leadContactId;
-    const existing = await sql`SELECT id FROM lead_contacts WHERE email_lower = ${rawEmail} LIMIT 1`;
-    if (existing.length > 0) {
-      // Coerce BigInt → Number (PostgreSQL BIGSERIAL returns BigInt via neon)
-      leadContactId = Number(existing[0].id);
-      await sql`UPDATE lead_contacts SET updated_at = NOW() WHERE id = ${leadContactId}`;
-    } else {
-      const result = await sql`
-        INSERT INTO lead_contacts (email, email_lower)
-        VALUES (${rawEmail}, ${rawEmail})
-        RETURNING id
-      `;
-      // Coerce BigInt → Number
-      leadContactId = Number(result[0].id);
-    }
+    const contactResult = await sql`
+      INSERT INTO lead_contacts (email, email_lower)
+      VALUES (${rawEmail}, ${rawEmail})
+      ON CONFLICT (email_lower)
+      DO UPDATE SET updated_at = NOW()
+      RETURNING id
+    `;
+    const leadContactId = contactResult[0].id;
 
     // ── Step 4: Consume draft into immutable snapshot ──
     let snapshotOutcome;
@@ -183,7 +191,6 @@ export default async function handler(req, res) {
     }
 
     // ── Step 5a: Check session config BEFORE Stripe checkout call ──
-    // Avoid creating a Stripe session that can't be matched by cookie.
     // Avoid creating a Stripe session that can't be matched by cookie.
     if (!assertReportAccessSessionConfigured()) {
       clearPurchaseSessionCookie(res);
@@ -259,7 +266,6 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.error("[create-report-checkout]", error.message);
-    console.error("[create-report-checkout-ctupyiks4] VERSION=4 SELECT+INSERT path");
     clearPurchaseSessionCookie(res);
     return res.status(500).json({
       ok: false,
