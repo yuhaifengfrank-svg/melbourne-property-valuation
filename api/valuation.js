@@ -5,6 +5,7 @@
 import { runValuation } from "../lib/valuation-service.js";
 import { createReportDraft } from "../lib/report-snapshot-service.js";
 import { getSql, ensureCustomerFunnelSchema, ensureReportPaymentSchema } from "./_db.js";
+import { isPaymentsEnabled } from "../lib/payment-gate.js";
 
 function sanitizeForClient(obj, debug = false) {
   const safe = JSON.parse(JSON.stringify(obj));
@@ -203,11 +204,8 @@ export default async function handler(request, response) {
     freeSummary.reportDraftToken = draftToken;
     freeSummary.draftExpiresAt = draftExpiresAt;
 
-    // Payments gate: enabled only when Preview + test mode
-    freeSummary.paymentsEnabled = (
-      process.env.VERCEL_ENV === "preview" &&
-      process.env.STRIPE_MODE === "test"
-    );
+    // Payments gate: shared single source of truth
+    freeSummary.paymentsEnabled = isPaymentsEnabled();
 
     return response.status(result.ok ? 200 : 400)
       .setHeader("Content-Type", "application/json")

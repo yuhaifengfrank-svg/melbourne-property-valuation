@@ -21,6 +21,7 @@ import { ensureCustomerFunnelSchema, ensureReportPaymentSchema, getSql } from ".
 import { verifyReportDraftToken, consumeDraftIntoSnapshot } from "../lib/report-snapshot-service.js";
 import { createReportCheckout } from "../lib/report-checkout-service.js";
 import { createReportAccessSession, buildReportAccessCookie, buildClearReportAccessCookie, assertReportAccessSessionConfigured } from "../lib/report-access-session.js";
+import { isPaymentsEnabled } from "../lib/payment-gate.js";
 
 // ── Error codes ─────────────────────────────────────────────────────
 
@@ -140,21 +141,6 @@ function clearPurchaseSessionCookie(res) {
 }
 
 // ── Payments gate predicate ────────────────────────────────────────
-
-/**
- * Payments are only enabled when ALL of the following are true:
- * - VERCEL_ENV === "preview"
- * - STRIPE_MODE === "test"
- *
- * All other environments (production, development, undefined, etc.)
- * return false — including Preview with live/production Stripe mode.
- */
-function isPaymentsEnabled() {
-  return (
-    process.env.VERCEL_ENV === "preview" &&
-    process.env.STRIPE_MODE === "test"
-  );
-}
 
 // ── Handler ─────────────────────────────────────────────────────────
 
