@@ -74,45 +74,32 @@ export function setTestSql(sqlFn) {
  * @throws {TypeError} With descriptive message for invalid input
  */
 function normalizeLeadContactId(value) {
-  if (value === null || value === undefined) {
-    throw new TypeError("leadContactId is required");
+  if (value == null || typeof value === "boolean") {
+    throw new TypeError("Invalid lead contact identifier");
   }
 
   if (typeof value === "number") {
-    if (!Number.isInteger(value) || value <= 0) {
-      throw new TypeError(
-        `leadContactId must be a positive integer, got ${value}`
-      );
-    }
-    if (!Number.isSafeInteger(value)) {
-      throw new TypeError(
-        `leadContactId exceeds safe integer range: ${value}`
-      );
+    if (!Number.isInteger(value) || value <= 0 || !Number.isSafeInteger(value)) {
+      throw new TypeError("Invalid lead contact identifier");
     }
     return value;
   }
 
   if (typeof value === "string") {
-    // Reject empty, scientific notation (1e2), hex (0x1F), decimals (3.14),
-    // leading zero ("012"), and non-numeric strings ("abc").
+    // Accept only pure positive decimal digit strings (no sign, no leading zero,
+    // no decimal point, no scientific notation, no hex, no empty).
     if (!/^[1-9]\d*$/.test(value)) {
-      throw new TypeError(
-        `leadContactId must be a positive integer string, got "${value}"`
-      );
+      throw new TypeError("Invalid lead contact identifier");
     }
     const num = Number(value);
     if (!Number.isSafeInteger(num) || num <= 0) {
-      throw new TypeError(
-        `leadContactId exceeds safe integer range: ${value}`
-      );
+      throw new TypeError("Invalid lead contact identifier");
     }
     return num;
   }
 
-  // boolean, bigint, symbol, object, array, function, undefined (caught above)
-  throw new TypeError(
-    `leadContactId must be a number or numeric string, got ${typeof value}`
-  );
+  // bigint, symbol, object, array, function
+  throw new TypeError("Invalid lead contact identifier");
 }
 
 // ── Email validation ────────────────────────────────────────────────
