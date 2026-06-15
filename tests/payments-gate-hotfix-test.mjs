@@ -134,7 +134,7 @@ describe("Payments Gate — Phase 2A Review", () => {
     it("preview + test → enabled", { timeout: 3000 }, async () => {
       assert.equal(await gateResult({ VERCEL_ENV: "preview", STRIPE_MODE: "test" }), true);
     });
-    it("preview + live + PAYMENTS_ENABLED=true → still enabled (test overrides)", { timeout: 3000 }, async () => {
+    it("preview + test + PAYMENTS_ENABLED=true → enabled", { timeout: 3000 }, async () => {
       assert.equal(await gateResult({ VERCEL_ENV: "preview", STRIPE_MODE: "test", PAYMENTS_ENABLED: "true" }), true);
     });
     it("preview + live → fail-closed", { timeout: 3000 }, async () => {
