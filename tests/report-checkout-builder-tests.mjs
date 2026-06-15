@@ -252,9 +252,30 @@ test("output shape matches Stripe.Checkout.SessionCreateParams", () => {
   assert.equal(typeof params.metadata, "object");
   assert.equal(params.metadata.product_code, "valuation_report_399");
 
-  // Confirm no extra top-level keys that don't belong
+  // Confirm expected top-level keys (includes payment_method_types from card-only fix)
   const topKeys = Object.keys(params).sort();
   assert.deepEqual(topKeys,
-    ["cancel_url", "line_items", "metadata", "mode", "success_url"].sort(),
-    "Params must only contain expected Stripe keys");
+    ["cancel_url", "line_items", "metadata", "mode", "payment_method_types", "success_url"].sort(),
+    "Params must contain expected Stripe keys including payment_method_types");
+});
+
+test("payment_method_types is [card] — no other types", () => {
+  const params = buildReportCheckoutParams({
+    reportId: TEST_REPORT_ID,
+    purchaseIntentKey: TEST_PURCHASE_KEY,
+  });
+  assert.ok(Array.isArray(params.payment_method_types));
+  assert.equal(params.payment_method_types.length, 1);
+  assert.equal(params.payment_method_types[0], "card");
+});
+
+test("client cannot override payment_method_types", () => {
+  const clientInput = { payment_method_types: ["link", "card"] };
+  const params = buildReportCheckoutParams(
+    { reportId: TEST_REPORT_ID, purchaseIntentKey: TEST_PURCHASE_KEY },
+    clientInput
+  );
+  // Server always sets payment_method_types: ["card"], but client input
+  // to buildReportCheckoutParams is ignored — the server value wins.
+  assert.deepEqual(params.payment_method_types, ["card"]);
 });
