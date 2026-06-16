@@ -1768,7 +1768,11 @@ function renderValuation(data) {
   setList("reasons", getLocalizedArray(data, "reasons"));
   setList("suburb-list", getLocalizedArray(data, "suburb"));
   renderComparables(data.comparables);
-  renderMap(data);
+  // 估值有有效数据时隐藏教育卡片（Fast starting point / Clear next steps）
+  var hintsGrid = document.querySelector(".summary-card + .grid-two");
+  if (hintsGrid && data.status && data.status !== "Pending" && data.status !== "待输入" && data.status !== "待开放") {
+    hintsGrid.style.display = "none";
+  }
   // 显式展示证据来源标记
   const evidenceBadge = byId("evidence-badge-val");
   if (evidenceBadge) {
