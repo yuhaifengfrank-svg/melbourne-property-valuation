@@ -3,17 +3,19 @@
 //
 // What it does:
 //   1. Reads all unique (suburb, state, postcode) from comparable_sales
-//   2. Scrapes latest sold data from REA+Domain via CDP (1 page only)
-//   3. Incremental upsert (ON CONFLICT DO NOTHING)
-//   4. Exponential backoff on KPSDK/empty pages
-//   5. Saves progress to /tmp/weekly-collect-progress.json (crash-resume)
-//   6. After all done: triggers refresh-suburb-metrics.js
+//   2. Scrapes latest sold data from REA+Domain via CDP (up to 3 pages)
+//   3. Checks coverage: if any property type < 5 records, fetches extra pages
+//   4. Incremental upsert (ON CONFLICT DO NOTHING)
+//   5. Exponential backoff on KPSDK/empty pages
+//   6. Saves progress to /tmp/weekly-collect-progress.json (crash-resume)
+//   7. After all done: triggers refresh-suburb-metrics.js
 //
 // Strategy:
 //   - batchSize suburbs at a time, 60s rest between batches
-//   - Per-suburb: 1 page (~15 records), newest first
-//   - Retry: 30s→60s→120s max, then skip+mark
-//   - 5 consecutive failures → 10min cooldown
+//   - Per-suburb: up to 3 pages (~45 records), newest first
+//   - Auto-detect thin property types and fetch extra pages to fill gaps
+//   - Retry: 30s->60s->120s max, then skip+mark
+//   - 5 consecutive failures -> 10min cooldown
 
 import { getSql } from "../api/_db.js";
 import { ensureComparableSchema } from "../lib/db-schema.js";
@@ -27,7 +29,8 @@ const BATCH_DATE = new Date().toISOString().split("T")[0];
 const BATCH_ID = `weekly-${BATCH_DATE}`;
 const PROGRESS_FILE = "/tmp/weekly-collect-progress.json";
 const BATCH_SIZE = Math.min(Math.max(parseInt(process.argv[2] || "20") || 20, 5), 40);
-const MAX_PAGES = 1; // newest page only
+const MAX_PAGES = 3; // up to 3 pages per suburb
+const MIN_PER_TYPE = 5; // minimum desired records per property type per suburb
 
 let sql, q;
 
@@ -50,14 +53,54 @@ function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
+// ── Count existing records per property type for this suburb ──
+async function countExistingByType(suburb) {
+  try {
+    const rows = await q(
+      `SELECT property_type, COUNT(*)::int as cnt
+       FROM comparable_sales
+       WHERE suburb ILIKE $1 AND state = $2
+         AND verification_status IN ('cross_source_verified','single_source_observed')
+       GROUP BY property_type`,
+      [suburb, STATE]
+    );
+    const map = {};
+    for (const r of rows) map[r.property_type] = r.cnt;
+    return map;
+  } catch {
+    return {};
+  }
+}
+
 // ── Exponential backoff: try scrapeSuburb with retries ──
 async function scrapeWithBackoff(suburb, state, postcode) {
   const delays = [5000, 15000, 30000, 60000, 120000];
   for (let attempt = 0; attempt < delays.length; attempt++) {
     try {
       console.log(`  [${suburb}] Attempt ${attempt + 1}...`);
-      const sales = await scrapeSoldData(suburb, state, postcode, MAX_PAGES);
-      
+      let sales = await scrapeSoldData(suburb, state, postcode, MAX_PAGES);
+
+      // Check coverage: if thin spots exist, try extra pages
+      if (Array.isArray(sales) && sales.length > 0) {
+        const existing = await countExistingByType(suburb);
+        const sampleTypes = ['House', 'Unit', 'Townhouse', 'Apartment'];
+        const thinSpots = sampleTypes.filter(t => (existing[t] || 0) < MIN_PER_TYPE);
+        if (thinSpots.length > 0) {
+          console.log(`  [${suburb}] Thin types: ${thinSpots.join(', ')} (existing: ${JSON.stringify(existing)}). Fetching extra pages...`);
+          for (let pg = 2; pg <= MAX_PAGES; pg++) {
+            const more = await scrapeSoldData(suburb, state, postcode, pg);
+            if (more && more.length > 0) {
+              const existingAddrs = new Set(sales.map(s => s.address));
+              for (const ms of more) {
+                if (!existingAddrs.has(ms.address)) sales.push(ms);
+              }
+            }
+            await sleep(2000);
+          }
+          console.log(`  [${suburb}] ${sales.length} total records after ${MAX_PAGES} pages`);
+        }
+      }
+
       // Detect KPSDK/empty response
       if (!Array.isArray(sales) || sales.length === 0) {
         const errMsg = `empty/blocked response (${JSON.stringify(sales).substring(0, 100)})`;
@@ -123,7 +166,6 @@ async function upsertRecords(suburb, records) {
       );
       inserted++;
     } catch (e) {
-      // If duplicate key → skip, it's already in DB
       if (e.message?.includes("duplicate key") || e.message?.includes("unique constraint")) {
         skipped++;
       } else {
@@ -137,24 +179,18 @@ async function upsertRecords(suburb, records) {
 // ── Format scraped sales into comparable records ──
 function inferPropertyTypeFromRecord(s, suburb) {
   const addr = (s.address || "").toLowerCase();
-  // Address format check: digit/digit prefix → Unit
   if (/^\s*\d+\s*\//.test(addr)) return { type: "Unit", confidence: "high", source: "address_format" };
-  // Keyword check
   if (/\b(?:unit|flat|apartment|apt)\b/i.test(addr)) return { type: "Unit", confidence: "high", source: "keyword" };
   if (/\btown(?:house)?\b/i.test(addr)) return { type: "Townhouse", confidence: "high", source: "keyword" };
   if (/\bvilla\b/i.test(addr)) return { type: "Villa", confidence: "medium", source: "keyword" };
   if (/\bland\b/i.test(addr) || /vacant/i.test(addr)) return { type: "Vacant land", confidence: "high", source: "keyword" };
-  // If source URL is REA with unit-apartment type filter
   if (s.sourceUrl && /propertyTypes=unit-apartment/i.test(s.sourceUrl)) return { type: "Unit", confidence: "high", source: "source_url" };
-  // If s.propertyType is a detected/scraped type from browser-collector, trust it
   if (s.propertyType && ['Unit','Apartment','Townhouse','Villa','Vacant land'].includes(s.propertyType)) {
     return { type: s.propertyType, confidence: "high", source: "scraper" };
   }
-  // Legacy check: if s.propertyType was explicitly set by browser-collector, preserve it
   if (s.propertyType && s.propertyType !== 'House') {
     return { type: s.propertyType, confidence: "medium", source: "scraper_fallback" };
   }
-  // Default to House with medium confidence when no other signals
   return { type: "House", confidence: "medium", source: "default" };
 }
 
@@ -180,7 +216,7 @@ function formatRecords(sales, suburb) {
       sale_address: s.address,
       sale_price: s.price || s.salePrice || 0,
       sale_date: sd,
-      property_type: s.propertyType 
+      property_type: s.propertyType
         || inferPropertyTypeFromRecord(s, suburb).type
         || "Unknown",
       bedrooms: s.bedrooms || null,
@@ -207,8 +243,8 @@ function formatRecords(sales, suburb) {
 
 // ── Main ──
 async function main() {
-  console.log(`\n🔄 Weekly Refresh Collection — ${BATCH_DATE}`);
-  console.log(`   Batch size: ${BATCH_SIZE}, Max pages: ${MAX_PAGES}\n`);
+  console.log(`\n🔄 Weekly Refresh Collection -- ${BATCH_DATE}`);
+  console.log(`   Batch size: ${BATCH_SIZE}, Max pages: ${MAX_PAGES}, Min per type: ${MIN_PER_TYPE}\n`);
 
   sql = getSql();
   q = (text, params) => sql.query(text, params);
@@ -235,7 +271,7 @@ async function main() {
   const pending = subRows.filter(r => !doneSet.has(r.suburb) && !failSet.has(r.suburb) && !skipSet.has(r.suburb));
 
   if (pending.length === 0 && doneSet.size > 0) {
-    console.log("✅ All suburbs already collected today!");
+    console.log("All suburbs already collected today!");
     return;
   }
 
@@ -248,24 +284,24 @@ async function main() {
 
   for (let i = 0; i < pending.length; i += BATCH_SIZE) {
     const batch = pending.slice(i, i + BATCH_SIZE);
-    console.log(`\n📦 Batch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(pending.length / BATCH_SIZE)} (${batch.length} suburbs)`);
+    console.log(`\nBatch ${Math.floor(i / BATCH_SIZE) + 1}/${Math.ceil(pending.length / BATCH_SIZE)} (${batch.length} suburbs)`);
 
     for (const row of batch) {
       const { suburb, state, postcode } = row;
-      console.log(`\n  → ${suburb} (${postcode || 'no PC'})`);
+      console.log(`\n  -> ${suburb} (${postcode || 'no PC'})`);
 
       // Scrape with backoff
       const result = await scrapeWithBackoff(suburb, state, postcode);
 
       if (!result.ok) {
-        console.log(`  ⚠️  ${suburb}: ${result.error}`);
+        console.log(`  !! ${suburb}: ${result.error}`);
         progress.failed.push(suburb);
         consecutiveFails++;
         saveProgress(progress);
 
         if (consecutiveFails >= 5) {
           const cooldown = 600;
-          console.log(`\n  🔥 ${consecutiveFails} consecutive failures. Cooling down for ${cooldown}s...`);
+          console.log(`\n  !! ${consecutiveFails} consecutive failures. Cooling down for ${cooldown}s...`);
           await sleep(cooldown * 1000);
           consecutiveFails = 0;
         }
@@ -275,7 +311,7 @@ async function main() {
       consecutiveFails = 0;
 
       if (!result.sales || result.sales.length === 0) {
-        console.log(`  📭 ${suburb}: no new sales found`);
+        console.log(`  -- ${suburb}: no new sales found`);
         progress.skipped.push(suburb);
         saveProgress(progress);
         continue;
@@ -286,25 +322,24 @@ async function main() {
       const dbResult = await upsertRecords(suburb, records);
       totalInserted += dbResult.inserted;
 
-      console.log(`  ✅ ${suburb}: ${result.sales.length} scraped, ${dbResult.inserted} inserted, ${dbResult.skipped} dups`);
+      console.log(`  ++ ${suburb}: ${result.sales.length} scraped, ${dbResult.inserted} inserted, ${dbResult.skipped} dups`);
 
       progress.done.push(suburb);
       saveProgress(progress);
 
-      // Brief pause between suburbs
       await sleep(3000);
     }
 
     // Batch cooldown
     if (i + BATCH_SIZE < pending.length) {
-      console.log(`\n⏳ Batch complete. Pausing 60s before next batch...`);
+      console.log(`\n** Batch complete. Pausing 60s before next batch...`);
       await sleep(60000);
     }
   }
 
   // 4. Final report
-  console.log(`\n${'='.repeat(50)}`);
-  console.log(`📊 Collection Complete — ${BATCH_DATE}`);
+  console.log(`\n********************************************`);
+  console.log(`Collection Complete -- ${BATCH_DATE}`);
   console.log(`   Total suburbs processed: ${progress.done.length}`);
   console.log(`   Records inserted: ${totalInserted}`);
   console.log(`   Failed: ${progress.failed.length}`);
@@ -312,20 +347,20 @@ async function main() {
   if (progress.failed.length > 0) {
     console.log(`   Failed list: ${progress.failed.join(', ')}`);
   }
-  console.log(`${'='.repeat(50)}\n`);
+  console.log(`********************************************\n`);
 
   // 5. Auto-trigger refresh
-  console.log("🔄 Triggering suburb_metrics refresh...");
+  console.log("Triggering suburb_metrics refresh...");
   try {
     const { refreshSuburbMetrics } = await import("./refresh-suburb-metrics.js");
     await refreshSuburbMetrics();
-    console.log("✅ Refresh complete");
+    console.log("Refresh complete");
   } catch (e) {
-    console.warn("⚠️ Refresh trigger failed:", e.message);
+    console.warn("Refresh trigger failed:", e.message);
     console.log("   You can run it manually: node lib/refresh-suburb-metrics.js");
   }
 
-  console.log("\n✅ DONE");
+  console.log("\nDONE");
 }
 
 main().catch(e => {
