@@ -1316,6 +1316,10 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         modelNotes: [],
         map: {},
         mapZh: {},
+        registrationTier: true,
+        medianPrice: result.medianPrice != null ? result.medianPrice : null,
+        schools: Array.isArray(result.schools) ? result.schools : [],
+        opportunityPreview: result.opportunityPreview || null,
         evidenceSummary: "",
         paymentsEnabled: result.paymentsEnabled === true,
         reportDraftToken: result.reportDraftToken || null,
@@ -2828,6 +2832,17 @@ async function submitLeadConsent(email, phone) {
  */
 function openCheckoutModal() {
   if (!paymentsEnabled) {
+    // ── Already registered? Then cards are shown; nothing more to do ──
+    if (getLeadContactId()) {
+      // User is already registered — scroll to the registered-tier section
+      var section = byId("registered-tier-section");
+      if (section) {
+        var top = section.offsetTop - 20;
+        window.scrollTo({ top: top < 0 ? 0 : top, behavior: "smooth" });
+      }
+      return;
+    }
+
     // ── Registration mode: gather consent instead of opening checkout ──
     var emailEl = byId("lead-email");
     var phoneEl = byId("lead-phone");
