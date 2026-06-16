@@ -1626,6 +1626,20 @@ function renderLeafletMap(lat, lon, data) {
 function renderComparables(rows) {
   const body = byId("comparables-body");
   body.innerHTML = "";
+  if (!rows || rows.length === 0) {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 8;
+    td.style.cssText = "text-align:center;padding:24px 16px;color:#889994;font-size:0.85rem;";
+    var lpMsg = "";
+    try { if (typeof lockedPreview !== "undefined" && lockedPreview && lockedPreview.message) lpMsg = lockedPreview.message; } catch (e) {}
+    td.textContent = lpMsg || (document.documentElement.lang === "zh"
+        ? "输入地址并获取估值后将显示可比成交数据。"
+        : "Comparable sales will appear after entering an address and getting an estimate.");
+    tr.appendChild(td);
+    body.appendChild(tr);
+    return;
+  }
   const visibleRows = unlocked ? rows : rows.slice(0, 2);
   visibleRows.forEach((row) => {
     const tr = document.createElement("tr");
