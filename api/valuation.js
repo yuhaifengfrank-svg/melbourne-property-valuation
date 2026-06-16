@@ -1,11 +1,9 @@
 // ── AusHomeValue Vercel Serverless API ──
 // Phase 1B: Returns free summary with locked preview for full report
 // Full report requires token via /api/valuation-full
-
-import { runValuation } from "../lib/valuation-service.js";
-import { createReportDraft } from "../lib/report-snapshot-service.js";
-import { getSql, ensureCustomerFunnelSchema, ensureReportPaymentSchema } from "./_db.js";
-import { isPaymentsEnabled } from "../lib/payment-gate.js";
+//
+// Cold-start optimized: heavy imports are lazy-loaded inside the handler.
+// Only built-in functions (sanitizeForClient, buildFreeSummary, etc.) stay at module scope.
 
 function sanitizeForClient(obj, debug = false) {
   const safe = JSON.parse(JSON.stringify(obj));
@@ -173,6 +171,14 @@ export default async function handler(request, response) {
     return response.status(405).setHeader("Content-Type", "application/json")
       .send(JSON.stringify({ error: "Method not allowed" }));
   }
+
+  // Lazy-import heavy modules only when actually handling a request (cold-start win)
+  const [{ runValuation }, { createReportDraft }, { getSql, ensureCustomerFunnelSchema, ensureReportPaymentSchema }, { isPaymentsEnabled }] = await Promise.all([
+    import("../lib/valuation-service.js"),
+    import("../lib/report-snapshot-service.js"),
+    import("./_db.js"),
+    import("../lib/payment-gate.js")
+  ]);
 
   try {
     const body = typeof request.body === "string" ? JSON.parse(request.body) : request.body || {};

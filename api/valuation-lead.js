@@ -15,8 +15,7 @@
 // Does NOT create a report draft (no draftToken).
 // Does NOT require Stripe.
 
-import { runValuation } from "../lib/valuation-service.js";
-import { getSql } from "./_db.js";
+// Lazy-loaded inside handler for cold-start optimization
 
 // ── Constants ──
 
@@ -37,6 +36,12 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "METHOD_NOT_ALLOWED" });
   }
+
+  // Lazy-import heavy modules on first real request
+  const [{ runValuation }, { getSql }] = await Promise.all([
+    import("../lib/valuation-service.js"),
+    import("./_db.js")
+  ]);
 
   const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
   const rawLeadContactId = body.leadContactId;

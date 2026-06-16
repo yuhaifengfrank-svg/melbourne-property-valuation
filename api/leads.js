@@ -3,7 +3,7 @@
 // No auth for now — endpoint returns minimal info (email, phone, name, created_at).
 // Phase 2: list leads for admin review.
 
-import { getSql } from "./_db.js";
+// Cold-start: lazy-import only when handling request
 
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -12,6 +12,9 @@ export default async function handler(req, res) {
 
   if (req.method === "OPTIONS") return res.status(204).end();
   if (req.method !== "GET") return res.status(405).json({ ok: false, error: "METHOD_NOT_ALLOWED" });
+
+  // Lazy-import DB module on cold start
+  const { getSql } = await import("./_db.js");
 
   try {
     const sql = getSql();
