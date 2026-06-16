@@ -93,24 +93,11 @@ function buildFreeSummary(fullResult) {
   const comparables = val.acceptedComparables || fullResult.comparables || [];
   const confidence = val.confidence || {};
 
-  // Determine key factors (1-2) — build from confidence reasons or estimate metadata
-  const confidenceReasons = (val.confidence && val.confidence.reasons) || [];
-  const factorAdjustments = (val.estimate && val.estimate.factorAdjustments) || [];
-  const factorNotes = factorAdjustments
-    .filter(fa => fa && fa.detail && fa.detail.length > 20)
-    .map(fa => fa.label + (
-      typeof fa.detail === 'string'
-        ? (fa.detail.length > 80 ? fa.detail.slice(0, 80) + '…' : ': ' + fa.detail)
-        : ''
-    ));
-  const rawReasons = [
-    ...confidenceReasons,
-    ...factorNotes
+  // Why this estimate: single descriptive line + disclaimer
+  const keyFactors = [
+    "This estimate is generated from comparable sales data, public property records and suburb-level market analysis.",
+    "Disclaimer: This is a free summary for general information and research purposes only. Not a formal valuation, credit decision, legal, tax or financial advice. Consult licensed professionals before making transaction or financing decisions."
   ];
-  if (rawReasons.length === 0) {
-    rawReasons.push("Computed from comparable sales and public records");
-  }
-  const keyFactors = rawReasons.slice(0, 2);
 
   // Data limitations
   const limitations = [];
