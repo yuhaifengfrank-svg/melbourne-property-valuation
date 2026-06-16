@@ -675,13 +675,13 @@ test("paymentsEnabled=true thru runAddressValuation yields unlock button", async
     "aria-disabled must be false (proxies token capture)");
 });
 
-test("paymentsEnabled=false or missing keeps button disabled (fail-closed)", async () => {
+test("paymentsEnabled=false or missing shows registration mode", async () => {
   const dom = createPage();
 
   dom.window.fetch = function () {
     return Promise.resolve({
       ok: true,
-      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: undefined })),
+      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: undefined, reportDraftToken: null })),
     });
   };
 
@@ -701,17 +701,18 @@ test("paymentsEnabled=false or missing keeps button disabled (fail-closed)", asy
 
   dom.window.renderValuation(result);
 
+  // No registration/leadContactId → free tier → show register CTA
   const btn = getBtn(dom);
-  if (btn) {
-    assert.ok(btn.disabled || btn.getAttribute("aria-disabled") === "true",
-      "button must remain disabled when paymentsEnabled is false");
-  }
+  assert.ok(btn, "unlock-report button must exist in free tier");
+  assert.ok(btn.disabled, "button must be disabled in free tier (no registration)");
+  assert.ok(btn.textContent.includes("Register to View Full Report"),
+    "button must show Register to View Full Report in free tier");
 
-  // payments-disabled is added to .layout, not .summary
+  // No payments-disabled class in free tier
   const layoutEl = dom.window.document.querySelector(".layout");
   if (layoutEl) {
-    assert.ok(layoutEl.classList.contains("payments-disabled"),
-      "layout must have payments-disabled when payments disabled");
+    assert.ok(!layoutEl.classList.contains("payments-disabled"),
+      "layout must NOT have payments-disabled in free tier");
   }
 });
 
@@ -721,7 +722,7 @@ test("paymentsEnabled=false explicit keeps fail-closed", async () => {
   dom.window.fetch = function () {
     return Promise.resolve({
       ok: true,
-      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: false })),
+      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: false, reportDraftToken: null })),
     });
   };
 
@@ -741,9 +742,11 @@ test("paymentsEnabled=false explicit keeps fail-closed", async () => {
 
   dom.window.renderValuation(result);
 
+  // Free tier (no leadContactId, no draft): button disabled
   const btn = getBtn(dom);
-  if (btn) {
-    assert.ok(btn.disabled || btn.getAttribute("aria-disabled") === "true",
-      "button must remain disabled when paymentsEnabled is false");
-  }
+  assert.ok(btn, "unlock-report button must exist");
+  assert.ok(btn.disabled || btn.getAttribute("aria-disabled") === "true",
+    "button must remain disabled in free tier");
+  assert.ok(btn.textContent.includes("Register to View Full Report"),
+    "button must show Register CTA in free tier");
 });

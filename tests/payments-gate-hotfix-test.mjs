@@ -205,10 +205,10 @@ describe("Payments Gate — Phase 2A Review", () => {
       assert.ok(APP_JS.includes("paymentsEnabled: data.paymentsEnabled === true"),
         "strict equality to true");
     });
-    it("renderValuation: hides purchase UI when payments disabled", () => {
-      assert.ok(APP_JS.includes('unlockBtn2.style.display = "none"') ||
-        APP_JS.includes("unlockBtn2.style.display=\"none\""),
-        "hides unlock button");
+    it("renderValuation: shows registration mode when payments disabled", () => {
+      assert.ok(APP_JS.includes('unlockBtn2.style.display = ""') ||
+        APP_JS.includes("unlockBtn2.style.display=\"\""),
+        "shows unlock button in registration mode");
     });
     it("updatePurchaseButton: guarded by !paymentsEnabled", () => {
       assert.ok(APP_JS.includes("!paymentsEnabled"),

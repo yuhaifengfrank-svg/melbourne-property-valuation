@@ -1233,17 +1233,31 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
   }
 
   try {
-    const response = await fetch("/api/valuation", {
+    var leadContactId = null;
+    try {
+      var stored = localStorage.getItem("aushomevalue.leadContactId");
+      if (stored) leadContactId = parseInt(stored, 10) || null;
+    } catch (_) {}
+
+    // Choose endpoint based on registration status:
+    // - No leadContactId  → /api/valuation (free tier)
+    // - Has leadContactId → /api/valuation-lead (registered tier)
+    var endpoint = leadContactId ? "/api/valuation-lead" : "/api/valuation";
+    var body = {
+      address,
+      suburb: normalizedSuburb,
+      state: resolvedState,
+      propertyType: inferredType,
+      landSize: parseInt(byId("land-size").value) || undefined,
+      useDatabaseFallback: true
+    };
+    if (leadContactId) {
+      body.leadContactId = leadContactId;
+    }
+    var response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        address,
-        suburb: normalizedSuburb,
-        state: resolvedState,
-        propertyType: inferredType,
-        landSize: parseInt(byId("land-size").value) || undefined,
-        useDatabaseFallback: true
-      })
+      body: JSON.stringify(body)
     });
     var result = await response.json();
 
@@ -1757,24 +1771,95 @@ function renderValuation(data) {
   }
     renderLoanScenario();
   renderMarketCrosscheck(data);
-  // Payments gate: fail-closed — controls purchase UI visibility
+  // Phase 2: Three-tier lead/payment gate
   paymentsEnabled = data.paymentsEnabled;
   var layoutEl = document.querySelector(".layout");
   var unlockBtn2 = byId("unlock-report");
   var leadPanel2 = document.querySelector(".lead-panel");
-  if (!paymentsEnabled) {
-    // Add class to gate CSS — hides lead-panel, keeps check-status
-    if (layoutEl) { layoutEl.classList.add("payments-disabled"); }
-    // Hide purchase button and lead panel
-    if (unlockBtn2) { unlockBtn2.style.display = "none"; unlockBtn2.disabled = true; }
-    if (leadPanel2) { leadPanel2.style.display = "none"; }
-    // Clear draft token to prevent locked preview showing pay CTA
-    currentReportDraft = null;
-  } else {
+  var isRegistered = !!getLeadContactId();
+  var hasDraft = !!(currentReportDraft && currentReportDraft.token);
+
+  // Phase 2: Three-tier lead/payment gate
+  // Priority: draft+payments (paid flow) > paymentsEnabled > registered > free
+  if (hasDraft && paymentsEnabled) {
+    // ── Draft + payments live: show purchase button with price ──
     if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
-    // Show purchase UI (default state from HTML)
-    if (unlockBtn2) { unlockBtn2.style.display = ""; }
+    if (unlockBtn2) {
+      unlockBtn2.style.display = "";
+      unlockBtn2.disabled = false;
+      unlockBtn2.removeAttribute("aria-disabled");
+      unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    }
     if (leadPanel2) { leadPanel2.style.display = ""; }
+    var existingLinkEl = byId("existing-unlock-link");
+    if (existingLinkEl) {
+      existingLinkEl.style.display = "";
+      existingLinkEl.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    }
+    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
+    if (priceLabelEl) { priceLabelEl.style.display = ""; }
+  } else if (hasDraft && !paymentsEnabled) {
+    // ── Draft exists but payments disabled: keep hidden ──
+    if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
+    if (unlockBtn2) {
+      unlockBtn2.style.display = "none";
+    }
+    if (leadPanel2) { leadPanel2.style.display = "none"; }
+  } else if (paymentsEnabled) {
+    // ── Payment mode: show price for everyone (payments are live) ──
+    if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
+    if (unlockBtn2) {
+      unlockBtn2.style.display = "";
+      unlockBtn2.disabled = false;
+      unlockBtn2.removeAttribute("aria-disabled");
+      unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    }
+    if (leadPanel2) { leadPanel2.style.display = ""; }
+    var existingLinkEl = byId("existing-unlock-link");
+    if (existingLinkEl) {
+      existingLinkEl.style.display = "";
+      existingLinkEl.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    }
+    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
+    if (priceLabelEl) { priceLabelEl.style.display = ""; }
+  } else if (isRegistered) {
+    // ── Registered tier: mid-tier data + $3.99 CTA ──
+    if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
+    if (unlockBtn2) {
+      unlockBtn2.style.display = "";
+      unlockBtn2.disabled = false;
+      unlockBtn2.removeAttribute("aria-disabled");
+      unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    }
+    if (leadPanel2) { leadPanel2.style.display = ""; }
+    var existingLinkEl = byId("existing-unlock-link");
+    if (existingLinkEl) {
+      existingLinkEl.style.display = "";
+      existingLinkEl.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    }
+    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
+    if (priceLabelEl) { priceLabelEl.style.display = ""; }
+  } else {
+    // ── Free tier: no registration → register CTA ──
+    if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
+    if (unlockBtn2) {
+      unlockBtn2.style.display = "";
+      unlockBtn2.disabled = false;
+      unlockBtn2.removeAttribute("aria-disabled");
+      unlockBtn2.textContent = language === "zh" ? "注册查看完整报告" : "Register to View Full Report";
+    }
+    if (leadPanel2) { leadPanel2.style.display = ""; }
+    var existingLinkEl = byId("existing-unlock-link");
+    if (existingLinkEl) { existingLinkEl.style.display = "none"; }
+    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
+    if (priceLabelEl) { priceLabelEl.style.display = "none"; }
+  }
+
+  // Payment-enabled mode overrides the above when payments are live
+  if (paymentsEnabled && unlockBtn2) {
+    if (unlockBtn2.style.display !== "none") {
+      unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    }
   }
 
   renderLockState();
@@ -1910,9 +1995,19 @@ function renderLockState() {
           draftValid = true;
         }
       }
+      // Phase 2: Three-tier locked preview CTA
+      var isRegd = !!getLeadContactId();
       if (draftValid && paymentsEnabled) {
+        // Paid user: show price (flow-through for when payments go live)
         lockedPreview = JSON.parse(JSON.stringify(lockedPreview));
         lockedPreview.cta = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+      } else if (isRegd) {
+        // Registered user not yet paid: show price even when payments disabled
+        lockedPreview = JSON.parse(JSON.stringify(lockedPreview));
+        lockedPreview.cta = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+      } else if (!paymentsEnabled && !isRegd) {
+        // Free tier: no registration
+        lockedPreview.cta = language === "zh" ? "注册后即可查看完整报告" : "Register to view full report";
       }
       var ctaHtml = renderLockedPreviewHTML(lockedPreview);
       lockedPreviewEl.innerHTML = ctaHtml;
@@ -2525,13 +2620,25 @@ function updatePurchaseButton() {
       draftValid = true; // no expiry info means assume valid
     }
   }
-  // Payments gate: fail-closed — never enable purchase when payments disabled
-  if (!paymentsEnabled) {
-    btn.disabled = true;
-    btn.setAttribute("aria-disabled", "true");
-  } else {
+  // Phase 2: Three-tier purchase button
+  var pgIsRegd = !!getLeadContactId();
+  var pgHasDraft = !!(currentReportDraft && currentReportDraft.token);
+  if (pgHasDraft && paymentsEnabled) {
+    // Draft + payments live: use draft validity for checkout
     btn.disabled = !draftValid;
     btn.setAttribute("aria-disabled", draftValid ? "false" : "true");
+  } else if (paymentsEnabled) {
+    // Payment mode: use draft validity
+    btn.disabled = !draftValid;
+    btn.setAttribute("aria-disabled", draftValid ? "false" : "true");
+  } else if (pgIsRegd) {
+    // Registered tier: button enabled for purchase
+    btn.disabled = false;
+    btn.removeAttribute("aria-disabled");
+  } else {
+    // Free tier: keep disabled
+    btn.disabled = true;
+    btn.setAttribute("aria-disabled", "true");
   }
 }
 
@@ -2559,21 +2666,96 @@ window._navigateTo = function (url) {
 var _navigateTo = window._navigateTo; // aliased for closure access below
 
 /**
+ * Get the stored lead contact id from localStorage, or null.
+ */
+function getLeadContactId() {
+  try {
+    var id = localStorage.getItem("aushomevalue.leadContactId");
+    return id ? parseInt(id, 10) || null : null;
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
+ * Submit lead consent (email + optional phone) to the backend.
+ * Returns the leadContactId on success.
+ */
+async function submitLeadConsent(email, phone) {
+  var resp = await fetch("/api/lead-consent", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email: email, phone: phone || null })
+  });
+  var data = await resp.json();
+  if (!data.ok || !data.leadContactId) {
+    throw new Error(data.error || "REGISTRATION_FAILED");
+  }
+  try {
+    localStorage.setItem("aushomevalue.leadContactId", String(data.leadContactId));
+  } catch (_) {}
+  return data.leadContactId;
+}
+
+/**
  * Open the checkout modal. Called from purchase button click.
+ * When payments are disabled, runs the registration flow instead.
  */
 function openCheckoutModal() {
-  if (!paymentsEnabled) return;
+  if (!paymentsEnabled) {
+    // ── Registration mode: gather consent instead of opening checkout ──
+    var emailEl = byId("lead-email");
+    var phoneEl = byId("lead-phone");
+    var msgEl = byId("lead-message");
+    var email = emailEl ? emailEl.value.trim() : "";
+    var phone = phoneEl ? phoneEl.value.trim() : "";
+
+    if (!email) {
+      if (msgEl) msgEl.textContent = language === "zh" ? "请输入邮箱" : "Please enter your email";
+      if (emailEl) emailEl.focus();
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (msgEl) msgEl.textContent = language === "zh" ? "邮箱格式不正确" : "Invalid email format";
+      if (emailEl) emailEl.focus();
+      return;
+    }
+
+    var btn = byId("unlock-report");
+    if (btn) { btn.disabled = true; btn.textContent = language === "zh" ? "提交中..." : "Submitting..."; }
+
+    submitLeadConsent(email, phone).then(async function (contactId) {
+      // Registration success — reload valuation to show registered-tier content
+      if (currentValuation && currentValuation.address) {
+        var addr = currentValuation.address;
+        var type = currentValuation.type || "house";
+        var state = currentValuation.propertyState || "VIC";
+        var suburb = currentValuation.propertySuburb || "";
+        var newValuation = await runAddressValuation(addr, type, state, suburb);
+        // Re-render with updated data
+        renderValuation(newValuation);
+      }
+      var panel = document.querySelector(".lead-panel");
+      if (panel) panel.style.display = "none";
+      if (msgEl) msgEl.textContent = "";
+    }).catch(function (err) {
+      if (msgEl) msgEl.textContent = language === "zh"
+        ? "提交失败，请稍后重试"
+        : "Submission failed. Please try again.";
+      if (btn) { btn.disabled = false; btn.textContent = language === "zh" ? "查看完整报告" : "View Full Report"; }
+    });
+    return;
+  }
+
+  // ── Payment mode: open Stripe checkout modal ──
   var modal = byId("checkout-modal");
   if (!modal || typeof modal.showModal !== "function") return;
-  // Populate address
   var addrEl = byId("checkout-address");
   if (addrEl && currentReportDraft) {
     addrEl.textContent = currentReportDraft.address || "";
   }
-  // Clear previous errors
   var msgEl = byId("checkout-message");
   if (msgEl) msgEl.textContent = "";
-  // Enable submit button
   var submitBtn = byId("checkout-submit");
   if (submitBtn) {
     submitBtn.disabled = false;
