@@ -93,9 +93,10 @@ function buildFreeSummary(fullResult) {
   const comparables = val.acceptedComparables || fullResult.comparables || [];
   const confidence = val.confidence || {};
 
-  // Why this estimate: single descriptive line + disclaimer
+  // Why this estimate: data source + model description + disclaimer
   const keyFactors = [
     "This estimate is generated from comparable sales data, public property records and suburb-level market analysis.",
+    "Our valuation model applies multi-factor adjustments (property attributes, location, education, vacancy, supply constraints, census consistency) and is calibrated against thousands of accepted comparable sale transactions.",
     "Disclaimer: This is a free summary for general information and research purposes only. Not a formal valuation, credit decision, legal, tax or financial advice. Consult licensed professionals before making transaction or financing decisions."
   ];
 
