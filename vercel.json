@@ -49,6 +49,7 @@
       "source": "/index-phase3c-preview.html",
       "destination": "/public/index-phase3c-preview.html"
     },
+    { "source": "/admin/leads", "destination": "/public/admin/leads.html" },
     { "source": "/", "destination": "/public/index.html" },
     { "source": "/styles.css", "destination": "/public/styles.css" },
     { "source": "/assets/(.*)", "destination": "/public/assets/$1" }
