@@ -13,6 +13,7 @@
 // Designed for use by the valuation funnel modal before full report unlock.
 
 import { ensureCustomerFunnelSchema, getSql } from "./_db.js";
+import { sendRegistrationNotification } from "../lib/notify-registration.js";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -41,6 +42,7 @@ export default async function handler(req, res) {
 
   const emailLower = rawEmail.toLowerCase();
   const phone = (req.body && req.body.phone || "").trim() || null;
+  const name = (req.body && req.body.name || "").trim() || null;
 
   try {
     const sql = getSql();
@@ -61,6 +63,11 @@ export default async function handler(req, res) {
     if (!leadContactId || typeof leadContactId !== "number") {
       throw new Error("Failed to create or retrieve lead contact");
     }
+
+    // Non-blocking admin notification via email
+    sendRegistrationNotification(rawEmail, name, phone).catch(e =>
+      console.warn("Registration notification failed:", e.message)
+    );
 
     return res.status(200).json({ ok: true, leadContactId });
   } catch (err) {

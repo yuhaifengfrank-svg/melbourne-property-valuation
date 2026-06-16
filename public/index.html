@@ -731,6 +731,44 @@ button:hover {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.registered-tier-grid {
+  margin-top: 18px;
+}
+
+.registered-tier-grid article:last-child:nth-child(3) {
+  grid-column: span 2;
+}
+
+.school-item {
+  border-bottom: 1px solid var(--line);
+  display: grid;
+  gap: 4px;
+  padding: 10px 0;
+}
+
+.school-item:last-child {
+  border-bottom: 0;
+}
+
+.school-item .school-name {
+  font-weight: 700;
+}
+
+.school-item .school-meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.trend-note {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 6px 0 0;
+}
+
+.opportunities-body .opp-preview-card {
+  margin-bottom: 12px;
+}
+
 .metric-card strong {
   display: block;
   font-size: 30px;
@@ -2413,6 +2451,32 @@ th {
                   <tbody id="comparables-body"></tbody>
                 </table>
               </div>
+            </section>
+            <!-- ── Registered-tier cards ── -->
+            <section class="grid-two registered-tier-grid hidden" id="registered-tier-section">
+              <article class="panel hidden" id="registered-trend">
+                <div class="panel-header">
+                  <h2 lang="en">Suburb Price Trend</h2>
+                  <h2 lang="zh" hidden>区域价格趋势</h2>
+                </div>
+                <p><strong class="trend-value" id="trend-value">—</strong></p>
+                <p class="trend-note" id="trend-note-en" lang="en">Median price for this suburb</p>
+                <p class="trend-note" id="trend-note-zh" lang="zh" hidden>该区域中位价</p>
+              </article>
+              <article class="panel hidden" id="registered-schools">
+                <div class="panel-header">
+                  <h2 lang="en">School Zones Nearby</h2>
+                  <h2 lang="zh" hidden>附近学区</h2>
+                </div>
+                <div id="schools-body"></div>
+              </article>
+              <article class="panel hidden" id="registered-opportunities">
+                <div class="panel-header">
+                  <h2 lang="en">Investment Preview</h2>
+                  <h2 lang="zh" hidden>投资机会预览</h2>
+                </div>
+                <div id="opportunities-body"></div>
+              </article>
             </section>
             <section class="grid-two location-grid" id="location">
               <article class="panel detail-panel" data-detail="micro-location evidence">

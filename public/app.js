@@ -1862,6 +1862,9 @@ function renderValuation(data) {
     }
     var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
     if (priceLabelEl) { priceLabelEl.style.display = ""; }
+
+    // ── Render registered-tier cards ──
+    renderRegisteredTierCards(data, language);
   } else {
     // ── Free tier: no registration → register CTA ──
     if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
@@ -1876,6 +1879,9 @@ function renderValuation(data) {
     if (existingLinkEl) { existingLinkEl.style.display = "none"; }
     var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
     if (priceLabelEl) { priceLabelEl.style.display = "none"; }
+
+    // ── Hide registered-tier cards when free tier ──
+    hideRegisteredTierCards();
   }
 
   // Payment-enabled mode overrides the above when payments are live
@@ -1979,6 +1985,102 @@ function applyLanguage() {
   });
   renderValuation(currentValuation);
   if (activeInvestorTheme) renderInvestorTheme(activeInvestorTheme);
+}
+
+// ── Registered-tier card rendering ──
+
+/** Show and populate the three registered-tier cards. */
+function renderRegisteredTierCards(data, language) {
+  var sectionEl = byId("registered-tier-section");
+  if (sectionEl) { sectionEl.classList.remove("hidden"); }
+
+  // 1. Median price trend
+  var trendEl = byId("registered-trend");
+  if (trendEl && data.medianPrice != null) {
+    trendEl.classList.remove("hidden");
+    var valEl = byId("trend-value");
+    if (valEl) {
+      valEl.textContent = "$" + Number(data.medianPrice).toLocaleString("en-AU");
+    }
+  }
+
+  // 2. School zones
+  var schoolsEl = byId("registered-schools");
+  if (schoolsEl && data.schools && data.schools.length > 0) {
+    schoolsEl.classList.remove("hidden");
+    var bodyEl = byId("schools-body");
+    if (bodyEl) {
+      var html = "";
+      for (var si = 0; si < data.schools.length; si++) {
+        var s = data.schools[si];
+        var metaParts = [];
+        if (s.sector) metaParts.push(s.sector);
+        if (s.type) metaParts.push(s.type);
+        var meta = metaParts.join(" · ");
+        var icseaStr = s.icsea != null ? "ICSEA: " + s.icsea : "";
+        var enrolledStr = s.enrolled != null ? "Enrolled: " + Number(s.enrolled).toLocaleString("en-AU") : "";
+        html += "<div class=\"school-item\">";
+        html += "<div class=\"school-name\">" + (s.name || "-") + "</div>";
+        html += "<div class=\"school-meta\">" + meta + "</div>";
+        if (icseaStr || enrolledStr) {
+          html += "<div class=\"school-meta\">";
+          if (icseaStr) html += icseaStr;
+          if (icseaStr && enrolledStr) html += " · ";
+          if (enrolledStr) html += enrolledStr;
+          html += "</div>";
+        }
+        html += "</div>";
+      }
+      bodyEl.innerHTML = html;
+    }
+  }
+
+  // 3. Opportunity preview
+  var oppEl = byId("registered-opportunities");
+  if (oppEl && data.opportunityPreview && data.opportunityPreview.opportunities && data.opportunityPreview.opportunities.length > 0) {
+    oppEl.classList.remove("hidden");
+    var oppBodyEl = byId("opportunities-body");
+    if (oppBodyEl) {
+      var html = "";
+      var opps = data.opportunityPreview.opportunities;
+      for (var oi = 0; oi < opps.length; oi++) {
+        var o = opps[oi];
+        var priceStr = o.medianHousePrice != null
+          ? "$" + Number(o.medianHousePrice).toLocaleString("en-AU")
+          : "";
+        var growthStr = o.growth1y != null
+          ? (o.growth1y >= 0 ? "+" : "") + Number(o.growth1y).toFixed(1) + "% 1yr"
+          : "";
+        var yieldStr = o.grossYield != null
+          ? Number(o.grossYield).toFixed(1) + "% yield"
+          : "";
+        html += "<div class=\"opp-preview-card\">";
+        html += "<h3>" + (o.suburb || "-") + "</h3>";
+        html += "<div class=\"opp-preview-desc\">";
+        html += (o.type || "Balanced");
+        if (priceStr) html += " · " + priceStr;
+        html += "</div>";
+        if (growthStr || yieldStr) {
+          html += "<div class=\"opp-preview-mini-list\">";
+          if (growthStr) html += "<span>" + growthStr + "</span>";
+          if (yieldStr) html += "<span>" + yieldStr + "</span>";
+          html += "</div>";
+        }
+        html += "</div>";
+      }
+      oppBodyEl.innerHTML = html;
+    }
+  }
+}
+
+/** Hide all registered-tier cards (used on free tier or when data unavailable). */
+function hideRegisteredTierCards() {
+  var sectionEl = byId("registered-tier-section");
+  if (sectionEl) { sectionEl.classList.add("hidden"); }
+  ["registered-trend", "registered-schools", "registered-opportunities"].forEach(function(id) {
+    var el = byId(id);
+    if (el) el.classList.add("hidden");
+  });
 }
 
 function renderLoanScenario() {

@@ -91,12 +91,32 @@ export default async function handler(req, res) {
       landSize: c.landSize || null
     }));
 
-    // ── Suburb median price trend (from valuation service data) ──
-    const medianPrice = result.medianPrice || null;
-
-    // ── School zone data ──
+    // ── Suburb median price trend ──
+    // Try result.medianPrice first, then query suburb_metrics as fallback
+    let medianPrice = result.medianPrice || null;
     const suburbName = result.subject?.suburb || body.suburb || "";
     const stateName = result.subject?.state || body.state || "VIC";
+    if (medianPrice == null && suburbName) {
+      try {
+        const propType = (result.subject?.propertyType || body.propertyType || "house").toLowerCase();
+        const priceCol = propType === "unit" || propType === "apartment" ? "median_unit_price" : "median_house_price";
+        const [metric] = await sql`
+          SELECT ${sql.unsafe(priceCol)} AS median_price
+          FROM suburb_metrics
+          WHERE LOWER(suburb) = LOWER(${suburbName})
+            AND state = ${stateName}
+            AND ${sql.unsafe(priceCol)} IS NOT NULL
+          LIMIT 1
+        `;
+        if (metric && metric.median_price != null) {
+          medianPrice = Number(metric.median_price);
+        }
+      } catch (_e) {
+        // Median price is optional
+      }
+    }
+
+    // ── School zone data ──
     let schools = [];
     if (suburbName) {
       try {
