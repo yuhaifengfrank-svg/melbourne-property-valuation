@@ -4,6 +4,12 @@
       "maxDuration": 60
     }
   },
+  "cron": [
+    {
+      "path": "/api/warm",
+      "schedule": "*/5 * * * *"
+    }
+  ],
   "rewrites": [
     {
       "source": "/robots.txt",
