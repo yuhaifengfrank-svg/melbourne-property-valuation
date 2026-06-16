@@ -232,8 +232,8 @@
       "</p>" +
       '<p style="font-size:0.9rem;font-weight:700;color:#0d6b57;margin:0 0 4px 0;">' +
       (isZh
-        ? "7天免费试用\n之后 AUD $9.99/月"
-        : "Start Your 7-Day Free Trial\nThen AUD $9.99/month") +
+        ? '7天免费试用<br/>之后 AUD $9.99/月'
+        : 'Start Your 7-Day Free Trial<br/>Then AUD $9.99/month') +
       "</p>" +
       '<p style="font-size:0.75rem;color:#66736d;margin:0 0 4px 0;line-height:1.4;">' +
       (isZh
