@@ -4,11 +4,17 @@ let initialized = false;
 let customerFunnelInitialized = false;
 let reportPaymentInitialized = false;
 
+// Reusable SQL connection (cold-start win: only connect once per warm instance)
+let _sql = null;
+
 export function getSql() {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not configured");
   }
-  return neon(process.env.DATABASE_URL);
+  if (!_sql) {
+    _sql = neon(process.env.DATABASE_URL);
+  }
+  return _sql;
 }
 
 export async function ensureSchema(sql) {
