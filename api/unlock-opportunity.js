@@ -117,7 +117,7 @@ export default async function handler(req, res) {
 
       if (token) {
         const payload = verifyToken(token);
-        if (payload && payload.gate_level === "opportunity") {
+        if (payload && (payload.gate_level === "opportunity_registered" || payload.gate_level === "opportunity")) {
           status = "active";
           email = payload.email;
         }
@@ -402,7 +402,7 @@ export default async function handler(req, res) {
     }
 
     // ── Only set cookie after successful data fetch (FIX 6) ──
-    const token = createToken({ email, gate_level: "opportunity" });
+    const token = createToken({ email, gate_level: "opportunity_registered" });
     setTokenCookie(res, token);
 
     return res.status(200).json({

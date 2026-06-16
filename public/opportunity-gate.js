@@ -1,4 +1,8 @@
-/* opportunity-gate.js - Phase 1B (fix): Registration gate for Top Opportunities.
+/* opportunity-gate.js - Phase 2: Three-tier opportunity gate.
+   Tiers:
+     1) Free (no cookie)     → preview 3 opportunities, CTA to register
+     2) Registered (cookie)  → personalised Top 10, CTA to subscribe
+     3) Subscribed (cookie)  → full access (Coming Soon)
    Uses HttpOnly cookies set by server — never localStorage.
    No token stored client-side. Server-verified on each check. */
 
@@ -17,12 +21,11 @@
       })
       .then(function (d) {
         if (d.ok && d.status === "active") {
-          return { status: "active", email: d.email };
+          return { status: "active", email: d.email, gateLevel: d.gateLevel || "opportunity_registered" };
         }
         return null;
       })
       .catch(function () {
-        // FIX 8: Network error → cannot verify → treat as unauthorized
         return null;
       });
   }
@@ -52,8 +55,8 @@
     });
   }
 
-  /** Show the registration overlay */
-  function showGate(options, onSuccess) {
+  /** Show registration overlay (tier 2 — free → registered) */
+  function showRegistrationGate(options, onSuccess) {
     var lang = (options && options.language) || "en";
     var isZh = lang === "zh";
 
@@ -63,22 +66,18 @@
     overlay.id = "opp-gate-overlay";
     overlay.className = "opp-gate-overlay";
 
-    // Determine the subscription CTA text based on phase
-    var subCtaLine = isZh
-      ? "完整智能报告即将推出（Coming Soon）"
-      : "Full Opportunity Intelligence — Coming Soon";
     var formTitle = isZh
       ? "解锁个性化机会排名"
       : "Unlock Personalised Opportunity Rankings";
     var formDesc = isZh
-      ? "提交偏好后获取个性化 Top 10 机会排名，免费。完整订阅即将推出。"
+      ? "免费获取个性化 Top 10 排名，根据您的偏好量身定制。完整订阅即将推出。"
       : "Get a personalised Top 10 ranking tailored to your preferences — free. Full subscription coming soon.";
     var submitBtn = isZh
       ? "提交并获取个性化排名"
       : "Submit & Get Personalised Rankings";
     var footerTxt = isZh
-      ? "提交后即表示您同意上述条款。您将收到免费个性化 Top 10 排名。完整智能报告即将推出（Coming Soon）。"
-      : "By submitting you agree to the above terms. You'll receive your free personalised Top 10. Full intelligence coming soon.";
+      ? "提交后即表示您同意上述条款。您将收到免费个性化 Top 10 排名。"
+      : "By submitting you agree to the above terms. You'll receive your free personalised Top 10.";
 
     var html =
       '<div class="opp-gate-box" style="max-width:480px;">' +
@@ -206,7 +205,7 @@
       ' <span style="color:#dc2626;">*</span></span>' +
       "</label>" +
       "</div>" +
-      /* Marketing consent (optional, NOT pre-checked) — FIX 11: independent from subscription */
+      /* Marketing consent (optional, NOT pre-checked) */
       '<div style="margin-bottom:16px;">' +
       '<label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-size:0.85rem;color:#889994;line-height:1.4;">' +
       '<input type="checkbox" id="opp-gate-marketing-consent" style="margin-top:2px;flex-shrink:0;" />' +
@@ -224,7 +223,7 @@
       '<p style="font-size:0.75rem;color:#66736d;margin-top:12px;line-height:1.5;">' +
       footerTxt +
       "</p>" +
-      /* Subscription pricing info */
+      /* Subscription upgrade CTA (shown after registration on next view) */
       '<div style="margin-top:16px;padding:16px;background:#f0f7f4;border-radius:8px;border:1px solid #dbe2de;">' +
       '<p style="font-size:0.85rem;font-weight:600;color:#17211d;margin:0 0 8px 0;">' +
       (isZh
@@ -233,7 +232,7 @@
       "</p>" +
       '<p style="font-size:0.9rem;font-weight:700;color:#0d6b57;margin:0 0 4px 0;">' +
       (isZh
-        ? "Start Your 7-Day Free Trial\nThen AUD $9.99/month"
+        ? "7天免费试用\n之后 AUD $9.99/月"
         : "Start Your 7-Day Free Trial\nThen AUD $9.99/month") +
       "</p>" +
       '<p style="font-size:0.75rem;color:#66736d;margin:0 0 4px 0;line-height:1.4;">' +
@@ -244,7 +243,7 @@
       '<p style="font-size:0.7rem;color:#889994;margin:0;line-height:1.4;">' +
       (isZh
         ? "免费试用期开始订阅后生效。除非在试用期结束前取消，否则将以 AUD $9.99/月自动续费，直至取消。可随时取消。Marketing consent 与订阅条款为独立授权。"
-        : "Your 7-day free trial starts when you subscribe. Unless cancelled before the trial ends, your selected payment method will be charged AUD $9.99 and the subscription will automatically renew monthly until cancelled. Cancel anytime. Marketing consent is independent from subscription terms.") +
+        : "Your 7-day free trial starts when you subscribe. Unless cancelled before the trial ends, you'll be charged AUD $9.99/month until cancelled. Cancel anytime.") +
       "</p>" +
       '<p style="font-size:0.7rem;color:#889994;margin:4px 0 0 0;font-style:italic;">' +
       (isZh ? "Coming Soon — 支付集成即将推出" : "Coming Soon — payment integration pending") +
@@ -350,7 +349,7 @@
       })
         .then(function (d) {
           if (d.ok && d.status === "active") {
-            // FIX 7: Token is in HttpOnly cookie — nothing to store client-side
+            // Cookie set by server — nothing to store client-side
             removeOverlay();
             if (typeof onSuccess === "function") onSuccess(d);
           } else if (d.status === "data_unavailable") {
@@ -405,12 +404,86 @@
     }
   }
 
+  /** Show subscription upgrade overlay (tier 2 → tier 3) */
+  function showSubscriptionUpgrade(options) {
+    var lang = (options && options.language) || "en";
+    var isZh = lang === "zh";
+
+    removeOverlay();
+
+    var overlay = document.createElement("div");
+    overlay.id = "opp-gate-overlay";
+    overlay.className = "opp-gate-overlay";
+
+    var html =
+      '<div class="opp-gate-box" style="max-width:400px;text-align:center;">' +
+      '<button id="opp-gate-close" style="position:absolute;top:12px;right:12px;width:32px;height:32px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#889994;display:flex;align-items:center;justify-content:center;border-radius:50%;" aria-label="' +
+      (isZh ? "关闭" : "Close") +
+      '">×</button>' +
+      '<h3 style="margin:0 0 12px 0;">' +
+      (isZh ? "解锁全量机会数据" : "Unlock Full Opportunity Data") +
+      "</h3>" +
+      '<p style="color:#66736d;font-size:0.9rem;margin-bottom:20px;line-height:1.5;">' +
+      (isZh
+        ? "当前您正在查看个性化 Top 10。订阅后获取所有 200+ 郊区机会排名、历史趋势、完整筛选器。"
+        : "You're viewing personalised Top 10. Subscribe for all 200+ suburbs, historical trends, and full filters.") +
+      "</p>" +
+      '<div style="padding:20px;background:#f0f7f4;border-radius:8px;border:1px solid #dbe2de;margin-bottom:16px;">' +
+      '<p style="font-size:0.9rem;font-weight:700;color:#0d6b57;margin:0 0 4px 0;">' +
+      (isZh ? "7天免费试用，之后 AUD $9.99/月" : "7-Day Free Trial, then AUD $9.99/month") +
+      "</p>" +
+      '<p style="font-size:0.75rem;color:#66736d;margin:0;line-height:1.4;">' +
+      (isZh
+        ? "免费试用结束前取消不产生费用。可随时取消。"
+        : "Cancel before your trial ends and you won't be charged. Cancel anytime.") +
+      "</p>" +
+      "</div>" +
+      '<p style="font-size:0.7rem;color:#889994;font-style:italic;">' +
+      (isZh ? "Coming Soon — 支付集成即将推出" : "Coming Soon — payment integration pending") +
+      "</p>" +
+      "<br/>" +
+      '<button class="opp-gate-close-btn" style="background:#66736d;color:white;border:none;padding:8px 20px;border-radius:8px;cursor:pointer;font-size:0.85rem;">' +
+      (isZh ? "返回我的 Top 10" : "Back to My Top 10") +
+      "</button>" +
+      "</div>";
+
+    overlay.innerHTML = html;
+
+    var style = document.createElement("style");
+    style.textContent =
+      ".opp-hidden{display:none!important}.opp-gate-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;cursor:pointer;}.opp-gate-box{background:white;border-radius:16px;padding:32px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3);cursor:default;}";
+    document.head.appendChild(style);
+    document.body.appendChild(overlay);
+
+    function closeGate() {
+      removeOverlay();
+    }
+
+    var closeBtn = document.getElementById("opp-gate-close");
+    if (closeBtn) closeBtn.addEventListener("click", closeGate);
+    overlay.addEventListener("click", function (e) {
+      if (e.target === overlay) closeGate();
+    });
+    var escHandler = function (e) {
+      if (e.key === "Escape") closeGate();
+    };
+    document.addEventListener("keydown", escHandler);
+    var origRemove = overlay.remove.bind(overlay);
+    overlay.remove = function () {
+      document.removeEventListener("keydown", escHandler);
+      origRemove();
+    };
+
+    var closeButton = overlay.querySelector(".opp-gate-close-btn");
+    if (closeButton) closeButton.addEventListener("click", closeGate);
+  }
+
   function removeOverlay() {
     var existing = document.getElementById("opp-gate-overlay");
     if (existing) existing.remove();
   }
 
-  /** Main gate: check token via cookie, show gate or proceed */
+  /** Main gate: check token, return current tier, show gate if needed */
   function runGate(options, onSuccess) {
     var gateDefaults = {
       language: document.documentElement.lang || "en",
@@ -420,30 +493,51 @@
     return new Promise(function (resolve) {
       checkTokenOnServer().then(function (status) {
         if (status && status.status === "active") {
-          resolve(false);
+          // Already authenticated — resolve with gate level
+          resolve({
+            authenticated: true,
+            gateLevel: status.gateLevel || "opportunity_registered",
+          });
           return;
         }
-        showGate(gateOptions, function (d) {
+        // Not authenticated — show registration overlay
+        showRegistrationGate(gateOptions, function (d) {
           if (typeof onSuccess === "function") onSuccess(d);
-          resolve(false);
+          resolve({
+            authenticated: true,
+            gateLevel: "opportunity_registered",
+          });
         });
-        resolve(true);
       });
+    });
+  }
+
+  /** Check if user has at least registered access */
+  function checkTier() {
+    return checkTokenOnServer().then(function (status) {
+      if (status && status.status === "active") {
+        return {
+          tier: status.gateLevel === "opportunity_subscribed" ? "subscribed" : "registered",
+          email: status.email,
+        };
+      }
+      return { tier: "free", email: null };
     });
   }
 
   /* Export globally — no localStorage methods exposed */
   window.opportunityGate = {
     run: runGate,
+    checkTier: checkTier,
     isUnlocked: function () {
-      // Async check — returns a promise resolving to boolean
       return checkTokenOnServer().then(function (status) {
         return !!(status && status.status === "active");
       });
     },
     check: checkTokenOnServer,
+    showSubscriptionUpgrade: showSubscriptionUpgrade,
+    showRegistrationGate: showRegistrationGate,
     protectPage: function () {
-      // Must verify with server — no client-side shortcut
       checkTokenOnServer().then(function (status) {
         if (status && status.status === "active") return;
         var path = window.location.pathname;

@@ -3274,8 +3274,10 @@ function renderPersonalisedTop10(top10) {
 }
 
 async function runOpportunityScan() {
-  // Registration gate: always delegate to server-verified opportunityGate.run()
-  // Do not use synchronous isUnlocked check — gate.run() handles it
+  // Phase 2: Three-tier opportunity gate
+  // Tier 1: free (no cookie) → show registration gate
+  // Tier 2: registered (opportunity_registered cookie) → personalised Top 10
+  // Tier 3: subscribed (opportunity_subscribed cookie) → full access (Coming Soon)
   if (window.opportunityGate) {
     oppLoading.classList.add("hidden");
     const strategy = document.getElementById("opp-strategy").value;
