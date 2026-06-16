@@ -93,12 +93,24 @@ function buildFreeSummary(fullResult) {
   const comparables = val.acceptedComparables || fullResult.comparables || [];
   const confidence = val.confidence || {};
 
-  // Determine key factors (1-2 from valuation reasons)
-  const reasons = val.reasons || fullResult.reasons || [];
-  const keyFactors = reasons.slice(0, 2).map(r => {
-    if (typeof r === 'string') return r;
-    return r.text || r.label || String(r);
-  });
+  // Determine key factors (1-2) — build from confidence reasons or estimate metadata
+  const confidenceReasons = (val.confidence && val.confidence.reasons) || [];
+  const factorAdjustments = (val.estimate && val.estimate.factorAdjustments) || [];
+  const factorNotes = factorAdjustments
+    .filter(fa => fa && fa.detail && fa.detail.length > 20)
+    .map(fa => fa.label + (
+      typeof fa.detail === 'string'
+        ? (fa.detail.length > 80 ? fa.detail.slice(0, 80) + '…' : ': ' + fa.detail)
+        : ''
+    ));
+  const rawReasons = [
+    ...confidenceReasons,
+    ...factorNotes
+  ];
+  if (rawReasons.length === 0) {
+    rawReasons.push("Computed from comparable sales and public records");
+  }
+  const keyFactors = rawReasons.slice(0, 2);
 
   // Data limitations
   const limitations = [];
