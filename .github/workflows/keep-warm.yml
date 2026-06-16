@@ -1,0 +1,23 @@
+# ── Keep Vercel Serverless Functions warm ──
+# Vercel Hobby plan has no cron support and functions sleep after inactivity.
+# This workflow pings our endpoints every 5 min to prevent cold starts.
+# Runs via GitHub Actions (free on public repos, ~744 runs/month on private).
+name: Keep Warm
+
+on:
+  schedule:
+    # Every 30 minutes (free tier: ~1488 min/month, well within 2000 min GitHub Actions limit)
+    - cron: '*/30 * * * *'
+  workflow_dispatch: # allow manual trigger
+
+jobs:
+  warm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Warm valuation endpoint
+        run: |
+          curl -s -o /dev/null -w "%{http_code}\n" \
+            -X POST "https://aushomevalue.com.au/api/valuation" \
+            -H "Content-Type: application/json" \
+            -d '{"address":"1 test st Melbourne VIC 3000","propertyType":"Apartment"}' \
+            || echo "warm-valuation failed (expected on first cold start)"
