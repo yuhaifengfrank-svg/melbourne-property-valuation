@@ -47,7 +47,7 @@ export default async function handler(req, res) {
       useDatabaseFallback: true
     });
 
-    const est = result.estimate || {};
+    const est = result.valuation?.estimate || result.estimate || {};
     const val = result.valuation || {};
     const confidence = val.confidence || {};
 
