@@ -29,12 +29,9 @@ export default async function handler(req, res) {
     if (!leadContactId) {
       return res.status(400).json({ ok: false, error: "leadContactId required" });
     }
-    const [lead] = await sql`SELECT id, email, name, consented FROM lead_contacts WHERE id = ${leadContactId} LIMIT 1`;
+    const [lead] = await sql`SELECT id FROM lead_contacts WHERE id = ${leadContactId} LIMIT 1`;
     if (!lead) {
       return res.status(403).json({ ok: false, error: "Invalid lead contact" });
-    }
-    if (!lead.consented) {
-      return res.status(403).json({ ok: false, error: "Contact consent required for PDF download" });
     }
 
     // ── Fetch valuation data directly ──
