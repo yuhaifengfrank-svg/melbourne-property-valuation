@@ -70,7 +70,7 @@ async function main() {
     console.log(`[Cron Weekly] Collecting ${suburb}...`);
     let raw;
     try {
-      raw = await scrapeSoldData(suburb, state, postcode);
+      raw = await scrapeSoldData(suburb, state, postcode, 5);
     } catch (err) {
       console.warn(`[Cron Weekly] scrape failed ${suburb}: ${err.message}`);
       continue;
@@ -81,7 +81,20 @@ async function main() {
 
     for (const s of sales) {
       try {
-        const result = await sql`
+        // Check if record exists (simple dedup before insert)
+        const exists = await sql`
+          SELECT 1 FROM comparable_sales
+          WHERE sale_address = ${s.address || ""}
+            AND sale_date = ${s.saleDate || null}
+            AND sale_price = ${s.price ? Number(s.price) : null}
+            AND source_name = ${s.source || "unknown"}
+          LIMIT 1
+        `;
+        if (Array.isArray(exists) && exists.length > 0) {
+          continue; // skip duplicate
+        }
+        
+        await sql`
           INSERT INTO comparable_sales (
             sale_address, sale_price, sale_date, property_type,
             bedrooms, bathrooms, car_spaces, land_size_sqm,
@@ -103,13 +116,8 @@ async function main() {
             ${s.rawPrice || null},
             CURRENT_DATE, 'weekly', ${batchId}
           )
-          ON CONFLICT (sale_address, COALESCE(sale_date, '1970-01-01'::date), COALESCE(sale_price, -1), source_name)
-          DO NOTHING
-          RETURNING id
         `;
-        if (Array.isArray(result) && result.length > 0) {
-          totalSaved++;
-        }
+        totalSaved++;
       } catch (err) {
         console.warn(`[Cron Weekly] DB insert error: ${err.message}`);
       }
