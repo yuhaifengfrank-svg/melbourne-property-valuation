@@ -38,9 +38,10 @@ export default async function handler(req, res) {
   }
 
   // Lazy-import heavy modules on first real request
-  const [{ runValuation }, { getSql }] = await Promise.all([
+  const [{ runValuation }, { getSql }, { isPaymentsEnabled }] = await Promise.all([
     import("../lib/valuation-service.js"),
-    import("./_db.js")
+    import("./_db.js"),
+    import("../lib/payment-gate.js")
   ]);
 
   const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
@@ -336,7 +337,7 @@ export default async function handler(req, res) {
 
       // No draft token — user needs to pay for full report
       reportDraftToken: null,
-      paymentsEnabled: false,
+      paymentsEnabled: isPaymentsEnabled(),
 
       disclaimer: "This registered-tier valuation includes additional data for research purposes only. Data may be delayed or incomplete. Full report requires payment.",
       dataTier: "registered",
