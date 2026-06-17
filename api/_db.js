@@ -79,6 +79,15 @@ export async function ensureSchema(sql) {
 export async function ensureCustomerFunnelSchema(sql) {
   if (customerFunnelInitialized) return;
 
+  // Fast check: one lightweight query to see if the core table exists
+  try {
+    const check = await sql`SELECT 1 FROM lead_contacts LIMIT 1`;
+    customerFunnelInitialized = true;
+    return;
+  } catch (_) {
+    // Table does not exist yet — create schema below
+  }
+
   await sql`CREATE TABLE IF NOT EXISTS lead_contacts (
     id BIGSERIAL PRIMARY KEY,
     email TEXT NOT NULL UNIQUE,
