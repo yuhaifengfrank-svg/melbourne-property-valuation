@@ -11,7 +11,8 @@ const DAILY_AREAS = [
   "Prahran", "Hawthorn", "Kew", "Carlton", "St Kilda"
 ];
 
-const WEEKLY_AREAS = [
+// Core weekly suburbs (always refreshed regardless of day)
+const CORE_WEEKLY = [
   ["Essendon", "VIC", "3040"], ["Moonee Ponds", "VIC", "3039"],
   ["Ascot Vale", "VIC", "3032"], ["Kensington", "VIC", "3031"],
   ["North Melbourne", "VIC", "3051"], ["West Melbourne", "VIC", "3003"],
@@ -34,6 +35,8 @@ const WEEKLY_AREAS = [
   ["Point Cook", "VIC", "3030"], ["Werribee", "VIC", "3030"]
 ];
 
+import { WEEKLY_BATCHES } from "./lib/weekly_batches.mjs";
+
 async function main() {
   if (!process.env.DATABASE_URL) {
     console.error("[Cron Weekly] DATABASE_URL not set — cron cannot run");
@@ -48,7 +51,17 @@ async function main() {
   let totalSaved = 0;
   let totalFetched = 0;
 
-  for (const [suburb, state, postcode] of WEEKLY_AREAS) {
+  // Determine which batch to run based on day of week
+  const dayOfWeek = new Date().getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+  // Mon=1, Tue=2, Wed=3, Thu=4, Fri=5 → batch index 0-4
+  // Sat/Sun → skip batch (just core weekly)
+  const batchIndex = dayOfWeek >= 1 && dayOfWeek <= 5 ? dayOfWeek - 1 : -1;
+  const batchAreas = batchIndex >= 0 && WEEKLY_BATCHES[batchIndex] ? WEEKLY_BATCHES[batchIndex] : [];
+
+  const allToCollect = [...CORE_WEEKLY, ...batchAreas];
+  console.log(`[Cron Weekly] Day ${dayOfWeek}, batch ${batchIndex + 1}/${WEEKLY_BATCHES.length}, total areas: ${allToCollect.length}`);
+
+  for (const [suburb, state, postcode] of allToCollect) {
     if (DAILY_AREAS.includes(suburb)) {
       console.log(`[Cron Weekly] Skip ${suburb} (daily coverage)`);
       continue;
