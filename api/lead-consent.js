@@ -59,8 +59,9 @@ export default async function handler(req, res) {
       RETURNING id
     `;
 
+    // NB: Neon serverless returns BIGSERIAL id as string — accept both
     const leadContactId = result?.[0]?.id;
-    if (!leadContactId || typeof leadContactId !== "number") {
+    if (!leadContactId) {
       throw new Error("Failed to create or retrieve lead contact");
     }
 
