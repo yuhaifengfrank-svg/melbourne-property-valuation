@@ -41,7 +41,9 @@ export default async function handler(req, res) {
       suburb: body.suburb || suburb,
       state,
       propertyType: propertyType.toLowerCase(),
-      landSize: body.landSize || null,
+      landSize: body.landSize || null
+    }, {
+      fetch: false,
       useDatabaseFallback: true
     });
 
