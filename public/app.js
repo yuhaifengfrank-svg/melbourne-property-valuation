@@ -1806,6 +1806,11 @@ function renderValuation(data) {
   var isRegistered = !!getLeadContactId();
   var hasDraft = !!(currentReportDraft && currentReportDraft.token);
 
+  // If registered (but not paid), unlock detail panels for click-to-expand
+  if (isRegistered && !unlocked) {
+    unlocked = true;
+  }
+
   // Phase 2: Three-tier lead/payment gate
   // Priority: draft+payments (paid flow) > paymentsEnabled > registered > free
   if (hasDraft && paymentsEnabled) {
@@ -2865,6 +2870,8 @@ function openCheckoutModal() {
     if (btn) { btn.disabled = true; btn.textContent = language === "zh" ? "提交中..." : "Submitting..."; }
 
     submitLeadConsent(email, phone).then(async function (contactId) {
+      // Mark as unlocked globally so renderLockState shows detail-panels as openable
+      unlocked = true;
       // Registration success — reload valuation to show registered-tier content
       if (currentValuation && currentValuation.address) {
         var addr = currentValuation.address;
@@ -3242,7 +3249,21 @@ document.querySelectorAll(".research-link-btn").forEach((btn) => {
 
 document.querySelectorAll(".detail-panel, .detail-trigger").forEach((element) => {
   element.addEventListener("click", () => {
-    if (unlocked) return;
+    if (unlocked) {
+      // Toggle detail-panel content visibility when unlocked
+      element.classList.toggle("expanded");
+      const content = element.querySelector(".panel-inner");
+      if (content) {
+        if (element.classList.contains("expanded")) {
+          content.style.maxHeight = content.scrollHeight + "px";
+          content.style.opacity = "1";
+        } else {
+          content.style.maxHeight = "0";
+          content.style.opacity = "0";
+        }
+      }
+      return;
+    }
     const detail = element.dataset.detail || "full report detail";
     byId("unlock-title").textContent =
       language === "zh" ? "注册后可查看该详细内容。" : `Register to view ${detail}.`;

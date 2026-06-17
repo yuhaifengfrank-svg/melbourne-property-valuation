@@ -427,11 +427,33 @@ button:hover {
 }
 
 .detail-panel.unlocked::after {
-  content: "Details unlocked";
+  content: "Click to toggle details";
 }
 
 .zh-mode .detail-panel.unlocked::after {
-  content: "详情已解锁";
+  content: "点击展开详情";
+}
+
+.detail-panel.unlocked.expanded::after {
+  content: "Collapse";
+}
+
+.zh-mode .detail-panel.unlocked.expanded::after {
+  content: "收起";
+}
+
+.detail-panel .panel-inner {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.3s ease, margin 0.3s ease;
+  margin: 0;
+}
+
+.detail-panel.expanded .panel-inner {
+  max-height: 800px;
+  opacity: 1;
+  margin: 0.5rem 0 0;
 }
 
 .panel h2,
@@ -2481,12 +2503,14 @@ th {
             <section class="grid-two location-grid" id="location">
               <article class="panel detail-panel" data-detail="micro-location evidence">
                 <h2>Micro-location</h2>
+                <div class="panel-inner">
                 <dl class="facts">
                   <div><dt>Street rank</dt><dd id="street-rank">Top 25%, estimated</dd></div>
                   <div><dt>Street type</dt><dd id="street-type">Quiet residential street</dd></div>
                   <div><dt>Amenity access</dt><dd id="amenity-access">Strong</dd></div>
                   <div><dt>Parking pressure</dt><dd id="parking-pressure">To be checked</dd></div>
                 </dl>
+                </div>
               </article>
               <article class="panel map-card" aria-label="Location map preview">
                 <p class="map-status" id="map-status">Loading map&hellip;</p>
@@ -2496,19 +2520,23 @@ th {
             <section class="grid-two fundamentals-grid">
               <article class="panel detail-panel" data-detail="suburb fundamentals">
                 <h2>Suburb Fundamentals</h2>
+                <div class="panel-inner">
                 <ul class="compact-list" id="suburb-list">
                   <li>Strong transport and retail access.</li>
                   <li>Demand support from Chadstone, Monash University and Monash Medical.</li>
                   <li>Comparison set: Hughesdale, Huntingdale, Clayton, Murrumbeena.</li>
                 </ul>
+                </div>
               </article>
               <article class="panel detail-panel" data-detail="planning and potential">
                 <h2>Planning & Potential</h2>
+                <div class="panel-inner">
                 <dl class="facts">
                   <div><dt>Land source</dt><dd id="land-source">Portal, not title-confirmed</dd></div>
                   <div><dt>Granny flat potential</dt><dd id="granny-potential">Medium, subject to controls</dd></div>
                   <div><dt>Approval certainty</dt><dd id="approval-certainty">Not approved</dd></div>
                 </dl>
+                </div>
               </article>
             </section>
             <section class="panel upload-panel" id="uploads">
