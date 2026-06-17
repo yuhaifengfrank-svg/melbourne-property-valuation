@@ -1855,22 +1855,17 @@ function renderValuation(data) {
     var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
     if (priceLabelEl) { priceLabelEl.style.display = ""; }
   } else if (isRegistered) {
-    // ── Registered tier: mid-tier data + $3.99 CTA ──
+    // ── Registered tier: mid-tier data unlocked (no payment mode) ──
     if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
+    // Hide the register/pay button — user already has access
     if (unlockBtn2) {
-      unlockBtn2.style.display = "";
-      unlockBtn2.disabled = false;
-      unlockBtn2.removeAttribute("aria-disabled");
-      unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+      unlockBtn2.style.display = "none";
     }
-    if (leadPanel2) { leadPanel2.style.display = ""; }
+    if (leadPanel2) { leadPanel2.style.display = "none"; }
     var existingLinkEl = byId("existing-unlock-link");
-    if (existingLinkEl) {
-      existingLinkEl.style.display = "";
-      existingLinkEl.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
-    }
+    if (existingLinkEl) { existingLinkEl.style.display = "none"; }
     var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
-    if (priceLabelEl) { priceLabelEl.style.display = ""; }
+    if (priceLabelEl) { priceLabelEl.style.display = "none"; }
 
     // ── Render registered-tier cards ──
     renderRegisteredTierCards(data, language);
@@ -3317,6 +3312,22 @@ byId("qr-close").addEventListener("click", () => {
 // 确保初始地址输入栏为空（防止浏览器 autofill/storage 污染）
 document.addEventListener("DOMContentLoaded", () => {
   byId("address").value = "";
+  // Self-heal stale localStorage: if payments are off and the stored lead ID
+  // isn't from this session, verify it still exists on server
+  var storedId = localStorage.getItem("aushomevalue.leadContactId");
+  if (storedId && !paymentsEnabled) {
+    fetch("/api/lead-consent?id=" + encodeURIComponent(storedId))
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data.ok) {
+          localStorage.removeItem("aushomevalue.leadContactId");
+          localStorage.removeItem("aushomevalue.leadConsented");
+        }
+      })
+      .catch(function () {
+        // Network error — keep the stored id, might be a transient issue
+      });
+  }
 });
 
 applyLanguage();
