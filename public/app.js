@@ -2770,9 +2770,9 @@ function updatePurchaseButton() {
     btn.disabled = false;
     btn.removeAttribute("aria-disabled");
   } else {
-    // Free tier: keep disabled
-    btn.disabled = true;
-    btn.setAttribute("aria-disabled", "true");
+    // Free tier: allow click — openCheckoutModal validates the form
+    btn.disabled = false;
+    btn.removeAttribute("aria-disabled");
   }
 }
 
