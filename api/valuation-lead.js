@@ -111,7 +111,7 @@ export default async function handler(req, res) {
           SELECT median_house_price, median_unit_price, vacancy_rate,
                  dwelling_separate_house, dwelling_flat, dwelling_semi_detached,
                  dwelling_occupancy_rate, dwelling_3br_plus, dwelling_1br_2br,
-                 dwelling_housing_stock, supply_unemployment_rate,
+                 supply_housing_stock AS dwelling_housing_stock, supply_unemployment_rate,
                  growth_1y, growth_3y, growth_5y
           FROM suburb_metrics
           WHERE LOWER(suburb) = LOWER(${suburbName})
@@ -135,7 +135,7 @@ export default async function handler(req, res) {
     if (suburbName) {
       try {
         const rows = await sql`
-          SELECT l.school_name, l.school_type, l.sector,
+          SELECT l.school_name, l.school_type, l.school_sector AS sector,
                  ROUND(p.icsea::numeric, 0) AS icsea,
                  p.score_reading, p.score_writing, p.score_spelling,
                  p.score_grammar, p.score_numeracy, p.enrolled
@@ -224,7 +224,7 @@ export default async function handler(req, res) {
     const flatPct = sm.dwelling_flat != null ? Number(sm.dwelling_flat) : 10;
     const unempRate = sm.supply_unemployment_rate != null ? Number(sm.supply_unemployment_rate) : 4;
     const occRate = sm.dwelling_occupancy_rate != null ? Number(sm.dwelling_occupancy_rate) : 2.6;
-    const housingStock = sm.dwelling_housing_stock || sm.supply_housing_stock || null;
+    const housingStock = sm.dwelling_housing_stock != null ? Number(sm.dwelling_housing_stock) : null;
 
     const location = {
       rank: inferLocationRank(housingStock, separateHousePct, unempRate),
