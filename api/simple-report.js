@@ -35,7 +35,7 @@ export default async function handler(req, res) {
     }
 
     // ── Fetch valuation data directly ──
-    const { runValuation } = await import("./valuation-service.js");
+    const { runValuation } = await import("../lib/valuation-service.js");
     const result = await runValuation({
       address,
       suburb: body.suburb || suburb,
