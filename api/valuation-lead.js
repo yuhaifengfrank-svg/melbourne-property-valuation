@@ -19,7 +19,7 @@
 
 // ── Constants ──
 
-const COMPARABLES_DISPLAY_COUNT = 3;
+const COMPARABLES_DISPLAY_COUNT = 5;
 const OPPORTUNITY_PREVIEW_COUNT = 3;
 
 // ── Handler ──
@@ -95,6 +95,7 @@ export default async function handler(req, res) {
       address: c.address,
       salePrice: c.salePrice,
       saleDate: c.saleDate,
+      distance: c.distanceMeters ? c.distanceMeters / 1000 : null,
       distanceMeters: c.distanceMeters,
       bedrooms: c.bedrooms || null,
       bathrooms: c.bathrooms || null,
@@ -198,25 +199,45 @@ export default async function handler(req, res) {
 
     // ── Micro-Location Assessment (registered tier) ──
     // Based on property type + suburb profile to generate meaningful street-level data
-    function inferLocationRank(housingStock, separateHousePct, unempRate) {
-      if (separateHousePct >= 75) return unempRate < 3 ? "High" : "Medium-High";
-      if (separateHousePct >= 50) return unempRate < 4 ? "Medium-High" : "Medium";
-      return "Medium";
+    function inferLocationScore(separateHousePct, medianPrice) {
+      // 0-100 score based on housing quality + value
+      let score = 50;
+      if (separateHousePct >= 80) score += 25;
+      else if (separateHousePct >= 60) score += 15;
+      else if (separateHousePct >= 40) score += 5;
+      else score -= 10;
+      if (medianPrice && medianPrice > 1200000) score += 15;
+      else if (medianPrice && medianPrice > 800000) score += 8;
+      return Math.min(100, Math.max(0, score));
     }
     function inferStreetType(separateHousePct, flatPct) {
       if (separateHousePct >= 80) return "Residential — predominately detached homes";
       if (flatPct >= 20) return "Mixed — detached homes with low/medium density";
       return "Mixed-use residential";
     }
-    function inferAmenityAccess(unempRate) {
-      if (unempRate < 3) return "Good — low unemployment suggests good amenity access";
-      if (unempRate < 5) return "Moderate — typical suburban amenity level";
-      return "Below average — limited amenity options";
+    function inferParkingScore(flatPct, occRate) {
+      // 0-100, higher = better parking
+      let score = 70;
+      if (flatPct > 30) score -= 30;
+      else if (flatPct > 20) score -= 15;
+      else if (flatPct > 10) score -= 5;
+      if (occRate > 2.8) score -= 10;
+      else if (occRate > 2.5) score -= 5;
+      return Math.min(100, Math.max(0, score));
     }
-    function inferParkingPressure(flatPct, housingPerCapita) {
-      if (flatPct > 30) return "Elevated — higher density area, on-street parking may be competitive";
-      if (flatPct > 15) return "Moderate — mix of off-street and on-street parking";
-      return "Low — predominately off-street parking with driveways";
+    function inferAmenityScore(unempRate, occRate) {
+      // 0-100, higher = better amenity
+      let score = 60;
+      if (unempRate < 3) score += 20;
+      else if (unempRate < 4) score += 10;
+      else if (unempRate > 6) score -= 20;
+      if (occRate < 2.4) score += 10;  // more singles/couples tends to mean better amenity access
+      return Math.min(100, Math.max(0, score));
+    }
+    function schoolDensityLabel(schoolCount) {
+      if (schoolCount >= 10) return "High (" + schoolCount + " nearby)";
+      if (schoolCount >= 5) return "Moderate (" + schoolCount + " nearby)";
+      return "Limited (" + schoolCount + " nearby)";
     }
 
     const sm = suburbMetrics;
@@ -226,38 +247,47 @@ export default async function handler(req, res) {
     const occRate = sm.dwelling_occupancy_rate != null ? Number(sm.dwelling_occupancy_rate) : 2.6;
     const housingStock = sm.dwelling_housing_stock != null ? Number(sm.dwelling_housing_stock) : null;
 
+    const schoolCount = schools.length;
+
     const location = {
-      rank: inferLocationRank(housingStock, separateHousePct, unempRate),
+      rank: inferLocationScore(separateHousePct, medianPrice),
       type: inferStreetType(separateHousePct, flatPct),
-      amenity: inferAmenityAccess(unempRate),
-      parking: inferParkingPressure(flatPct, separateHousePct)
+      amenity: inferAmenityScore(unempRate, occRate),
+      parking: inferParkingScore(flatPct, occRate),
+      schoolDensity: schoolDensityLabel(schoolCount),
+      medianPrice: medianPrice ? Number(medianPrice) : null,
+      occupancyRate: occRate ? Number(occRate.toFixed(2)) : null
     };
 
     // ── Suburb Fundamentals (registered tier) ──
-    const suburbFundamentals = [];
+    const suburbFundamentals = {};
     if (separateHousePct != null) {
-      suburbFundamentals.push(`Housing mix: ${separateHousePct.toFixed(0)}% detached homes, ${flatPct.toFixed(0)}% apartments/flats, ${sm.dwelling_semi_detached != null ? Number(sm.dwelling_semi_detached).toFixed(0) : '-'}% semi-detached`);
+      suburbFundamentals.housingMix = {
+        detached: Number(separateHousePct.toFixed(0)),
+        flat: Number(flatPct.toFixed(0)),
+        semiDetached: sm.dwelling_semi_detached != null ? Number(Number(sm.dwelling_semi_detached).toFixed(0)) : null
+      };
     }
     if (occRate != null) {
-      suburbFundamentals.push(`Average household occupancy: ${occRate.toFixed(2)} persons per dwelling`);
+      suburbFundamentals.occupancy = Number(occRate.toFixed(2));
     }
     if (sm.dwelling_3br_plus != null) {
-      suburbFundamentals.push(`Family-sized dwellings (3+ bedrooms): ${Number(sm.dwelling_3br_plus).toFixed(0)}%`);
+      suburbFundamentals.familyDwellings = Number(Number(sm.dwelling_3br_plus).toFixed(0));
     }
     if (unempRate != null) {
-      suburbFundamentals.push(`Unemployment rate: ${unempRate.toFixed(1)}% (${unempRate < 3.5 ? "below" : "near"} state average)`);
+      suburbFundamentals.unemployment = Number(unempRate.toFixed(1));
     }
     if (sm.vacancy_rate != null) {
-      suburbFundamentals.push(`Rental vacancy rate: ${Number(sm.vacancy_rate).toFixed(1)}% — ${Number(sm.vacancy_rate) < 3 ? "tight" : Number(sm.vacancy_rate) < 6 ? "balanced" : "soft"} market`);
+      suburbFundamentals.vacancyRate = Number(Number(sm.vacancy_rate).toFixed(1));
     }
     if (sm.growth_1y != null) {
-      suburbFundamentals.push(`1-year price growth: ${Number(sm.growth_1y) > 0 ? "+" : ""}${Number(sm.growth_1y).toFixed(1)}%`);
+      suburbFundamentals.growth1y = Number(Number(sm.growth_1y).toFixed(1));
     }
-    if (suburbName) {
-      suburbFundamentals.push(`SA2-level census data available for ${suburbName}: income, employment, occupation, household composition`);
+    if (sm.growth_3y != null) {
+      suburbFundamentals.growth3y = Number(Number(sm.growth_3y).toFixed(1));
     }
-    if (suburbFundamentals.length === 0) {
-      suburbFundamentals.push("Suburb fundamentals data pending for this location");
+    if (sm.growth_5y != null) {
+      suburbFundamentals.growth5y = Number(Number(sm.growth_5y).toFixed(1));
     }
 
     // ── Planning / Zoning Potential (registered tier) ──

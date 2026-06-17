@@ -1304,7 +1304,18 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         valuationMode: "standard_house",
         experimentalLabel: null,
         modelVersion: "",
-        comparables: [],
+        comparables: Array.isArray(result.comparables) ? result.comparables.map(function(c) {
+          return [
+            c.address || "",
+            c.salePrice ? "$" + Number(c.salePrice).toLocaleString("en-AU") : "",
+            c.saleDate || "",
+            c.distance != null ? c.distance.toFixed(2) + " km" : (c.distanceMeters ? c.distanceMeters + "m" : ""),
+            c.bedrooms != null ? c.bedrooms + " 房" : "",
+            c.bathrooms != null ? c.bathrooms + " 卫" : "",
+            c.carSpaces != null ? c.carSpaces + " 车位" : "",
+            c.landSize ? c.landSize + "m²" : ""
+          ];
+        }) : [],
         comparableCount: result.comparableCount || 0,
         reasons: result.keyFactors && result.keyFactors.length ? result.keyFactors : ["Free estimate based on comparable market data."],
         reasonsZh: result.keyFactors && result.keyFactors.length ? result.keyFactors : ["基于可比市场数据的免费估值。"],
@@ -1636,9 +1647,15 @@ function renderComparables(rows, comparableCount) {
     td.colSpan = 8;
     td.style.cssText = "text-align:center;padding:24px 16px;color:#889994;font-size:0.85rem;";
     if (comparableCount && comparableCount > 0) {
-      td.textContent = document.documentElement.lang === "zh"
-        ? comparableCount + " 条可比成交数据已找到，注册后查看详情。"
-        : comparableCount + " comparable sales found — register to view details.";
+      if (unlocked) {
+        td.textContent = document.documentElement.lang === "zh"
+          ? comparableCount + " 条可比成交数据可用。"
+          : comparableCount + " comparable sales available.";
+      } else {
+        td.textContent = document.documentElement.lang === "zh"
+          ? comparableCount + " 条可比成交数据已找到，注册后查看详情。"
+          : comparableCount + " comparable sales found — register to view details.";
+      }
     } else {
       td.textContent = document.documentElement.lang === "zh"
         ? "输入地址并获取估值后将显示可比成交数据。"
@@ -1763,10 +1780,16 @@ function renderValuation(data) {
   byId("mobile-midpoint").textContent = localizeValue(data.midpoint);
   byId("mobile-confidence").textContent = localizeValue(data.confidence);
   byId("check-status").textContent = localizeValue(data.status);
-  byId("street-rank").textContent = getLocalizedLocation(data, "rank");
+  var rankScore = getLocalizedLocation(data, "rank");
+  byId("street-rank").textContent = rankScore != null ? rankScore + "/100" : "—";
   byId("street-type").textContent = getLocalizedLocation(data, "type");
-  byId("amenity-access").textContent = getLocalizedLocation(data, "amenity");
-  byId("parking-pressure").textContent = getLocalizedLocation(data, "parking");
+  var amenityScore = getLocalizedLocation(data, "amenity");
+  byId("amenity-access").textContent = amenityScore != null ? amenityScore + "/100" : "—";
+  var parkingScore = getLocalizedLocation(data, "parking");
+  byId("parking-pressure").textContent = parkingScore != null ? parkingScore + "/100" : "—";
+  byId("school-density").textContent = getLocalizedLocation(data, "schoolDensity");
+  var occValue = getLocalizedLocation(data, "occupancyRate");
+  byId("occupancy-rate").textContent = occValue ? occValue + " per dwelling" : (language === "zh" ? "数据待更新" : "Pending");
   document.querySelectorAll(".fundamentals-grid .detail-panel:nth-child(2) dt").forEach((dt, index) => {
     dt.textContent = planningLabels[index] || dt.textContent;
   });
@@ -1774,7 +1797,7 @@ function renderValuation(data) {
   byId("granny-potential").textContent = getLocalizedPlanning(data, "granny");
   byId("approval-certainty").textContent = getLocalizedPlanning(data, "approval");
   setList("reasons", getLocalizedArray(data, "reasons"));
-  setList("suburb-list", getLocalizedArray(data, "suburb"));
+  renderSuburbFundamentals(data.suburb, language);
   renderComparables(data.comparables, data.comparableCount);
   // 估值有有效数据时隐藏教育卡片（Fast starting point / Clear next steps）
   var hintsGrid = document.querySelector(".summary-card")?.closest("section")?.nextElementSibling;
@@ -2074,6 +2097,76 @@ function renderRegisteredTierCards(data, language) {
       }
       oppBodyEl.innerHTML = html;
     }
+  }
+}
+
+
+/**
+ * Render suburb fundamentals as structured data cards. */
+function renderSuburbFundamentals(suburbData, lang) {
+  var listEl = byId("suburb-list");
+  if (!listEl) return;
+  listEl.innerHTML = "";
+
+  var isZh = lang === "zh";
+
+  function addItem(label, value) {
+    if (value == null || value === "" || value === "—" || value === "-") return;
+    var li = document.createElement("li");
+    li.style.cssText = "padding: 8px 0; border-bottom: 1px solid #f0f0f0;";
+    li.innerHTML = "<strong style=\"display:block;font-size:12px;color:#667;text-transform:uppercase;letter-spacing:0.3px;margin-bottom:2px;\">" + label + "</strong>" +
+      "<span style=\"font-size:14px;font-weight:500;\">" + value + "</span>";
+    listEl.appendChild(li);
+  }
+
+  if (suburbData && typeof suburbData === "object" && !Array.isArray(suburbData)) {
+    if (suburbData.housingMix) {
+      var mix = suburbData.housingMix;
+      var parts = [];
+      if (mix.detached != null) parts.push(mix.detached + "% detached");
+      if (mix.flat != null) parts.push(mix.flat + "% flats");
+      if (mix.semiDetached != null) parts.push(mix.semiDetached + "% semi");
+      if (parts.length) addItem(isZh ? "住房结构" : "Housing mix", parts.join(" · "));
+    }
+    if (suburbData.familyDwellings != null) {
+      addItem(isZh ? "家庭住宅（3+卧室）" : "Family dwellings (3+ BR)", suburbData.familyDwellings + "%");
+    }
+    if (suburbData.occupancy != null) {
+      addItem(isZh ? "平均入住率" : "Avg occupancy", suburbData.occupancy + " per dwelling");
+    }
+    if (suburbData.unemployment != null) {
+      addItem(isZh ? "失业率" : "Unemployment rate", suburbData.unemployment + "%");
+    }
+    if (suburbData.vacancyRate != null) {
+      addItem(isZh ? "空置率" : "Vacancy rate", suburbData.vacancyRate + "%");
+    }
+    if (suburbData.growth1y != null) {
+      var sign = suburbData.growth1y >= 0 ? "+" : "";
+      addItem(isZh ? "1年价格涨幅" : "1-year growth", sign + suburbData.growth1y + "%");
+    }
+    if (suburbData.growth3y != null) {
+      var sign3 = suburbData.growth3y >= 0 ? "+" : "";
+      addItem(isZh ? "3年价格涨幅" : "3-year growth", sign3 + suburbData.growth3y + "%");
+    }
+    if (suburbData.growth5y != null) {
+      var sign5 = suburbData.growth5y >= 0 ? "+" : "";
+      addItem(isZh ? "5年价格涨幅" : "5-year growth", sign5 + suburbData.growth5y + "%");
+    }
+  } else if (Array.isArray(suburbData) && suburbData.length) {
+    // Fallback for old format (array of strings)
+    suburbData.forEach(function(item) {
+      var li = document.createElement("li");
+      li.textContent = item;
+      li.style.cssText = "padding: 4px 0; font-size: 14px;";
+      listEl.appendChild(li);
+    });
+  }
+
+  if (!listEl.children.length) {
+    var emptyLi = document.createElement("li");
+    emptyLi.textContent = isZh ? "数据待更新" : "Data pending";
+    emptyLi.style.cssText = "padding: 12px 0; color: #889994; font-size: 14px;";
+    listEl.appendChild(emptyLi);
   }
 }
 
@@ -2665,15 +2758,46 @@ async function saveLead({ pdfDownload = false } = {}) {
 }
 
 async function downloadDemoReport() {
-  // Phase 1B: Full report PDF is paywalled — Coming Soon
+  // Phase 2: Registered-tier simple PDF report
   var msgEl = byId("lead-message");
-  if (msgEl) {
-    msgEl.textContent =
-      language === "zh"
-        ? "完整报告 PDF 即将推出。"
-        : "Full report PDF coming soon.";
+  if (!unlocked) {
+    if (msgEl) msgEl.textContent = language === "zh" ? "请先注册以获取报告摘要。" : "Please register to access the report summary.";
+    return;
   }
-  return;
+  var leadContactId = getLeadContactId();
+  if (!leadContactId) {
+    if (msgEl) msgEl.textContent = language === "zh" ? "Session expired, please re-register." : "Session expired, please re-register.";
+    return;
+  }
+  if (msgEl) msgEl.textContent = language === "zh" ? "正在生成报告……" : "Generating report…";
+  try {
+    var body = { leadContactId: leadContactId };
+    if (currentValuation) {
+      body.address = currentValuation.address;
+      body.suburb = currentValuation.propertySuburb || "";
+      body.state = currentValuation.propertyState || "VIC";
+      body.propertyType = currentValuation.type || "house";
+    }
+    var response = await fetch("/api/simple-report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+    if (!response.ok) {
+      var result = await response.json().catch(function() { return {}; });
+      throw new Error(result.error || "Server error");
+    }
+    var html = await response.text();
+    // Open in new tab for printing/saving as PDF
+    var blob = new Blob([html], { type: "text/html" });
+    var url = URL.createObjectURL(blob);
+    window.open(url, "_blank");
+    setTimeout(function() { URL.revokeObjectURL(url); }, 30000);
+    if (msgEl) msgEl.textContent = "";
+  } catch (err) {
+    console.error("PDF download error:", err);
+    if (msgEl) msgEl.textContent = language === "zh" ? "生成失败，请稍后重试。" : "Failed to generate. Please try again.";
+  }
 }
 
 byId("start-valuation").addEventListener("click", async () => {
