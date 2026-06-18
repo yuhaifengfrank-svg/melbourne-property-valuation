@@ -4,7 +4,7 @@
 //
 // FIX 12: Added tests for:
 //   - Free valuation API → frontend display
-//   - Non-smart preferences → no API 400 (always uses strategy=smart)
+//   - Non-smart preferences → no API 400 (uses the user's goal strategy)
 //   - API failure → 503, no static suburbs
 //   - Personalisation adjustment ±12 cap
 //   - No growth_3y in reason strings
@@ -406,6 +406,89 @@ describe("Personalised Ranking — FIX 2, 3, 4", () => {
     const extreme2 = { rentalYield: 0, schoolScore: 0, comparableCount: 1, vacancyRate: 10, supplyRatio: 3 };
     const adj2 = ranking.calculatePersonalisedScore(50, extreme2, { goal: "growth", maxScore: 100 });
     assert.ok(adj2.adjustment >= -12, "Extreme negative should not go below -12");
+  });
+
+  it("should prefer Future Opportunity Index over legacy Opportunity Score", () => {
+    const result = ranking.rankPersonalised(
+      [
+        {
+          suburb: "Legacy High",
+          state: "VIC",
+          opportunityScore: 95,
+          futureOpportunityIndex: 50,
+          rentalYield: 3,
+          schoolScore: 50,
+          medianHousePrice: 700000,
+        },
+        {
+          suburb: "Future High",
+          state: "VIC",
+          opportunityScore: 60,
+          futureOpportunityIndex: 82,
+          rentalYield: 3,
+          schoolScore: 50,
+          medianHousePrice: 700000,
+        },
+      ],
+      { goal: "balanced", state: "VIC", property_type: "house" }
+    );
+
+    assert.equal(result[0].suburb, "Future High");
+    assert.equal(result[0].futureOpportunityIndex, 82);
+    assert.equal(result[0].baseFutureScore, 82);
+    assert.equal(result[0].isPriceForecast, false);
+    assert.equal(result[0].forecastHorizon, "3-5 years");
+  });
+
+  it("should use model why/risks in personalised recommendation cards", () => {
+    const result = ranking.rankPersonalised(
+      [
+        {
+          suburb: "Explained Suburb",
+          state: "VIC",
+          futureOpportunityIndex: 78,
+          rentalYield: 3.1,
+          medianHousePrice: 750000,
+          why: [
+            "Affordable relative to income base",
+            "Tight rental vacancy",
+            "Transport access supports demand",
+          ],
+          risks: ["Lower data depth than inner suburbs", "Execution risk remains"],
+          confidence: "Medium",
+          confidenceScore: 61,
+          forecastHorizon: "3-5 years",
+        },
+      ],
+      { goal: "growth", state: "VIC", property_type: "house" }
+    );
+
+    assert.match(result[0].reason, /Affordable relative to income base/);
+    assert.match(result[0].reason, /Tight rental vacancy/);
+    assert.match(result[0].risk, /Lower data depth/);
+    assert.equal(result[0].confidence, "Medium");
+    assert.match(result[0].disclaimer, /not a price forecast/i);
+  });
+
+  it("should expose personalisedFutureScore alongside legacy score fields", () => {
+    const result = ranking.rankPersonalised(
+      [
+        {
+          suburb: "Future Format",
+          state: "VIC",
+          futureOpportunityIndex: 70,
+          rentalYield: 4,
+          schoolScore: 65,
+          medianUnitPrice: 520000,
+        },
+      ],
+      { goal: "cashflow", state: "VIC", property_type: "unit" }
+    );
+
+    assert.equal(typeof result[0].personalisedFutureScore, "number");
+    assert.equal(typeof result[0].personalisedScore, "number");
+    assert.equal(result[0].baseScore, result[0].baseFutureScore);
+    assert.equal(result[0].futureOpportunityIndex, result[0].baseFutureScore);
   });
 });
 

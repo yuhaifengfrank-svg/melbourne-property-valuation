@@ -40,17 +40,18 @@ function safeNumber(val) {
 }
 
 /**
- * Fetch raw opportunity data with strategy=smart, then re-rank in this module.
+ * Fetch raw opportunity data with the user's strategy, then re-rank in this module.
  * Returns null on failure (caller returns 503).
  */
 async function fetchRawOpportunities(preferences) {
   const propertyType = preferences.property_type || "house";
   const state = preferences.state || "";
+  const goal = preferences.goal || "balanced";
   const budgetMin = safeNumber(preferences.budget_min);
   const budgetMax = safeNumber(preferences.budget_max);
 
   const params = new URLSearchParams({
-    strategy: "smart", // FIX 4: always strategy=smart
+    strategy: goal,
     propertyType,
     maxResults: "30",
   });
@@ -80,6 +81,15 @@ async function fetchRawOpportunities(preferences) {
     suburb: String(o.suburb || ""),
     state: String(o.state || ""),
     opportunityScore: safeNumber(o.opportunityScore) || 0,
+    futureOpportunityIndex: safeNumber(o.futureOpportunityIndex),
+    suburbFutureScore: safeNumber(o.suburbFutureScore),
+    confidenceScore: safeNumber(o.confidenceScore),
+    confidence: String(o.confidence || ""),
+    band: String(o.band || ""),
+    forecastHorizon: String(o.forecastHorizon || ""),
+    isPriceForecast: o.isPriceForecast === true ? true : false,
+    why: Array.isArray(o.why) ? o.why.map((x) => String(x || "")).filter(Boolean) : [],
+    risks: Array.isArray(o.risks) ? o.risks.map((x) => String(x || "")).filter(Boolean) : [],
     rentalYield: safeNumber(o.rentalYield),
     schoolScore: safeNumber(o.schoolScore),
     vacancyRate: safeNumber(o.vacancyRate),
@@ -368,7 +378,7 @@ export default async function handler(req, res) {
 
     const contactId = cid;
 
-    // ── Fetch raw opportunities with strategy=smart, then re-rank ──
+    // ── Fetch raw opportunities with the user's goal strategy, then re-rank ──
     // Cookie is set AFTER successful data fetch (FIX 6)
     let top10 = [];
     try {

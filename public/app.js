@@ -3105,6 +3105,10 @@ function openCheckoutModal() {
   if (addrEl && currentReportDraft) {
     addrEl.textContent = currentReportDraft.address || "";
   }
+  var priceHintEl = byId("checkout-price-hint");
+  if (priceHintEl) {
+    priceHintEl.textContent = "AUD $3.99";
+  }
   var msgEl = byId("checkout-message");
   if (msgEl) msgEl.textContent = "";
   var submitBtn = byId("checkout-submit");
@@ -3571,11 +3575,12 @@ async function loadHomeOpportunities() {
   const el = document.getElementById('home-snippet');
   if (!el) return;
   try {
-    const res = await fetch('/api/future-opportunity?maxResults=50&strategy=balanced');
+    const res = await fetch('/api/opportunity?maxResults=50&strategy=balanced');
     const data = await res.json();
-    if (!data.ok || !data.items || data.items.length === 0) return;
+    const items = Array.isArray(data.opportunities) ? data.opportunities : data.items;
+    if (!data.ok || !items || items.length === 0) return;
 
-    const all = data.items;
+    const all = items;
     const esc = value => String(value == null ? '' : value)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
