@@ -139,8 +139,11 @@ let language = "en";
 
 // Phase 1E3D-1A: Report draft token (memory only, never localStorage/sessionStorage/Cookie)
 var currentReportDraft = null;
+// True only after a valuation has rendered; prevents the free registration CTA
+// from becoming active before there is an estimate to unlock.
+var hasValuationResult = false;
 // Payments gate: fail-closed — only enabled when API returns paymentsEnabled === true
-// When false: hide $3.99, hide lead panel, skip checkout modal, show no payment UI
+// When false: hide $3.99, skip checkout modal, and keep the free registration funnel.
 var paymentsEnabled = false;
 // { token, expiresAt (ISO string), address }
 let activeInvestorTheme = null;
@@ -536,7 +539,7 @@ const uiText = {
       ".mobile-midpoint-label": "Midpoint",
       ".mobile-confidence-label": "Confidence",
       "#mobile-report-cta": "Unlock full report details",
-      ".lead-panel .eyebrow": "Full report",
+      ".lead-panel .eyebrow": "Free enhanced summary",
       '[data-i18n="checkout-title"]': "Unlock Full Valuation Report",
       '[data-i18n="checkout-subtitle"]': "One-time payment. Access applies to this report only.",
       'label[for="lead-email"]': "Email",
@@ -544,7 +547,7 @@ const uiText = {
       'label[for="lead-phone"]': "Phone optional",
       ".form-provider-note": "Submission details are securely stored for report delivery and customer follow-up. We may record an approximate visitor region, but do not display your full IP address.",
       ".consent span": "You may contact me about this property report.",
-      "#unlock-report": "Unlock Full Report",  // price set conditionally in applyLanguage
+      "#unlock-report": "Unlock Free Enhanced Summary",  // price set conditionally in applyLanguage
       ".side-panel .panel:nth-of-type(2) h2": "Check Status",
       ".summary-main .eyebrow": "First-layer desktop valuation",
       ".value-band div:nth-child(1) span": "Estimated value",
@@ -692,7 +695,7 @@ const uiText = {
       ".mobile-midpoint-label": "估值中点",
       ".mobile-confidence-label": "置信度",
       "#mobile-report-cta": "解锁完整报告详情",
-      ".lead-panel .eyebrow": "完整报告",
+      ".lead-panel .eyebrow": "免费增强摘要",
       '[data-i18n="checkout-title"]': "解锁完整估值报告",
       '[data-i18n="checkout-subtitle"]': "一次性支付。仅适用于本报告。",
       'label[for="lead-email"]': "邮箱",
@@ -700,7 +703,7 @@ const uiText = {
       'label[for="lead-phone"]': "电话 选填",
       ".form-provider-note": "提交资料将安全保存，用于发送报告和客户跟进。系统可能记录大致访问地区，但不会在后台显示你的完整 IP 地址。",
       ".consent span": "我同意你可以就这份房产报告联系我。",
-      "#unlock-report": "解锁完整报告",  // price set conditionally in applyLanguage
+      "#unlock-report": "解锁免费增强摘要",  // price set conditionally in applyLanguage
       ".side-panel .panel:nth-of-type(2) h2": "检查状态",
       ".side-panel .panel:nth-of-type(3) h2": "手工上传",
       ".summary-main .eyebrow": "第一层桌面估值",
@@ -1727,6 +1730,7 @@ function renderComparables(rows, comparableCount) {
 }
 
 function renderValuation(data) {
+  hasValuationResult = true;
   /* Handle Phase 1B free summary format (from /api/valuation) or old format */
   if (data.estimate && !data.valuation) {
     // Free summary format: transform to show in old layout where possible
@@ -1810,6 +1814,11 @@ function renderValuation(data) {
     byId("midpoint").textContent = "—";
     byId("confidence").textContent = "—";
     byId("mobile-property-address").textContent = "⚠ " + warnMsg;
+    var mismatchUnlockBtn = byId("unlock-report");
+    if (mismatchUnlockBtn) {
+      mismatchUnlockBtn.disabled = true;
+      mismatchUnlockBtn.setAttribute("aria-disabled", "true");
+    }
     return;
   }
   byId("property-address").textContent = language === "zh" && data.addressZh ? data.addressZh : data.address;
@@ -1876,93 +1885,59 @@ function renderValuation(data) {
     unlocked = true;
   }
 
+  function showLeadPanel() {
+    if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
+    if (leadPanel2) { leadPanel2.style.display = ""; }
+    if (unlockBtn2) {
+      unlockBtn2.style.display = "";
+      unlockBtn2.disabled = false;
+      unlockBtn2.removeAttribute("aria-disabled");
+    }
+  }
+  function hideLeadPanel() {
+    if (leadPanel2) { leadPanel2.style.display = "none"; }
+    if (unlockBtn2) { unlockBtn2.style.display = "none"; }
+  }
+  function setLeadMessage(text) {
+    var existingLinkEl = byId("existing-unlock-link");
+    if (existingLinkEl) {
+      existingLinkEl.style.display = "";
+      existingLinkEl.textContent = text;
+    }
+  }
+  function hidePriceNote() {
+    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
+    if (priceLabelEl) { priceLabelEl.style.display = "none"; }
+  }
+
   // Phase 2: Three-tier lead/payment gate
-  // Priority: draft+payments (paid flow) > paymentsEnabled > registered > free
+  // Free estimate → free registration insights → paid full report.
   if (hasDraft && paymentsEnabled) {
     // ── Draft + payments live: show purchase button with price ──
-    if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
+    showLeadPanel();
     if (unlockBtn2) {
-      unlockBtn2.style.display = "";
-      unlockBtn2.disabled = false;
-      unlockBtn2.removeAttribute("aria-disabled");
       unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
     }
-    if (leadPanel2) { leadPanel2.style.display = ""; }
-    var existingLinkEl = byId("existing-unlock-link");
-    if (existingLinkEl) {
-      existingLinkEl.style.display = "";
-      existingLinkEl.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
-    }
-    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
-    if (priceLabelEl) { priceLabelEl.style.display = ""; }
-  } else if (hasDraft && !paymentsEnabled) {
-    // ── Draft exists but payments disabled: keep hidden ──
-    if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
-    if (unlockBtn2) {
-      unlockBtn2.style.display = "none";
-    }
-    if (leadPanel2) { leadPanel2.style.display = "none"; }
-  } else if (paymentsEnabled) {
-    // ── Payment mode: show price for everyone (payments are live) ──
-    if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
-    if (unlockBtn2) {
-      unlockBtn2.style.display = "";
-      unlockBtn2.disabled = false;
-      unlockBtn2.removeAttribute("aria-disabled");
-      unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
-    }
-    if (leadPanel2) { leadPanel2.style.display = ""; }
-    var existingLinkEl = byId("existing-unlock-link");
-    if (existingLinkEl) {
-      existingLinkEl.style.display = "";
-      existingLinkEl.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
-    }
+    setLeadMessage(language === "zh" ? "一次性付款解锁完整估值报告。" : "One-time payment unlocks the complete valuation report.");
     var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
     if (priceLabelEl) { priceLabelEl.style.display = ""; }
   } else if (isRegistered) {
     // ── Registered tier: mid-tier data unlocked (no payment mode) ──
     if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
-    // When payments disabled, hide the lead/pay panel entirely
-    if (unlockBtn2) {
-      unlockBtn2.style.display = "none";
-    }
-    if (leadPanel2) { leadPanel2.style.display = "none"; }
-    var existingLinkEl = byId("existing-unlock-link");
-    if (existingLinkEl) { existingLinkEl.style.display = "none"; }
-    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
-    if (priceLabelEl) { priceLabelEl.style.display = "none"; }
-
-    // ── Render registered-tier cards ──
+    hideLeadPanel();
     renderRegisteredTierCards(data, language);
-  } else if (paymentsEnabled) {
-    // ── Free tier with payments enabled: show register CTA with price ──
-    if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
-    if (unlockBtn2) {
-      unlockBtn2.style.display = "";
-      unlockBtn2.disabled = false;
-      unlockBtn2.removeAttribute("aria-disabled");
-      unlockBtn2.textContent = language === "zh" ? "注册查看完整报告" : "Register to View Full Report";
-    }
-    if (leadPanel2) { leadPanel2.style.display = ""; }
-    var existingLinkEl = byId("existing-unlock-link");
-    if (existingLinkEl) { existingLinkEl.style.display = "none"; }
-    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
-    if (priceLabelEl) { priceLabelEl.style.display = "none"; }
-
-    hideRegisteredTierCards();
   } else {
-    // ── Free tier, payments disabled: hide lead/payment panel entirely ──
-    // No $3.99, no checkout modal, no email/name/phone/payment consent form
-    if (layoutEl) { layoutEl.classList.add("payments-disabled"); }
+    // ── Free tier: show registration CTA, never price unless paymentsEnabled === true ──
+    showLeadPanel();
     if (unlockBtn2) {
-      unlockBtn2.style.display = "none";
+      unlockBtn2.textContent = paymentsEnabled
+        ? (language === "zh" ? "注册后继续查看完整报告" : "Register to Continue")
+        : (language === "zh" ? "解锁免费增强摘要" : "Unlock Free Enhanced Summary");
     }
-    if (leadPanel2) { leadPanel2.style.display = "none"; }
-    var existingLinkEl = byId("existing-unlock-link");
-    if (existingLinkEl) { existingLinkEl.style.display = "none"; }
-    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
-    if (priceLabelEl) { priceLabelEl.style.display = "none"; }
-
+    setLeadMessage(language === "zh"
+      ? "免费注册后查看 Future Score、关键机会、主要风险和样本可比销售。"
+      : "Free registration unlocks Future Score, key opportunities, risks and sample comparable evidence.");
+    hidePriceNote();
     hideRegisteredTierCards();
   }
 
@@ -2054,7 +2029,9 @@ function applyLanguage() {
     if (paymentsEnabled === true) {
       existingLink.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
     } else {
-      existingLink.textContent = language === "zh" ? "解锁完整报告" : "Unlock Full Report";
+      existingLink.textContent = language === "zh"
+        ? "免费注册后查看 Future Score、关键机会、主要风险和样本可比销售。"
+        : "Free registration unlocks Future Score, key opportunities, risks and sample comparable evidence.";
     }
   }
   // Phase 1E3D-1A: Also update i18n for unlock button text
@@ -2064,7 +2041,7 @@ function applyLanguage() {
     if (paymentsEnabled === true) {
       unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
     } else {
-      unlockBtn2.textContent = language === "zh" ? "解锁完整报告" : "Unlock Full Report";
+      unlockBtn2.textContent = language === "zh" ? "解锁免费增强摘要" : "Unlock Free Enhanced Summary";
     }
   }
   byId("manual-data-notes").placeholder =
@@ -2886,6 +2863,7 @@ byId("start-valuation").addEventListener("click", async () => {
   cancelCheckoutRequest();
   // Also clear draft token — new valuation may overwrite it
   currentReportDraft = null;
+  hasValuationResult = false;
   updatePurchaseButton();
 
   const button = byId("start-valuation");
@@ -2957,7 +2935,10 @@ function updatePurchaseButton() {
   // Phase 2: Three-tier purchase button
   var pgIsRegd = !!getLeadContactId();
   var pgHasDraft = !!(currentReportDraft && currentReportDraft.token);
-  if (pgHasDraft && paymentsEnabled) {
+  if (!hasValuationResult) {
+    btn.disabled = true;
+    btn.setAttribute("aria-disabled", "true");
+  } else if (pgHasDraft && paymentsEnabled) {
     // Draft + payments live: use draft validity for checkout
     btn.disabled = !draftValid;
     btn.setAttribute("aria-disabled", draftValid ? "false" : "true");
@@ -2966,17 +2947,13 @@ function updatePurchaseButton() {
     btn.disabled = !draftValid;
     btn.setAttribute("aria-disabled", draftValid ? "false" : "true");
   } else if (pgIsRegd) {
-    // Registered tier: button enabled for purchase
-    btn.disabled = false;
-    btn.removeAttribute("aria-disabled");
-  } else if (paymentsEnabled) {
-    // Free tier with payments: allow click — openCheckoutModal validates the form
+    // Registered tier: button scrolls to registered insights
     btn.disabled = false;
     btn.removeAttribute("aria-disabled");
   } else {
-    // Free tier without payments: disable button, no price visible
-    btn.disabled = true;
-    btn.setAttribute("aria-disabled", "true");
+    // Free tier: allow registration even when payments are disabled
+    btn.disabled = false;
+    btn.removeAttribute("aria-disabled");
   }
 }
 
@@ -3020,10 +2997,18 @@ function getLeadContactId() {
  * Returns the leadContactId on success.
  */
 async function submitLeadConsent(email, phone) {
+  var nameEl = byId("lead-name");
+  var consentEl = byId("lead-consent");
   var resp = await fetch("/api/lead-consent", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: email, phone: phone || null })
+    body: JSON.stringify({
+      email: email,
+      phone: phone || null,
+      name: nameEl ? nameEl.value.trim() : null,
+      serviceConsent: true,
+      marketingConsent: consentEl ? consentEl.checked === true : false
+    })
   });
   var data = await resp.json();
   if (!data.ok || !data.leadContactId) {
@@ -3055,9 +3040,11 @@ function openCheckoutModal() {
     // ── Registration mode: gather consent instead of opening checkout ──
     var emailEl = byId("lead-email");
     var phoneEl = byId("lead-phone");
+    var nameEl = byId("lead-name");
     var msgEl = byId("lead-message");
     var email = emailEl ? emailEl.value.trim() : "";
     var phone = phoneEl ? phoneEl.value.trim() : "";
+    var name = nameEl ? nameEl.value.trim() : "";
 
     if (!email) {
       if (msgEl) msgEl.textContent = language === "zh" ? "请输入邮箱" : "Please enter your email";
@@ -3069,9 +3056,14 @@ function openCheckoutModal() {
       if (emailEl) emailEl.focus();
       return;
     }
+    if (!name) {
+      if (msgEl) msgEl.textContent = language === "zh" ? "请输入姓名，以便保存你的报告摘要。" : "Please enter your name so we can save your report summary.";
+      if (nameEl) nameEl.focus();
+      return;
+    }
 
     var btn = byId("unlock-report");
-    if (btn) { btn.disabled = true; btn.textContent = language === "zh" ? "提交中..." : "Submitting..."; }
+    if (btn) { btn.disabled = true; btn.textContent = language === "zh" ? "生成增强摘要..." : "Preparing insights..."; }
 
     submitLeadConsent(email, phone).then(async function (contactId) {
       // Mark as unlocked globally so renderLockState shows detail-panels as openable
@@ -3088,12 +3080,12 @@ function openCheckoutModal() {
       }
       var panel = document.querySelector(".lead-panel");
       if (panel) panel.style.display = "none";
-      if (msgEl) msgEl.textContent = "";
+      if (msgEl) msgEl.textContent = language === "zh" ? "增强摘要已解锁。" : "Enhanced summary unlocked.";
     }).catch(function (err) {
       if (msgEl) msgEl.textContent = language === "zh"
         ? "提交失败，请稍后重试"
         : "Submission failed. Please try again.";
-      if (btn) { btn.disabled = false; btn.textContent = language === "zh" ? "查看完整报告" : "View Full Report"; }
+      if (btn) { btn.disabled = false; btn.textContent = language === "zh" ? "解锁免费增强摘要" : "Unlock Free Enhanced Summary"; }
     });
     return;
   }
@@ -3309,11 +3301,15 @@ window.checkoutPending = false;
 // ── Wire up purchase button ──
 var unlockBtn = byId("unlock-report");
 if (unlockBtn) {
+  // Disabled until a valuation result decides whether this is
+  // free registration, paid checkout, or unavailable.
+  unlockBtn.disabled = true;
+  unlockBtn.setAttribute("aria-disabled", "true");
   // Phase 2B: Only show price when payments enabled
   if (paymentsEnabled === true) {
     unlockBtn.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
   } else {
-    unlockBtn.textContent = language === "zh" ? "解锁完整报告" : "Unlock Full Report";
+    unlockBtn.textContent = language === "zh" ? "解锁免费增强摘要" : "Unlock Free Enhanced Summary";
   }
   // Keyboard: Enter / Space
   unlockBtn.addEventListener("keydown", function (e) {

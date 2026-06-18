@@ -111,13 +111,13 @@ describe("CSS — address word-break protection", () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════
-// 3. Payments disabled — lead-panel hidden, only check-status visible
+// 3. Payments disabled — paid locks hidden, free registration funnel visible
 // ═══════════════════════════════════════════════════════════════════
 
 describe("Payments disabled — layout classes", () => {
-  it("CSS class .payments-disabled hides .lead-panel", () => {
+  it("CSS does not hide .lead-panel under payments-disabled", () => {
     const match = CSS.match(/\.payments-disabled\s*\.lead-panel\s*\{[\s\S]*?display:\s*none/);
-    assert.ok(match, ".payments-disabled hides lead-panel");
+    assert.equal(match, null, ".payments-disabled must keep registration lead-panel available");
   });
 
   it("CSS class .payments-disabled hides .locked-strip", () => {
@@ -142,8 +142,8 @@ describe("Payments disabled — layout classes", () => {
     assert.ok(baseMatch, "layout base is 1fr");
   });
 
-  it("app.js toggles payments-disabled class on .layout", () => {
-    assert.ok(APP_JS.includes('classList.add("payments-disabled")'), "adds class when disabled");
+  it("app.js no longer uses payments-disabled to remove registration funnel", () => {
+    assert.ok(!APP_JS.includes('layoutEl.classList.add("payments-disabled")'), "does not add class to hide registration funnel");
     assert.ok(APP_JS.includes('classList.remove("payments-disabled")'), "removes class when enabled");
   });
 });

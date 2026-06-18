@@ -508,7 +508,7 @@ test("free valuation API ensures schema before creating draft", () => {
     "valuation.js must import ensureReportPaymentSchema");
 
   const handlerStart = apiFile.indexOf("export default async function handler");
-  const handlerBody = apiFile.slice(handlerStart, handlerStart + 2500);
+  const handlerBody = apiFile.slice(handlerStart, handlerStart + 9000);
   const draftCallIndex = handlerBody.indexOf("createReportDraft(");
   const funnelCallIndex = handlerBody.indexOf("ensureCustomerFunnelSchema(");
   const paymentCallIndex = handlerBody.indexOf("ensureReportPaymentSchema(");
@@ -713,6 +713,78 @@ test("snapshot must retain multiSourceAnalysis, keyFactors, dataLimitations", as
 
   assert.notEqual(payloadA.snapshot_hash, payloadB.snapshot_hash,
     "Different multiSourceAnalysis must produce different hashes (field must be in snapshot)");
+});
+
+test("snapshot must retain property and suburb Future Opportunity Outlook", async () => {
+  const result = makeProductionValuationResult({
+    propertyFutureOutlook: {
+      futureOpportunityIndex: 72,
+      suburbFutureOutlookScore: 70,
+      propertySpecificScore: 76,
+      confidence: "Medium",
+      forecastHorizon: "3-5 years",
+      formula: "property_future_score = suburb_future_outlook_score * 0.70 + property_specific_score * 0.30",
+      why: ["Good school access", "Tight established housing supply"],
+      risks: ["Renovation condition must be checked", "Interest-rate sensitivity"],
+    },
+    suburbFutureOutlook: {
+      futureOpportunityIndex: 70,
+      confidence: "Medium",
+      why: ["School catchment demand"],
+      risks: ["Entry price sensitivity"],
+    },
+  });
+
+  const sql = createMockSql();
+  const draft = await svc.createReportDraft(result, sql);
+  const payload = svc.verifyReportDraftToken(draft.draftToken);
+  const stored = sql.__drafts.get(payload.draft_id);
+
+  assert.ok(stored, "Draft must be stored");
+  assert.equal(stored.snapshot_json.propertyFutureOutlook.futureOpportunityIndex, 72,
+    "Property Future Score must be stored in immutable snapshot");
+  assert.equal(stored.snapshot_json.propertyFutureOutlook.suburbFutureOutlookScore, 70,
+    "Suburb score component must be stored in immutable snapshot");
+  assert.equal(stored.snapshot_json.propertyFutureOutlook.propertySpecificScore, 76,
+    "Property-specific component must be stored in immutable snapshot");
+  assert.deepEqual(stored.snapshot_json.propertyFutureOutlook.why.slice(0, 2),
+    ["Good school access", "Tight established housing supply"],
+    "Opportunity reasons must be stored");
+  assert.deepEqual(stored.snapshot_json.propertyFutureOutlook.risks.slice(0, 2),
+    ["Renovation condition must be checked", "Interest-rate sensitivity"],
+    "Risk reasons must be stored");
+  assert.equal(stored.snapshot_json.suburbFutureOutlook.futureOpportunityIndex, 70,
+    "Suburb Future Outlook must be stored in immutable snapshot");
+});
+
+test("Future Opportunity Outlook affects snapshot hash", async () => {
+  const base = makeProductionValuationResult({
+    propertyFutureOutlook: {
+      futureOpportunityIndex: 72,
+      suburbFutureOutlookScore: 70,
+      propertySpecificScore: 76,
+      why: ["Good school access"],
+      risks: ["Interest-rate sensitivity"],
+    },
+  });
+  const changed = makeProductionValuationResult({
+    propertyFutureOutlook: {
+      futureOpportunityIndex: 55,
+      suburbFutureOutlookScore: 58,
+      propertySpecificScore: 48,
+      why: ["Transport access"],
+      risks: ["Oversupply risk"],
+    },
+  });
+
+  const sql = createMockSql();
+  const draftA = await svc.createReportDraft(base, sql);
+  const draftB = await svc.createReportDraft(changed, sql);
+  const payloadA = svc.verifyReportDraftToken(draftA.draftToken);
+  const payloadB = svc.verifyReportDraftToken(draftB.draftToken);
+
+  assert.notEqual(payloadA.snapshot_hash, payloadB.snapshot_hash,
+    "Different Future Opportunity Outlook must produce different snapshot hashes");
 });
 
 test("snapshot subject block fields affect snapshot hash", async () => {

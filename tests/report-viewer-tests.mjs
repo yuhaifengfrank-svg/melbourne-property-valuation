@@ -162,6 +162,70 @@ test("3. reportId, valuationVersion, purchasedAt from response shown", async () 
   assert.ok(text.indexOf('Jun 2026') !== -1 || text.indexOf('2026') !== -1, 'purchasedAt shown');
 });
 
+// ── 3b. Paid report must include Future Score, opportunity/risk and guidance ──
+test("3b. paid report renders Future Score, key opportunities, risks, welcome and next steps", async () => {
+  var response = makeSuccessResponse({
+    report: {
+      subject: {
+        address: "8 Melrose Ct, Scoresby VIC",
+        suburb: "Scoresby",
+        state: "VIC",
+        propertyType: "House",
+        bedrooms: 4,
+        bathrooms: 2,
+        carSpaces: 2,
+        landSize: 409
+      },
+      estimate: {
+        midpoint: 1065340,
+        low: 905539,
+        high: 1225141,
+        weightedMedian: 1060000,
+        weightedMean: 1070000,
+        factorTotal: 0.04,
+        anchor: 1065340
+      },
+      valuationMode: "standard_house",
+      acceptedComparables: [
+        { address: "1 Test Sale St", salePrice: 1100000, saleDate: "2026-05-01", landSize: 450, propertyType: "House" }
+      ],
+      confidence: {
+        label: "Medium",
+        dataScore: 74,
+        reasons: ["12 accepted", "Dispersion 9.9%"]
+      },
+      keyFactors: ["Recent comparable sales support the range", "Family-house demand is stable"],
+      dataLimitations: ["Title, condition and planning overlays still require independent checks"],
+      propertyFutureOutlook: {
+        futureOpportunityIndex: 72,
+        suburbFutureOutlookScore: 70,
+        propertySpecificScore: 76,
+        forecastHorizon: "3-5 years",
+        confidence: "Medium",
+        formula: "property_future_score = suburb_future_outlook_score * 0.70 + property_specific_score * 0.30",
+        why: ["Good school access", "Tight established housing supply"],
+        risks: ["Renovation condition must be checked", "Interest-rate sensitivity"]
+      },
+      suburbFutureOutlook: {
+        futureOpportunityIndex: 70
+      }
+    }
+  });
+  var dom = createDom(mockFetchOk(response));
+  await new Promise(function (r) { setTimeout(r, 50); });
+  var sections = dom.window.document.getElementById('rv-sections');
+  var text = sections.textContent;
+  assert.ok(text.indexOf("Welcome") !== -1, "welcome section shown");
+  assert.ok(text.indexOf("Future Opportunity Outlook") !== -1, "future section shown");
+  assert.ok(text.indexOf("Property Future Score") !== -1, "property future score label shown");
+  assert.ok(text.indexOf("72/100") !== -1, "future score value shown");
+  assert.ok(text.indexOf("Good school access") !== -1, "opportunity reason shown");
+  assert.ok(text.indexOf("Interest-rate sensitivity") !== -1, "risk reason shown");
+  assert.ok(text.indexOf("Recommended Next Steps") !== -1, "next steps section shown");
+  assert.ok(text.indexOf("not a predicted price growth percentage") !== -1,
+    "future score disclaimer shown");
+});
+
 // ── 4. reportId mismatch rejects ──
 test("4. reportId mismatch shows generic_error", async () => {
   var resp = makeSuccessResponse({ reportId: 'other_id' });

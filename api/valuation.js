@@ -124,6 +124,8 @@ function buildFreeSummary(fullResult) {
     keyFactors: keyFactors,
     dataLimitations: limitations,
     customerDataStatus: mapCustomerDataStatus(fullResult),
+    propertyFutureOutlook: fullResult.propertyFutureOutlook || null,
+    suburbFutureOutlook: fullResult.suburbFutureOutlook || null,
     disclaimer: "This free valuation summary is based on publicly available market data, property characteristics and statistical analysis for general information and research purposes only. Data may be delayed, incomplete or subject to third-party recording differences. This is not a formal valuation, credit decision, legal, tax or financial advice. Consult licensed professionals before making transaction or financing decisions.",
     // Locked preview — show what the full report contains
     lockedPreview: buildLockedPreview(fullResult)
@@ -173,11 +175,18 @@ export default async function handler(request, response) {
   }
 
   // Lazy-import heavy modules only when actually handling a request (cold-start win)
-  const [{ runValuation }, { createReportDraft }, { getSql, ensureCustomerFunnelSchema, ensureReportPaymentSchema }, { isPaymentsEnabled }] = await Promise.all([
+  const [
+    { runValuation },
+    { createReportDraft },
+    { getSql, ensureCustomerFunnelSchema, ensureReportPaymentSchema },
+    { isPaymentsEnabled },
+    { scoreFutureOpportunity, scorePropertyFutureOpportunity }
+  ] = await Promise.all([
     import("../lib/valuation-service.js"),
     import("../lib/report-snapshot-service.js"),
     import("./_db.js"),
-    import("../lib/payment-gate.js")
+    import("../lib/payment-gate.js"),
+    import("../lib/future-opportunity-outlook.js")
   ]);
 
   try {
@@ -187,12 +196,58 @@ export default async function handler(request, response) {
       useDatabaseFallback: true
     });
 
+    let sql = null;
+
+    // Attach property-level Future Opportunity Outlook before snapshot creation.
+    try {
+      if (result.ok) {
+        sql = getSql();
+        const subject = result.subject || {};
+        const suburbName = subject.suburb || body.suburb || "";
+        const stateName = subject.state || body.state || "VIC";
+        if (suburbName) {
+          const rows = await sql`
+            SELECT suburb, state,
+                   median_house_price, median_unit_price,
+                   gross_yield, school_score, vacancy_rate,
+                   supply_constraint_score, infrastructure_score,
+                   overall_confidence, updated_at
+            FROM suburb_metrics
+            WHERE LOWER(suburb) = LOWER(${suburbName})
+              AND state = ${stateName}
+            LIMIT 1
+          `;
+          const metric = rows && rows[0];
+          if (metric) {
+            const propertyType = subject.propertyType || body.propertyType || "house";
+            const suburbOutlook = scoreFutureOpportunity(metric, {
+              strategy: "balanced",
+              propertyType
+            });
+            result.suburbFutureOutlook = suburbOutlook;
+            result.propertyFutureOutlook = scorePropertyFutureOpportunity({
+              suburbOutlook,
+              property: {
+                propertyType,
+                landSize: subject.landSize || body.landSize || null,
+                bedrooms: subject.bedrooms || body.bedrooms || null,
+                bathrooms: subject.bathrooms || body.bathrooms || null,
+                carSpaces: subject.carSpaces || body.carSpaces || null
+              }
+            });
+          }
+        }
+      }
+    } catch (futureErr) {
+      console.error("Future outlook failed (non-fatal):", futureErr.message);
+    }
+
     // Generate short-lived draft token for this valuation
     let draftToken = null;
     let draftExpiresAt = null;
     try {
       if (result.ok) {
-        const sql = getSql();
+        if (!sql) sql = getSql();
         // Ensure dependent schemas exist before writing report_drafts
         await ensureCustomerFunnelSchema(sql);
         await ensureReportPaymentSchema(sql);

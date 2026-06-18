@@ -50,11 +50,12 @@ export default async function handler(req, res) {
 
     // ── Upsert lead_contact ──
     const result = await sql`
-      INSERT INTO lead_contacts (email, email_lower, phone)
-      VALUES (${rawEmail}, ${emailLower}, ${phone})
+      INSERT INTO lead_contacts (email, email_lower, name, phone)
+      VALUES (${rawEmail}, ${emailLower}, ${name}, ${phone})
       ON CONFLICT (email_lower)
       DO UPDATE SET
         updated_at = NOW(),
+        name = COALESCE(lead_contacts.name, EXCLUDED.name),
         phone = COALESCE(lead_contacts.phone, EXCLUDED.phone)
       RETURNING id
     `;

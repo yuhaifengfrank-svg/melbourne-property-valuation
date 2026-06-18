@@ -256,21 +256,21 @@ describe("Payments Gate — Phase 2A Review", () => {
     }
   });
 
-  // ── 7. Phase 2B: Production payment disabled UI (no $3.99 visible) ──
-  describe("Phase 2B — Production payment disabled hides $3.99", () => {
-    it("renders payments-disabled class on layout when !paymentsEnabled", () => {
-      assert.ok(APP_JS.includes('layoutEl.classList.add("payments-disabled")'),
-        "adds payments-disabled class");
+  // ── 7. Phase 2B: Production payment disabled UI (registration funnel visible, no $3.99) ──
+  describe("Phase 2B — Production payment disabled keeps free registration funnel", () => {
+    it("does not add payments-disabled class to remove registration funnel", () => {
+      assert.ok(!APP_JS.includes('layoutEl.classList.add("payments-disabled")'),
+        "does not add payments-disabled class");
     });
-    it("lead panel hidden when !paymentsEnabled + free tier", () => {
-      assert.ok(APP_JS.includes('leadPanel2.style.display = "none"'),
-        "lead panel hidden");
+    it("lead panel shown for free registration when payments disabled", () => {
+      assert.ok(APP_JS.includes("Free registration unlocks Future Score"),
+        "free registration hook present");
     });
-    it("unlock button hidden when !paymentsEnabled + free tier", () => {
-      assert.ok(APP_JS.includes('unlockBtn2.style.display = "none"'),
-        "unlock button hidden");
+    it("unlock button becomes free enhanced summary CTA when payments disabled", () => {
+      assert.ok(APP_JS.includes("Unlock Free Enhanced Summary"),
+        "free enhanced summary CTA present");
     });
-    it("free tier locked preview hidden when payments disabled", () => {
+    it("free tier paid locked preview hidden when payments disabled", () => {
       assert.ok(APP_JS.includes("Free tier, payments disabled: hide locked preview entirely"),
         "locked preview hidden in free tier + disabled payments");
     });

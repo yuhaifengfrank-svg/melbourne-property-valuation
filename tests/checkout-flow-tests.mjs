@@ -144,13 +144,13 @@ const REJECTED_URLS = [
 
 // ── Tests ───────────────────────────────────────────────────────────
 
-test("T1: button disabled initially", () => {
+test("T1: button price-free before valuation result", () => {
   const dom = createPage();
   loadApp(dom);
   const btn = getBtn(dom);
   assert.ok(btn, "unlock-report button exists");
-  assert.ok(btn.disabled);
-  assert.equal(btn.getAttribute("aria-disabled"), "true");
+  assert.ok(!btn.textContent.includes("$"), "no price before valuation result");
+  assert.ok(!btn.textContent.includes("3.99"), "no 3.99 before valuation result");
 });
 
 test("T2: button enabled after valid draft token", async () => {
@@ -744,23 +744,25 @@ test("Phase 2B: paymentsEnabled=false hides all $3.99 and lead panel", async () 
 
   dom.window.renderValuation(result);
 
-  // Free tier (no leadContactId, no draft): button hidden entirely
+  // Free tier (no leadContactId, no draft): registration CTA visible, no paid checkout
   const btn = getBtn(dom);
   assert.ok(btn, "unlock-report button exists in DOM");
-  assert.equal(btn.style.display, "none",
-    "button must be hidden when payments disabled");
+  assert.notEqual(btn.style.display, "none",
+    "button must remain visible for free registration when payments disabled");
+  assert.equal(btn.disabled, false,
+    "button must be enabled for free registration when payments disabled");
 
-  // Lead panel hidden
+  // Lead panel visible
   const leadPanel = dom.window.document.querySelector(".lead-panel");
   assert.ok(leadPanel, "lead-panel exists");
-  assert.equal(leadPanel.style.display, "none",
-    "lead panel must be hidden when payments disabled");
+  assert.notEqual(leadPanel.style.display, "none",
+    "lead panel must remain visible for registration when payments disabled");
 
-  // Layout gets payments-disabled class
+  // Layout no longer gets payments-disabled class because registration funnel remains visible
   const layoutEl = dom.window.document.querySelector(".layout");
   if (layoutEl) {
-    assert.ok(layoutEl.classList.contains("payments-disabled"),
-      "layout must have payments-disabled class");
+    assert.ok(!layoutEl.classList.contains("payments-disabled"),
+      "layout must not hide registration funnel via payments-disabled class");
   }
 
   // No $3.99 text in button
@@ -774,7 +776,7 @@ test("Phase 2B: paymentsEnabled=false hides all $3.99 and lead panel", async () 
     "button must not contain AUD (no price text)");
 });
 
-test("Phase 2B: paymentsEnabled=undefined fail-closed hides UI", async () => {
+test("Phase 2B: paymentsEnabled=undefined fail-closed still shows free registration", async () => {
   const dom = createPage();
 
   dom.window.fetch = function () {
@@ -800,24 +802,28 @@ test("Phase 2B: paymentsEnabled=undefined fail-closed hides UI", async () => {
 
   dom.window.renderValuation(result);
 
-  // Button hidden
+  // Free registration remains available, but paid checkout remains unavailable.
   const btn = getBtn(dom);
   assert.ok(btn, "unlock-report button exists in DOM");
-  assert.equal(btn.style.display, "none",
-    "button must be hidden when paymentsEnabled missing");
+  assert.notEqual(btn.style.display, "none",
+    "button remains visible for free registration when paymentsEnabled missing");
+  assert.equal(btn.disabled, false,
+    "button remains enabled for free registration when paymentsEnabled missing");
+  assert.ok(!btn.textContent.includes("$"), "no dollar sign when payments are not enabled");
+  assert.ok(!btn.textContent.includes("3.99"), "no price when payments are not enabled");
 
-  // Lead panel hidden
+  // Lead panel remains visible for the free enhanced summary funnel.
   const leadPanel = dom.window.document.querySelector(".lead-panel");
   assert.ok(leadPanel, "lead-panel exists");
-  assert.equal(leadPanel.style.display, "none",
-    "lead panel must be hidden when paymentsEnabled missing");
+  assert.notEqual(leadPanel.style.display, "none",
+    "lead panel remains visible when paymentsEnabled missing");
 });
 
 test("Phase 2B: registered user + paymentsEnabled=false shows no price", async () => {
   const dom = createPage();
 
   // Set lead contact id to simulate registered user
-  dom.window.localStorage.setItem("leadContactId", "contact_123");
+  dom.window.localStorage.setItem("aushomevalue.leadContactId", "123");
 
   dom.window.fetch = function () {
     return Promise.resolve({

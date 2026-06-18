@@ -580,11 +580,7 @@ textarea {
   margin-bottom: 16px;
 }
 
-/* ── When payments disabled, unlock/lead section hidden, only check-status visible ── */
-.payments-disabled .lead-panel {
-  display: none;
-}
-
+/* ── When payments disabled, hide paid locks but keep free registration funnel visible ── */
 .payments-disabled .locked-strip {
   display: none;
 }

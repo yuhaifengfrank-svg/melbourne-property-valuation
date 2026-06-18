@@ -113,13 +113,13 @@
     p.midpoint = est.midpoint;
     p.low = est.low || est.rangeLow || (est.range && est.range.low);
     p.high = est.high || est.rangeHigh || (est.range && est.range.high);
-    p.anchor = est.anchor || null;
-    p.weightedMedian = est.weightedMedian || null;
-    p.weightedMean = est.weightedMean || null;
-    p.factorAdjustments = est.factorAdjustments || null;
-    p.factorTotal = est.factorTotal || null;
-    p.customerHalfRange = est.customerHalfRange || null;
-    p.sigma = est.sigma || null;
+    p.anchor = est.anchor || input.anchor || null;
+    p.weightedMedian = est.weightedMedian || input.weightedMedian || null;
+    p.weightedMean = est.weightedMean || input.weightedMean || null;
+    p.factorAdjustments = est.factorAdjustments || input.factorAdjustments || null;
+    p.factorTotal = est.factorTotal || input.factorTotal || null;
+    p.customerHalfRange = est.customerHalfRange || input.customerHalfRange || null;
+    p.sigma = est.sigma || input.sigma || null;
 
     // ── Confidence ──
     var conf = input.confidence || {};
@@ -164,7 +164,12 @@
     // ── Comparables ──
     p.acceptedComparables = input.acceptedComparables || input.comparables || [];
     p.rejectedComparables = input.rejectedComparables || [];
-    p.methodology = input.methodology || null;
+    p.methodology = input.methodology || input.evidenceMode || "Comparable-sales evidence model using recent public market transactions, confidence scoring and statistical range checks.";
+    p.multiSourceAnalysis = input.multiSourceAnalysis || null;
+    p.keyFactors = Array.isArray(input.keyFactors) ? input.keyFactors : [];
+    p.dataLimitations = Array.isArray(input.dataLimitations) ? input.dataLimitations : [];
+    p.propertyFutureOutlook = input.propertyFutureOutlook || null;
+    p.suburbFutureOutlook = input.suburbFutureOutlook || null;
 
     // ── Market context ──
     var mc = input.marketContext || {};
@@ -361,7 +366,35 @@
       sections.appendChild(div);
     }
 
-    // ── 1. Executive Summary ──
+    function appendParagraph(el, text, className) {
+      var pEl = document.createElement("p");
+      if (className) pEl.className = className;
+      pEl.textContent = text;
+      el.appendChild(pEl);
+      return pEl;
+    }
+
+    function appendBulletList(el, items) {
+      var valid = Array.isArray(items) ? items.filter(function (x) { return x != null && String(x).trim() !== ""; }) : [];
+      if (!valid.length) return false;
+      var ul = document.createElement("ul");
+      ul.className = "rv-bullet-list";
+      for (var i = 0; i < valid.length; i++) {
+        var li = document.createElement("li");
+        li.textContent = String(valid[i]);
+        ul.appendChild(li);
+      }
+      el.appendChild(ul);
+      return true;
+    }
+
+    // ── 1. Welcome / report guide ──
+    appendSection("Welcome", function (el) {
+      appendParagraph(el, "Thank you for purchasing this AusHomeValue property report. This report summarises the estimate, supporting comparable sales, future opportunity signal, data confidence and key limitations for the selected property.");
+      appendParagraph(el, "Use it as a structured research pack, not as formal valuation advice. It is designed to help you understand the available evidence before speaking with a licensed professional, lender, buyer's agent or conveyancer.");
+    });
+
+    // ── 2. Executive Summary ──
     appendSection("Executive Summary", function (el) {
       var val = p.valuationMode || "Standard";
       var modeLabel = val.replace(/_/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); });
@@ -377,9 +410,12 @@
       if (p.confidenceReasons && p.confidenceReasons.length) {
         el.appendChild(makeInfoRow("Confidence Factors", p.confidenceReasons.join("; ")));
       }
+      if (p.keyFactors && p.keyFactors.length) {
+        appendBulletList(el, p.keyFactors.slice(0, 5));
+      }
     });
 
-    // ── 2. Property Details ──
+    // ── 3. Property Details ──
     appendSection("Property Details", function (el) {
       el.appendChild(makeInfoRow("Address", p.address));
       el.appendChild(makeInfoRow("Suburb", p.suburb));
@@ -393,7 +429,7 @@
       el.appendChild(makeInfoRow("Zoning", p.zoning));
     });
 
-    // ── 3. Comparable Sales ──
+    // ── 4. Comparable Sales ──
     appendSection("Comparable Sales", function (el) {
       var comps = p.acceptedComparables || [];
       var count = comps.length;
@@ -401,6 +437,7 @@
         el.appendChild(makeInfoRow("Comparables", "None available"));
         return;
       }
+      appendParagraph(el, "The comparable set below is the market evidence used to support the estimate. Sales may differ in land size, dwelling condition, exact location and title type, so the estimate should be read as a range rather than a single precise value.");
 
       // Table for desktop
       var table = document.createElement("table");
@@ -424,10 +461,14 @@
         tr.appendChild(makeCell(c.address));
         tr.appendChild(makeCell(fmtCurrency(c.salePrice)));
         tr.appendChild(makeCell(fmtDate(c.saleDate)));
-        tr.appendChild(makeCell(c.distanceMeters != null ? Math.round(c.distanceMeters) + " m" : NA));
+        var dist = c.distanceMeters != null ? Math.round(c.distanceMeters) + " m"
+          : c.distanceKm != null ? Number(c.distanceKm).toFixed(2) + " km"
+          : c.distance != null ? String(c.distance)
+          : NA;
+        tr.appendChild(makeCell(dist));
         tr.appendChild(makeCell(fmtArea(c.landSize)));
         tr.appendChild(makeCell(c.propertyType));
-        tr.appendChild(makeCell(c.adjustment != null ? fmtPct(c.adjustment) : NA));
+        tr.appendChild(makeCell(c.adjustment != null ? fmtPct(c.adjustment) : c.adjustmentPercent != null ? fmtPct(c.adjustmentPercent) : "Included in model"));
         tr.appendChild(makeCell(c.verificationStatus));
         tbody.appendChild(tr);
       }
@@ -449,7 +490,39 @@
       el.appendChild(cards);
     });
 
-    // ── 4. Valuation Methodology ──
+    // ── 5. Future Opportunity Outlook ──
+    appendSection("Future Opportunity Outlook", function (el) {
+      var outlook = p.propertyFutureOutlook || null;
+      var suburbOutlook = p.suburbFutureOutlook || null;
+      if (outlook && outlook.futureOpportunityIndex != null) {
+        el.appendChild(makeInfoRow("Property Future Score", String(outlook.futureOpportunityIndex) + "/100"));
+        if (outlook.suburbFutureOutlookScore != null) {
+          el.appendChild(makeInfoRow("Suburb Future Outlook", String(outlook.suburbFutureOutlookScore) + "/100"));
+        }
+        if (outlook.propertySpecificScore != null) {
+          el.appendChild(makeInfoRow("Property-Specific Fit", String(outlook.propertySpecificScore) + "/100"));
+        }
+        el.appendChild(makeInfoRow("Horizon", outlook.forecastHorizon || "3-5 years"));
+        el.appendChild(makeInfoRow("Confidence", outlook.confidence || "Low"));
+        appendParagraph(el, outlook.formula || "property_future_score = suburb_future_outlook_score * 0.70 + property_specific_score * 0.30");
+        if (Array.isArray(outlook.why) && outlook.why.length) {
+          appendParagraph(el, "Key opportunity signals:");
+          appendBulletList(el, outlook.why.slice(0, 5));
+        }
+        if (Array.isArray(outlook.risks) && outlook.risks.length) {
+          appendParagraph(el, "Key risks to check:");
+          appendBulletList(el, outlook.risks.slice(0, 5));
+        }
+      } else if (suburbOutlook && suburbOutlook.futureOpportunityIndex != null) {
+        el.appendChild(makeInfoRow("Suburb Future Outlook", String(suburbOutlook.futureOpportunityIndex) + "/100"));
+        appendParagraph(el, "A suburb-level future opportunity signal was available, but this report snapshot did not include enough property-specific data to calculate a property-level score.");
+      } else {
+        appendParagraph(el, "Future Opportunity Outlook was not included in this report snapshot. Run a fresh valuation after the Future Opportunity model update to include this section.");
+      }
+      appendParagraph(el, "This is a relative opportunity index, not a predicted price growth percentage or guaranteed return.");
+    });
+
+    // ── 6. Valuation Methodology ──
     appendSection("Valuation Methodology", function (el) {
       el.appendChild(makeInfoRow("Methodology", p.methodology));
       if (p.valuationMode === "large_lot_house" && p.largeLotDetect) {
@@ -470,9 +543,12 @@
       el.appendChild(makeInfoRow("Factor Total", p.factorTotal != null ? fmtPct(p.factorTotal) : NA));
       el.appendChild(makeInfoRow("Half Range", fmtCurrency(p.customerHalfRange)));
       el.appendChild(makeInfoRow("Sigma", p.sigma != null ? String(Number(p.sigma).toFixed(4)) : NA));
+      if (p.multiSourceAnalysis) {
+        appendParagraph(el, "Multi-source analysis was considered where available. Differences between sources may reflect listing corrections, timing, title differences or incomplete public records.");
+      }
     });
 
-    // ── 5. Market Context ──
+    // ── 7. Market Context ──
     appendSection("Market Context", function (el) {
       el.appendChild(makeInfoRow("Suburb Median", fmtCurrency(p.suburbMedian)));
       el.appendChild(makeInfoRow("Rent Estimate", fmtCurrency(p.rent)));
@@ -481,16 +557,18 @@
       if (p.vacancy != null) { el.appendChild(makeInfoRow("Vacancy Rate", fmtPct(p.vacancy))); }
     });
 
-    // ── 6. Risks and Limitations ──
+    // ── 8. Risks and Limitations ──
     appendSection("Risks and Limitations", function (el) {
       if (p.coverageIssue) {
         var note = document.createElement("p");
         note.className = "rv-risk-note";
         note.textContent = p.coverageIssue;
         el.appendChild(note);
+      } else if (p.dataLimitations && p.dataLimitations.length) {
+        appendBulletList(el, p.dataLimitations);
       } else {
         var note2 = document.createElement("p");
-        note2.textContent = "No issues or limitations reported by the valuation engine.";
+        note2.textContent = "No additional data limitations were reported by the valuation engine. You should still verify title, condition, overlays, renovations and recent off-market information before relying on the estimate.";
         el.appendChild(note2);
       }
       var stdNote = document.createElement("p");
@@ -498,7 +576,18 @@
       el.appendChild(stdNote);
     });
 
-    // ── 7. Report Metadata ──
+    // ── 9. Next Steps ──
+    appendSection("Recommended Next Steps", function (el) {
+      appendBulletList(el, [
+        "Compare the estimate range with at least two independent market opinions before transacting.",
+        "Check title, planning overlays, easements, building condition and strata information where relevant.",
+        "For finance, lending or tax decisions, speak with appropriately licensed professionals.",
+        "Re-run the report when new comparable sales become available or if the property's attributes change."
+      ]);
+      appendParagraph(el, "Thank you for using AusHomeValue. We are continuing to improve the report format and data coverage.");
+    });
+
+    // ── 10. Report Metadata ──
     appendSection("Report Metadata", function (el) {
       el.appendChild(makeInfoRow("Report ID", p.reportId));
       el.appendChild(makeInfoRow("As of Date", fmtDate(p.asOfDate)));
