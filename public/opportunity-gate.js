@@ -556,8 +556,14 @@
     },
   };
 
-  /* Auto-protect stand-alone opportunity pages */
-  if (typeof window !== "undefined") {
+  /* Auto-protect only pages that explicitly opt in.
+     The public opportunities page is now the top of the funnel, so it must
+     show a free preview before registration. */
+  if (
+    typeof window !== "undefined" &&
+    document.documentElement &&
+    document.documentElement.dataset.opportunityProtect === "true"
+  ) {
     window.opportunityGate.protectPage();
   }
 })();

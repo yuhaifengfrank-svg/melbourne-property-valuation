@@ -1,1428 +1,729 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Top Property Opportunities in Victoria | AusHomeValue</title>
-  <meta name="description" content="Browse the top-ranked property opportunities across Melbourne and Victoria. Opportunity scores driven by growth, school zones, rental yield and vacancy data." />
-  <link rel="canonical" href="https://www.aushomevalue.com.au/opportunities" />
-  <meta property="og:title" content="Top Property Opportunities | AusHomeValue" />
-  <meta property="og:description" content="Data-driven property opportunity rankings across Victoria. Updated nightly." />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Inter, system-ui, -apple-system, sans-serif; background: #f4f6f5; color: #17211d; line-height: 1.6; }
-    .topbar { background: #0d6b57; color: white; padding: 14px 24px; }
-    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
-    h1 { font-size: 1.8rem; margin-bottom: 8px; }
-    .desc { color: #66736d; margin-bottom: 28px; }
-    .card { background: white; border: 1px solid #dbe2de; border-radius: 10px; padding: 18px; margin-bottom: 12px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; }
-    .card h2 { font-size: 1.1rem; margin: 0; }
-    .card .meta { font-size: 0.85rem; color: #66736d; margin-top: 4px; }
-    .badge { background: #0d6b57; color: white; border-radius: 30px; padding: 6px 16px; font-weight: 700; font-size: 1.1rem; }
-    .badge-sub { background: #e8f3ef; color: #0d6b57; border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; }
-    .nav-links { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
-    .nav-links a { background: white; border: 1px solid #dbe2de; border-radius: 8px; padding: 8px 16px; color: #0d6b57; text-decoration: none; font-weight: 500; }
-    .nav-links a:hover { background: #e8f3ef; }
-    @media (max-width: 640px) { .card { flex-direction: column; align-items: start; gap: 8px; } }
-  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Victoria Future Opportunity Outlook | AusHomeValue</title>
+  <meta
+    name="description"
+    content="Preview Victoria suburbs ranked by AusHomeValue Future Opportunity Index, then register for a personalised Top 10 based on your budget and goal."
+  />
   <link rel="stylesheet" href="/shared-responsive.css" />
+  <style>
+    :root {
+      --opp-card: #ffffff;
+      --opp-soft: #f4f7f5;
+      --opp-ink: #17211d;
+      --opp-muted: #63716b;
+      --opp-border: #dbe4df;
+      --opp-accent: #123f33;
+      --opp-accent-2: #d87947;
+    }
+
+    body {
+      background: #f4f6f5;
+      color: var(--opp-ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .opp-shell {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 24px var(--content-pad, 20px) 56px;
+    }
+
+    .opp-hero {
+      background: linear-gradient(135deg, #123f33 0%, #1f5b49 100%);
+      color: #fff;
+      border-radius: 22px;
+      padding: clamp(28px, 5vw, 56px);
+      box-shadow: 0 18px 50px rgba(18, 63, 51, 0.18);
+    }
+
+    .opp-kicker {
+      color: #c9ded6;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      margin: 0 0 12px;
+      text-transform: uppercase;
+    }
+
+    .opp-hero h1 {
+      color: #fff;
+      font-size: clamp(2.2rem, 6vw, 4.7rem);
+      line-height: 0.96;
+      margin: 0 0 18px;
+      max-width: 860px;
+    }
+
+    .opp-hero p {
+      color: #e6f0ec;
+      font-size: clamp(1rem, 2.3vw, 1.18rem);
+      line-height: 1.65;
+      margin: 0;
+      max-width: 820px;
+    }
+
+    .opp-hero strong {
+      color: #fff;
+    }
+
+    .opp-funnel {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr;
+      margin: 22px 0;
+    }
+
+    .opp-step {
+      background: var(--opp-card);
+      border: 1px solid var(--opp-border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .opp-step span {
+      align-items: center;
+      background: #eaf3ef;
+      border-radius: 999px;
+      color: var(--opp-accent);
+      display: inline-flex;
+      font-size: 0.78rem;
+      font-weight: 800;
+      min-height: 30px;
+      padding: 0 10px;
+      text-transform: uppercase;
+    }
+
+    .opp-step h2 {
+      font-size: 1.05rem;
+      margin: 12px 0 8px;
+    }
+
+    .opp-step p {
+      color: var(--opp-muted);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .opp-panel {
+      background: var(--opp-card);
+      border: 1px solid var(--opp-border);
+      border-radius: 20px;
+      margin-top: 22px;
+      padding: clamp(18px, 3vw, 28px);
+      box-shadow: 0 12px 36px rgba(23, 33, 29, 0.06);
+    }
+
+    .opp-panel-head {
+      align-items: start;
+      display: grid;
+      gap: 16px;
+      grid-template-columns: 1fr;
+      margin-bottom: 18px;
+    }
+
+    .opp-panel h2 {
+      margin: 0 0 8px;
+    }
+
+    .opp-panel p {
+      color: var(--opp-muted);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .opp-filter-grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr;
+      margin: 18px 0;
+    }
+
+    .opp-field label {
+      color: var(--opp-muted);
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .opp-field select,
+    .opp-field input {
+      background: #fff;
+      border: 1px solid var(--opp-border);
+      border-radius: 12px;
+      box-sizing: border-box;
+      color: var(--opp-ink);
+      font: inherit;
+      min-height: 44px;
+      padding: 10px 12px;
+      width: 100%;
+    }
+
+    .opp-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .opp-btn {
+      align-items: center;
+      border: 1px solid var(--opp-accent);
+      border-radius: 999px;
+      cursor: pointer;
+      display: inline-flex;
+      font-weight: 800;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 18px;
+      text-decoration: none;
+    }
+
+    .opp-btn-primary {
+      background: var(--opp-accent);
+      color: #fff;
+    }
+
+    .opp-btn-secondary {
+      background: #fff;
+      color: var(--opp-accent);
+    }
+
+    .opp-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.56;
+    }
+
+    .opp-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 1fr;
+      margin-top: 18px;
+    }
+
+    .opp-card {
+      background: #fff;
+      border: 1px solid var(--opp-border);
+      border-radius: 18px;
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .opp-card-top {
+      align-items: start;
+      display: flex;
+      gap: 14px;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .opp-card h3 {
+      font-size: 1.24rem;
+      margin: 0 0 6px;
+    }
+
+    .opp-card-meta {
+      color: var(--opp-muted);
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    .opp-score {
+      background: #eff7f3;
+      border: 1px solid #cce0d7;
+      border-radius: 16px;
+      color: var(--opp-accent);
+      flex: 0 0 auto;
+      min-width: 86px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .opp-score strong {
+      display: block;
+      font-size: 1.7rem;
+      line-height: 1;
+    }
+
+    .opp-score span {
+      color: var(--opp-muted);
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .opp-list-block {
+      display: grid;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .opp-list-title {
+      color: var(--opp-ink);
+      font-size: 0.86rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .opp-list {
+      color: var(--opp-muted);
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .opp-list li {
+      margin: 5px 0;
+    }
+
+    .opp-disclaimer {
+      background: var(--opp-soft);
+      border-radius: 12px;
+      color: var(--opp-muted);
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin-top: 14px;
+      padding: 12px;
+    }
+
+    .opp-state {
+      color: var(--opp-muted);
+      line-height: 1.55;
+      margin: 16px 0 0;
+    }
+
+    .opp-upgrade {
+      background: #fff8f2;
+      border: 1px solid #f0d2bd;
+      border-radius: 20px;
+      margin-top: 22px;
+      padding: clamp(18px, 3vw, 26px);
+    }
+
+    .opp-upgrade h2 {
+      margin: 0 0 8px;
+    }
+
+    .opp-upgrade p {
+      color: var(--opp-muted);
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .opp-hidden {
+      display: none !important;
+    }
+
+    @media (min-width: 720px) {
+      .opp-funnel {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .opp-panel-head {
+        grid-template-columns: minmax(0, 1fr) auto;
+      }
+
+      .opp-filter-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+
+      .opp-grid.preview {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .opp-grid.results {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="topbar"><a href="/" class="back">← AusHomeValue</a></div>
-  <div class="container">
-    <h1>Top Property Opportunities in Victoria</h1>
-    <p class="desc">Data-driven rankings updated nightly. 230 suburbs scored across Melbourne and regional Victoria.</p>
+  <header class="topbar">
+    <a href="/" aria-label="AusHomeValue home">AusHomeValue</a>
+    <nav class="topbar-nav" aria-label="Primary navigation">
+      <a href="/#valuation">Valuation</a>
+      <a href="/#opportunities">Opportunity</a>
+      <a href="/admin.html">Admin</a>
+    </nav>
+  </header>
 
-    <div class="nav-links">
-      <a href="/opportunities/growth.html">Growth Opportunities (102)</a>
-      <a href="/opportunities/school-zone.html">School Zone Opportunities (84)</a>
-      <a href="/opportunities/cashflow.html">Cashflow Opportunities (0)</a>
-      <a href="/opportunities/infrastructure.html">Infrastructure Opportunities (0)</a>
-      <a href="/opportunities/balanced.html">Balanced Opportunities (230)</a>
-      <a href="/opportunities/value.html">Value Opportunities (0)</a>
-    </div>
+  <main class="opp-shell">
+    <section class="opp-hero">
+      <p class="opp-kicker">Future Opportunity Outlook</p>
+      <h1>Find the next suburb shortlist before the crowd does.</h1>
+      <p>
+        AusHomeValue ranks suburbs with a <strong>Future Opportunity Index</strong> from 0 to 100.
+        It is a relative screening score built from available yield, affordability, supply, school,
+        infrastructure and confidence signals. It is not a price forecast and it does not claim a
+        future percentage gain.
+      </p>
+    </section>
 
-    <div class="card">
-        <div>
-          <h2><a href="/suburb/deer-park-vic.html" style="color:#0d6b57;text-decoration:none;">Deer Park, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $730K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">36.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/clyde-north-vic.html" style="color:#0d6b57;text-decoration:none;">Clyde North, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $770K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">36.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/clyde-vic.html" style="color:#0d6b57;text-decoration:none;">Clyde, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $750K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">35.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/keysborough-vic.html" style="color:#0d6b57;text-decoration:none;">Keysborough, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $955K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">35.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/south-morang-vic.html" style="color:#0d6b57;text-decoration:none;">South Morang, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $855K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">35.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/cranbourne-east-vic.html" style="color:#0d6b57;text-decoration:none;">Cranbourne East, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $745K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">35.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/rockbank-vic.html" style="color:#0d6b57;text-decoration:none;">Rockbank, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $583K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">35.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/skye-vic.html" style="color:#0d6b57;text-decoration:none;">Skye, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $843K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">35.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/lyndhurst-vic.html" style="color:#0d6b57;text-decoration:none;">Lyndhurst, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $950K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">34.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/endeavour-hills-vic.html" style="color:#0d6b57;text-decoration:none;">Endeavour Hills, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $855K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">33.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/hampton-park-vic.html" style="color:#0d6b57;text-decoration:none;">Hampton Park, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $746K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">33.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/croydon-north-vic.html" style="color:#0d6b57;text-decoration:none;">Croydon North, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1105K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">33.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/lysterfield-vic.html" style="color:#0d6b57;text-decoration:none;">Lysterfield, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1385K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">33.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/pakenham-vic.html" style="color:#0d6b57;text-decoration:none;">Pakenham, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $709K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">33.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/caulfield-south-vic.html" style="color:#0d6b57;text-decoration:none;">Caulfield South, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $523K · +15.37% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">32.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/fairfield-vic.html" style="color:#0d6b57;text-decoration:none;">Fairfield, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $542K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">32.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/dandenong-vic.html" style="color:#0d6b57;text-decoration:none;">Dandenong, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $446K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">32.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/maribyrnong-vic.html" style="color:#0d6b57;text-decoration:none;">Maribyrnong, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $530K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">31.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/manor-lakes-vic.html" style="color:#0d6b57;text-decoration:none;">Manor Lakes, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $639K · +13.10% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">31.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/knoxfield-vic.html" style="color:#0d6b57;text-decoration:none;">Knoxfield, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $919K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">31.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/scoresby-vic.html" style="color:#0d6b57;text-decoration:none;">Scoresby, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1004K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">31.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/lalor-vic.html" style="color:#0d6b57;text-decoration:none;">Lalor, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $778K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">31.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/croydon-south-vic.html" style="color:#0d6b57;text-decoration:none;">Croydon South, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $928K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">31.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/hallam-vic.html" style="color:#0d6b57;text-decoration:none;">Hallam, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $760K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">31.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/heathmont-vic.html" style="color:#0d6b57;text-decoration:none;">Heathmont, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $948K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">30.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/frankston-south-vic.html" style="color:#0d6b57;text-decoration:none;">Frankston South, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1148K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">30.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/south-yarra-vic.html" style="color:#0d6b57;text-decoration:none;">South Yarra, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $661K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">30.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/ormond-vic.html" style="color:#0d6b57;text-decoration:none;">Ormond, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $583K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">30.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/cranbourne-vic.html" style="color:#0d6b57;text-decoration:none;">Cranbourne, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $750K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">30.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/somerville-vic.html" style="color:#0d6b57;text-decoration:none;">Somerville, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $919K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">30.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/west-melbourne-vic.html" style="color:#0d6b57;text-decoration:none;">West Melbourne, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $490K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">30.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/watsonia-vic.html" style="color:#0d6b57;text-decoration:none;">Watsonia, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $985K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">30.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mitcham-vic.html" style="color:#0d6b57;text-decoration:none;">Mitcham, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1180K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">29.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/melton-vic.html" style="color:#0d6b57;text-decoration:none;">Melton, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $508K · +14.71% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">29.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/wheelers-hill-vic.html" style="color:#0d6b57;text-decoration:none;">Wheelers Hill, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1500K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">29.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/croydon-vic.html" style="color:#0d6b57;text-decoration:none;">Croydon, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $902K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">29.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/beaumaris-vic.html" style="color:#0d6b57;text-decoration:none;">Beaumaris, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1613K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">29.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/derrimut-vic.html" style="color:#0d6b57;text-decoration:none;">Derrimut, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $882K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/lynbrook-vic.html" style="color:#0d6b57;text-decoration:none;">Lynbrook, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $888K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/templestowe-vic.html" style="color:#0d6b57;text-decoration:none;">Templestowe, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1495K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/narre-warren-south-vic.html" style="color:#0d6b57;text-decoration:none;">Narre Warren South, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $861K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/bayswater-north-vic.html" style="color:#0d6b57;text-decoration:none;">Bayswater North, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $975K · +15.43% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/donvale-vic.html" style="color:#0d6b57;text-decoration:none;">Donvale, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1565K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mernda-vic.html" style="color:#0d6b57;text-decoration:none;">Mernda, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $815K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/armstrong-creek-vic.html" style="color:#0d6b57;text-decoration:none;">Armstrong Creek, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $663K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/officer-vic.html" style="color:#0d6b57;text-decoration:none;">Officer, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $745K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/truganina-vic.html" style="color:#0d6b57;text-decoration:none;">Truganina, VIC</a></h2>
-          <div class="meta">Cashflow Opportunity · Median $657K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Cashflow Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/edithvale-vic.html" style="color:#0d6b57;text-decoration:none;">Edithvale, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1258K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">28.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/cheltenham-vic.html" style="color:#0d6b57;text-decoration:none;">Cheltenham, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1102K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">27.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/werribee-vic.html" style="color:#0d6b57;text-decoration:none;">Werribee, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $692K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">27.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/wyndham-vale-vic.html" style="color:#0d6b57;text-decoration:none;">Wyndham Vale, VIC</a></h2>
-          <div class="meta">Cashflow Opportunity · Median $605K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">27.0</span><span class="badge-sub">Cashflow Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/greenvale-vic.html" style="color:#0d6b57;text-decoration:none;">Greenvale, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $895K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">27.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/sunbury-vic.html" style="color:#0d6b57;text-decoration:none;">Sunbury, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $750K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">27.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/diggers-rest-vic.html" style="color:#0d6b57;text-decoration:none;">Diggers Rest, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $620K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">27.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/yarraville-vic.html" style="color:#0d6b57;text-decoration:none;">Yarraville, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1017K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">27.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/carnegie-vic.html" style="color:#0d6b57;text-decoration:none;">Carnegie, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $802K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">27.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/clarinda-vic.html" style="color:#0d6b57;text-decoration:none;">Clarinda, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1050K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">26.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/bentleigh-vic.html" style="color:#0d6b57;text-decoration:none;">Bentleigh, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $960K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">26.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/leopold-vic.html" style="color:#0d6b57;text-decoration:none;">Leopold, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $733K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">26.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/blackburn-south-vic.html" style="color:#0d6b57;text-decoration:none;">Blackburn South, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1198K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">26.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/chirnside-park-vic.html" style="color:#0d6b57;text-decoration:none;">Chirnside Park, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $966K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">26.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/moorabbin-vic.html" style="color:#0d6b57;text-decoration:none;">Moorabbin, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1125K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">26.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/botanic-ridge-vic.html" style="color:#0d6b57;text-decoration:none;">Botanic Ridge, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $995K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">26.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/newport-vic.html" style="color:#0d6b57;text-decoration:none;">Newport, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1200K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">26.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/st-albans-vic.html" style="color:#0d6b57;text-decoration:none;">St Albans, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $730K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">26.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/sunshine-west-vic.html" style="color:#0d6b57;text-decoration:none;">Sunshine West, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $765K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">26.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/wollert-vic.html" style="color:#0d6b57;text-decoration:none;">Wollert, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $700K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/point-cook-vic.html" style="color:#0d6b57;text-decoration:none;">Point Cook, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $829K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/brunswick-vic.html" style="color:#0d6b57;text-decoration:none;">Brunswick, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1000K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/caulfield-east-vic.html" style="color:#0d6b57;text-decoration:none;">Caulfield East, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $418K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/craigieburn-vic.html" style="color:#0d6b57;text-decoration:none;">Craigieburn, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $685K · +8.11% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/ferntree-gully-vic.html" style="color:#0d6b57;text-decoration:none;">Ferntree Gully, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $960K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/hawthorn-east-vic.html" style="color:#0d6b57;text-decoration:none;">Hawthorn East, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $570K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/caroline-springs-vic.html" style="color:#0d6b57;text-decoration:none;">Caroline Springs, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $811K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/heidelberg-vic.html" style="color:#0d6b57;text-decoration:none;">Heidelberg, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $950K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/narre-warren-vic.html" style="color:#0d6b57;text-decoration:none;">Narre Warren, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $775K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/dingley-village-vic.html" style="color:#0d6b57;text-decoration:none;">Dingley Village, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1320K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/brighton-east-vic.html" style="color:#0d6b57;text-decoration:none;">Brighton East, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1226K · +4.02% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mooroolbark-vic.html" style="color:#0d6b57;text-decoration:none;">Mooroolbark, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $900K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">25.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/donnybrook-vic.html" style="color:#0d6b57;text-decoration:none;">Donnybrook, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $649K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/doncaster-vic.html" style="color:#0d6b57;text-decoration:none;">Doncaster, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1309K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/vermont-vic.html" style="color:#0d6b57;text-decoration:none;">Vermont, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1300K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/narre-warren-north-vic.html" style="color:#0d6b57;text-decoration:none;">Narre Warren North, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1485K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/rosanna-vic.html" style="color:#0d6b57;text-decoration:none;">Rosanna, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1207K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/clayton-south-vic.html" style="color:#0d6b57;text-decoration:none;">Clayton South, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $820K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/oakleigh-south-vic.html" style="color:#0d6b57;text-decoration:none;">Oakleigh South, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1115K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/patterson-lakes-vic.html" style="color:#0d6b57;text-decoration:none;">Patterson Lakes, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1283K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/hughesdale-vic.html" style="color:#0d6b57;text-decoration:none;">Hughesdale, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $588K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/kilsyth-vic.html" style="color:#0d6b57;text-decoration:none;">Kilsyth, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $841K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/box-hill-vic.html" style="color:#0d6b57;text-decoration:none;">Box Hill, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $535K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/highett-vic.html" style="color:#0d6b57;text-decoration:none;">Highett, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $830K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/altona-meadows-vic.html" style="color:#0d6b57;text-decoration:none;">Altona Meadows, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $815K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/ringwood-vic.html" style="color:#0d6b57;text-decoration:none;">Ringwood, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $955K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mont-albert-vic.html" style="color:#0d6b57;text-decoration:none;">Mont Albert, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $765K · -7.92% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/surrey-hills-vic.html" style="color:#0d6b57;text-decoration:none;">Surrey Hills, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1950K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/elwood-vic.html" style="color:#0d6b57;text-decoration:none;">Elwood, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $575K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/highton-vic.html" style="color:#0d6b57;text-decoration:none;">Highton, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $960K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">24.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/glen-waverley-vic.html" style="color:#0d6b57;text-decoration:none;">Glen Waverley, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1435K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/sunshine-vic.html" style="color:#0d6b57;text-decoration:none;">Sunshine, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $780K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/hoppers-crossing-vic.html" style="color:#0d6b57;text-decoration:none;">Hoppers Crossing, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $730K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/rosebud-vic.html" style="color:#0d6b57;text-decoration:none;">Rosebud, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $735K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/elsternwick-vic.html" style="color:#0d6b57;text-decoration:none;">Elsternwick, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $615K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/bentleigh-east-vic.html" style="color:#0d6b57;text-decoration:none;">Bentleigh East, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1323K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mordialloc-vic.html" style="color:#0d6b57;text-decoration:none;">Mordialloc, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $910K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/reservoir-vic.html" style="color:#0d6b57;text-decoration:none;">Reservoir, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $966K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/dromana-vic.html" style="color:#0d6b57;text-decoration:none;">Dromana, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $883K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mickleham-vic.html" style="color:#0d6b57;text-decoration:none;">Mickleham, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $655K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/bell-post-hill-vic.html" style="color:#0d6b57;text-decoration:none;">Bell Post Hill, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $778K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/boronia-vic.html" style="color:#0d6b57;text-decoration:none;">Boronia, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $850K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">23.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/chelsea-vic.html" style="color:#0d6b57;text-decoration:none;">Chelsea, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $850K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">22.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/lilydale-vic.html" style="color:#0d6b57;text-decoration:none;">Lilydale, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1078K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">22.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/caulfield-north-vic.html" style="color:#0d6b57;text-decoration:none;">Caulfield North, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $614K · -7.70% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">22.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/aberfeldie-vic.html" style="color:#0d6b57;text-decoration:none;">Aberfeldie, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1688K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">22.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/beaconsfield-upper-vic.html" style="color:#0d6b57;text-decoration:none;">Beaconsfield Upper, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1763K · +12.19% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">22.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/ivanhoe-vic.html" style="color:#0d6b57;text-decoration:none;">Ivanhoe, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $778K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">22.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/hampton-vic.html" style="color:#0d6b57;text-decoration:none;">Hampton, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1940K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">22.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mount-waverley-vic.html" style="color:#0d6b57;text-decoration:none;">Mount Waverley, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1405K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">21.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/tarneit-vic.html" style="color:#0d6b57;text-decoration:none;">Tarneit, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $660K · -7.70% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">21.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/malvern-vic.html" style="color:#0d6b57;text-decoration:none;">Malvern, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $789K · -7.70% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">21.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/footscray-vic.html" style="color:#0d6b57;text-decoration:none;">Footscray, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $710K · +5.47% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">21.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/bayswater-vic.html" style="color:#0d6b57;text-decoration:none;">Bayswater, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $851K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">21.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/aspendale-vic.html" style="color:#0d6b57;text-decoration:none;">Aspendale, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1300K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">21.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/bell-park-vic.html" style="color:#0d6b57;text-decoration:none;">Bell Park, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $747K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">21.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/hastings-vic.html" style="color:#0d6b57;text-decoration:none;">Hastings, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $830K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">21.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/altona-north-vic.html" style="color:#0d6b57;text-decoration:none;">Altona North, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $853K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">20.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/forest-hill-vic.html" style="color:#0d6b57;text-decoration:none;">Forest Hill, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1244K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">20.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mornington-vic.html" style="color:#0d6b57;text-decoration:none;">Mornington, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1695K · +3.61% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">20.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/blackburn-north-vic.html" style="color:#0d6b57;text-decoration:none;">Blackburn North, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1315K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">20.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/toorak-vic.html" style="color:#0d6b57;text-decoration:none;">Toorak, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1080K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">20.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/essendon-vic.html" style="color:#0d6b57;text-decoration:none;">Essendon, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1375K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">20.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/ballarat-vic.html" style="color:#0d6b57;text-decoration:none;">Ballarat, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $655K · -7.49% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">20.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mentone-vic.html" style="color:#0d6b57;text-decoration:none;">Mentone, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $898K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">20.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/ivanhoe-east-vic.html" style="color:#0d6b57;text-decoration:none;">Ivanhoe East, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1200K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">20.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/balwyn-north-vic.html" style="color:#0d6b57;text-decoration:none;">Balwyn North, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1629K · +3.79% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">20.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/kew-vic.html" style="color:#0d6b57;text-decoration:none;">Kew, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1078K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">19.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/bonbeach-vic.html" style="color:#0d6b57;text-decoration:none;">Bonbeach, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1148K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">19.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/laverton-vic.html" style="color:#0d6b57;text-decoration:none;">Laverton, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $640K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">19.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/middle-park-vic.html" style="color:#0d6b57;text-decoration:none;">Middle Park, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1630K · +7.07% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">19.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/torquay-vic.html" style="color:#0d6b57;text-decoration:none;">Torquay, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1075K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">19.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/newtown-vic.html" style="color:#0d6b57;text-decoration:none;">Newtown, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1080K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">19.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/parkdale-vic.html" style="color:#0d6b57;text-decoration:none;">Parkdale, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1811K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">19.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/doncaster-east-vic.html" style="color:#0d6b57;text-decoration:none;">Doncaster East, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1400K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">19.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/fawkner-vic.html" style="color:#0d6b57;text-decoration:none;">Fawkner, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $873K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">18.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/frankston-vic.html" style="color:#0d6b57;text-decoration:none;">Frankston, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $745K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">18.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/oakleigh-vic.html" style="color:#0d6b57;text-decoration:none;">Oakleigh, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1025K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">18.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/pascoe-vale-vic.html" style="color:#0d6b57;text-decoration:none;">Pascoe Vale, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $985K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">18.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/maidstone-vic.html" style="color:#0d6b57;text-decoration:none;">Maidstone, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $900K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">18.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/clayton-vic.html" style="color:#0d6b57;text-decoration:none;">Clayton, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $877K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">18.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/coburg-north-vic.html" style="color:#0d6b57;text-decoration:none;">Coburg North, VIC</a></h2>
-          <div class="meta">Growth Opportunity · Median $1130K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">18.0</span><span class="badge-sub">Growth Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/chadstone-vic.html" style="color:#0d6b57;text-decoration:none;">Chadstone, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1200K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">17.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/oakleigh-east-vic.html" style="color:#0d6b57;text-decoration:none;">Oakleigh East, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1181K · -7.59% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">17.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/malvern-east-vic.html" style="color:#0d6b57;text-decoration:none;">Malvern East, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1225K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">17.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/rye-vic.html" style="color:#0d6b57;text-decoration:none;">Rye, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $855K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">17.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/canterbury-vic.html" style="color:#0d6b57;text-decoration:none;">Canterbury, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1974K · +4.03% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">17.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/ashwood-vic.html" style="color:#0d6b57;text-decoration:none;">Ashwood, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1347K · +2.62% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">17.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mount-martha-vic.html" style="color:#0d6b57;text-decoration:none;">Mount Martha, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1360K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">16.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/glenroy-vic.html" style="color:#0d6b57;text-decoration:none;">Glenroy, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $943K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">16.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/preston-vic.html" style="color:#0d6b57;text-decoration:none;">Preston, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1178K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">16.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/northcote-vic.html" style="color:#0d6b57;text-decoration:none;">Northcote, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $1550K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">16.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/thornbury-vic.html" style="color:#0d6b57;text-decoration:none;">Thornbury, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1523K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">14.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/black-rock-vic.html" style="color:#0d6b57;text-decoration:none;">Black Rock, VIC</a></h2>
-          <div class="meta">School Zone Opportunity · Median $3750K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">14.0</span><span class="badge-sub">School Zone Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/macleod-vic.html" style="color:#0d6b57;text-decoration:none;">Macleod, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1515K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">14.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/caulfield-vic.html" style="color:#0d6b57;text-decoration:none;">Caulfield, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $985K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">10.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/sorrento-vic.html" style="color:#0d6b57;text-decoration:none;">Sorrento, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $2120K · N/A trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">5.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/aireys-inlet-vic.html" style="color:#0d6b57;text-decoration:none;">Aireys Inlet, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1675K · N/A trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">5.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/lorne-vic.html" style="color:#0d6b57;text-decoration:none;">Lorne, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1925K · N/A trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">5.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/heatherton-vic.html" style="color:#0d6b57;text-decoration:none;">Heatherton, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1155K · +24.65% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mckinnon-vic.html" style="color:#0d6b57;text-decoration:none;">McKinnon, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $724K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/carrum-downs-vic.html" style="color:#0d6b57;text-decoration:none;">Carrum Downs, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $829K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/eaglemont-vic.html" style="color:#0d6b57;text-decoration:none;">Eaglemont, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $2000K · +23.32% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/coburg-vic.html" style="color:#0d6b57;text-decoration:none;">Coburg, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $839K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/airport-west-vic.html" style="color:#0d6b57;text-decoration:none;">Airport West, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $940K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/cairnlea-vic.html" style="color:#0d6b57;text-decoration:none;">Cairnlea, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $970K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/berwick-vic.html" style="color:#0d6b57;text-decoration:none;">Berwick, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $875K · +6.96% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/belmont-vic.html" style="color:#0d6b57;text-decoration:none;">Belmont, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $822K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/brighton-vic.html" style="color:#0d6b57;text-decoration:none;">Brighton, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1385K · +3.57% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/burwood-vic.html" style="color:#0d6b57;text-decoration:none;">Burwood, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1268K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/braybrook-vic.html" style="color:#0d6b57;text-decoration:none;">Braybrook, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $790K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/broadmeadows-vic.html" style="color:#0d6b57;text-decoration:none;">Broadmeadows, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $687K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/burwood-east-vic.html" style="color:#0d6b57;text-decoration:none;">Burwood East, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1234K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/bundoora-vic.html" style="color:#0d6b57;text-decoration:none;">Bundoora, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $825K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/brunswick-west-vic.html" style="color:#0d6b57;text-decoration:none;">Brunswick West, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $588K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/beaconsfield-vic.html" style="color:#0d6b57;text-decoration:none;">Beaconsfield, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $976K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/waurn-ponds-vic.html" style="color:#0d6b57;text-decoration:none;">Waurn Ponds, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $835K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/bendigo-vic.html" style="color:#0d6b57;text-decoration:none;">Bendigo, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $545K · +14.31% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/balwyn-vic.html" style="color:#0d6b57;text-decoration:none;">Balwyn, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1655K · +3.47% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/blairgowrie-vic.html" style="color:#0d6b57;text-decoration:none;">Blairgowrie, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1120K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/portsea-vic.html" style="color:#0d6b57;text-decoration:none;">Portsea, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $3103K · N/A trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/ashburton-vic.html" style="color:#0d6b57;text-decoration:none;">Ashburton, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1574K · +3.70% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/altona-vic.html" style="color:#0d6b57;text-decoration:none;">Altona, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1050K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/albert-park-vic.html" style="color:#0d6b57;text-decoration:none;">Albert Park, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $2825K · +3.35% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/port-melbourne-vic.html" style="color:#0d6b57;text-decoration:none;">Port Melbourne, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1020K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/thomastown-vic.html" style="color:#0d6b57;text-decoration:none;">Thomastown, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $758K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/ringwood-east-vic.html" style="color:#0d6b57;text-decoration:none;">Ringwood East, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1100K · +20.30% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/warranwood-vic.html" style="color:#0d6b57;text-decoration:none;">Warranwood, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1273K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/langwarrin-vic.html" style="color:#0d6b57;text-decoration:none;">Langwarrin, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $950K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/epping-vic.html" style="color:#0d6b57;text-decoration:none;">Epping, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $728K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/point-lonsdale-vic.html" style="color:#0d6b57;text-decoration:none;">Point Lonsdale, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1352K · N/A trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/wantirna-vic.html" style="color:#0d6b57;text-decoration:none;">Wantirna, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1127K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/murrumbeena-vic.html" style="color:#0d6b57;text-decoration:none;">Murrumbeena, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $500K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/gowanbrae-vic.html" style="color:#0d6b57;text-decoration:none;">Gowanbrae, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1000K · -6.93% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/seaford-vic.html" style="color:#0d6b57;text-decoration:none;">Seaford, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $841K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/west-footscray-vic.html" style="color:#0d6b57;text-decoration:none;">West Footscray, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1008K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/blackburn-vic.html" style="color:#0d6b57;text-decoration:none;">Blackburn, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1310K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/barwon-heads-vic.html" style="color:#0d6b57;text-decoration:none;">Barwon Heads, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1823K · N/A trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/queenscliff-vic.html" style="color:#0d6b57;text-decoration:none;">Queenscliff, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1688K · N/A trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mount-eliza-vic.html" style="color:#0d6b57;text-decoration:none;">Mount Eliza, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1448K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/anglesea-vic.html" style="color:#0d6b57;text-decoration:none;">Anglesea, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1550K · N/A trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/wantirna-south-vic.html" style="color:#0d6b57;text-decoration:none;">Wantirna South, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1152K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/strathmore-vic.html" style="color:#0d6b57;text-decoration:none;">Strathmore, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1385K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/tootgarook-vic.html" style="color:#0d6b57;text-decoration:none;">Tootgarook, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $900K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/pascoe-vale-south-vic.html" style="color:#0d6b57;text-decoration:none;">Pascoe Vale South, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1229K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/ocean-grove-vic.html" style="color:#0d6b57;text-decoration:none;">Ocean Grove, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $841K · +8.38% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/sunshine-north-vic.html" style="color:#0d6b57;text-decoration:none;">Sunshine North, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $803K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/langwarrin-south-vic.html" style="color:#0d6b57;text-decoration:none;">Langwarrin South, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $2273K · +12.59% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/springvale-vic.html" style="color:#0d6b57;text-decoration:none;">Springvale, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $908K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/north-melbourne-vic.html" style="color:#0d6b57;text-decoration:none;">North Melbourne, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $585K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/viewbank-vic.html" style="color:#0d6b57;text-decoration:none;">Viewbank, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1073K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/lara-vic.html" style="color:#0d6b57;text-decoration:none;">Lara, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $743K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/nunawading-vic.html" style="color:#0d6b57;text-decoration:none;">Nunawading, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1193K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/rowville-vic.html" style="color:#0d6b57;text-decoration:none;">Rowville, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1095K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/glen-huntly-vic.html" style="color:#0d6b57;text-decoration:none;">Glen Huntly, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $485K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/vermont-south-vic.html" style="color:#0d6b57;text-decoration:none;">Vermont South, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1500K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/camberwell-vic.html" style="color:#0d6b57;text-decoration:none;">Camberwell, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1880K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/mulgrave-vic.html" style="color:#0d6b57;text-decoration:none;">Mulgrave, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1031K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/werribee-south-vic.html" style="color:#0d6b57;text-decoration:none;">Werribee South, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $554K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/williamstown-vic.html" style="color:#0d6b57;text-decoration:none;">Williamstown, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1440K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/sandringham-vic.html" style="color:#0d6b57;text-decoration:none;">Sandringham, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1069K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/safety-beach-vic.html" style="color:#0d6b57;text-decoration:none;">Safety Beach, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $1150K · -8.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
-      </div><div class="card">
-        <div>
-          <h2><a href="/suburb/noble-park-vic.html" style="color:#0d6b57;text-decoration:none;">Noble Park, VIC</a></h2>
-          <div class="meta">Balanced Opportunity · Median $840K · +25.00% trend signal</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:10px;"><span class="badge">4.0</span><span class="badge-sub">Balanced Opportunity</span></div>
+    <section class="opp-funnel" aria-label="Opportunity funnel">
+      <article class="opp-step">
+        <span>Layer 1</span>
+        <h2>Free preview</h2>
+        <p>See three live suburb signals with the main reasons, risks and confidence level.</p>
+      </article>
+      <article class="opp-step">
+        <span>Layer 2</span>
+        <h2>Register for Top 10</h2>
+        <p>Tell us your budget, goal and property type to unlock a personalised Top 10.</p>
+      </article>
+      <article class="opp-step">
+        <span>Layer 3</span>
+        <h2>Investor Pro</h2>
+        <p>Subscription access will add all rankings, saved filters, alerts and deeper evidence.</p>
+      </article>
+    </section>
+
+    <section class="opp-panel" aria-labelledby="preview-title">
+      <div class="opp-panel-head">
+        <div>
+          <h2 id="preview-title">Free Future Opportunity preview</h2>
+          <p>
+            This preview uses the current API and only shows a small sample. Register to rerank the
+            list around your own budget and investment goal.
+          </p>
+        </div>
+        <button class="opp-btn opp-btn-secondary" type="button" id="refresh-preview">
+          Refresh preview
+        </button>
       </div>
-  </div>
+
+      <form class="opp-filter-grid" id="opp-filter-form">
+        <div class="opp-field">
+          <label for="opp-strategy">Goal</label>
+          <select id="opp-strategy" name="strategy">
+            <option value="balanced">Balanced</option>
+            <option value="growth">Capital growth</option>
+            <option value="income">Income</option>
+            <option value="school">School demand</option>
+            <option value="value">Value</option>
+          </select>
+        </div>
+        <div class="opp-field">
+          <label for="opp-property-type">Property type</label>
+          <select id="opp-property-type" name="propertyType">
+            <option value="house">House</option>
+            <option value="unit">Unit</option>
+            <option value="either">Either</option>
+          </select>
+        </div>
+        <div class="opp-field">
+          <label for="opp-budget-min">Budget min</label>
+          <input id="opp-budget-min" name="budgetMin" inputmode="numeric" placeholder="600000" />
+        </div>
+        <div class="opp-field">
+          <label for="opp-budget-max">Budget max</label>
+          <input id="opp-budget-max" name="budgetMax" inputmode="numeric" placeholder="1100000" />
+        </div>
+        <div class="opp-field">
+          <label for="opp-state">State</label>
+          <select id="opp-state" name="state">
+            <option value="vic">Victoria</option>
+          </select>
+        </div>
+      </form>
+
+      <div class="opp-actions">
+        <button class="opp-btn opp-btn-primary" type="button" id="unlock-top10">
+          Get My Personalised Top 10
+        </button>
+        <a class="opp-btn opp-btn-secondary" href="/#valuation">Check a property first</a>
+      </div>
+
+      <p class="opp-state" id="preview-state" role="status">Loading Future Opportunity preview...</p>
+      <div class="opp-grid preview" id="preview-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="opp-panel opp-hidden" id="registered-section" aria-labelledby="registered-title">
+      <div class="opp-panel-head">
+        <div>
+          <h2 id="registered-title">Your personalised Top 10</h2>
+          <p>
+            These results keep the base Future Opportunity Index intact, then apply a capped
+            preference adjustment for budget, goal and property type.
+          </p>
+        </div>
+        <button class="opp-btn opp-btn-secondary" type="button" id="rerank-top10">
+          Re-rank with filters
+        </button>
+      </div>
+      <p class="opp-state" id="results-state" role="status"></p>
+      <div class="opp-grid results" id="results-grid" aria-live="polite"></div>
+    </section>
+
+    <section class="opp-upgrade opp-hidden" id="subscription-section" aria-labelledby="subscription-title">
+      <h2 id="subscription-title">Want the full opportunity layer?</h2>
+      <p>
+        Investor Pro is planned at AUD $9.99/month with a 7-day free trial. It will include all suburb
+        rankings, weekly opportunity lists, market alerts and deeper evidence. Payment integration is
+        still coming soon.
+      </p>
+      <div class="opp-actions">
+        <button class="opp-btn opp-btn-primary" type="button" id="subscription-cta">
+          Show subscription preview
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <script src="/opportunity-gate.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      var previewGrid = document.getElementById("preview-grid");
+      var resultsGrid = document.getElementById("results-grid");
+      var previewState = document.getElementById("preview-state");
+      var resultsState = document.getElementById("results-state");
+      var registeredSection = document.getElementById("registered-section");
+      var subscriptionSection = document.getElementById("subscription-section");
+
+      function text(value, fallback) {
+        if (value === null || value === undefined || value === "") return fallback || "Data unavailable";
+        return String(value);
+      }
+
+      function number(value) {
+        var n = Number(value);
+        return Number.isFinite(n) ? n : null;
+      }
+
+      function scoreFor(item) {
+        var direct = number(item.futureOpportunityIndex);
+        if (direct !== null) return Math.round(direct);
+        var personalised = number(item.personalisedFutureScore || item.personalisedScore);
+        if (personalised !== null) return Math.round(personalised);
+        var fallback = number(item.opportunityScore || item.baseFutureScore || item.baseScore);
+        return fallback === null ? null : Math.round(fallback);
+      }
+
+      function money(value) {
+        var n = number(value);
+        if (n === null || n <= 0) return "Median unavailable";
+        if (n >= 1000000) return "Median $" + (n / 1000000).toFixed(2).replace(/\.00$/, "") + "M";
+        return "Median $" + Math.round(n / 1000) + "K";
+      }
+
+      function strategyLabel(value) {
+        var map = {
+          balanced: "Balanced",
+          growth: "Capital growth",
+          income: "Income",
+          cashflow: "Income",
+          school: "School demand",
+          value: "Value",
+        };
+        return map[value] || text(value, "Balanced");
+      }
+
+      function confidenceLabel(value) {
+        if (typeof value === "string") return value;
+        var n = number(value);
+        if (n === null) return "Data unavailable";
+        if (n >= 70) return "High";
+        if (n >= 45) return "Medium";
+        return "Limited";
+      }
+
+      function append(parent, tag, className, content) {
+        var node = document.createElement(tag);
+        if (className) node.className = className;
+        if (content !== undefined) node.textContent = content;
+        parent.appendChild(node);
+        return node;
+      }
+
+      function appendList(parent, title, values) {
+        var block = append(parent, "div", "opp-list-block");
+        append(block, "p", "opp-list-title", title);
+        var list = append(block, "ul", "opp-list");
+        var safeValues = Array.isArray(values) ? values.filter(Boolean).slice(0, 4) : [];
+        if (!safeValues.length) safeValues = ["Data unavailable"];
+        safeValues.forEach(function (value) {
+          append(list, "li", "", text(value));
+        });
+      }
+
+      function buildCard(item, index, mode) {
+        var card = document.createElement("article");
+        card.className = "opp-card";
+
+        var top = append(card, "div", "opp-card-top");
+        var titleWrap = append(top, "div", "");
+        append(titleWrap, "h3", "", (index ? index + ". " : "") + text(item.suburb, "Unknown suburb"));
+        var metaParts = [
+          strategyLabel(item.strategy || item.opportunityType),
+          text(item.propertyType, "house"),
+          money(item.selectedMedianPrice || item.medianHousePrice || item.medianUnitPrice),
+        ];
+        append(titleWrap, "div", "opp-card-meta", metaParts.join(" | "));
+
+        var score = append(top, "div", "opp-score");
+        append(score, "strong", "", scoreFor(item) === null ? "--" : String(scoreFor(item)));
+        append(score, "span", "", mode === "registered" ? "Personal score" : "Future score");
+
+        appendList(card, "Why it may fit", item.why || item.reasons || item.matchReasons);
+        appendList(card, "Key risks", item.risks || item.risk);
+
+        var foot = append(card, "div", "opp-card-meta");
+        foot.textContent =
+          "Confidence: " +
+          confidenceLabel(item.confidence) +
+          " | Updated: " +
+          text(item.dataUpdated || item.updatedAt || item.dataAsOf, "Data unavailable");
+
+        append(
+          card,
+          "div",
+          "opp-disclaimer",
+          text(
+            item.disclaimer,
+            "Future Opportunity Index is a relative screening score, not a forecast, valuation or promise of future capital growth."
+          )
+        );
+
+        return card;
+      }
+
+      function getFilters() {
+        function value(id) {
+          var el = document.getElementById(id);
+          return el ? el.value.trim() : "";
+        }
+        return {
+          strategy: value("opp-strategy") || "balanced",
+          propertyType: value("opp-property-type") || "house",
+          budgetMin: value("opp-budget-min"),
+          budgetMax: value("opp-budget-max"),
+          state: value("opp-state") || "vic",
+        };
+      }
+
+      function buildQuery(filters, maxResults) {
+        var params = new URLSearchParams();
+        params.set("strategy", filters.strategy);
+        params.set("propertyType", filters.propertyType);
+        params.set("maxResults", String(maxResults));
+        if (filters.budgetMin) params.set("minPrice", filters.budgetMin);
+        if (filters.budgetMax) params.set("maxPrice", filters.budgetMax);
+        return params.toString();
+      }
+
+      function renderPreview(items) {
+        previewGrid.replaceChildren();
+        items.slice(0, 3).forEach(function (item, i) {
+          previewGrid.appendChild(buildCard(item, i + 1, "free"));
+        });
+      }
+
+      function renderResults(items) {
+        resultsGrid.replaceChildren();
+        items.slice(0, 10).forEach(function (item, i) {
+          resultsGrid.appendChild(buildCard(item, i + 1, "registered"));
+        });
+        registeredSection.classList.remove("opp-hidden");
+        subscriptionSection.classList.remove("opp-hidden");
+      }
+
+      function loadPreview() {
+        var filters = getFilters();
+        previewState.textContent = "Loading Future Opportunity preview...";
+        previewGrid.replaceChildren();
+        fetch("/api/opportunity?" + buildQuery(filters, 3), { credentials: "same-origin" })
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (data) {
+            var items = data && Array.isArray(data.opportunities) ? data.opportunities : [];
+            if (!items.length) {
+              previewState.textContent = "Data temporarily unavailable. Please try again later.";
+              return;
+            }
+            previewState.textContent = "Showing 3 free preview suburbs. Register for your personalised Top 10.";
+            renderPreview(items);
+          })
+          .catch(function () {
+            previewState.textContent = "Data temporarily unavailable. Please try again later.";
+          });
+      }
+
+      function loadRegisteredTop10() {
+        var filters = getFilters();
+        var params = new URLSearchParams();
+        params.set("re_rank", "1");
+        params.set("goal", filters.strategy);
+        params.set("propertyType", filters.propertyType);
+        if (filters.budgetMin) params.set("budgetMin", filters.budgetMin);
+        if (filters.budgetMax) params.set("budgetMax", filters.budgetMax);
+
+        resultsState.textContent = "Loading your personalised Future Opportunity Top 10...";
+        return fetch("/api/unlock-opportunity?" + params.toString(), { credentials: "same-origin" })
+          .then(function (r) {
+            return r.json();
+          })
+          .then(function (data) {
+            var items = data && Array.isArray(data.top10) ? data.top10 : [];
+            if (!items.length) {
+              resultsState.textContent = "Register to generate a personalised Top 10.";
+              return false;
+            }
+            resultsState.textContent = "Personalised Top 10 ready.";
+            renderResults(items);
+            return true;
+          })
+          .catch(function () {
+            resultsState.textContent = "Data temporarily unavailable. Please try again later.";
+            return false;
+          });
+      }
+
+      function unlockTop10() {
+        var filters = getFilters();
+        if (!window.opportunityGate || typeof window.opportunityGate.run !== "function") return;
+        window.opportunityGate.run(
+          {
+            strategy: filters.strategy,
+            propertyType: filters.propertyType,
+            budgetMin: filters.budgetMin,
+            budgetMax: filters.budgetMax,
+            state: filters.state,
+            language: "en",
+          },
+          function (data) {
+            var items = data && Array.isArray(data.top10) ? data.top10 : [];
+            resultsState.textContent = items.length
+              ? "Personalised Top 10 ready."
+              : "Your registration succeeded, but data is temporarily unavailable.";
+            if (items.length) renderResults(items);
+          }
+        );
+      }
+
+      document.getElementById("refresh-preview").addEventListener("click", loadPreview);
+      document.getElementById("opp-filter-form").addEventListener("change", loadPreview);
+      document.getElementById("unlock-top10").addEventListener("click", unlockTop10);
+      document.getElementById("rerank-top10").addEventListener("click", loadRegisteredTop10);
+      document.getElementById("subscription-cta").addEventListener("click", function () {
+        if (window.opportunityGate && typeof window.opportunityGate.showSubscriptionUpgrade === "function") {
+          window.opportunityGate.showSubscriptionUpgrade({ language: "en" });
+        }
+      });
+
+      loadPreview();
+      if (window.opportunityGate && typeof window.opportunityGate.checkTier === "function") {
+        window.opportunityGate.checkTier().then(function (tier) {
+          if (tier && tier.tier !== "free") loadRegisteredTop10();
+        });
+      }
+    })();
+  </script>
 </body>
 </html>

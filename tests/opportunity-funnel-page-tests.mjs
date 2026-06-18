@@ -1,0 +1,55 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+
+const page = fs.readFileSync(path.resolve("public/opportunities/index.html"), "utf8");
+const gate = fs.readFileSync(path.resolve("public/opportunity-gate.js"), "utf8");
+
+test("opportunities page is a three-layer Future Opportunity funnel", () => {
+  assert.match(page, /Future Opportunity Index/);
+  assert.match(page, /Free preview/);
+  assert.match(page, /Get My Personalised Top 10/);
+  assert.match(page, /Investor Pro/);
+  assert.match(page, /AUD \$9\.99\/month/);
+});
+
+test("opportunities page uses live Future Opportunity and unlock APIs", () => {
+  assert.match(page, /\/api\/opportunity\?/);
+  assert.match(page, /\/api\/unlock-opportunity\?/);
+  assert.match(page, /opportunityGate\.run/);
+  assert.match(page, /opportunityGate\.checkTier/);
+  assert.match(page, /showSubscriptionUpgrade/);
+});
+
+test("free opportunity layer is capped to three preview cards", () => {
+  assert.match(page, /maxResults"\s*,\s*String\(maxResults\)/);
+  assert.match(page, /buildQuery\(filters,\s*3\)/);
+  assert.match(page, /items\.slice\(0,\s*3\)/);
+});
+
+test("registered opportunity layer renders personalised Top 10", () => {
+  assert.match(page, /items\.slice\(0,\s*10\)/);
+  assert.match(page, /Personalised Top 10/);
+  assert.match(page, /Personalised Top 10 ready/);
+  assert.match(page, /personalisedFutureScore|personalisedScore/);
+});
+
+test("opportunities page no longer exposes static percentage trend signals", () => {
+  assert.doesNotMatch(page, /trend signal/i);
+  assert.doesNotMatch(page, /[+-]\d+(?:\.\d+)?%/);
+  assert.doesNotMatch(page, /25\.00%/);
+  assert.doesNotMatch(page, /<a\s+href="\/suburb\//i);
+});
+
+test("opportunities page uses safe Future Opportunity disclaimer language", () => {
+  assert.match(page, /not a price forecast/i);
+  assert.match(page, /not a forecast, valuation or promise/i);
+  assert.match(page, /relative screening score/i);
+});
+
+test("opportunity gate no longer auto-redirects the public funnel page", () => {
+  assert.match(gate, /dataset\.opportunityProtect === "true"/);
+  assert.doesNotMatch(gate, /if\s*\(\s*typeof window !== "undefined"\s*\)\s*\{\s*window\.opportunityGate\.protectPage\(\);/);
+});
+
