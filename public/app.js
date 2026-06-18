@@ -140,6 +140,7 @@ let language = "en";
 // Phase 1E3D-1A: Report draft token (memory only, never localStorage/sessionStorage/Cookie)
 var currentReportDraft = null;
 // Payments gate: fail-closed — only enabled when API returns paymentsEnabled === true
+// When false: hide $3.99, hide lead panel, skip checkout modal, show no payment UI
 var paymentsEnabled = false;
 // { token, expiresAt (ISO string), address }
 let activeInvestorTheme = null;
@@ -543,7 +544,7 @@ const uiText = {
       'label[for="lead-phone"]': "Phone optional",
       ".form-provider-note": "Submission details are securely stored for report delivery and customer follow-up. We may record an approximate visitor region, but do not display your full IP address.",
       ".consent span": "You may contact me about this property report.",
-      "#unlock-report": "Unlock Full Report — AUD $3.99",
+      "#unlock-report": "Unlock Full Report",  // price set conditionally in applyLanguage
       ".side-panel .panel:nth-of-type(2) h2": "Check Status",
       ".summary-main .eyebrow": "First-layer desktop valuation",
       ".value-band div:nth-child(1) span": "Estimated value",
@@ -699,7 +700,7 @@ const uiText = {
       'label[for="lead-phone"]': "电话 选填",
       ".form-provider-note": "提交资料将安全保存，用于发送报告和客户跟进。系统可能记录大致访问地区，但不会在后台显示你的完整 IP 地址。",
       ".consent span": "我同意你可以就这份房产报告联系我。",
-      "#unlock-report": "解锁完整报告 — AUD $3.99",
+      "#unlock-report": "解锁完整报告",  // price set conditionally in applyLanguage
       ".side-panel .panel:nth-of-type(2) h2": "检查状态",
       ".side-panel .panel:nth-of-type(3) h2": "手工上传",
       ".summary-main .eyebrow": "第一层桌面估值",
@@ -1335,6 +1336,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         paymentsEnabled: result.paymentsEnabled === true,
         reportDraftToken: result.reportDraftToken || null,
         draftExpiresAt: result.draftExpiresAt || null,
+        propertyFutureOutlook: result.propertyFutureOutlook || null,
         evidenceSummaryZh: ""
       };
     }
@@ -1389,6 +1391,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
       paymentsEnabled: result.paymentsEnabled === true,
       reportDraftToken: result.reportDraftToken || null,
       draftExpiresAt: result.draftExpiresAt || null,
+      propertyFutureOutlook: result.propertyFutureOutlook || null,
       evidenceSummaryZh: ""
     };
 
@@ -1427,6 +1430,44 @@ function getLocalizedModelNotes(data) {
 function getPlanningLabels(data) {
   if (data.planningLabels?.[language]) return data.planningLabels[language];
   return labelSets[language].factLabels.slice(4, 7);
+}
+
+function renderPropertyFutureOutlook(outlook) {
+  var panel = byId("property-future-outlook");
+  if (!panel) return;
+  if (!outlook || outlook.futureOpportunityIndex == null) {
+    panel.style.display = "none";
+    return;
+  }
+
+  var score = Number(outlook.futureOpportunityIndex);
+  if (!Number.isFinite(score)) {
+    panel.style.display = "none";
+    return;
+  }
+
+  var scoreEl = byId("property-future-outlook-score");
+  var bandEl = byId("property-future-outlook-band");
+  var detailEl = byId("property-future-outlook-detail");
+  var reasonEl = byId("property-future-outlook-reason");
+
+  panel.style.display = "";
+  if (scoreEl) scoreEl.textContent = score.toFixed(1).replace(/\.0$/, "") + "/100";
+  if (bandEl) bandEl.textContent = outlook.band || (language === "zh" ? "未来机会指数" : "Future Opportunity Index");
+  if (detailEl) {
+    var horizon = outlook.forecastHorizon || "3-5 years";
+    var confidence = outlook.confidence || "Low";
+    detailEl.textContent = (language === "zh")
+      ? horizon + " 机会指数 · 置信度 " + confidence + " · 非价格预测"
+      : horizon + " opportunity index · " + confidence + " confidence · not a price forecast";
+  }
+  if (reasonEl) {
+    var reasons = Array.isArray(outlook.reasons) ? outlook.reasons : [];
+    var risks = Array.isArray(outlook.risks) ? outlook.risks : [];
+    var text = reasons.slice(0, 2).join(" · ");
+    if (risks.length > 0) text += (text ? " | " : "") + "Risk: " + risks.slice(0, 1).join(" · ");
+    reasonEl.textContent = text || (language === "zh" ? "当前数据不足，指数已下调置信度。" : "Limited property-specific data; confidence has been adjusted.");
+  }
 }
 
 const dynamicText = {
@@ -1796,6 +1837,7 @@ function renderValuation(data) {
   byId("land-source").textContent = getLocalizedPlanning(data, "landSource");
   byId("granny-potential").textContent = getLocalizedPlanning(data, "granny");
   byId("approval-certainty").textContent = getLocalizedPlanning(data, "approval");
+  renderPropertyFutureOutlook(data.propertyFutureOutlook);
   setList("reasons", getLocalizedArray(data, "reasons"));
   renderSuburbFundamentals(data.suburb, language);
   renderComparables(data.comparables, data.comparableCount);
@@ -1880,7 +1922,7 @@ function renderValuation(data) {
   } else if (isRegistered) {
     // ── Registered tier: mid-tier data unlocked (no payment mode) ──
     if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
-    // Hide the register/pay button — user already has access
+    // When payments disabled, hide the lead/pay panel entirely
     if (unlockBtn2) {
       unlockBtn2.style.display = "none";
     }
@@ -1892,8 +1934,8 @@ function renderValuation(data) {
 
     // ── Render registered-tier cards ──
     renderRegisteredTierCards(data, language);
-  } else {
-    // ── Free tier: no registration → register CTA ──
+  } else if (paymentsEnabled) {
+    // ── Free tier with payments enabled: show register CTA with price ──
     if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
     if (unlockBtn2) {
       unlockBtn2.style.display = "";
@@ -1907,7 +1949,20 @@ function renderValuation(data) {
     var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
     if (priceLabelEl) { priceLabelEl.style.display = "none"; }
 
-    // ── Hide registered-tier cards when free tier ──
+    hideRegisteredTierCards();
+  } else {
+    // ── Free tier, payments disabled: hide lead/payment panel entirely ──
+    // No $3.99, no checkout modal, no email/name/phone/payment consent form
+    if (layoutEl) { layoutEl.classList.add("payments-disabled"); }
+    if (unlockBtn2) {
+      unlockBtn2.style.display = "none";
+    }
+    if (leadPanel2) { leadPanel2.style.display = "none"; }
+    var existingLinkEl = byId("existing-unlock-link");
+    if (existingLinkEl) { existingLinkEl.style.display = "none"; }
+    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
+    if (priceLabelEl) { priceLabelEl.style.display = "none"; }
+
     hideRegisteredTierCards();
   }
 
@@ -1995,12 +2050,22 @@ function applyLanguage() {
   byId("lead-phone").placeholder = language === "zh" ? "下载 PDF 时需要" : "For PDF download";
   var existingLink = byId("existing-unlock-link");
   if (existingLink) {
-    existingLink.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    // Phase 2B: Only show price when payments enabled
+    if (paymentsEnabled === true) {
+      existingLink.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    } else {
+      existingLink.textContent = language === "zh" ? "解锁完整报告" : "Unlock Full Report";
+    }
   }
   // Phase 1E3D-1A: Also update i18n for unlock button text
   var unlockBtn2 = byId("unlock-report");
   if (unlockBtn2) {
-    unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    // Phase 2B: Only show price when payments enabled
+    if (paymentsEnabled === true) {
+      unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+    } else {
+      unlockBtn2.textContent = language === "zh" ? "解锁完整报告" : "Unlock Full Report";
+    }
   }
   byId("manual-data-notes").placeholder =
     language === "zh"
@@ -2218,18 +2283,27 @@ function renderLockState() {
         }
       }
       // Phase 2: Three-tier locked preview CTA
+      // Fail-closed: only show $3.99 when paymentsEnabled === true
       var isRegd = !!getLeadContactId();
-      if (draftValid && paymentsEnabled) {
+      if (paymentsEnabled && draftValid) {
         // Paid user: show price (flow-through for when payments go live)
         lockedPreview = JSON.parse(JSON.stringify(lockedPreview));
         lockedPreview.cta = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
-      } else if (isRegd) {
-        // Registered user not yet paid: show price even when payments disabled
-        lockedPreview = JSON.parse(JSON.stringify(lockedPreview));
+        // Keep price/terms as-is (they already show $3.99)
+      } else if (paymentsEnabled) {
+        // Payment mode but no draft yet
         lockedPreview.cta = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
-      } else if (!paymentsEnabled && !isRegd) {
-        // Free tier: no registration
-        lockedPreview.cta = language === "zh" ? "注册后即可查看完整报告" : "Register to view full report";
+      } else if (isRegd) {
+        // Registered user, payments disabled: show registration complete, no price
+        lockedPreview = JSON.parse(JSON.stringify(lockedPreview));
+        lockedPreview.cta = language === "zh" ? "查看完整报告" : "View Full Report";
+        lockedPreview.price = "";
+        lockedPreview.priceLabel = "";
+        lockedPreview.terms = "";
+      } else {
+        // Free tier, payments disabled: hide locked preview entirely
+        lockedPreviewEl.classList.add("hidden");
+        return;
       }
       var ctaHtml = renderLockedPreviewHTML(lockedPreview);
       lockedPreviewEl.innerHTML = ctaHtml;
@@ -2244,10 +2318,10 @@ function renderLockedPreviewHTML(lockedPreview) {
   var lang = typeof language !== "undefined" ? language : "en";
   var isZh = lang === "zh";
   var chapters = lockedPreview.chapters || [];
-  var price = lockedPreview.price || "AUD $3.99";
-  var priceLabel = lockedPreview.priceLabel || "Introductory Offer";
+  var price = lockedPreview.price !== undefined && lockedPreview.price !== null ? lockedPreview.price : "AUD $3.99";
+  var priceLabel = lockedPreview.priceLabel !== undefined && lockedPreview.priceLabel !== null ? lockedPreview.priceLabel : "Introductory Offer";
   var cta = lockedPreview.cta || "Unlock Full Valuation Report";
-  var terms = lockedPreview.terms || "One-time payment. PDF download included.";
+  var terms = lockedPreview.terms !== undefined && lockedPreview.terms !== null ? lockedPreview.terms : "One-time payment. PDF download included.";
 
   var html = '<div class="locked-preview-inner" style="border:2px dashed #dbe2de;border-radius:12px;padding:24px;margin:20px 0;background:#f8faf9;">';
   html += '<h3 style="margin-top:0;color:#17211d;">' + (isZh ? '完整报告章节预览' : 'Full Report Preview') + '</h3>';
@@ -2261,10 +2335,16 @@ function renderLockedPreviewHTML(lockedPreview) {
   });
   html += '</div>';
   html += '<div style="margin-top:20px;text-align:center;">';
-  html += '<p style="font-size:1.2rem;font-weight:700;color:#17211d;margin-bottom:4px;">' + price + '</p>';
-  html += '<p style="font-size:0.8rem;color:#0d6b57;font-weight:600;margin:0 0 12px;">' + priceLabel + '</p>';
+  if (price && price.length > 0) {
+    html += '<p style="font-size:1.2rem;font-weight:700;color:#17211d;margin-bottom:4px;">' + price + '</p>';
+    if (priceLabel && priceLabel.length > 0) {
+      html += '<p style="font-size:0.8rem;color:#0d6b57;font-weight:600;margin:0 0 12px;">' + priceLabel + '</p>';
+    }
+  }
   html += '<button id="locked-preview-cta-btn" onclick="window.scrollTo({top:document.querySelector(\'.lead-panel\')?.offsetTop || 0,behavior:\'smooth\'})" style="background:#0d6b57;color:white;border:none;border-radius:8px;padding:12px 24px;font-weight:600;font-size:1rem;cursor:pointer;">' + cta + '</button>';
-  html += '<p style="font-size:0.7rem;color:#889994;margin-top:8px;">' + terms + '</p>';
+  if (terms && terms.length > 0) {
+    html += '<p style="font-size:0.7rem;color:#889994;margin-top:8px;">' + terms + '</p>';
+  }
   html += '</div></div>';
   return html;
 }
@@ -2789,9 +2869,10 @@ async function downloadDemoReport() {
     }
     var html = await response.text();
     // Open in new tab for printing/saving as PDF
+    // Phase 2B: Navigate in-page instead of window.open for security
     var blob = new Blob([html], { type: "text/html" });
     var url = URL.createObjectURL(blob);
-    window.open(url, "_blank");
+    window.location.assign(url);
     setTimeout(function() { URL.revokeObjectURL(url); }, 30000);
     if (msgEl) msgEl.textContent = "";
   } catch (err) {
@@ -2888,10 +2969,14 @@ function updatePurchaseButton() {
     // Registered tier: button enabled for purchase
     btn.disabled = false;
     btn.removeAttribute("aria-disabled");
-  } else {
-    // Free tier: allow click — openCheckoutModal validates the form
+  } else if (paymentsEnabled) {
+    // Free tier with payments: allow click — openCheckoutModal validates the form
     btn.disabled = false;
     btn.removeAttribute("aria-disabled");
+  } else {
+    // Free tier without payments: disable button, no price visible
+    btn.disabled = true;
+    btn.setAttribute("aria-disabled", "true");
   }
 }
 
@@ -3220,7 +3305,12 @@ window.checkoutPending = false;
 // ── Wire up purchase button ──
 var unlockBtn = byId("unlock-report");
 if (unlockBtn) {
-  unlockBtn.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+  // Phase 2B: Only show price when payments enabled
+  if (paymentsEnabled === true) {
+    unlockBtn.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
+  } else {
+    unlockBtn.textContent = language === "zh" ? "解锁完整报告" : "Unlock Full Report";
+  }
   // Keyboard: Enter / Space
   unlockBtn.addEventListener("keydown", function (e) {
     if (e.key === "Enter" || e.key === " ") {
@@ -3456,6 +3546,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
 applyLanguage();
 
+/* ── URL query param auto-valuation ── */
+(function autoValuationFromURL() {
+  var params = new URLSearchParams(window.location.search);
+  var addr = params.get("address");
+  if (!addr || !addr.trim()) return;
+  var ptype = params.get("type") || "House";
+  var targetBtn = byId("start-valuation");
+  var addrInput = byId("address");
+  if (addrInput) addrInput.value = addr;
+  /* Auto-trigger valuation after short delay for DOM settle */
+  setTimeout(function () {
+    if (targetBtn) {
+      targetBtn.click();
+    }
+  }, 100);
+})();
+
 /* Phase 1B: Full report Coming Soon — no localStorage restore allowed */
 /* Remove restoreReportUnlock(); valuation report unlock not available in Phase 1B */
 
@@ -3464,31 +3571,37 @@ async function loadHomeOpportunities() {
   const el = document.getElementById('home-snippet');
   if (!el) return;
   try {
-    const res = await fetch('/api/opportunity?maxResults=50');
+    const res = await fetch('/api/future-opportunity?maxResults=50&strategy=balanced');
     const data = await res.json();
-    if (!data.ok || !data.opportunities || data.opportunities.length === 0) return;
+    if (!data.ok || !data.items || data.items.length === 0) return;
 
-    const all = data.opportunities;
+    const all = data.items;
+    const esc = value => String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
 
-    // Sort into categories by opportunityType
+    // Sort into categories by best-fit signal.
     const byType = {};
     all.forEach(o => {
-      const t = o.opportunityType || 'Balanced';
+      const t = Array.isArray(o.bestFor) && o.bestFor.length > 0 ? o.bestFor[0] : 'Balanced';
       if (!byType[t]) byType[t] = [];
       byType[t].push(o);
     });
 
     // Pick best 3 from each category
     const categories = {
-      'Smart Buy':    { label: 'Top Value',     color: '#0d6b57', desc: o => `${o.opportunityType} · Improving fundamentals` },
-      'Growth':       { label: 'Top Growth',    color: '#065f46', desc: o => `Strong growth indicators` },
-      'School Zone':  { label: 'Top School',    color: '#1e40af', desc: o => `School score ${(o.schoolScore || 0).toFixed(0)}/100` },
-      'Balanced':     { label: 'Top Balanced',  color: '#0d6b57', desc: o => `${o.opportunityType} · Balanced fundamentals` }
+      'Affordable entry': { label: 'Affordable Entry', color: '#0d6b57', desc: o => `${o.band || 'Outlook'} · ${o.confidence || 'Low'} confidence` },
+      'Capital growth':   { label: 'Growth Outlook',   color: '#065f46', desc: o => `${o.band || 'Outlook'} · ${o.forecastHorizon || '3-5 years'}` },
+      'School demand':    { label: 'School Demand',    color: '#1e40af', desc: o => `${o.band || 'Outlook'} · ${o.confidence || 'Low'} confidence` },
+      'Income':           { label: 'Income Outlook',   color: '#8a4b0f', desc: o => `${o.band || 'Outlook'} · rental pressure signal` },
+      'Balanced':         { label: 'Balanced Outlook', color: '#0d6b57', desc: o => `${o.band || 'Outlook'} · ${o.forecastHorizon || '3-5 years'}` }
     };
 
     let html = `<div id="top-opportunities" style="max-width:960px;margin:40px auto;padding:0 20px;">
-  <h2>Top Opportunities</h2>
-  <p style="color:#66736d;margin-bottom:20px;">Data-driven rankings refreshed nightly. Scores based on growth, school quality, rental yield, vacancy and undervaluation.</p>
+  <h2>Future Opportunity Outlook</h2>
+  <p style="color:#66736d;margin-bottom:20px;">3-5 year 0-100 opportunity index based on demand, supply, relative value, rental pressure and evidence quality. Not a price forecast.</p>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">`;
 
     for (const [type, cfg] of Object.entries(categories)) {
@@ -3496,15 +3609,16 @@ async function loadHomeOpportunities() {
       if (items.length === 0) continue;
       html += `<div><h3 style="color:${cfg.color};">${cfg.label}</h3>`;
       items.forEach(o => {
-        const slug = o.suburb.toLowerCase().replace(/\s+/g, '-') + '-' + (o.state||'vic').toLowerCase();
-        html += `<div><a href="/suburb/${slug}.html">${o.suburb}</a> <span style="background:${cfg.color};color:white;border-radius:20px;padding:2px 8px;font-size:0.8rem;">${o.opportunityScore}</span> <span style="color:#66736d;font-size:0.8rem;">${cfg.desc(o)}</span></div>`;
+        const slug = String(o.suburb || '').toLowerCase().replace(/\s+/g, '-') + '-' + (o.state||'vic').toLowerCase();
+        const score = Number.isFinite(Number(o.futureOpportunityIndex)) ? Number(o.futureOpportunityIndex).toFixed(1).replace(/\.0$/, '') : 'N/A';
+        html += `<div><a href="/suburb/${esc(slug)}.html">${esc(o.suburb)}</a> <span style="background:${cfg.color};color:white;border-radius:20px;padding:2px 8px;font-size:0.8rem;">${esc(score)}</span> <span style="color:#66736d;font-size:0.8rem;">${esc(cfg.desc(o))}</span></div>`;
       });
       html += `</div>`;
     }
 
     html += `
   </div>
-  <div style="text-align:center;margin-top:24px;"><a href="/opportunities/" style="background:#0d6b57;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:600;">View all opportunities →</a></div>
+  <div style="text-align:center;margin-top:24px;"><a href="/opportunities/" style="background:#0d6b57;color:white;padding:10px 24px;border-radius:8px;text-decoration:none;font-weight:600;">View Future Outlook →</a></div>
 </div>`;
 
     el.innerHTML = html;
@@ -3523,7 +3637,7 @@ const oppLoading = document.getElementById("opp-loading");
 
 /**
  * Render personalised Top 10 cards.
- * Shows: suburb, baseScore, personalisedScore, reason, risk, confidence, dataUpdated.
+ * Shows: suburb, Future Opportunity Index, reason, risk, confidence, dataUpdated.
  * NO growth3y, NO High Growth, NO "Growth: x%".
  * When API data is unavailable, show "Data unavailable" — never fall back to generic rankings.
  */
@@ -3534,35 +3648,46 @@ function renderPersonalisedTop10(top10) {
     oppResults.innerHTML = '<div class="opp-placeholder"><p>Data unavailable. No personalised rankings available at this time.</p></div>';
     return;
   }
-  var html = '<p class="opp-meta">Personalised Top ' + top10.length + ' — ranked for your preferences</p>';
+  var esc = function (value) {
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  };
+  var html = '<p class="opp-meta">Personalised Top ' + top10.length + ' — Future Opportunity Index ranked for your preferences</p>';
   top10.forEach(function (o) {
     var suburb = o.suburb || 'Unknown';
-    var baseScore = o.baseScore != null ? o.baseScore.toFixed(1) : 'N/A';
-    var persScore = o.personalisedScore != null ? o.personalisedScore.toFixed(1) : 'N/A';
+    var baseRaw = o.baseFutureScore != null ? o.baseFutureScore : o.baseScore;
+    var persRaw = o.personalisedFutureScore != null ? o.personalisedFutureScore : o.personalisedScore;
+    var baseScore = baseRaw != null ? Number(baseRaw).toFixed(1) : 'N/A';
+    var persScore = persRaw != null ? Number(persRaw).toFixed(1) : 'N/A';
     var reason = o.reason || 'Data unavailable';
     var risk = o.risk || 'Standard market risk profile';
     var confidence = o.confidence || 'Low';
     var updated = o.dataUpdated || '-';
+    var horizon = o.forecastHorizon || '3-5 years';
     var slug = suburb.toLowerCase().replace(/\s+/g, '-') + '-' + (o.state||'vic').toLowerCase();
     if (reason === 'Data unavailable') {
       // data truly unavailable — don't pretend
       html += '\n<div class="opp-result-card opp-card-unavailable">';
-      html += '<div class="opp-result-main"><div class="address">' + suburb + '</div>';
+      html += '<div class="opp-result-main"><div class="address">' + esc(suburb) + '</div>';
       html += '<div style="color:#999;font-size:0.85rem;margin-top:6px;">Data unavailable</div></div>';
       html += '</div>';
     } else {
       html += '\n<div class="opp-result-card">';
       html += '<div class="opp-result-main">';
-      html += '<div class="address"><a href="/suburb/' + slug + '.html">' + suburb + '</a></div>';
+      html += '<div class="address"><a href="/suburb/' + esc(slug) + '.html">' + esc(suburb) + '</a></div>';
       html += '<div class="opp-scores">';
-      html += '<span>Score: ' + baseScore + ' → ' + persScore + '</span>';
-      html += '<span>Confidence: ' + confidence + '</span>';
-      html += '<span>Updated: ' + updated + '</span>';
+      html += '<span>Future Index: ' + esc(baseScore) + ' → ' + esc(persScore) + '</span>';
+      html += '<span>Horizon: ' + esc(horizon) + '</span>';
+      html += '<span>Confidence: ' + esc(confidence) + '</span>';
+      html += '<span>Updated: ' + esc(updated) + '</span>';
       html += '</div>';
-      html += '<div class="opp-reason" style="margin-top:6px;font-size:0.85rem;color:#17211d;">' + reason + '</div>';
-      html += '<div class="opp-risk" style="margin-top:4px;font-size:0.8rem;color:#66736d;">Risk: ' + risk + '</div>';
+      html += '<div class="opp-reason" style="margin-top:6px;font-size:0.85rem;color:#17211d;">' + esc(reason) + '</div>';
+      html += '<div class="opp-risk" style="margin-top:4px;font-size:0.8rem;color:#66736d;">Risk: ' + esc(risk) + '</div>';
       html += '</div>';
-      html += '<div class="opp-score-badge">' + persScore + '</div>';
+      html += '<div class="opp-score-badge">' + esc(persScore) + '</div>';
       html += '</div>';
     }
   });

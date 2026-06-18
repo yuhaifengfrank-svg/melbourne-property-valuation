@@ -675,18 +675,20 @@ test("paymentsEnabled=true thru runAddressValuation yields unlock button", async
     "aria-disabled must be false (proxies token capture)");
 });
 
-test("paymentsEnabled=false or missing shows registration mode", async () => {
+test("Phase 2B: paymentsEnabled=true with draft shows $3.99 CTA", async () => {
   const dom = createPage();
 
   dom.window.fetch = function () {
     return Promise.resolve({
       ok: true,
-      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: undefined, reportDraftToken: null })),
+      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: true, reportDraftToken: "draft_abc123", draftExpiresAt: new Date(Date.now() + 86400000).toISOString() })),
     });
   };
 
   loadApp(dom);
-  dom.window.paymentsEnabled = false;
+  dom.window.paymentsEnabled = true;
+  // Simulate a valid reportDraft token
+  dom.window.currentReportDraft = { token: "draft_abc123" };
   await drainInit(dom);
 
   const result = await dom.window.runAddressValuation(
@@ -696,27 +698,27 @@ test("paymentsEnabled=false or missing shows registration mode", async () => {
     "Scoresby"
   );
 
-  assert.equal(result.paymentsEnabled, false,
-    "missing paymentsEnabled must default to false");
+  assert.equal(result.paymentsEnabled, true,
+    "paymentsEnabled must be true");
 
   dom.window.renderValuation(result);
 
-  // No registration/leadContactId → free tier → show register CTA
+  // Button visible with $3.99
   const btn = getBtn(dom);
-  assert.ok(btn, "unlock-report button must exist in free tier");
-  assert.ok(btn.disabled, "button must be disabled in free tier (no registration)");
-  assert.ok(btn.textContent.includes("Register to View Full Report"),
-    "button must show Register to View Full Report in free tier");
+  assert.ok(btn, "unlock-report button exists");
+  assert.equal(btn.style.display, "", "button must be visible");
+  assert.ok(!btn.disabled, "button must be enabled when draft exists");
+  assert.ok(btn.textContent.includes("$3.99") || btn.textContent.includes("3.99"),
+    "button must show $3.99 when payments enabled");
 
-  // No payments-disabled class in free tier
-  const layoutEl = dom.window.document.querySelector(".layout");
-  if (layoutEl) {
-    assert.ok(!layoutEl.classList.contains("payments-disabled"),
-      "layout must NOT have payments-disabled in free tier");
-  }
+  // Lead panel visible
+  const leadPanel = dom.window.document.querySelector(".lead-panel");
+  assert.ok(leadPanel, "lead-panel exists");
+  assert.notEqual(leadPanel.style.display, "none",
+    "lead panel must be visible");
 });
 
-test("paymentsEnabled=false explicit keeps fail-closed", async () => {
+test("Phase 2B: paymentsEnabled=false hides all $3.99 and lead panel", async () => {
   const dom = createPage();
 
   dom.window.fetch = function () {
@@ -742,11 +744,147 @@ test("paymentsEnabled=false explicit keeps fail-closed", async () => {
 
   dom.window.renderValuation(result);
 
-  // Free tier (no leadContactId, no draft): button disabled
+  // Free tier (no leadContactId, no draft): button hidden entirely
   const btn = getBtn(dom);
-  assert.ok(btn, "unlock-report button must exist");
-  assert.ok(btn.disabled || btn.getAttribute("aria-disabled") === "true",
-    "button must remain disabled in free tier");
-  assert.ok(btn.textContent.includes("Register to View Full Report"),
-    "button must show Register CTA in free tier");
+  assert.ok(btn, "unlock-report button exists in DOM");
+  assert.equal(btn.style.display, "none",
+    "button must be hidden when payments disabled");
+
+  // Lead panel hidden
+  const leadPanel = dom.window.document.querySelector(".lead-panel");
+  assert.ok(leadPanel, "lead-panel exists");
+  assert.equal(leadPanel.style.display, "none",
+    "lead panel must be hidden when payments disabled");
+
+  // Layout gets payments-disabled class
+  const layoutEl = dom.window.document.querySelector(".layout");
+  if (layoutEl) {
+    assert.ok(layoutEl.classList.contains("payments-disabled"),
+      "layout must have payments-disabled class");
+  }
+
+  // No $3.99 text in button
+  assert.ok(!btn.textContent.includes("$"),
+    "button must not contain $ sign");
+  assert.ok(!btn.textContent.includes("3.99"),
+    "button must not contain 3.99");
+  assert.ok(!btn.textContent.includes("$"),
+    "button must not contain $ sign (checked again after renderValuation)");
+  assert.ok(!btn.textContent.includes("AUD"),
+    "button must not contain AUD (no price text)");
+});
+
+test("Phase 2B: paymentsEnabled=undefined fail-closed hides UI", async () => {
+  const dom = createPage();
+
+  dom.window.fetch = function () {
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: undefined, reportDraftToken: null })),
+    });
+  };
+
+  loadApp(dom);
+  dom.window.paymentsEnabled = false;
+  await drainInit(dom);
+
+  const result = await dom.window.runAddressValuation(
+    "8 Melrose Ct, Scoresby VIC 3179",
+    "house",
+    "VIC",
+    "Scoresby"
+  );
+
+  assert.equal(result.paymentsEnabled, false,
+    "missing paymentsEnabled must default to false via data.paymentsEnabled === true");
+
+  dom.window.renderValuation(result);
+
+  // Button hidden
+  const btn = getBtn(dom);
+  assert.ok(btn, "unlock-report button exists in DOM");
+  assert.equal(btn.style.display, "none",
+    "button must be hidden when paymentsEnabled missing");
+
+  // Lead panel hidden
+  const leadPanel = dom.window.document.querySelector(".lead-panel");
+  assert.ok(leadPanel, "lead-panel exists");
+  assert.equal(leadPanel.style.display, "none",
+    "lead panel must be hidden when paymentsEnabled missing");
+});
+
+test("Phase 2B: registered user + paymentsEnabled=false shows no price", async () => {
+  const dom = createPage();
+
+  // Set lead contact id to simulate registered user
+  dom.window.localStorage.setItem("leadContactId", "contact_123");
+
+  dom.window.fetch = function () {
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: false, reportDraftToken: null })),
+    });
+  };
+
+  loadApp(dom);
+  dom.window.paymentsEnabled = false;
+  await drainInit(dom);
+
+  const result = await dom.window.runAddressValuation(
+    "8 Melrose Ct, Scoresby VIC 3179",
+    "house",
+    "VIC",
+    "Scoresby"
+  );
+
+  dom.window.renderValuation(result);
+
+  // Lead panel hidden
+  const leadPanel = dom.window.document.querySelector(".lead-panel");
+  assert.ok(leadPanel, "lead-panel exists");
+  assert.equal(leadPanel.style.display, "none",
+    "lead panel must be hidden for registered user with payments disabled");
+
+  // Button hidden
+  const btn = getBtn(dom);
+  assert.ok(btn, "unlock-report button exists in DOM");
+  assert.equal(btn.style.display, "none",
+    "button must be hidden for registered user with payments disabled");
+});
+
+test("Phase 2B: locked preview hidden for free tier when payments disabled", async () => {
+  const dom = createPage();
+
+  dom.window.fetch = function () {
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: false, reportDraftToken: null })),
+    });
+  };
+
+  loadApp(dom);
+  dom.window.paymentsEnabled = false;
+  await drainInit(dom);
+
+  const result = await dom.window.runAddressValuation(
+    "8 Melrose Ct, Scoresby VIC 3179",
+    "house",
+    "VIC",
+    "Scoresby"
+  );
+
+  // Provide some lockedPreview data
+  result.lockedPreview = {
+    price: "AUD $3.99",
+    chapters: [{ title: "Comparables" }, { title: "Location" }, { title: "Suburb" }]
+  };
+
+  dom.window.renderValuation(result);
+
+  // Locked preview CTA should be hidden
+  const lockedPreviewEl = dom.window.document.getElementById("locked-preview-cta");
+  if (lockedPreviewEl) {
+    assert.ok(lockedPreviewEl.classList.contains("hidden"),
+      "locked-preview-cta must be hidden for free tier when payments disabled");
+  }
 });

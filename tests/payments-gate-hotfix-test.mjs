@@ -84,11 +84,16 @@ describe("Payments Gate — Phase 2A Review", () => {
 
   // ── 2. Valuation API imports shared gate, no re-declaration ────
   describe("api/valuation.js — uses shared gate", () => {
-    it("imports from ../lib/payment-gate.js", () => {
-      assert.ok(VAL_SRC.includes('import { isPaymentsEnabled } from "../lib/payment-gate.js"'));
+    it("imports from ../lib/payment-gate.js (dynamic)", () => {
+      assert.ok(VAL_SRC.includes('import("../lib/payment-gate.js"))')
+        || VAL_SRC.includes('import("../lib/payment-gate.js")'),
+        "valuation.js must dynamically import payment-gate.js");
     });
     it("calls isPaymentsEnabled()", () => {
       assert.ok(VAL_SRC.includes("isPaymentsEnabled()"));
+    });
+    it("dynamic import destructures isPaymentsEnabled", () => {
+      assert.ok(VAL_SRC.includes("{ isPaymentsEnabled }"));
     });
     it("does NOT re-declare function isPaymentsEnabled", () => {
       assert.ok(!VAL_SRC.includes("function isPaymentsEnabled("));
@@ -219,8 +224,8 @@ describe("Payments Gate — Phase 2A Review", () => {
         APP_JS.includes("openCheckoutModal"),
         "modal guard exists");
     });
-    it("lockedPreview CTA: requires draftValid && paymentsEnabled", () => {
-      assert.ok(APP_JS.includes("draftValid && paymentsEnabled"),
+    it("lockedPreview CTA: requires paymentsEnabled && draftValid", () => {
+      assert.ok(APP_JS.includes("paymentsEnabled && draftValid"),
         "CTA requires both");
     });
   });
@@ -249,5 +254,56 @@ describe("Payments Gate — Phase 2A Review", () => {
         assert.ok(!src.includes(what), `${label}`);
       });
     }
+  });
+
+  // ── 7. Phase 2B: Production payment disabled UI (no $3.99 visible) ──
+  describe("Phase 2B — Production payment disabled hides $3.99", () => {
+    it("renders payments-disabled class on layout when !paymentsEnabled", () => {
+      assert.ok(APP_JS.includes('layoutEl.classList.add("payments-disabled")'),
+        "adds payments-disabled class");
+    });
+    it("lead panel hidden when !paymentsEnabled + free tier", () => {
+      assert.ok(APP_JS.includes('leadPanel2.style.display = "none"'),
+        "lead panel hidden");
+    });
+    it("unlock button hidden when !paymentsEnabled + free tier", () => {
+      assert.ok(APP_JS.includes('unlockBtn2.style.display = "none"'),
+        "unlock button hidden");
+    });
+    it("free tier locked preview hidden when payments disabled", () => {
+      assert.ok(APP_JS.includes("Free tier, payments disabled: hide locked preview entirely"),
+        "locked preview hidden in free tier + disabled payments");
+    });
+    it("fail-closed: only === true enables payment UI", () => {
+      assert.ok(APP_JS.includes('paymentsEnabled: data.paymentsEnabled === true'),
+        "strict === true check");
+    });
+    it("renderLockedPreviewHTML: price section conditional on empty string", () => {
+      assert.ok(APP_JS.includes('if (price && price.length > 0)'),
+        "price section conditionally hidden");
+    });
+    it("renderLockedPreviewHTML: terms section conditional on empty string", () => {
+      assert.ok(APP_JS.includes('if (terms && terms.length > 0)'),
+        "terms section conditionally hidden");
+    });
+    it("renderLockState: free tier + !paymentsEnabled hides locked preview", () => {
+      assert.ok(APP_JS.includes("hide locked preview entirely"),
+        "comment indicates locked preview hidden");
+      assert.ok(APP_JS.includes('lockedPreviewEl.classList.add("hidden"') ||
+        APP_JS.includes("Free tier, payments disabled"),
+        "early return + hide locked preview");
+    });
+    it("renderLockState: registered tier + !paymentsEnabled has no price", () => {
+      assert.ok(APP_JS.includes('lockedPreview.price = ""'),
+        "price cleared for registered tier");
+      assert.ok(APP_JS.includes('lockedPreview.priceLabel = ""'),
+        "price label cleared for registered tier");
+      assert.ok(APP_JS.includes('lockedPreview.terms = ""'),
+        "terms cleared for registered tier");
+    });
+    it("openCheckoutModal: checks !paymentsEnabled gate at start", () => {
+      assert.ok(APP_JS.includes('if (!paymentsEnabled)'),
+        "modal gate checks payments disabled");
+    });
   });
 });
