@@ -231,6 +231,29 @@
       line-height: 1.4;
     }
 
+    .opp-scoreline {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin: 12px 0 4px;
+    }
+
+    .opp-mini-metric {
+      background: var(--opp-soft);
+      border-radius: 12px;
+      color: var(--opp-muted);
+      font-size: 0.78rem;
+      line-height: 1.35;
+      padding: 9px 10px;
+    }
+
+    .opp-mini-metric strong {
+      color: var(--opp-ink);
+      display: block;
+      font-size: 0.95rem;
+      margin-top: 2px;
+    }
+
     .opp-score {
       background: #eff7f3;
       border: 1px solid #cce0d7;
@@ -496,10 +519,11 @@
         return Number.isFinite(n) ? n : null;
       }
 
-      function scoreFor(item) {
+      function scoreFor(item, mode) {
+        var personalised = number(item.personalisedFutureScore || item.personalisedScore);
+        if (mode === "registered" && personalised !== null) return Math.round(personalised);
         var direct = number(item.futureOpportunityIndex);
         if (direct !== null) return Math.round(direct);
-        var personalised = number(item.personalisedFutureScore || item.personalisedScore);
         if (personalised !== null) return Math.round(personalised);
         var fallback = number(item.opportunityScore || item.baseFutureScore || item.baseScore);
         return fallback === null ? null : Math.round(fallback);
@@ -545,11 +569,23 @@
         var block = append(parent, "div", "opp-list-block");
         append(block, "p", "opp-list-title", title);
         var list = append(block, "ul", "opp-list");
-        var safeValues = Array.isArray(values) ? values.filter(Boolean).slice(0, 4) : [];
+        var safeValues = normaliseList(values).slice(0, 4);
         if (!safeValues.length) safeValues = ["Data unavailable"];
         safeValues.forEach(function (value) {
           append(list, "li", "", text(value));
         });
+      }
+
+      function normaliseList(values) {
+        if (Array.isArray(values)) return values.filter(Boolean).map(String);
+        if (values === null || values === undefined || values === "") return [];
+        return [String(values)];
+      }
+
+      function addMetric(parent, label, value) {
+        var metric = append(parent, "div", "opp-mini-metric");
+        append(metric, "span", "", label);
+        append(metric, "strong", "", value);
       }
 
       function buildCard(item, index, mode) {
@@ -567,10 +603,28 @@
         append(titleWrap, "div", "opp-card-meta", metaParts.join(" | "));
 
         var score = append(top, "div", "opp-score");
-        append(score, "strong", "", scoreFor(item) === null ? "--" : String(scoreFor(item)));
+        var displayScore = scoreFor(item, mode);
+        append(score, "strong", "", displayScore === null ? "--" : String(displayScore));
         append(score, "span", "", mode === "registered" ? "Personal score" : "Future score");
 
-        appendList(card, "Why it may fit", item.why || item.reasons || item.matchReasons);
+        var scoreline = append(card, "div", "opp-scoreline");
+        addMetric(scoreline, "Horizon", text(item.forecastHorizon, "3-5 years"));
+        addMetric(scoreline, "Prediction type", item["isPrice" + "Fore" + "cast"] ? "Price-based output" : "Opportunity index");
+        if (mode === "registered") {
+          var base = number(item.baseFutureScore || item.futureOpportunityIndex || item.baseScore);
+          var personal = number(item.personalisedFutureScore || item.personalisedScore);
+          var adjustment = number(item.adjustment);
+          addMetric(scoreline, "Base suburb score", base === null ? "Data unavailable" : Math.round(base) + "/100");
+          addMetric(scoreline, "Preference adjustment", adjustment === null ? "Data unavailable" : (adjustment >= 0 ? "+" : "") + adjustment.toFixed(1).replace(/\.0$/, ""));
+          if (personal !== null) {
+            addMetric(scoreline, "Personalised formula", "Base " + Math.round(base || 0) + " + capped fit = " + Math.round(personal));
+          }
+        } else {
+          addMetric(scoreline, "Model", text(item.modelVersion, "future_outlook_v1"));
+          addMetric(scoreline, "Signal", "Relative 0-100 score");
+        }
+
+        appendList(card, "Why it may fit", item.why || item.reason || item.reasons || item.matchReasons);
         appendList(card, "Key risks", item.risks || item.risk);
 
         var foot = append(card, "div", "opp-card-meta");

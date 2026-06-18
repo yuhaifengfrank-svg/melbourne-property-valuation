@@ -35,6 +35,27 @@ test("registered opportunity layer renders personalised Top 10", () => {
   assert.match(page, /personalisedFutureScore|personalisedScore/);
 });
 
+test("registered opportunity cards prioritise personalised future score", () => {
+  assert.match(page, /scoreFor\(item,\s*mode\)/);
+  assert.match(page, /mode === "registered" && personalised !== null/);
+  assert.match(page, /Base suburb score/);
+  assert.match(page, /Preference adjustment/);
+  assert.match(page, /Personalised formula/);
+});
+
+test("opportunity cards show prediction horizon and non-price-forecast type", () => {
+  assert.match(page, /Horizon/);
+  assert.match(page, /Prediction type/);
+  assert.match(page, /Opportunity index/);
+  assert.match(page, /Relative 0-100 score/);
+});
+
+test("opportunity cards support personalised single reason and risk fields", () => {
+  assert.match(page, /normaliseList/);
+  assert.match(page, /item\.why \|\| item\.reason/);
+  assert.match(page, /item\.risks \|\| item\.risk/);
+});
+
 test("opportunities page no longer exposes static percentage trend signals", () => {
   assert.doesNotMatch(page, /trend signal/i);
   assert.doesNotMatch(page, /[+-]\d+(?:\.\d+)?%/);
@@ -52,4 +73,3 @@ test("opportunity gate no longer auto-redirects the public funnel page", () => {
   assert.match(gate, /dataset\.opportunityProtect === "true"/);
   assert.doesNotMatch(gate, /if\s*\(\s*typeof window !== "undefined"\s*\)\s*\{\s*window\.opportunityGate\.protectPage\(\);/);
 });
-
