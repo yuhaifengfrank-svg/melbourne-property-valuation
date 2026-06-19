@@ -194,6 +194,7 @@ test("3b. paid report renders Future Score, key opportunities, risks, welcome an
         dataScore: 74,
         reasons: ["12 accepted", "Dispersion 9.9%"]
       },
+      customerName: "Frank",
       keyFactors: ["Recent comparable sales support the range", "Family-house demand is stable"],
       dataLimitations: ["Title, condition and planning overlays still require independent checks"],
       propertyFutureOutlook: {
@@ -216,14 +217,50 @@ test("3b. paid report renders Future Score, key opportunities, risks, welcome an
   var sections = dom.window.document.getElementById('rv-sections');
   var text = sections.textContent;
   assert.ok(text.indexOf("Welcome") !== -1, "welcome section shown");
+  assert.ok(text.indexOf("Dear Frank") !== -1, "customer greeting shown");
+  assert.ok(text.indexOf("Welcome to your AusHomeValue Full Valuation Report for 8 Melrose Ct") !== -1,
+    "welcome references the property");
   assert.ok(text.indexOf("Future Opportunity Outlook") !== -1, "future section shown");
+  assert.ok(text.indexOf("Future Opportunity Score") !== -1, "future score included in summary");
   assert.ok(text.indexOf("Property Future Score") !== -1, "property future score label shown");
   assert.ok(text.indexOf("72/100") !== -1, "future score value shown");
   assert.ok(text.indexOf("Good school access") !== -1, "opportunity reason shown");
   assert.ok(text.indexOf("Interest-rate sensitivity") !== -1, "risk reason shown");
   assert.ok(text.indexOf("Recommended Next Steps") !== -1, "next steps section shown");
+  assert.ok(text.indexOf("Thank You") !== -1, "thank you section shown");
+  assert.ok(text.indexOf("thank you again for choosing AusHomeValue") !== -1,
+    "closing thank-you message shown");
   assert.ok(text.indexOf("not a predicted price growth percentage") !== -1,
     "future score disclaimer shown");
+});
+
+// ── 3c. Missing customer name falls back to Customer ──
+test("3c. paid report uses Customer fallback when name is unavailable", async () => {
+  var response = makeSuccessResponse({
+    report: {
+      subject: {
+        address: "8 Melrose Ct, Scoresby VIC",
+        suburb: "Scoresby",
+        state: "VIC"
+      },
+      estimate: {
+        midpoint: 1065340,
+        low: 905539,
+        high: 1225141
+      },
+      valuationMode: "standard_house",
+      acceptedComparables: [],
+      confidence: {
+        label: "Medium"
+      }
+    }
+  });
+  var dom = createDom(mockFetchOk(response));
+  await new Promise(function (r) { setTimeout(r, 50); });
+  var sections = dom.window.document.getElementById('rv-sections');
+  var text = sections.textContent;
+  assert.ok(text.indexOf("Dear Customer") !== -1, "fallback greeting shown");
+  assert.ok(text.indexOf("Thank You") !== -1, "closing section still shown");
 });
 
 // ── 4. reportId mismatch rejects ──

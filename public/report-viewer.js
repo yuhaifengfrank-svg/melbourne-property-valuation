@@ -155,6 +155,12 @@
     p.landSize = firstDefined(sub.landSize, av.landSize, input.landSize);
     p.buildingArea = firstDefined(sub.buildingArea, input.buildingArea);
     p.zoning = firstDefined(sub.zoning, input.zoning);
+    p.customerName = firstDefined(
+      input.customerName,
+      input.customer_name,
+      input.customer && input.customer.name,
+      input.name
+    );
 
     // ── Valuation mode ──
     p.valuationMode = input.valuationMode || null;
@@ -388,10 +394,23 @@
       return true;
     }
 
+    function displayText(value, fallback) {
+      if (value == null) return fallback;
+      var text = String(value).trim();
+      return text ? text : fallback;
+    }
+
+    var customerName = displayText(p.customerName, "Customer");
+    var reportAddress = displayText(p.address, "the selected property");
+    var futureOutlook = p.propertyFutureOutlook || null;
+
     // ── 1. Welcome / report guide ──
     appendSection("Welcome", function (el) {
-      appendParagraph(el, "Thank you for purchasing this AusHomeValue property report. This report summarises the estimate, supporting comparable sales, future opportunity signal, data confidence and key limitations for the selected property.");
-      appendParagraph(el, "Use it as a structured research pack, not as formal valuation advice. It is designed to help you understand the available evidence before speaking with a licensed professional, lender, buyer's agent or conveyancer.");
+      appendParagraph(el, "Dear " + customerName + ",");
+      appendParagraph(el, "Welcome to your AusHomeValue Full Valuation Report for " + reportAddress + ".");
+      appendParagraph(el, "This report brings together our first-layer valuation estimate, comparable sales evidence, confidence checks, future opportunity signals, key risks and practical next steps in one structured research pack.");
+      appendParagraph(el, "The goal is to help you understand not only what the property may be worth today, but why the model reached that view and what needs to be checked before you make a purchase, sale, finance or investment decision.");
+      appendParagraph(el, "Please treat this as decision-support information, not formal valuation advice. You should still verify title, condition, planning, finance and legal matters with appropriately licensed professionals.");
     });
 
     // ── 2. Executive Summary ──
@@ -410,8 +429,23 @@
       if (p.confidenceReasons && p.confidenceReasons.length) {
         el.appendChild(makeInfoRow("Confidence Factors", p.confidenceReasons.join("; ")));
       }
+      if (futureOutlook && futureOutlook.futureOpportunityIndex != null) {
+        el.appendChild(makeInfoRow("Future Opportunity Score", String(futureOutlook.futureOpportunityIndex) + "/100"));
+      }
+      if (futureOutlook && futureOutlook.confidence) {
+        el.appendChild(makeInfoRow("Future Score Confidence", futureOutlook.confidence));
+      }
       if (p.keyFactors && p.keyFactors.length) {
+        appendParagraph(el, "Main valuation signals:");
         appendBulletList(el, p.keyFactors.slice(0, 5));
+      }
+      if (futureOutlook && Array.isArray(futureOutlook.why) && futureOutlook.why.length) {
+        appendParagraph(el, "Key future opportunity signals:");
+        appendBulletList(el, futureOutlook.why.slice(0, 4));
+      }
+      if (futureOutlook && Array.isArray(futureOutlook.risks) && futureOutlook.risks.length) {
+        appendParagraph(el, "Key future risks to check:");
+        appendBulletList(el, futureOutlook.risks.slice(0, 4));
       }
     });
 
@@ -584,7 +618,6 @@
         "For finance, lending or tax decisions, speak with appropriately licensed professionals.",
         "Re-run the report when new comparable sales become available or if the property's attributes change."
       ]);
-      appendParagraph(el, "Thank you for using AusHomeValue. We are continuing to improve the report format and data coverage.");
     });
 
     // ── 10. Report Metadata ──
@@ -595,6 +628,14 @@
       if (p.valuationVersion) {
         el.appendChild(makeInfoRow("Valuation Engine", p.valuationVersion));
       }
+    });
+
+    // ── 11. Thank You ──
+    appendSection("Thank You", function (el) {
+      appendParagraph(el, "Dear " + customerName + ", thank you again for choosing AusHomeValue.");
+      appendParagraph(el, "We hope this report gives you a clearer view of " + reportAddress + " and helps you compare the property with more confidence.");
+      appendParagraph(el, "If you are reviewing multiple properties, keep this report as a reference point and re-check the estimate when fresh comparable sales, planning information or property details become available.");
+      appendParagraph(el, "AusHomeValue");
     });
   }
 
