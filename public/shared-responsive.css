@@ -73,6 +73,20 @@ a:hover {
   text-decoration: underline;
 }
 
+.topbar .more-menu-panel a {
+  color: var(--text);
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.topbar .more-menu-panel a:hover,
+.topbar .more-menu-panel a:focus-visible {
+  background: var(--soft);
+  color: var(--accent);
+  text-decoration: none;
+}
+
 /* ══ Container — page content width & centering ══ */
 .container {
   max-width: var(--container-max);

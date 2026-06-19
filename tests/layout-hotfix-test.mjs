@@ -267,7 +267,43 @@ describe("Static analysis — no regression", () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════
-// 7. Visual — no overflow
+// 7. Navigation — More menu
+// ═══════════════════════════════════════════════════════════════════
+
+describe("Navigation — More menu", () => {
+  it("orders Get estimate before More", () => {
+    const navStart = HTML.indexOf('<nav class="topbar-nav"');
+    const navEnd = HTML.indexOf("</nav>", navStart);
+    const nav = HTML.slice(navStart, navEnd);
+    const estimateIdx = nav.indexOf('data-i18n="nav-get-estimate"');
+    const moreIdx = nav.indexOf('data-i18n="nav-more"');
+    assert.ok(estimateIdx > -1, "Get estimate link exists");
+    assert.ok(moreIdx > -1, "More summary exists");
+    assert.ok(estimateIdx < moreIdx, "Get estimate appears before More");
+  });
+
+  it("More menu panel links override topbar white link color", () => {
+    const colorRule = CSS.match(/\.topbar\s+\.more-menu-panel\s+a\s*\{[\s\S]*?color:\s*var\(--text\)/);
+    assert.ok(colorRule, "More menu links use dark text on white panel");
+  });
+
+  it("More menu contains the expected secondary links", () => {
+    const panel = HTML.match(/<div class="more-menu-panel">[\s\S]*?<\/div>/);
+    assert.ok(panel, "More menu panel exists");
+    for (const key of [
+      "nav-investor-watch",
+      "nav-research",
+      "nav-about",
+      "nav-methodology",
+      "nav-contact",
+    ]) {
+      assert.ok(panel[0].includes(`data-i18n="${key}"`), `${key} present`);
+    }
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════
+// 8. Visual — no overflow
 // ═══════════════════════════════════════════════════════════════════
 
 describe("HTML — layout elements correctness", () => {
