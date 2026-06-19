@@ -25,6 +25,7 @@ const VAL_SRC = readFileSync(path.join(PROJECT, "api/valuation.js"), "utf8");
 const CHK_SRC = readFileSync(path.join(PROJECT, "api/create-report-checkout.js"), "utf8");
 const GATE_SRC = readFileSync(path.join(PROJECT, "lib/payment-gate.js"), "utf8");
 const APP_JS = readFileSync(path.join(PROJECT, "public/app.js"), "utf8");
+const CSS = readFileSync(path.join(PROJECT, "public/shared-responsive.css"), "utf8");
 
 // ── Helpers ────────────────────────────────────────────────────────
 
@@ -267,8 +268,14 @@ describe("Payments Gate — Phase 2A Review", () => {
         "free registration hook present");
     });
     it("unlock button becomes free enhanced summary CTA when payments disabled", () => {
-      assert.ok(APP_JS.includes("Unlock Free Enhanced Summary"),
+      assert.ok(APP_JS.includes("Register Free to Unlock Enhanced Summary"),
         "free enhanced summary CTA present");
+    });
+    it("mobile CTA opens free registration panel when payments are disabled", () => {
+      assert.ok(APP_JS.includes('layout.classList.add("mobile-lead-open")'),
+        "mobile CTA reveals the registration panel");
+      assert.ok(CSS.includes(".layout.mobile-lead-open .side-panel"),
+        "CSS exposes side-panel for mobile registration");
     });
     it("free tier paid locked preview hidden when payments disabled", () => {
       assert.ok(APP_JS.includes("Free tier, payments disabled: hide locked preview entirely"),

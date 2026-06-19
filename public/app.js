@@ -538,16 +538,16 @@ const uiText = {
       ".mobile-value-label": "Estimated value",
       ".mobile-midpoint-label": "Midpoint",
       ".mobile-confidence-label": "Confidence",
-      "#mobile-report-cta": "Unlock full report details",
-      ".lead-panel .eyebrow": "Free enhanced summary",
-      '[data-i18n="checkout-title"]': "Unlock Full Valuation Report",
-      '[data-i18n="checkout-subtitle"]': "One-time payment. Access applies to this report only.",
+      "#mobile-report-cta": "Register free for enhanced summary",
+      ".lead-panel .eyebrow": "Step 2 — Free registration",
+      '[data-i18n="checkout-title"]': "Unlock Enhanced Summary",
+      '[data-i18n="checkout-subtitle"]': "Register free to view this property's Future Score, key opportunities, key risks and sample comparable evidence. No payment is required for this step.",
       'label[for="lead-email"]': "Email",
       'label[for="lead-name"]': "Name",
       'label[for="lead-phone"]': "Phone optional",
-      ".form-provider-note": "Submission details are securely stored for report delivery and customer follow-up. We may record an approximate visitor region, but do not display your full IP address.",
+      ".form-provider-note": "No payment is collected here. We securely store your registration so this property summary can be restored. We may record an approximate visitor region, but do not display your full IP address.",
       ".consent span": "You may contact me about this property report.",
-      "#unlock-report": "Unlock Free Enhanced Summary",  // price set conditionally in applyLanguage
+      "#unlock-report": "Register Free to Unlock Enhanced Summary",  // price set conditionally in applyLanguage
       ".side-panel .panel:nth-of-type(2) h2": "Check Status",
       ".summary-main .eyebrow": "First-layer desktop valuation",
       ".value-band div:nth-child(1) span": "Estimated value",
@@ -694,16 +694,16 @@ const uiText = {
       ".mobile-value-label": "估值区间",
       ".mobile-midpoint-label": "估值中点",
       ".mobile-confidence-label": "置信度",
-      "#mobile-report-cta": "解锁完整报告详情",
-      ".lead-panel .eyebrow": "免费增强摘要",
-      '[data-i18n="checkout-title"]': "解锁完整估值报告",
-      '[data-i18n="checkout-subtitle"]': "一次性支付。仅适用于本报告。",
+      "#mobile-report-cta": "免费注册查看增强摘要",
+      ".lead-panel .eyebrow": "第二层 — 免费注册",
+      '[data-i18n="checkout-title"]': "解锁增强摘要",
+      '[data-i18n="checkout-subtitle"]': "免费注册即可查看这套房产的 Future Score、关键机会、主要风险和样本可比证据。本步骤无需付款。",
       'label[for="lead-email"]': "邮箱",
       'label[for="lead-name"]': "姓名",
       'label[for="lead-phone"]': "电话 选填",
-      ".form-provider-note": "提交资料将安全保存，用于发送报告和客户跟进。系统可能记录大致访问地区，但不会在后台显示你的完整 IP 地址。",
+      ".form-provider-note": "这里不会收款。我们会安全保存注册信息，以便恢复这份房产摘要。系统可能记录大致访问地区，但不会在后台显示你的完整 IP 地址。",
       ".consent span": "我同意你可以就这份房产报告联系我。",
-      "#unlock-report": "解锁免费增强摘要",  // price set conditionally in applyLanguage
+      "#unlock-report": "免费注册解锁增强摘要",  // price set conditionally in applyLanguage
       ".side-panel .panel:nth-of-type(2) h2": "检查状态",
       ".side-panel .panel:nth-of-type(3) h2": "手工上传",
       ".summary-main .eyebrow": "第一层桌面估值",
@@ -1932,11 +1932,11 @@ function renderValuation(data) {
     if (unlockBtn2) {
       unlockBtn2.textContent = paymentsEnabled
         ? (language === "zh" ? "注册后继续查看完整报告" : "Register to Continue")
-        : (language === "zh" ? "解锁免费增强摘要" : "Unlock Free Enhanced Summary");
+        : (language === "zh" ? "免费注册解锁增强摘要" : "Register Free to Unlock Enhanced Summary");
     }
     setLeadMessage(language === "zh"
       ? "免费注册后查看 Future Score、关键机会、主要风险和样本可比销售。"
-      : "Free registration unlocks Future Score, key opportunities, risks and sample comparable evidence.");
+      : "Free registration unlocks Future Score, key opportunities, key risks and sample comparable evidence. Paid full reports are separate.");
     hidePriceNote();
     hideRegisteredTierCards();
   }
@@ -2031,7 +2031,7 @@ function applyLanguage() {
     } else {
       existingLink.textContent = language === "zh"
         ? "免费注册后查看 Future Score、关键机会、主要风险和样本可比销售。"
-        : "Free registration unlocks Future Score, key opportunities, risks and sample comparable evidence.";
+        : "Free registration unlocks Future Score, key opportunities, key risks and sample comparable evidence. Paid full reports are separate.";
     }
   }
   // Phase 1E3D-1A: Also update i18n for unlock button text
@@ -2041,7 +2041,7 @@ function applyLanguage() {
     if (paymentsEnabled === true) {
       unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
     } else {
-      unlockBtn2.textContent = language === "zh" ? "解锁免费增强摘要" : "Unlock Free Enhanced Summary";
+      unlockBtn2.textContent = language === "zh" ? "免费注册解锁增强摘要" : "Register Free to Unlock Enhanced Summary";
     }
   }
   byId("manual-data-notes").placeholder =
@@ -3085,7 +3085,7 @@ function openCheckoutModal() {
       if (msgEl) msgEl.textContent = language === "zh"
         ? "提交失败，请稍后重试"
         : "Submission failed. Please try again.";
-      if (btn) { btn.disabled = false; btn.textContent = language === "zh" ? "解锁免费增强摘要" : "Unlock Free Enhanced Summary"; }
+      if (btn) { btn.disabled = false; btn.textContent = language === "zh" ? "免费注册解锁增强摘要" : "Register Free to Unlock Enhanced Summary"; }
     });
     return;
   }
@@ -3309,7 +3309,7 @@ if (unlockBtn) {
   if (paymentsEnabled === true) {
     unlockBtn.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
   } else {
-    unlockBtn.textContent = language === "zh" ? "解锁免费增强摘要" : "Unlock Free Enhanced Summary";
+    unlockBtn.textContent = language === "zh" ? "免费注册解锁增强摘要" : "Register Free to Unlock Enhanced Summary";
   }
   // Keyboard: Enter / Space
   unlockBtn.addEventListener("keydown", function (e) {
@@ -3380,9 +3380,15 @@ if (mobileBtn) {
       scrollToSection("#comparables");
       return;
     }
-    // Payments gate: if disabled, skip lead panel (hidden)
+    // Payments disabled: this is the free registration step, not a paid report jump.
     if (!paymentsEnabled) {
-      scrollToSection("#comparables");
+      const layout = document.querySelector(".layout");
+      if (layout) layout.classList.add("mobile-lead-open");
+      const panel = document.querySelector(".lead-panel");
+      if (panel) panel.style.display = "";
+      scrollToSection(".lead-panel");
+      const leadEl = byId("lead-email");
+      if (leadEl) leadEl.focus({ preventScroll: true });
       return;
     }
     scrollToSection(".lead-panel");

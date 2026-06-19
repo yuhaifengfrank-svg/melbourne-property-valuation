@@ -546,6 +546,10 @@ textarea {
   order: -1;
 }
 
+.layout.mobile-lead-open .side-panel {
+  display: block;
+}
+
 @media (min-width: 1024px) {
   .side-panel {
     display: block;
