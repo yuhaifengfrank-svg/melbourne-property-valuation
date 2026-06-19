@@ -29,6 +29,19 @@
       padding: 8px 10px;
     }
     .rv-topbar a:hover { text-decoration: underline; }
+    .rv-lang-toggle {
+      min-height: var(--touch-min);
+      border: 1px solid rgba(255,255,255,0.45);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+      padding: 8px 12px;
+      font: inherit;
+      cursor: pointer;
+    }
+    .rv-lang-toggle:hover {
+      background: rgba(255,255,255,0.16);
+    }
 
     /* ── Layout ── */
     .rv-container {
@@ -431,6 +444,10 @@
       .rv-loading .rv-spinner { animation-duration: 0.01ms !important; }
     }
 
+    .zh-mode {
+      line-height: 1.65;
+    }
+
     /* ── Desktop 1024+ ── */
     @media (min-width: 1024px) {
       .rv-two-col {
@@ -467,6 +484,7 @@
       <a href="/#research">Research</a>
       <a href="/#about">About</a>
     </nav>
+    <button type="button" class="rv-lang-toggle" id="rv-language-toggle">简体中文</button>
   </header>
 
   <!-- ══ Aria-live region ══ -->

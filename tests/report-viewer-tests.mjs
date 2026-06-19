@@ -264,6 +264,66 @@ test("3c. paid report uses Customer fallback when name is unavailable", async ()
   assert.ok(text.indexOf("Thank You") !== -1, "closing section still shown");
 });
 
+// ── 3d. Chinese report language via URL ──
+test("3d. report viewer renders Chinese content with lang=zh", async () => {
+  var response = makeSuccessResponse({
+    report: {
+      customerName: "小鱼",
+      subject: {
+        address: "8 Melrose Ct, Scoresby VIC",
+        suburb: "Scoresby",
+        state: "VIC",
+        propertyType: "House",
+        landSize: 409
+      },
+      estimate: {
+        midpoint: 1065340,
+        low: 905539,
+        high: 1225141
+      },
+      valuationMode: "standard_house",
+      acceptedComparables: [],
+      confidence: {
+        label: "Medium",
+        reasons: ["12 accepted", "17% single-source"]
+      },
+      propertyFutureOutlook: {
+        futureOpportunityIndex: 72,
+        suburbFutureOutlookScore: 70,
+        propertySpecificScore: 76,
+        confidence: "Medium",
+        why: ["Good school access"],
+        risks: ["Interest-rate sensitivity"]
+      }
+    }
+  });
+  var dom = createDom(mockFetchOk(response),
+    'https://aushomevalue.com.au/report-viewer.html?report_id=' + VALID_RID + '&lang=zh');
+  await new Promise(function (r) { setTimeout(r, 50); });
+  var text = dom.window.document.getElementById('rv-sections').textContent;
+  assert.equal(dom.window.document.documentElement.lang, "zh-CN", "document lang set to zh-CN");
+  assert.ok(text.indexOf("欢迎") !== -1, "Chinese welcome title shown");
+  assert.ok(text.indexOf("Dear 小鱼") !== -1, "Chinese report keeps customer greeting");
+  assert.ok(text.indexOf("核心摘要") !== -1, "Chinese executive summary shown");
+  assert.ok(text.indexOf("未来机会分数") !== -1, "Chinese future score label shown");
+  assert.ok(text.indexOf("感谢") !== -1, "Chinese thank-you section shown");
+  assert.equal(text.indexOf("single-source"), -1, "internal single-source detail hidden in Chinese");
+});
+
+// ── 3e. Language toggle rerenders report ──
+test("3e. language toggle switches rendered report from English to Chinese", async () => {
+  var dom = createDom(mockFetchOk(makeSuccessResponse()));
+  await new Promise(function (r) { setTimeout(r, 50); });
+  var sections = dom.window.document.getElementById('rv-sections');
+  assert.ok(sections.textContent.indexOf("Executive Summary") !== -1, "English initially shown");
+  var toggle = dom.window.document.getElementById('rv-language-toggle');
+  assert.ok(toggle, "language toggle exists");
+  toggle.click();
+  await new Promise(function (r) { setTimeout(r, 20); });
+  assert.ok(sections.textContent.indexOf("核心摘要") !== -1, "Chinese content shown after toggle");
+  assert.equal(toggle.textContent, "English", "toggle flips to English label");
+});
+
 // ── 4. reportId mismatch rejects ──
 test("4. reportId mismatch shows generic_error", async () => {
   var resp = makeSuccessResponse({ reportId: 'other_id' });
