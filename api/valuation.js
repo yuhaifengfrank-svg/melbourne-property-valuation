@@ -126,6 +126,7 @@ function buildFreeSummary(fullResult) {
     customerDataStatus: mapCustomerDataStatus(fullResult),
     propertyFutureOutlook: fullResult.propertyFutureOutlook || null,
     suburbFutureOutlook: fullResult.suburbFutureOutlook || null,
+    planningSignals: fullResult.planningSignals || null,
     disclaimer: "This free valuation summary is based on publicly available market data, property characteristics and statistical analysis for general information and research purposes only. Data may be delayed, incomplete or subject to third-party recording differences. This is not a formal valuation, credit decision, legal, tax or financial advice. Consult licensed professionals before making transaction or financing decisions.",
     // Locked preview — show what the full report contains
     lockedPreview: buildLockedPreview(fullResult)
@@ -240,6 +241,22 @@ export default async function handler(request, response) {
       }
     } catch (futureErr) {
       console.error("Future outlook failed (non-fatal):", futureErr.message);
+    }
+
+    try {
+      if (result.ok) {
+        // Query planning signals
+        if (!sql) sql = getSql();
+        const { getPlanningSignals } = await import("../lib/planning-signal-service.js");
+        const coords = result.subject?.coordinates;
+        if (coords && coords.lat != null && coords.lon != null) {
+          result.planningSignals = await getPlanningSignals(sql, Number(coords.lat), Number(coords.lon));
+        } else if (body.lat != null && body.lng != null) {
+          result.planningSignals = await getPlanningSignals(sql, Number(body.lat), Number(body.lng));
+        }
+      }
+    } catch (planningErr) {
+      console.error("Planning signals query failed (non-fatal):", planningErr.message);
     }
 
     // Generate short-lived draft token for this valuation

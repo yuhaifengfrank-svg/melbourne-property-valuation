@@ -167,7 +167,26 @@
         "Compare multiple properties before buying"
       ],
       investorWatchCta: "Join Investor Watch — Coming Soon",
-      formula: "property_future_score = suburb_future_outlook_score * 0.70 + property_specific_score * 0.30"
+      formula: "property_future_score = suburb_future_outlook_score * 0.70 + property_specific_score * 0.30",
+
+      // ── Planning & Zoning Signals ──
+      planningTitle: "Planning & Zoning Signals",
+      planningIntro: "Planning and zoning signals are based on available VicPlan zone and overlay data. They are indicative only and do not confirm development approval, subdivision potential, or the absence of heritage controls.",
+      planningZone: "Zone",
+      planningCategory: "Category",
+      planningInterpretation: "Interpretation",
+      planningOverlays: "Overlays",
+      planningConstraintLevel: "Planning Constraint Level",
+      planningFlexibility: "Redevelopment Flexibility",
+      planningManualReview: "Manual Review Recommended",
+      planningLimitations: "Data Limitations",
+      planningNone: "No overlay record was returned in the current dataset. This does not confirm the absence of overlays or heritage controls.",
+      planningUnavailable: "Planning signal data was not available for this address.",
+      planningSignals: [
+        "Zoning and overlay signal monitoring",
+        "Development constraint alerts when new data is available",
+        "Planning signal updates for saved suburbs and properties"
+      ]
     },
     zh: {
       toggle: "English",
@@ -272,13 +291,32 @@
       investorWatchFeatures: [
         "机会观察清单",
         "区域 Future Outlook Score",
-        "收藏房产追踪",
-        "新机会区域提醒",
-        "有新数据时更新市场信号",
+        "分区与 Overlay 信号追踪",
+        "有新数据时提示潜在规划限制",
+        "对收藏区域和房产更新规划信号",
         "买房前对比多套房产"
       ],
       investorWatchCta: "加入 Investor Watch — 即将开放",
-      formula: "房产未来分数 = 区域未来展望分数 × 70% + 房产自身匹配分数 × 30%"
+      formula: "房产未来分数 = 区域未来展望分数 × 70% + 房产自身匹配分数 × 30%",
+
+      // ── 规划与分区信号 ──
+      planningTitle: "规划与分区信号",
+      planningIntro: "规划和分区信号基于当前可用的 VicPlan Zone 与 Overlay 数据，仅供参考。它们不代表开发许可、分割潜力，也不确认不存在 Heritage 控制。",
+      planningZone: "分区",
+      planningCategory: "分类",
+      planningInterpretation: "解读",
+      planningOverlays: "叠加区",
+      planningConstraintLevel: "规划约束级别",
+      planningFlexibility: "开发灵活性",
+      planningManualReview: "建议人工复核",
+      planningLimitations: "数据局限性",
+      planningNone: "当前数据集未返回 Overlay 记录。这不等于不存在 Overlay 或 Heritage 控制。",
+      planningUnavailable: "该地址暂无规划信号数据。",
+      planningSignals: [
+        "分区与 Overlay 信号追踪",
+        "有新数据时提示潜在规划限制",
+        "对收藏区域和房产更新规划信号"
+      ]
     }
   };
 
@@ -455,6 +493,7 @@
     p.dataLimitations = Array.isArray(input.dataLimitations) ? input.dataLimitations : [];
     p.propertyFutureOutlook = input.propertyFutureOutlook || null;
     p.suburbFutureOutlook = input.suburbFutureOutlook || null;
+    p.planningSignals = input.planningSignals || null;
 
     // ── Market context ──
     var mc = input.marketContext || {};
@@ -848,7 +887,41 @@
       appendParagraph(el, text("futureDisclaimer"));
     });
 
-    // ── 6. Valuation Methodology ──
+    // ── 6. Planning & Zoning Signals ──
+    appendSection(text("planningTitle"), function (el) {
+      var planSignal = p.planningSignals || null;
+      if (!planSignal || !planSignal.ok) {
+        appendParagraph(el, text("planningUnavailable"));
+        appendParagraph(el, text("planningIntro"));
+        return;
+      }
+      if (planSignal.zone) {
+        el.appendChild(makeInfoRow(text("planningZone"), planSignal.zone.code + " — " + planSignal.zone.name));
+        el.appendChild(makeInfoRow(text("planningCategory"), planSignal.zone.category));
+        appendParagraph(el, planSignal.zone.interpretation);
+      } else {
+        el.appendChild(makeInfoRow(text("planningZone"), NA));
+      }
+      if (planSignal.overlays && planSignal.overlays.length > 0) {
+        appendParagraph(el, text("planningOverlays"));
+        appendBulletList(el, planSignal.overlays.map(function (o) {
+          return o.code + " — " + o.name + ": " + o.interpretation;
+        }));
+      } else {
+        appendParagraph(el, text("planningNone"));
+      }
+      el.appendChild(makeInfoRow(text("planningConstraintLevel"), planSignal.planningConstraintLevel));
+      el.appendChild(makeInfoRow(text("planningFlexibility"), planSignal.redevelopmentFlexibilityHint));
+      if (planSignal.manualReviewRequired) {
+        el.appendChild(makeInfoRow(text("planningManualReview"), text("yes")));
+      }
+      if (planSignal.limitations && planSignal.limitations.length > 0) {
+        appendParagraph(el, text("planningLimitations"));
+        appendBulletList(el, planSignal.limitations);
+      }
+    });
+
+    // ── 7. Valuation Methodology ──
     appendSection(text("methodology"), function (el) {
       el.appendChild(makeInfoRow(text("methodLabel"), p.methodology));
       if (p.valuationMode === "large_lot_house" && p.largeLotDetect) {
