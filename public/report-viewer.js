@@ -394,6 +394,17 @@
       return true;
     }
 
+    function publicConfidenceReasons(items) {
+      if (!Array.isArray(items)) return [];
+      return items.filter(function (item) {
+        if (item == null) return false;
+        var text = String(item).trim();
+        if (!text) return false;
+        // Internal data-provenance detail; useful for QA, not helpful for customers.
+        return !/single[-\s]?source/i.test(text);
+      });
+    }
+
     function displayText(value, fallback) {
       if (value == null) return fallback;
       var text = String(value).trim();
@@ -403,6 +414,7 @@
     var customerName = displayText(p.customerName, "Customer");
     var reportAddress = displayText(p.address, "the selected property");
     var futureOutlook = p.propertyFutureOutlook || null;
+    var confidenceReasons = publicConfidenceReasons(p.confidenceReasons);
 
     // ── 1. Welcome / report guide ──
     appendSection("Welcome", function (el) {
@@ -426,8 +438,8 @@
       if (p.confidenceScore != null) {
         el.appendChild(makeInfoRow("Confidence Score", p.confidenceScore + "%"));
       }
-      if (p.confidenceReasons && p.confidenceReasons.length) {
-        el.appendChild(makeInfoRow("Confidence Factors", p.confidenceReasons.join("; ")));
+      if (confidenceReasons.length) {
+        el.appendChild(makeInfoRow("Confidence Factors", confidenceReasons.join("; ")));
       }
       if (futureOutlook && futureOutlook.futureOpportunityIndex != null) {
         el.appendChild(makeInfoRow("Future Opportunity Score", String(futureOutlook.futureOpportunityIndex) + "/100"));

@@ -192,7 +192,7 @@ test("3b. paid report renders Future Score, key opportunities, risks, welcome an
       confidence: {
         label: "Medium",
         dataScore: 74,
-        reasons: ["12 accepted", "Dispersion 9.9%"]
+        reasons: ["12 accepted", "Dispersion 9.9%", "17% single-source"]
       },
       customerName: "Frank",
       keyFactors: ["Recent comparable sales support the range", "Family-house demand is stable"],
@@ -226,6 +226,7 @@ test("3b. paid report renders Future Score, key opportunities, risks, welcome an
   assert.ok(text.indexOf("72/100") !== -1, "future score value shown");
   assert.ok(text.indexOf("Good school access") !== -1, "opportunity reason shown");
   assert.ok(text.indexOf("Interest-rate sensitivity") !== -1, "risk reason shown");
+  assert.equal(text.indexOf("single-source"), -1, "internal single-source confidence detail hidden");
   assert.ok(text.indexOf("Recommended Next Steps") !== -1, "next steps section shown");
   assert.ok(text.indexOf("Thank You") !== -1, "thank you section shown");
   assert.ok(text.indexOf("thank you again for choosing AusHomeValue") !== -1,
