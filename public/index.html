@@ -1168,6 +1168,80 @@ th {
   grid-template-columns: minmax(0, 1fr) minmax(280px, 0.85fr);
 }
 
+/* ── Investor Watch Panel ── */
+.investor-watch-panel {
+  background: linear-gradient(135deg, #f0f7f4 0%, #e8f1ec 100%);
+  border: 1px solid #c8d9d0;
+  border-radius: 12px;
+  padding: 28px 24px;
+  margin-top: 20px;
+}
+.investor-watch-header h2 {
+  font-size: clamp(1.1rem, 3vw, 1.35rem);
+  margin: 6px 0 8px;
+}
+.investor-watch-header p {
+  color: var(--muted);
+  margin: 0;
+  font-size: 0.9rem;
+}
+.investor-watch-pricing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 18px 0;
+}
+.investor-watch-pricing .pricing-tier {
+  background: white;
+  border: 1px solid #d4e1da;
+  border-radius: 8px;
+  padding: 12px 16px;
+  flex: 1;
+  min-width: 180px;
+}
+.investor-watch-pricing .pricing-tier strong {
+  display: block;
+  font-size: 0.85rem;
+  color: #66736d;
+  margin-bottom: 4px;
+}
+.investor-watch-pricing .pricing-tier .price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.investor-watch-features {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+  margin: 0 0 16px;
+  color: #3d4d45;
+  font-size: 0.9rem;
+}
+.investor-watch-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+}
+.btn-investor-watch {
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 10px 24px;
+  cursor: default;
+  opacity: 0.7;
+}
+.investor-watch-note {
+  color: #66736d;
+  font-size: 0.82rem;
+  margin: 0;
+}
+
 .about-copy h2 {
   font-size: 30px;
   line-height: 1.15;
@@ -2590,6 +2664,51 @@ th {
                   <h3>Investor profile</h3>
                   <ul></ul>
                 </article>
+              </div>
+            </section>
+            <!-- ── Investor Watch upsell ── -->
+            <section class="panel investor-watch-panel" id="investor-watch" aria-label="Investor Watch upsell">
+              <div class="investor-watch-header">
+                <p class="eyebrow" lang="en" data-i18n="investor-watch-eyebrow">Investor Watch</p>
+                <p class="eyebrow" lang="zh" data-i18n="investor-watch-eyebrow" hidden>Investor Watch</p>
+                <h2 lang="en" data-i18n="investor-watch-heading">Track better buying opportunities beyond one valuation.</h2>
+                <h2 lang="zh" data-i18n="investor-watch-heading" hidden>不只看一套房，持续追踪更好的买入机会。</h2>
+                <p lang="en" data-i18n="investor-watch-sub">For buyers and investors who want to monitor opportunities beyond one property.</p>
+                <p lang="zh" data-i18n="investor-watch-sub" hidden>适合想持续观察市场机会、比较多个区域和多套房产的买家与投资者。</p>
+              </div>
+              <div class="investor-watch-pricing">
+                <div class="pricing-tier">
+                  <strong lang="en" data-i18n="investor-watch-price-label">Investor Watch</strong>
+                  <strong lang="zh" data-i18n="investor-watch-price-label" hidden>Investor Watch</strong>
+                  <span class="price">AUD $9.99<span lang="en">/month</span><span lang="zh" hidden>/月</span></span>
+                </div>
+                <div class="pricing-tier">
+                  <strong lang="en" data-i18n="investor-watch-full-report-label">Full Valuation Report</strong>
+                  <strong lang="zh" data-i18n="investor-watch-full-report-label" hidden>完整估值报告</strong>
+                  <span class="price">AUD $3.99 <span lang="en">one-time</span><span lang="zh" hidden>一次性</span></span>
+                </div>
+              </div>
+              <ul class="investor-watch-features" lang="en">
+                <li>Opportunity Watchlist</li>
+                <li>Future Outlook Scores by suburb</li>
+                <li>Saved property tracking</li>
+                <li>New suburb opportunity alerts</li>
+                <li>Market signal updates when new data is available</li>
+                <li>Compare multiple properties before buying</li>
+              </ul>
+              <ul class="investor-watch-features" lang="zh" hidden>
+                <li>机会观察清单</li>
+                <li>区域 Future Outlook Score</li>
+                <li>收藏房产追踪</li>
+                <li>新机会区域提醒</li>
+                <li>有新数据时更新市场信号</li>
+                <li>买房前对比多套房产</li>
+              </ul>
+              <div class="investor-watch-cta">
+                <button type="button" class="btn-investor-watch" id="btn-investor-watch-coming-soon" lang="en">Join Investor Watch — Coming Soon</button>
+                <button type="button" class="btn-investor-watch" id="btn-investor-watch-coming-soon-zh" lang="zh" hidden>加入 Investor Watch — 即将开放</button>
+                <p class="investor-watch-note" lang="en">No payment setup required. We will notify you when it opens.</p>
+                <p class="investor-watch-note" lang="zh" hidden>无需预先设置支付。开放时会通知你。</p>
               </div>
             </section>
           </section>

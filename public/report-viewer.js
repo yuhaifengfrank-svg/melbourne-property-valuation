@@ -155,6 +155,18 @@
       thankLine1: "Dear {name}, thank you again for choosing AusHomeValue.",
       thankLine2: "We hope this report gives you a clearer view of {address} and helps you compare the property with more confidence.",
       thankLine3: "If you are reviewing multiple properties, keep this report as a reference point and re-check the estimate when fresh comparable sales, planning information or property details become available.",
+      investorWatchTitle: "Investor Watch — AUD $9.99/month",
+      investorWatchSub: "Track better buying opportunities beyond one valuation. For buyers and investors who want to monitor opportunities beyond one property.",
+      investorWatchPrice: "Full Valuation Report: AUD $3.99 one-time | Investor Watch: AUD $9.99/month",
+      investorWatchFeatures: [
+        "Opportunity Watchlist",
+        "Future Outlook Scores by suburb",
+        "Saved property tracking",
+        "New suburb opportunity alerts",
+        "Market signal updates when new data is available",
+        "Compare multiple properties before buying"
+      ],
+      investorWatchCta: "Join Investor Watch — Coming Soon",
       formula: "property_future_score = suburb_future_outlook_score * 0.70 + property_specific_score * 0.30"
     },
     zh: {
@@ -254,6 +266,18 @@
       thankLine1: "Dear {name}, 再次感谢你选择 AusHomeValue。",
       thankLine2: "希望这份报告能帮助你更清楚地理解 {address}，并更有信心地比较不同房产。",
       thankLine3: "如果你正在比较多套房产，可以把这份报告作为参考点；当新的可比成交、规划信息或房产细节出现时，再重新检查估值。",
+      investorWatchTitle: "Investor Watch — AUD $9.99/月",
+      investorWatchSub: "不只看一套房，持续追踪更好的买入机会。适合想持续观察市场机会、比较多个区域和多套房产的买家与投资者。",
+      investorWatchPrice: "完整估值报告：AUD $3.99 一次性 | Investor Watch：AUD $9.99/月",
+      investorWatchFeatures: [
+        "机会观察清单",
+        "区域 Future Outlook Score",
+        "收藏房产追踪",
+        "新机会区域提醒",
+        "有新数据时更新市场信号",
+        "买房前对比多套房产"
+      ],
+      investorWatchCta: "加入 Investor Watch — 即将开放",
       formula: "房产未来分数 = 区域未来展望分数 × 70% + 房产自身匹配分数 × 30%"
     }
   };
@@ -899,6 +923,14 @@
       appendParagraph(el, interpolate(text("thankLine2"), { address: reportAddress }));
       appendParagraph(el, text("thankLine3"));
       appendParagraph(el, "AusHomeValue");
+    });
+
+    // ── 12. Investor Watch upsell ──
+    appendSection(text("investorWatchTitle"), function (el) {
+      appendParagraph(el, text("investorWatchSub"));
+      appendParagraph(el, text("investorWatchPrice"));
+      appendBulletList(el, text("investorWatchFeatures"));
+      appendParagraph(el, text("investorWatchCta"));
     });
   }
 

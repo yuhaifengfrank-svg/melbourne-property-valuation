@@ -658,7 +658,12 @@ const uiText = {
       '[data-i18n="opp-filter-type"]': "Property type",
       '[data-i18n="opp-filter-min"]': "Min price",
       '[data-i18n="opp-filter-max"]': "Max price",
-      '[data-i18n="opp-search-btn"]': "Search opportunities"
+      '[data-i18n="opp-search-btn"]': "Search opportunities",
+      '[data-i18n="investor-watch-eyebrow"]': "Investor Watch",
+      '[data-i18n="investor-watch-heading"]': "Track better buying opportunities beyond one valuation.",
+      '[data-i18n="investor-watch-sub"]': "For buyers and investors who want to monitor opportunities beyond one property.",
+      '[data-i18n="investor-watch-price-label"]': "Investor Watch",
+      '[data-i18n="investor-watch-full-report-label"]': "Full Valuation Report"
     }
   },
   zh: {
@@ -815,7 +820,12 @@ const uiText = {
       '[data-i18n="opp-filter-type"]': "房产类型",
       '[data-i18n="opp-filter-min"]': "最低价格",
       '[data-i18n="opp-filter-max"]': "最高价格",
-      '[data-i18n="opp-search-btn"]': "搜索机会"
+      '[data-i18n="opp-search-btn"]': "搜索机会",
+      '[data-i18n="investor-watch-eyebrow"]': "Investor Watch",
+      '[data-i18n="investor-watch-heading"]': "不只看一套房，持续追踪更好的买入机会。",
+      '[data-i18n="investor-watch-sub"]': "适合想持续观察市场机会、比较多个区域和多套房产的买家与投资者。",
+      '[data-i18n="investor-watch-price-label"]': "Investor Watch",
+      '[data-i18n="investor-watch-full-report-label"]': "完整估值报告"
     }
   }
 };
