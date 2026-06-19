@@ -73,6 +73,28 @@ a:hover {
   text-decoration: underline;
 }
 
+.topbar nav a,
+.topbar .more-menu summary {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.topbar .nav-cta {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.92) !important;
+  font-weight: 800;
+}
+
+.topbar nav a:hover,
+.topbar nav a:focus-visible,
+.topbar .more-menu[open] summary,
+.topbar .more-menu summary:hover,
+.topbar .more-menu summary:focus-visible {
+  background: rgba(255, 255, 255, 0.10);
+  color: #fff;
+  outline: none;
+  text-decoration: none;
+}
+
 .topbar .more-menu-panel a {
   color: var(--text);
   display: flex;
