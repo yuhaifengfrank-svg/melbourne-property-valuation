@@ -131,6 +131,71 @@ nav a:hover {
   color: var(--accent);
 }
 
+.more-menu {
+  position: relative;
+}
+
+.more-menu summary {
+  border-radius: 6px;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 11px 10px;
+  list-style: none;
+}
+
+.more-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.more-menu summary::after {
+  content: "▾";
+  font-size: 0.78rem;
+  margin-left: 6px;
+}
+
+.more-menu[open] summary,
+.more-menu summary:hover,
+.more-menu summary:focus-visible {
+  background: var(--soft);
+  color: var(--accent);
+  outline: none;
+}
+
+.more-menu-panel {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 4px;
+  left: 0;
+  min-width: 220px;
+  padding: 8px;
+  position: absolute;
+  top: calc(100% + 6px);
+  z-index: 30;
+}
+
+.more-menu-panel a {
+  color: var(--ink);
+  justify-content: flex-start;
+  padding: 10px 12px;
+}
+
+.nav-cta {
+  background: var(--accent);
+  color: white !important;
+  font-weight: 800;
+}
+
+.nav-cta:hover {
+  background: #17483d;
+  color: white;
+}
+
 .language-toggle {
   background: white;
   border: 1px solid var(--line);
@@ -398,6 +463,7 @@ button:hover {
 .valuation-panel,
 .research-panel,
 .opportunities-panel,
+.methodology-panel,
 .about-panel,
 .contact-panel {
   scroll-margin-top: 80px;
@@ -942,6 +1008,7 @@ button:hover {
 
 .locked-strip span {
   color: #8b642f;
+}
 
 #locked-preview-cta {
   margin-bottom: 14px;
@@ -949,7 +1016,6 @@ button:hover {
 
 #locked-preview-cta.hidden {
   display: none;
-}
 }
 
 .hidden {
@@ -1043,8 +1109,6 @@ th {
 
 .map-status {
   display: none;
-}
-  top: 42%;
 }
 
 .station {
@@ -1206,9 +1270,16 @@ th {
   margin-bottom: 4px;
 }
 .investor-watch-pricing .pricing-tier .price {
+  display: block;
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--accent);
+}
+.investor-watch-pricing .pricing-tier p {
+  color: #66736d;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  margin: 8px 0 0;
 }
 .investor-watch-features {
   display: grid;
@@ -1468,6 +1539,17 @@ th {
   .value-band {
     grid-template-columns: 1fr;
   }
+
+  .product-funnel,
+  .home-product-visual,
+  .methodology-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .more-menu-panel {
+    left: auto;
+    right: 0;
+  }
 }
 
 @media (max-width: 680px) {
@@ -1504,6 +1586,12 @@ th {
 
   .home-search-preview {
     padding: 16px;
+  }
+
+  .product-difference {
+    border-radius: 14px;
+    font-size: 0.92rem;
+    text-align: left;
   }
 
   .research-grid {
@@ -1633,6 +1721,28 @@ th {
   .topbar-row {
     flex-wrap: wrap;
   }
+  .topbar-nav {
+    width: 100%;
+  }
+  .topbar-nav a,
+  .more-menu summary {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+  .more-menu {
+    flex: 1 1 auto;
+  }
+  .more-menu-panel {
+    left: 0;
+    right: 0;
+    width: min(92vw, 360px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .signal-card {
+    animation: none;
+  }
 }
 
 /* scroll offset for fixed/sticky header */
@@ -1640,6 +1750,7 @@ th {
   scroll-margin-top: 100px;
 }
 
+@media (max-width: 680px) {
   .location-row,
   .search-row,
   .facts div,
@@ -1777,6 +1888,112 @@ th {
   margin: -4px 0 20px;
 }
 
+.home-product-visual {
+  align-items: stretch;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 26px auto 26px;
+  max-width: 760px;
+}
+
+.signal-card {
+  animation: signalFloat 5s ease-in-out infinite;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(35, 48, 43, 0.08);
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 16px;
+  text-align: left;
+}
+
+.signal-card:nth-child(2) {
+  animation-delay: 0.45s;
+}
+
+.signal-card:nth-child(3) {
+  animation-delay: 0.9s;
+}
+
+.signal-card span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.signal-card strong {
+  color: var(--accent);
+  font-size: clamp(1rem, 2vw, 1.2rem);
+}
+
+@keyframes signalFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.product-funnel {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 auto 18px;
+  max-width: 980px;
+  text-align: left;
+}
+
+.funnel-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(35, 48, 43, 0.06);
+  min-width: 0;
+  padding: 18px;
+}
+
+.funnel-card.featured {
+  border-color: rgba(13, 107, 87, 0.36);
+  box-shadow: 0 14px 32px rgba(13, 107, 87, 0.12);
+}
+
+.funnel-step {
+  color: var(--accent);
+  font-size: 0.76rem;
+  font-weight: 900;
+  margin: 0 0 7px;
+  text-transform: uppercase;
+}
+
+.funnel-card h3 {
+  font-size: 1rem;
+  line-height: 1.25;
+  margin: 0 0 8px;
+}
+
+.funnel-card p:not(.funnel-step) {
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.product-difference {
+  background: #edf7f3;
+  border: 1px solid #cce0d7;
+  border-radius: 999px;
+  color: var(--accent);
+  font-weight: 800;
+  margin: 0 auto 24px;
+  max-width: 900px;
+  padding: 12px 18px;
+}
+
+.product-difference p {
+  margin: 0;
+}
+
 /* ── Valuation panel ── */
 .valuation-panel .content .content {
   max-width: 100%;
@@ -1788,6 +2005,48 @@ th {
   padding: 24px;
   box-shadow: var(--shadow);
   margin-bottom: 20px;
+}
+
+.methodology-panel {
+  margin: 28px auto;
+  max-width: 1120px;
+}
+
+.methodology-panel h2 {
+  font-size: clamp(1.25rem, 3vw, 1.8rem);
+  line-height: 1.2;
+  margin: 0 0 18px;
+}
+
+.methodology-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.methodology-grid article {
+  background: #f7faf8;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  min-width: 0;
+  padding: 16px;
+}
+
+.methodology-grid h3 {
+  font-size: 1rem;
+  margin: 0 0 8px;
+}
+
+.methodology-grid p,
+.methodology-note {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.methodology-note {
+  margin-top: 16px;
 }
 
 /* ── Opportunity Preview (Phase 3C) ── */
@@ -2318,17 +2577,25 @@ th {
           <p class="eyebrow" data-i18n="hero-banner">Currently expanding across Melbourne and Victoria</p>
           <h1>AusHomeValue</h1>
         </div>
-        <nav class="topbar-nav">
-          <a href="#home">Home</a>
-          <a href="#valuation">Valuation</a>
-          <a href="#research">Research</a>
-          <a href="#opportunities">Top Opportunities</a>
-          <a href="#about">About Us</a>
-          <a href="#contact">Contact</a>
+        <nav class="topbar-nav" aria-label="Primary navigation">
+          <a href="#valuation" data-i18n="nav-valuation">Valuation</a>
+          <a href="#opportunities" data-i18n="nav-opportunities">Top Opportunity</a>
+          <details class="more-menu">
+            <summary data-i18n="nav-more">More</summary>
+            <div class="more-menu-panel">
+              <a href="#investor-watch" data-i18n="nav-investor-watch">Investor Watch</a>
+              <a href="#research" data-i18n="nav-research">Research</a>
+              <a href="#about" data-i18n="nav-about">About Us</a>
+              <a href="#methodology" data-i18n="nav-methodology">Methodology</a>
+              <a href="#contact" data-i18n="nav-contact">Contact</a>
+            </div>
+          </details>
+          <a class="nav-cta" href="#valuation" data-i18n="nav-get-estimate">Get estimate</a>
         </nav>
         <div class="header-right">
           <button class="language-toggle" id="language-toggle" type="button">简体中文</button>
         </div>
+      </div>
     </header>
 
     <main>
@@ -2336,13 +2603,47 @@ th {
       <section id="home" class="home-panel">
         <div class="home-hero">
           <p class="eyebrow" data-i18n="hero-eyebrow">Property Opportunity Intelligence</p>
-          <h2 data-i18n="hero-heading">Know what a property is worth — and why it matters.</h2>
-          <p class="hero-sub" data-i18n="hero-sub">Free estimates backed by comparable sales, school data and census insights across Melbourne and Victoria.</p>
+          <h2 data-i18n="hero-heading">Move from "What is this property worth?" to "Is this a smart opportunity?"</h2>
+          <p class="hero-sub" data-i18n="hero-sub">Get a first-layer valuation, understand suburb opportunity signals, and review planning constraints before you make a property decision.</p>
+          <div class="home-product-visual" aria-label="AusHomeValue product flow">
+            <div class="signal-card signal-card-estimate">
+              <span data-i18n="visual-estimate-label">Estimate</span>
+              <strong data-i18n="visual-estimate-value">Value range</strong>
+            </div>
+            <div class="signal-card signal-card-future">
+              <span data-i18n="visual-future-label">Future Score</span>
+              <strong data-i18n="visual-future-value">Opportunity outlook</strong>
+            </div>
+            <div class="signal-card signal-card-planning">
+              <span data-i18n="visual-planning-label">Planning Signal</span>
+              <strong data-i18n="visual-planning-value">Zone + overlay</strong>
+            </div>
+          </div>
           <div class="home-stats">
             <div class="stat"><strong>3,600+</strong> <span data-i18n="stat-sales">comparable sales</span></div>
             <div class="stat"><strong>2,800+</strong> <span data-i18n="stat-schools">schools mapped</span></div>
             <div class="stat"><strong>230+</strong> <span data-i18n="stat-suburbs">suburbs covered</span></div>
           </div>
+          <section class="product-funnel" aria-label="AusHomeValue product levels">
+            <article class="funnel-card">
+              <p class="funnel-step" data-i18n="funnel-free-step">Step 1</p>
+              <h3 data-i18n="funnel-free-title">Free Estimate</h3>
+              <p data-i18n="funnel-free-copy">A first-layer value range, confidence level and basic evidence summary.</p>
+            </article>
+            <article class="funnel-card featured">
+              <p class="funnel-step" data-i18n="funnel-report-step">Step 2</p>
+              <h3 data-i18n="funnel-report-title">Full Valuation Report — AUD $3.99 one-time</h3>
+              <p data-i18n="funnel-report-copy">Unlock comparable sales evidence, planning and zoning signals, Future Opportunity Outlook, key risks and data limitations for one property.</p>
+            </article>
+            <article class="funnel-card">
+              <p class="funnel-step" data-i18n="funnel-watch-step">Step 3</p>
+              <h3 data-i18n="funnel-watch-title">Investor Watch — AUD $9.99/month</h3>
+              <p data-i18n="funnel-watch-copy">Save suburbs and properties, track Future Opportunity Scores and monitor planning signals when new data is available. Coming Soon.</p>
+            </article>
+          </section>
+          <section class="product-difference" aria-label="Top Opportunity versus Investor Watch">
+            <p data-i18n="product-difference-copy">Top Opportunity helps you discover where to look. Investor Watch helps you keep watching what matters.</p>
+          </section>
           <div class="home-search-preview">
             <p class="eyebrow" data-i18n="hero-estimate-eyebrow">Free first-layer estimate</p>
             <p class="hero-note">本估值基于评估时可获得的公开市场信息、房产特征及统计分析生成，仅供一般信息和研究参考。本报告并非正式估价、信贷决定、法律、税务或财务建议。</p>
@@ -2669,50 +2970,31 @@ th {
             <!-- ── Investor Watch upsell ── -->
             <section class="panel investor-watch-panel" id="investor-watch" aria-label="Investor Watch upsell">
               <div class="investor-watch-header">
-                <p class="eyebrow" lang="en" data-i18n="investor-watch-eyebrow">Investor Watch</p>
-                <p class="eyebrow" lang="zh" data-i18n="investor-watch-eyebrow" hidden>Investor Watch</p>
-                <h2 lang="en" data-i18n="investor-watch-heading">Track better buying opportunities beyond one valuation.</h2>
-                <h2 lang="zh" data-i18n="investor-watch-heading" hidden>不只看一套房，持续追踪更好的买入机会。</h2>
-                <p lang="en" data-i18n="investor-watch-sub">For buyers and investors who want to monitor opportunities beyond one property.</p>
-                <p lang="zh" data-i18n="investor-watch-sub" hidden>适合想持续观察市场机会、比较多个区域和多套房产的买家与投资者。</p>
+                <p class="eyebrow" data-i18n="investor-watch-eyebrow">Investor Watch</p>
+                <h2 data-i18n="investor-watch-heading">Track better buying opportunities beyond one valuation.</h2>
+                <p data-i18n="investor-watch-sub">For buyers and investors who want to monitor opportunities beyond one property.</p>
               </div>
               <div class="investor-watch-pricing">
                 <div class="pricing-tier">
-                  <strong lang="en" data-i18n="investor-watch-price-label">Investor Watch</strong>
-                  <strong lang="zh" data-i18n="investor-watch-price-label" hidden>Investor Watch</strong>
-                  <span class="price">AUD $9.99<span lang="en">/month</span><span lang="zh" hidden>/月</span></span>
+                  <strong data-i18n="investor-watch-price-label">Investor Watch</strong>
+                  <span class="price" data-i18n="investor-watch-price">AUD $9.99/month</span>
+                  <p data-i18n="investor-watch-price-copy">For ongoing monitoring across saved suburbs and properties.</p>
                 </div>
                 <div class="pricing-tier">
-                  <strong lang="en" data-i18n="investor-watch-full-report-label">Full Valuation Report</strong>
-                  <strong lang="zh" data-i18n="investor-watch-full-report-label" hidden>完整估值报告</strong>
-                  <span class="price">AUD $3.99 <span lang="en">one-time</span><span lang="zh" hidden>一次性</span></span>
+                  <strong data-i18n="investor-watch-full-report-label">Full Valuation Report</strong>
+                  <span class="price" data-i18n="investor-watch-full-report-price">AUD $3.99 one-time</span>
+                  <p data-i18n="investor-watch-full-report-copy">For one property: valuation evidence, planning signals and future outlook.</p>
                 </div>
               </div>
-              <ul class="investor-watch-features" lang="en">
-                <li>Opportunity Watchlist</li>
-                <li>Future Outlook Scores by suburb</li>
-                <li>Saved property tracking</li>
-                <li>New suburb opportunity alerts</li>
-                <li>Zoning and overlay signal monitoring</li>
-                <li>Development constraint alerts when new data is available</li>
-                <li>Planning signal updates for saved suburbs and properties</li>
-                <li>Compare multiple properties before buying</li>
-              </ul>
-              <ul class="investor-watch-features" lang="zh" hidden>
-                <li>机会观察清单</li>
-                <li>区域 Future Outlook Score</li>
-                <li>收藏房产追踪</li>
-                <li>新机会区域提醒</li>
-                <li>分区与 Overlay 信号追踪</li>
-                <li>有新数据时提示潜在规划限制</li>
-                <li>对收藏区域和房产更新规划信号</li>
-                <li>买房前对比多套房产</li>
+              <ul class="investor-watch-features">
+                <li data-i18n="investor-watch-feature-1">Save suburbs and properties to a watchlist</li>
+                <li data-i18n="investor-watch-feature-2">Track Future Opportunity Scores</li>
+                <li data-i18n="investor-watch-feature-3">Monitor zoning and overlay signals when new data is available</li>
+                <li data-i18n="investor-watch-feature-4">Compare multiple properties before buying</li>
               </ul>
               <div class="investor-watch-cta">
-                <button type="button" class="btn-investor-watch" id="btn-investor-watch-coming-soon" lang="en">Join Investor Watch — Coming Soon</button>
-                <button type="button" class="btn-investor-watch" id="btn-investor-watch-coming-soon-zh" lang="zh" hidden>加入 Investor Watch — 即将开放</button>
-                <p class="investor-watch-note" lang="en">No payment setup required. We will notify you when it opens.</p>
-                <p class="investor-watch-note" lang="zh" hidden>无需预先设置支付。开放时会通知你。</p>
+                <button type="button" class="btn-investor-watch" id="btn-investor-watch-coming-soon" data-i18n="investor-watch-coming-soon">Join Investor Watch — Coming Soon</button>
+                <p class="investor-watch-note" data-i18n="investor-watch-note">No payment setup required. We will notify you when it opens.</p>
               </div>
             </section>
           </section>
@@ -2821,6 +3103,27 @@ th {
 
           </div>
         </div>
+      </section>
+
+      <!-- ── METHODOLOGY ── -->
+      <section id="methodology" class="methodology-panel panel">
+        <p class="eyebrow" data-i18n="methodology-eyebrow">Methodology</p>
+        <h2 data-i18n="methodology-heading">How AusHomeValue builds a practical buying view.</h2>
+        <div class="methodology-grid">
+          <article>
+            <h3 data-i18n="methodology-card1-title">Valuation evidence</h3>
+            <p data-i18n="methodology-card1-copy">We start with comparable sales, property type, suburb context and confidence checks.</p>
+          </article>
+          <article>
+            <h3 data-i18n="methodology-card2-title">Opportunity signals</h3>
+            <p data-i18n="methodology-card2-copy">We combine suburb fundamentals, Future Opportunity Scores and market evidence into a directional view.</p>
+          </article>
+          <article>
+            <h3 data-i18n="methodology-card3-title">Planning signals</h3>
+            <p data-i18n="methodology-card3-copy">We surface zoning and overlay signals where available, with limitations clearly stated.</p>
+          </article>
+        </div>
+        <p class="methodology-note" data-i18n="methodology-note">General information only. Not financial advice, not a formal valuation and not development approval advice.</p>
       </section>
 
       <!-- ── RESEARCH ── -->
