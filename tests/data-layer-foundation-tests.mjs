@@ -222,6 +222,94 @@ function testDryRunScript() {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// 5b. Preview derived backfill script audit
+// ═══════════════════════════════════════════════════════════════
+function testPreviewBackfillScript() {
+  console.log("\n━━━ 5b. Preview backfill script ───");
+  const pathName = path.join(ROOT, "scripts/backfill-planning-derived-preview.mjs");
+  if (!fs.existsSync(pathName)) {
+    ok(false, "File preview backfill script exists");
+    return;
+  }
+  const content = fs.readFileSync(pathName, "utf8");
+  const codeOnly = content.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+
+  ok(content.includes("DRY RUN"), "Default dry-run mode is labelled");
+  ok(content.includes("--apply"), "Has explicit --apply mode");
+  ok(content.includes("ep-winter-band-a7qym6bq"), "Production endpoint guard present");
+  ok(content.includes("REFUSING_PRODUCTION_MAIN_DATABASE"), "Production refusal error present");
+  ok(content.includes("REQUIRED_TABLE_COLUMNS"), "Required table/column manifest present");
+  ok(content.includes('school_locations: ["state", "suburb", "lga_name"]'),
+    "school_locations uses lga_name, not non-existent lga");
+  ok(content.includes('comparable_sales: ["state", "suburb", "lat", "lon"]'),
+    "comparable_sales coordinates are required for suburb/LGA fallback mapping");
+  ok(!content.includes('school_locations: ["state", "suburb", "lga"]'),
+    "school_locations does not require non-existent lga column");
+  ok(content.includes("comp_centroids") && content.includes("ST_Contains"),
+    "Uses comparable sale centroids and VicPlan geometry for fallback suburb/LGA mapping");
+  ok(content.includes("ST_SetSRID(ST_Point(c.lon, c.lat), 4326)"),
+    "Comparable coordinate fallback uses lon/lat point in EPSG:4326");
+  ok(content.includes("Mapped VIC suburb/LGA pairs") &&
+     content.includes("from comparable points"),
+    "Backfill output reports combined and comparable-derived mapping coverage");
+  ok(content.includes("MISSING_TABLES count=") && content.includes("tables=${missing.join"),
+    "Missing table diagnostics include table names");
+  ok(content.includes("MISSING_COLUMNS table=") && content.includes("columns=${item.columns.join"),
+    "Missing column diagnostics include table and column names");
+  ok(content.includes("information_schema.columns"), "Column validation uses information_schema.columns");
+  ok(content.includes("ON CONFLICT (suburb, state) DO UPDATE"), "suburb summary upsert is idempotent");
+  ok(content.includes("data_source_registry"), "updates data_source_registry");
+  ok(content.includes("LGA-level approximation") || content.includes("LGA approximation"),
+    "LGA approximation limitation documented");
+
+  ok(!/DROP\s+TABLE\b/i.test(codeOnly), "No DROP TABLE");
+  ok(!/\bTRUNCATE\b/i.test(codeOnly), "No TRUNCATE");
+  ok(!/\bDELETE\s+FROM\b/i.test(codeOnly), "No DELETE FROM");
+  ok(!/console\.(log|error|warn)\([^)]*process\.env\.DATABASE_URL/m.test(codeOnly),
+    "Does not log process.env.DATABASE_URL value");
+  ok(!content.includes("approval likely"), "No approval likely language");
+  ok(!content.includes("can subdivide"), "No can subdivide language");
+}
+
+// ═══════════════════════════════════════════════════════════════
+// 5c. Preview VicPlan source import script audit
+// ═══════════════════════════════════════════════════════════════
+function testPreviewVicplanImportScript() {
+  console.log("\n━━━ 5c. Preview VicPlan source import script ───");
+  const pathName = path.join(ROOT, "scripts/import-vicplan-source-preview.mjs");
+  if (!fs.existsSync(pathName)) {
+    ok(false, "File preview VicPlan source import script exists");
+    return;
+  }
+  const content = fs.readFileSync(pathName, "utf8");
+  const codeOnly = content.replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/[^\n]*/g, "");
+
+  ok(content.includes("DIAGNOSE"), "Default diagnose mode is labelled");
+  ok(content.includes("--create-schema"), "Requires explicit --create-schema flag");
+  ok(content.includes("--import-zones"), "Requires explicit --import-zones flag");
+  ok(content.includes("--import-overlays"), "Requires explicit --import-overlays flag");
+  ok(content.includes("--import-all"), "Supports explicit --import-all flag");
+  ok(content.includes("ep-winter-band-a7qym6bq"), "Production endpoint guard present");
+  ok(content.includes("REFUSING_PRODUCTION_MAIN_DATABASE"), "Production refusal error present");
+  ok(content.includes("CREATE EXTENSION IF NOT EXISTS postgis"), "PostGIS extension creation is explicit");
+  ok(content.includes("CREATE TABLE IF NOT EXISTS vicplan_zones"), "Creates vicplan_zones if missing");
+  ok(content.includes("CREATE TABLE IF NOT EXISTS vicplan_overlays"), "Creates vicplan_overlays if missing");
+  ok(content.includes("fetchPlanZones"), "Uses VicPlan zone importer");
+  ok(content.includes("fetchPlanOverlays"), "Uses VicPlan overlay importer");
+
+  ok(!/DROP\s+TABLE\b/i.test(codeOnly), "No DROP TABLE");
+  ok(!/\bTRUNCATE\b/i.test(codeOnly), "No TRUNCATE");
+  ok(!/\bDELETE\s+FROM\b/i.test(codeOnly), "No DELETE FROM");
+  ok(!/console\.(log|error|warn)\([^)]*process\.env\.DATABASE_URL/m.test(codeOnly),
+    "Does not log process.env.DATABASE_URL value");
+
+  const clientPath = path.join(ROOT, "lib/vicplan-client.js");
+  const client = fs.readFileSync(clientPath, "utf8");
+  ok(client.includes("ST_SimplifyPreserveTopology"), "Overlay importer can simplify geometry");
+  ok(client.includes("simplifyTolerance: 0.0001"), "Overlay importer uses 0.0001 simplify tolerance");
+}
+
+// ═══════════════════════════════════════════════════════════════
 // 6. Forbidden word scan (all files)
 // ═══════════════════════════════════════════════════════════════
 function testForbiddenWords() {
@@ -462,6 +550,8 @@ async function main() {
   testDataSourceRegistry();
   testPlanningDerivedService();
   testDryRunScript();
+  testPreviewBackfillScript();
+  testPreviewVicplanImportScript();
   testForbiddenWords();
   testDryRunNoSecrets();
   testMigrationConstraints();
