@@ -403,6 +403,92 @@
     .rv-confidence-medium { background: #fff4e5; color: #e65100; }
     .rv-confidence-low { background: #fdecea; color: #c62828; }
 
+    /* ── Future score distribution ── */
+    .rv-score-card {
+      background: #f7faf8;
+      border: 1px solid #dfe8e3;
+      border-radius: 10px;
+      padding: 14px;
+      margin: 12px 0;
+    }
+    .rv-score-card-title {
+      font-weight: 700;
+      margin: 0 0 4px;
+      color: var(--text);
+    }
+    .rv-score-card-desc {
+      margin: 0 0 12px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+    .rv-score-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      height: 18px;
+      border-radius: 999px;
+      overflow: visible;
+      background: #dbe2de;
+      margin: 18px 0 22px;
+      border: 1px solid #d8e2dd;
+    }
+    .rv-score-segment {
+      min-width: 0;
+    }
+    .rv-score-segment:nth-child(1) { background: #e9efec; border-radius: 999px 0 0 999px; }
+    .rv-score-segment:nth-child(2) { background: #d8e6df; }
+    .rv-score-segment:nth-child(3) { background: #b9d2c6; }
+    .rv-score-segment:nth-child(4) { background: #8eb6a3; border-radius: 0 999px 999px 0; }
+    .rv-score-marker {
+      position: absolute;
+      top: 50%;
+      width: 14px;
+      height: 32px;
+      border-radius: 999px;
+      background: var(--accent);
+      border: 3px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      transform: translate(-50%, -50%);
+    }
+    .rv-score-labels {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      line-height: 1.25;
+    }
+    .rv-score-labels span {
+      text-align: center;
+      min-width: 0;
+    }
+    .rv-score-band-summary {
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 8px;
+    }
+
+    /* ── Definition list ── */
+    .rv-definition-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .rv-definition-item {
+      padding: 10px 0;
+      border-top: 1px solid #f4f6f5;
+    }
+    .rv-definition-term {
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px;
+    }
+    .rv-definition-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
     /* ── Footer ── */
     .rv-footer {
       text-align: center;
@@ -464,6 +550,9 @@
     @media (max-width: 767px) {
       .rv-comparables-table { display: none; }
       .rv-comparable-cards { display: block; }
+      .rv-score-labels {
+        font-size: 0.68rem;
+      }
     }
 
     /* ── Touch target overrides ── */

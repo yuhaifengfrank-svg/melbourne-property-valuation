@@ -224,10 +224,19 @@ test("3b. paid report renders Future Score, key opportunities, risks, welcome an
   assert.ok(text.indexOf("Future Opportunity Score") !== -1, "future score included in summary");
   assert.ok(text.indexOf("Property Future Score") !== -1, "property future score label shown");
   assert.ok(text.indexOf("72/100") !== -1, "future score value shown");
+  assert.ok(text.indexOf("Score position") !== -1, "score position card shown");
+  assert.ok(text.indexOf("50-75% opportunity band") !== -1, "score band interpretation shown");
+  assert.ok(sections.querySelector(".rv-score-card"), "score card DOM exists");
+  assert.ok(sections.querySelector(".rv-score-marker"), "score marker DOM exists");
   assert.ok(text.indexOf("Good school access") !== -1, "opportunity reason shown");
   assert.ok(text.indexOf("Interest-rate sensitivity") !== -1, "risk reason shown");
   assert.equal(text.indexOf("single-source"), -1, "internal single-source confidence detail hidden");
   assert.ok(text.indexOf("Recommended Next Steps") !== -1, "next steps section shown");
+  assert.ok(text.indexOf("How to Read These Metrics") !== -1, "metric glossary shown");
+  assert.ok(text.indexOf("Anchor Value") !== -1, "anchor value definition shown");
+  assert.ok(text.indexOf("Weighted Median") !== -1, "weighted median definition shown");
+  assert.ok(text.indexOf("Factor Adjustments") !== -1, "factor adjustment definition shown");
+  assert.ok(sections.querySelector(".rv-definition-list"), "definition list DOM exists");
   assert.ok(text.indexOf("Thank You") !== -1, "thank you section shown");
   assert.ok(text.indexOf("thank you again for choosing AusHomeValue") !== -1,
     "closing thank-you message shown");
@@ -344,6 +353,9 @@ test("3f. demo paid report sample renders without fetching API", async () => {
   assert.ok(text.indexOf("8 Melrose Ct, Scoresby, VIC") !== -1, "demo address shown");
   assert.ok(text.indexOf("Future Opportunity Score") !== -1, "future score shown");
   assert.ok(text.indexOf("72/100") !== -1, "future score value shown");
+  assert.ok(text.indexOf("Score position") !== -1, "demo score position shown");
+  assert.ok(text.indexOf("50-75% opportunity band") !== -1, "demo score band shown");
+  assert.ok(text.indexOf("How to Read These Metrics") !== -1, "demo glossary shown");
   assert.ok(text.indexOf("Planning & Zoning Signals") !== -1, "planning section shown");
   assert.ok(text.indexOf("Investor Watch") !== -1, "investor watch upsell shown");
   assert.equal(text.indexOf("single-source"), -1, "internal single-source detail hidden in demo");
@@ -362,6 +374,9 @@ test("3g. demo paid report sample renders Chinese with lang=zh", async () => {
   assert.ok(text.indexOf("欢迎") !== -1, "Chinese welcome shown");
   assert.ok(text.indexOf("尊敬的小鱼") !== -1, "Chinese demo greeting shown");
   assert.ok(text.indexOf("未来机会分数") !== -1, "Chinese future score label shown");
+  assert.ok(text.indexOf("分数位置") !== -1, "Chinese score position shown");
+  assert.ok(text.indexOf("50-75% 机会区间") !== -1, "Chinese score band shown");
+  assert.ok(text.indexOf("如何理解这些指标") !== -1, "Chinese glossary shown");
   assert.ok(text.indexOf("规划与分区信号") !== -1, "Chinese planning title shown");
   assert.equal(text.indexOf("single-source"), -1, "internal single-source detail hidden in Chinese demo");
 });

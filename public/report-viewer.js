@@ -85,6 +85,13 @@
       confidenceFactors: "Confidence Factors",
       futureOpportunityScore: "Future Opportunity Score",
       futureScoreConfidence: "Future Score Confidence",
+      scorePosition: "Score position",
+      scorePositionIntro: "This places the score into a broad opportunity band so you can interpret 72/100 as a relative signal, not a guaranteed outcome.",
+      scoreBands: ["Lower 25%", "25-50%", "50-75%", "Top 25%"],
+      scoreBandTop: "Top 25% opportunity band",
+      scoreBandUpperMid: "50-75% opportunity band",
+      scoreBandLowerMid: "25-50% opportunity band",
+      scoreBandLower: "Lower 25% opportunity band",
       mainValuationSignals: "Main valuation signals:",
       keyFutureOpportunitySignals: "Key future opportunity signals:",
       keyFutureRisks: "Key future risks to check:",
@@ -145,6 +152,19 @@
         "Check title, planning overlays, easements, building condition and strata information where relevant.",
         "For finance, lending or tax decisions, speak with appropriately licensed professionals.",
         "Re-run the report when new comparable sales become available or if the property's attributes change."
+      ],
+      glossaryTitle: "How to Read These Metrics",
+      glossaryIntro: "These notes explain the model terms in plain language. They are included to make the report easier to interpret, not to replace professional advice.",
+      glossaryDefinitions: [
+        { term: "Future Opportunity Outlook", desc: "A relative 0-100 signal combining suburb-level outlook and property-specific fit. It is useful for comparing opportunities, not for promising price growth." },
+        { term: "Anchor Value", desc: "The first central value generated from comparable sales before the final range checks and weighting are applied." },
+        { term: "Weighted Median", desc: "The middle comparable value after higher-quality or more relevant evidence receives more influence. It is less affected by extreme sales than an average." },
+        { term: "Weighted Mean", desc: "The weighted average of accepted comparable evidence. It can move more than the median when high or low sales are influential." },
+        { term: "Factor Adjustments", desc: "The model's directional adjustment for differences such as land size, recency, property type and evidence quality where those fields are available." },
+        { term: "Factor Total", desc: "The combined effect of model adjustments. Treat it as an explanation signal, not a separate valuation." },
+        { term: "Half Range", desc: "Half of the customer-facing value range. Wider ranges usually mean more uncertainty or more variation in comparable evidence." },
+        { term: "Sigma", desc: "A statistical spread measure used internally to understand how tightly the evidence clusters around the estimate." },
+        { term: "Planning & Zoning Signals", desc: "Indicative signals from available planning data. They do not confirm approval, subdivision potential, or the absence of heritage controls." }
       ],
       metadata: "Report Metadata",
       reportId: "Report ID",
@@ -215,6 +235,13 @@
       confidenceFactors: "置信度依据",
       futureOpportunityScore: "未来机会分数",
       futureScoreConfidence: "未来分数置信度",
+      scorePosition: "分数位置",
+      scorePositionIntro: "这里把分数放入大致机会分位，让你理解 72/100 在相对机会中的位置；它不是确定收益承诺。",
+      scoreBands: ["后 25%", "25-50%", "50-75%", "前 25%"],
+      scoreBandTop: "前 25% 机会区间",
+      scoreBandUpperMid: "50-75% 机会区间",
+      scoreBandLowerMid: "25-50% 机会区间",
+      scoreBandLower: "后 25% 机会区间",
       mainValuationSignals: "主要估值信号：",
       keyFutureOpportunitySignals: "关键未来机会信号：",
       keyFutureRisks: "需要核查的未来风险：",
@@ -275,6 +302,19 @@
         "核查产权、规划覆盖、地役权、房屋状况以及相关 strata 信息。",
         "涉及贷款、税务或法律决策时，请咨询相应持牌专业人士。",
         "当新的可比成交出现，或房产属性发生变化时，建议重新生成报告。"
+      ],
+      glossaryTitle: "如何理解这些指标",
+      glossaryIntro: "以下说明用通俗语言解释模型指标，帮助你读懂报告。它们不替代正式估值、法律、贷款或税务建议。",
+      glossaryDefinitions: [
+        { term: "Future Opportunity Outlook", desc: "一个 0-100 的相对机会信号，结合区域前景和房产自身匹配度。适合用来比较机会，不代表承诺涨幅。" },
+        { term: "Anchor Value", desc: "模型从可比成交中生成的初始中心值，之后还会经过区间检查和权重处理。" },
+        { term: "Weighted Median", desc: "加权后的中位数。质量更高或更相关的证据影响更大，相比平均数不容易被极端成交拉偏。" },
+        { term: "Weighted Mean", desc: "加权平均数。如果高价或低价成交权重较大，它会比中位数更容易移动。" },
+        { term: "Factor Adjustments", desc: "模型对土地面积、成交时间、房产类型和证据质量等差异做出的方向性调整。" },
+        { term: "Factor Total", desc: "各项模型调整合计后的解释信号。它不是单独的估值，只帮助理解估值为什么这样变化。" },
+        { term: "Half Range", desc: "估值区间的一半。区间越宽，通常代表不确定性更高或可比成交差异更大。" },
+        { term: "Sigma", desc: "一种统计分散度指标，用来观察证据围绕估值中心的集中程度。" },
+        { term: "规划与分区信号", desc: "基于当前可用规划数据的参考信号，不确认开发许可、分割潜力，也不确认没有 Heritage 控制。" }
       ],
       metadata: "报告信息",
       reportId: "报告编号",
@@ -895,6 +935,95 @@
       return text ? text : fallback;
     }
 
+    function opportunityBandLabel(score) {
+      var n = Number(score);
+      if (!Number.isFinite(n)) return null;
+      if (n >= 75) return text("scoreBandTop");
+      if (n >= 50) return text("scoreBandUpperMid");
+      if (n >= 25) return text("scoreBandLowerMid");
+      return text("scoreBandLower");
+    }
+
+    function appendScoreDistribution(el, score) {
+      var n = Number(score);
+      if (!Number.isFinite(n)) return false;
+      var safeScore = Math.max(0, Math.min(100, n));
+      var bands = text("scoreBands");
+      var bandLabel = opportunityBandLabel(safeScore);
+      if (!Array.isArray(bands) || !bandLabel) return false;
+
+      var card = document.createElement("div");
+      card.className = "rv-score-card";
+
+      var title = document.createElement("div");
+      title.className = "rv-score-card-title";
+      title.textContent = text("scorePosition");
+      card.appendChild(title);
+
+      var desc = document.createElement("p");
+      desc.className = "rv-score-card-desc";
+      desc.textContent = text("scorePositionIntro");
+      card.appendChild(desc);
+
+      var track = document.createElement("div");
+      track.className = "rv-score-track";
+      for (var i = 0; i < 4; i++) {
+        var segment = document.createElement("span");
+        segment.className = "rv-score-segment";
+        track.appendChild(segment);
+      }
+      var marker = document.createElement("span");
+      marker.className = "rv-score-marker";
+      marker.style.left = safeScore + "%";
+      track.appendChild(marker);
+      card.appendChild(track);
+
+      var labels = document.createElement("div");
+      labels.className = "rv-score-labels";
+      for (var bi = 0; bi < bands.length; bi++) {
+        var label = document.createElement("span");
+        label.textContent = bands[bi];
+        labels.appendChild(label);
+      }
+      card.appendChild(labels);
+
+      var summary = document.createElement("div");
+      summary.className = "rv-score-band-summary";
+      summary.textContent = Math.round(safeScore) + "/100 · " + bandLabel;
+      card.appendChild(summary);
+
+      el.appendChild(card);
+      return true;
+    }
+
+    function appendDefinitionList(el, items) {
+      var valid = Array.isArray(items) ? items.filter(function (item) {
+        return item && item.term && item.desc;
+      }) : [];
+      if (!valid.length) return false;
+
+      var list = document.createElement("div");
+      list.className = "rv-definition-list";
+      for (var i = 0; i < valid.length; i++) {
+        var row = document.createElement("div");
+        row.className = "rv-definition-item";
+
+        var term = document.createElement("div");
+        term.className = "rv-definition-term";
+        term.textContent = valid[i].term;
+        row.appendChild(term);
+
+        var desc = document.createElement("div");
+        desc.className = "rv-definition-desc";
+        desc.textContent = valid[i].desc;
+        row.appendChild(desc);
+
+        list.appendChild(row);
+      }
+      el.appendChild(list);
+      return true;
+    }
+
     var customerName = displayText(p.customerName, "Customer");
     var reportAddress = displayText(p.address, "the selected property");
     var futureOutlook = p.propertyFutureOutlook || null;
@@ -927,6 +1056,7 @@
       }
       if (futureOutlook && futureOutlook.futureOpportunityIndex != null) {
         el.appendChild(makeInfoRow(text("futureOpportunityScore"), String(futureOutlook.futureOpportunityIndex) + "/100"));
+        appendScoreDistribution(el, futureOutlook.futureOpportunityIndex);
       }
       if (futureOutlook && futureOutlook.confidence) {
         el.appendChild(makeInfoRow(text("futureScoreConfidence"), futureOutlook.confidence));
@@ -1145,7 +1275,13 @@
       appendBulletList(el, text("nextStepItems"));
     });
 
-    // ── 10. Report Metadata ──
+    // ── 10. Metric glossary ──
+    appendSection(text("glossaryTitle"), function (el) {
+      appendParagraph(el, text("glossaryIntro"));
+      appendDefinitionList(el, text("glossaryDefinitions"));
+    });
+
+    // ── 11. Report Metadata ──
     appendSection(text("metadata"), function (el) {
       el.appendChild(makeInfoRow(text("reportId"), p.reportId));
       el.appendChild(makeInfoRow(text("asOfDate"), fmtDate(p.asOfDate)));
@@ -1155,7 +1291,7 @@
       }
     });
 
-    // ── 11. Thank You ──
+    // ── 12. Thank You ──
     appendSection(text("thankYou"), function (el) {
       appendParagraph(el, interpolate(text("thankLine1"), { name: customerName }));
       appendParagraph(el, interpolate(text("thankLine2"), { address: reportAddress }));
@@ -1163,7 +1299,7 @@
       appendParagraph(el, "AusHomeValue");
     });
 
-    // ── 12. Investor Watch upsell ──
+    // ── 13. Investor Watch upsell ──
     appendSection(text("investorWatchTitle"), function (el) {
       appendParagraph(el, text("investorWatchSub"));
       appendParagraph(el, text("investorWatchPrice"));
