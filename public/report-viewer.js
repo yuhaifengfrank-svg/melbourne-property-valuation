@@ -86,7 +86,7 @@
       futureOpportunityScore: "Future Opportunity Score",
       futureScoreConfidence: "Future Score Confidence",
       scorePosition: "Score position",
-      scorePositionIntro: "This places the score into a broad opportunity band so you can interpret 72/100 as a relative signal, not a guaranteed outcome.",
+      scorePositionIntro: "This places the score into a broad opportunity band so you can interpret {score}/100 as a relative signal, not a guaranteed outcome.",
       scoreBands: ["Lower 25%", "25-50%", "50-75%", "Top 25%"],
       scoreBandTop: "Top 25% opportunity band",
       scoreBandUpperMid: "50-75% opportunity band",
@@ -236,7 +236,7 @@
       futureOpportunityScore: "未来机会分数",
       futureScoreConfidence: "未来分数置信度",
       scorePosition: "分数位置",
-      scorePositionIntro: "这里把分数放入大致机会分位，让你理解 72/100 在相对机会中的位置；它不是确定收益承诺。",
+      scorePositionIntro: "这里把分数放入大致机会分位，让你理解 {score}/100 在相对机会中的位置；它不是确定收益承诺。",
       scoreBands: ["后 25%", "25-50%", "50-75%", "前 25%"],
       scoreBandTop: "前 25% 机会区间",
       scoreBandUpperMid: "50-75% 机会区间",
@@ -962,7 +962,7 @@
 
       var desc = document.createElement("p");
       desc.className = "rv-score-card-desc";
-      desc.textContent = text("scorePositionIntro");
+      desc.textContent = String(text("scorePositionIntro")).replace("{score}", String(Math.round(safeScore)));
       card.appendChild(desc);
 
       var track = document.createElement("div");
@@ -993,6 +993,14 @@
       card.appendChild(summary);
 
       el.appendChild(card);
+      return true;
+    }
+
+    function appendOptionalInfoRow(el, label, value) {
+      if (value == null || value === NA) return false;
+      var s = String(value).trim();
+      if (!s || s === NA) return false;
+      el.appendChild(makeInfoRow(label, value));
       return true;
     }
 
@@ -1230,13 +1238,13 @@
         el.appendChild(makeInfoRow(text("channelAWeight"), p.largeLotResult.channelAWeight != null ? fmtPct(p.largeLotResult.channelAWeight) : NA));
         el.appendChild(makeInfoRow(text("channelBWeight"), p.largeLotResult.channelBWeight != null ? fmtPct(p.largeLotResult.channelBWeight) : NA));
       }
-      el.appendChild(makeInfoRow(text("anchorValue"), fmtCurrency(p.anchor)));
-      el.appendChild(makeInfoRow(text("weightedMedian"), fmtCurrency(p.weightedMedian)));
-      el.appendChild(makeInfoRow(text("weightedMean"), fmtCurrency(p.weightedMean)));
-      el.appendChild(makeInfoRow(text("factorAdjustments"), p.factorAdjustments != null ? fmtPct(p.factorAdjustments) : NA));
-      el.appendChild(makeInfoRow(text("factorTotal"), p.factorTotal != null ? fmtPct(p.factorTotal) : NA));
-      el.appendChild(makeInfoRow(text("halfRange"), fmtCurrency(p.customerHalfRange)));
-      el.appendChild(makeInfoRow(text("sigma"), p.sigma != null ? String(Number(p.sigma).toFixed(4)) : NA));
+      appendOptionalInfoRow(el, text("anchorValue"), fmtCurrency(p.anchor));
+      appendOptionalInfoRow(el, text("weightedMedian"), fmtCurrency(p.weightedMedian));
+      appendOptionalInfoRow(el, text("weightedMean"), fmtCurrency(p.weightedMean));
+      appendOptionalInfoRow(el, text("factorAdjustments"), p.factorAdjustments != null ? fmtPct(p.factorAdjustments) : null);
+      appendOptionalInfoRow(el, text("factorTotal"), p.factorTotal != null ? fmtPct(p.factorTotal) : null);
+      appendOptionalInfoRow(el, text("halfRange"), fmtCurrency(p.customerHalfRange));
+      appendOptionalInfoRow(el, text("sigma"), p.sigma != null ? String(Number(p.sigma).toFixed(4)) : null);
       if (p.multiSourceAnalysis) {
         appendParagraph(el, text("multiSourceNote"));
       }
@@ -1244,11 +1252,17 @@
 
     // ── 7. Market Context ──
     appendSection(text("marketContext"), function (el) {
-      el.appendChild(makeInfoRow(text("suburbMedian"), fmtCurrency(p.suburbMedian)));
-      el.appendChild(makeInfoRow(text("rentEstimate"), fmtCurrency(p.rent)));
-      if (p["yield"] != null) { el.appendChild(makeInfoRow(text("grossYield"), fmtPct(p["yield"]))); }
-      if (p.school) { el.appendChild(makeInfoRow(text("nearbySchool"), p.school)); }
-      if (p.vacancy != null) { el.appendChild(makeInfoRow(text("vacancyRate"), fmtPct(p.vacancy))); }
+      var rows = 0;
+      rows += appendOptionalInfoRow(el, text("suburbMedian"), fmtCurrency(p.suburbMedian)) ? 1 : 0;
+      rows += appendOptionalInfoRow(el, text("rentEstimate"), fmtCurrency(p.rent)) ? 1 : 0;
+      rows += appendOptionalInfoRow(el, text("grossYield"), p["yield"] != null ? fmtPct(p["yield"]) : null) ? 1 : 0;
+      rows += appendOptionalInfoRow(el, text("nearbySchool"), p.school) ? 1 : 0;
+      rows += appendOptionalInfoRow(el, text("vacancyRate"), p.vacancy != null ? fmtPct(p.vacancy) : null) ? 1 : 0;
+      if (!rows) {
+        appendParagraph(el, language === "zh"
+          ? "这份报告快照未包含可展示的区域市场背景指标。估值仍基于可比成交证据生成。"
+          : "This report snapshot does not include display-ready suburb market context metrics. The valuation is still generated from comparable-sales evidence.");
+      }
     });
 
     // ── 8. Risks and Limitations ──

@@ -244,6 +244,46 @@ test("3b. paid report renders Future Score, key opportunities, risks, welcome an
     "future score disclaimer shown");
 });
 
+test("3b.1 score position copy uses the actual score and unit property type", async () => {
+  var response = makeSuccessResponse({
+    report: {
+      subject: {
+        address: "Unit 1, 11 McIntosh Street, Oakleigh VIC",
+        suburb: "Oakleigh",
+        state: "VIC",
+        propertyType: "Unit"
+      },
+      estimate: {
+        midpoint: 952933,
+        low: 809993,
+        high: 1095873
+      },
+      valuationMode: "standard_house",
+      acceptedComparables: [],
+      confidence: {
+        label: "Medium"
+      },
+      propertyFutureOutlook: {
+        futureOpportunityIndex: 31,
+        suburbFutureOutlookScore: 72,
+        propertySpecificScore: 31,
+        forecastHorizon: "3-5 years",
+        confidence: "Low"
+      }
+    }
+  });
+  var dom = createDom(mockFetchOk(response));
+  await new Promise(function (r) { setTimeout(r, 50); });
+  var sections = dom.window.document.getElementById('rv-sections');
+  var text = sections.textContent;
+  assert.ok(text.indexOf("31/100") !== -1, "actual score shown");
+  assert.ok(text.indexOf("interpret 31/100") !== -1, "score intro uses actual score");
+  assert.equal(text.indexOf("interpret 72/100"), -1, "hard-coded score removed");
+  assert.ok(text.indexOf("25-50% opportunity band") !== -1, "actual score band shown");
+  assert.ok(text.indexOf("Property Type") !== -1, "property type row shown");
+  assert.ok(text.indexOf("Unit") !== -1, "unit property type displayed");
+});
+
 // ── 3c. Missing customer name falls back to Customer ──
 test("3c. paid report uses Customer fallback when name is unavailable", async () => {
   var response = makeSuccessResponse({
