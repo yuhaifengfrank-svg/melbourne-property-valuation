@@ -303,7 +303,7 @@ test("3d. report viewer renders Chinese content with lang=zh", async () => {
   var text = dom.window.document.getElementById('rv-sections').textContent;
   assert.equal(dom.window.document.documentElement.lang, "zh-CN", "document lang set to zh-CN");
   assert.ok(text.indexOf("欢迎") !== -1, "Chinese welcome title shown");
-  assert.ok(text.indexOf("Dear 小鱼") !== -1, "Chinese report keeps customer greeting");
+  assert.ok(text.indexOf("尊敬的小鱼") !== -1, "Chinese report keeps customer greeting");
   assert.ok(text.indexOf("核心摘要") !== -1, "Chinese executive summary shown");
   assert.ok(text.indexOf("未来机会分数") !== -1, "Chinese future score label shown");
   assert.ok(text.indexOf("感谢") !== -1, "Chinese thank-you section shown");
