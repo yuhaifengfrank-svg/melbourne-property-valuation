@@ -324,6 +324,48 @@ test("3e. language toggle switches rendered report from English to Chinese", asy
   assert.equal(toggle.textContent, "English", "toggle flips to English label");
 });
 
+// ── 3f. Demo paid report sample renders without API/cookie/payment ──
+test("3f. demo paid report sample renders without fetching API", async () => {
+  var fetchCalled = false;
+  var mockFetch = function () {
+    fetchCalled = true;
+    return Promise.reject(new Error("demo should not fetch"));
+  };
+  var dom = createDom(mockFetch,
+    'https://aushomevalue.com.au/report-viewer.html?demo=paid-report');
+  await new Promise(function (r) { setTimeout(r, 30); });
+  assert.equal(fetchCalled, false, "demo mode does not call fetch");
+  var root = dom.window.document.getElementById('rv-root');
+  var reportPage = root.querySelector('[data-state=report]');
+  assert.ok(reportPage.className.indexOf('rv-active') !== -1, "report page active");
+  var text = dom.window.document.getElementById('rv-sections').textContent;
+  assert.ok(text.indexOf("Welcome") !== -1, "welcome shown");
+  assert.ok(text.indexOf("Dear Sample Buyer") !== -1, "demo customer greeting shown");
+  assert.ok(text.indexOf("8 Melrose Ct, Scoresby, VIC") !== -1, "demo address shown");
+  assert.ok(text.indexOf("Future Opportunity Score") !== -1, "future score shown");
+  assert.ok(text.indexOf("72/100") !== -1, "future score value shown");
+  assert.ok(text.indexOf("Planning & Zoning Signals") !== -1, "planning section shown");
+  assert.ok(text.indexOf("Investor Watch") !== -1, "investor watch upsell shown");
+  assert.equal(text.indexOf("single-source"), -1, "internal single-source detail hidden in demo");
+});
+
+// ── 3g. Demo paid report sample supports Chinese URL ──
+test("3g. demo paid report sample renders Chinese with lang=zh", async () => {
+  var fetchCalled = false;
+  var dom = createDom(function () {
+    fetchCalled = true;
+    return Promise.reject(new Error("demo should not fetch"));
+  }, 'https://aushomevalue.com.au/report-viewer.html?demo=paid-report&lang=zh');
+  await new Promise(function (r) { setTimeout(r, 30); });
+  assert.equal(fetchCalled, false, "demo Chinese mode does not call fetch");
+  var text = dom.window.document.getElementById('rv-sections').textContent;
+  assert.ok(text.indexOf("欢迎") !== -1, "Chinese welcome shown");
+  assert.ok(text.indexOf("尊敬的小鱼") !== -1, "Chinese demo greeting shown");
+  assert.ok(text.indexOf("未来机会分数") !== -1, "Chinese future score label shown");
+  assert.ok(text.indexOf("规划与分区信号") !== -1, "Chinese planning title shown");
+  assert.equal(text.indexOf("single-source"), -1, "internal single-source detail hidden in Chinese demo");
+});
+
 // ── 4. reportId mismatch rejects ──
 test("4. reportId mismatch shows generic_error", async () => {
   var resp = makeSuccessResponse({ reportId: 'other_id' });

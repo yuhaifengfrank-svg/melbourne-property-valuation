@@ -522,6 +522,171 @@
     return p;
   }
 
+  function buildDemoReportPayload() {
+    return normalizePayload({
+      reportId: "rp_20260620_aaaaaaaaaaaaaaaaaaaaaaaa",
+      valuationVersion: "demo-1.0",
+      purchasedAt: "2026-06-20T09:30:00+10:00",
+      asOfDate: "2026-06-20T09:30:00+10:00",
+      customerName: language === "zh" ? "小鱼" : "Sample Buyer",
+      subject: {
+        address: "8 Melrose Ct, Scoresby, VIC",
+        suburb: "Scoresby",
+        state: "VIC",
+        postcode: "3179",
+        propertyType: "House",
+        bedrooms: 4,
+        bathrooms: 2,
+        carSpaces: 2,
+        landSize: 409,
+        buildingArea: 178,
+        zoning: "Neighbourhood Residential Zone"
+      },
+      estimate: {
+        midpoint: 1065340,
+        low: 905539,
+        high: 1225141,
+        anchor: 1065340,
+        weightedMedian: 1059000,
+        weightedMean: 1074200,
+        factorAdjustments: 0.031,
+        factorTotal: 0.044,
+        customerHalfRange: 159801,
+        sigma: 0.096
+      },
+      valuationMode: "standard_house",
+      confidence: {
+        label: "Medium",
+        score: 74,
+        dataScore: 74,
+        reasons: [
+          "12 accepted comparable sales",
+          "Recent comparable sales within six months",
+          "Dispersion 9.9%",
+          "17% single-source"
+        ]
+      },
+      keyFactors: [
+        "Recent nearby house sales support the current estimate range.",
+        "The property sits in an established residential pocket with family-house demand.",
+        "The estimate is supported by multiple comparable sales, but title and condition still need manual checks."
+      ],
+      dataLimitations: [
+        "The model does not verify building condition, renovations, structural issues or unrecorded improvements.",
+        "Heritage controls, easements, covenants and current planning applications should be checked independently.",
+        "The range may move as fresh comparable sales or off-market information becomes available."
+      ],
+      acceptedComparables: [
+        {
+          address: "23 Gertonia Avenue, Scoresby",
+          salePrice: 1045000,
+          saleDate: "2026-05-22",
+          distanceMeters: 430,
+          landSize: 405,
+          propertyType: "House",
+          adjustment: 0.018,
+          verificationStatus: "Included"
+        },
+        {
+          address: "14 Berrabri Drive, Scoresby",
+          salePrice: 1112000,
+          saleDate: "2026-04-18",
+          distanceMeters: 760,
+          landSize: 536,
+          propertyType: "House",
+          adjustment: -0.022,
+          verificationStatus: "Included"
+        },
+        {
+          address: "7 Michele Drive, Scoresby",
+          salePrice: 985000,
+          saleDate: "2026-03-29",
+          distanceMeters: 950,
+          landSize: 395,
+          propertyType: "House",
+          adjustment: 0.041,
+          verificationStatus: "Included"
+        },
+        {
+          address: "5 Melrose Court, Scoresby",
+          salePrice: 1098000,
+          saleDate: "2026-02-14",
+          distanceMeters: 120,
+          landSize: 421,
+          propertyType: "House",
+          adjustment: -0.006,
+          verificationStatus: "Included"
+        },
+        {
+          address: "31 Darryl Street, Scoresby",
+          salePrice: 1160000,
+          saleDate: "2026-01-31",
+          distanceMeters: 890,
+          landSize: 612,
+          propertyType: "House",
+          adjustment: -0.048,
+          verificationStatus: "Included"
+        }
+      ],
+      propertyFutureOutlook: {
+        futureOpportunityIndex: 72,
+        suburbFutureOutlookScore: 70,
+        propertySpecificScore: 76,
+        forecastHorizon: "3-5 years",
+        confidence: "Medium",
+        formula: "property_future_score = suburb_future_outlook_score * 0.70 + property_specific_score * 0.30",
+        why: [
+          "Established suburb with limited immediate replacement supply.",
+          "Family-house format remains aligned with local buyer demand.",
+          "Planning signals suggest the area should be monitored for constraints and future changes.",
+          "Comparable evidence indicates the property is within a liquid local price band."
+        ],
+        risks: [
+          "Condition, renovation quality and building defects are not verified by the model.",
+          "Higher rates or weaker buyer confidence could compress demand in the next cycle.",
+          "Planning and overlay data is indicative only and should be checked before relying on redevelopment assumptions."
+        ]
+      },
+      suburbFutureOutlook: {
+        futureOpportunityIndex: 70
+      },
+      planningSignals: {
+        ok: true,
+        zone: {
+          code: "NRZ3",
+          name: "Neighbourhood Residential Zone — Schedule 3",
+          category: "residential",
+          interpretation: "Residential zoning is generally aligned with established housing use. Manual planning review is still required before relying on any development assumption."
+        },
+        overlays: [
+          {
+            code: "DDO",
+            name: "Design and Development Overlay",
+            interpretation: "A design control applies. Built form, neighbourhood character and local policy should be reviewed."
+          }
+        ],
+        planningConstraintLevel: "moderate",
+        redevelopmentFlexibilityHint: "mixed",
+        manualReviewRequired: true,
+        limitations: [
+          "Heritage Overlay coverage is not confirmed in this demo dataset.",
+          "Council applications, title restrictions and site-specific controls require separate review."
+        ]
+      },
+      marketContext: {
+        suburbMedian: 1048000,
+        rent: 650,
+        yield: 0.0317,
+        school: "Scoresby Primary School",
+        vacancy: 0.018
+      },
+      multiSourceAnalysis: {
+        used: true
+      },
+      methodology: "Comparable-sales evidence model using recent public market transactions, range checks, confidence scoring, planning signals and future opportunity indicators."
+    });
+  }
+
   // ══════════════════════════════════════════════════════════════
   //  State machine
   // ══════════════════════════════════════════════════════════════
@@ -1054,9 +1219,10 @@
       });
     }
 
-    // Parse report_id from URL
+    // Parse report_id/demo mode from URL
     var search = window.location.search;
     var rid = null;
+    var demoMode = null;
     if (search && search.length > 1) {
       var qsStr = search.substring(1);
       var pairs = qsStr.split("&");
@@ -1065,9 +1231,17 @@
         var key = pair[0];
         if (key === "report_id" && pair.length > 1) {
           rid = decodeURIComponent(pair[1]);
-          break;
+        }
+        if (key === "demo" && pair.length > 1) {
+          demoMode = decodeURIComponent(pair[1]);
         }
       }
+    }
+
+    if (demoMode === "paid-report") {
+      state.reportId = "rp_20260620_aaaaaaaaaaaaaaaaaaaaaaaa";
+      showReport(buildDemoReportPayload());
+      return;
     }
 
     // Validate report_id format: rp_<digits>_<16+ hex chars>
