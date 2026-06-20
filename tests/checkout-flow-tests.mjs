@@ -736,6 +736,10 @@ test("Phase 2B: registered user + paymentsEnabled=true with draft shows $3.99 CT
   assert.ok(leadPanel, "lead-panel exists");
   assert.notEqual(leadPanel.style.display, "none",
     "lead panel must be visible");
+  assert.ok(leadPanel.textContent.includes("free enhanced summary"),
+    "paid state must remind users the free enhanced summary is already unlocked");
+  assert.ok(leadPanel.textContent.includes("full comparable-sales table"),
+    "paid state must explain what the $3.99 report adds");
 });
 
 test("Phase 2B: free registration success keeps third-layer paid CTA visible", async () => {
@@ -785,6 +789,32 @@ test("Phase 2B: free registration success keeps third-layer paid CTA visible", a
   assert.ok(!btn.disabled, "paid CTA must be enabled after registration + draft");
   assert.ok(btn.textContent.includes("$3.99") || btn.textContent.includes("3.99"),
     "paid CTA must show the third-layer $3.99 offer after free registration");
+  assert.ok(leadPanel.textContent.includes("one-time payment unlocks this property's full report only"),
+    "paid CTA copy must clearly separate free registration from the one-time report");
+  assert.ok(leadPanel.textContent.includes("planning and zoning signals"),
+    "paid CTA copy must mention the full report's added planning evidence");
+});
+
+test("Phase 2B: checkout modal explains difference between registration and paid report", () => {
+  const dom = createPage();
+  loadApp(dom);
+  markRegistered(dom);
+  dom.window.renderValuation(makeValuation({
+    paymentsEnabled: true,
+    reportDraftToken: "draft_abc123",
+    draftExpiresAt: new Date(Date.now() + 86400000).toISOString(),
+    address: "8 Melrose Ct, Scoresby VIC",
+  }));
+  dom.window.openCheckoutModal();
+
+  const note = dom.window.document.getElementById("checkout-value-note");
+  assert.ok(note, "checkout value note exists");
+  assert.ok(note.textContent.includes("Registration unlocks the enhanced summary"),
+    "checkout modal must say what registration unlocks");
+  assert.ok(note.textContent.includes("one-time report adds the full comparable-sales table"),
+    "checkout modal must say what the paid report adds");
+  assert.ok(note.textContent.includes("Future Outlook explanations"),
+    "checkout modal must mention Future Outlook explanation");
 });
 
 test("Phase 2B: unregistered user + paymentsEnabled=true click does not open Stripe modal", async () => {

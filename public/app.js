@@ -2043,13 +2043,13 @@ function renderValuation(data) {
       if (eyebrowEl) eyebrowEl.textContent = language === "zh" ? "第三步 — 完整报告" : "Step 3 — Full report checkout";
       if (titleEl) titleEl.textContent = language === "zh" ? "解锁完整估值报告" : "Unlock Full Valuation Report";
       if (subtitleEl) subtitleEl.textContent = language === "zh"
-        ? "你已解锁增强摘要。继续通过 Stripe 安全支付，查看完整报告。"
-        : "You have unlocked the enhanced summary. Continue to Stripe to view the complete report.";
+        ? "你已解锁免费增强摘要。AUD $3.99 完整报告会补充完整可比成交表、估值方法说明、规划与分区信号、Future Outlook 解释和本房产的数据限制。"
+        : "You have unlocked the free enhanced summary. The AUD $3.99 report adds the full comparable-sales table, valuation methodology notes, planning and zoning signals, Future Outlook explanations and this property's data limitations.";
       if (noteEl) {
         noteEl.style.display = "";
         noteEl.textContent = language === "zh"
-          ? "你将跳转到 Stripe Checkout。本网站不会收集银行卡信息。"
-          : "You will be redirected to Stripe Checkout. No card details are collected on this site.";
+          ? "免费注册用于查看摘要；一次性付款只解锁这一套房产的完整报告。你将跳转到 Stripe Checkout，本网站不会收集银行卡信息。"
+          : "Free registration unlocks the summary; the one-time payment unlocks this property's full report only. You will be redirected to Stripe Checkout. No card details are collected on this site.";
       }
       return;
     }
@@ -3142,6 +3142,50 @@ function getLeadContactId() {
   }
 }
 
+function ensureCheckoutValueNote() {
+  var modal = byId("checkout-modal");
+  if (!modal) return;
+  var productBox = byId("checkout-price-hint");
+  productBox = productBox ? productBox.closest("div") : null;
+  var modalContent = modal.querySelector(".modal-content");
+  if (!modalContent || !productBox) return;
+
+  var note = byId("checkout-value-note");
+  if (!note) {
+    note = document.createElement("div");
+    note.id = "checkout-value-note";
+    note.style.margin = "0 0 14px";
+    note.style.padding = "14px 16px";
+    note.style.background = "#f3f8f6";
+    note.style.border = "1px solid #d9e7e1";
+    note.style.borderRadius = "8px";
+    note.style.color = "#42514b";
+    note.style.fontSize = "0.92rem";
+    note.style.lineHeight = "1.55";
+    var title = document.createElement("strong");
+    title.id = "checkout-value-note-title";
+    var body = document.createElement("p");
+    body.id = "checkout-value-note-body";
+    body.style.margin = "6px 0 0";
+    note.appendChild(title);
+    note.appendChild(body);
+    productBox.insertAdjacentElement("afterend", note);
+  }
+
+  var titleEl = byId("checkout-value-note-title");
+  var bodyEl = byId("checkout-value-note-body");
+  if (titleEl) {
+    titleEl.textContent = language === "zh"
+      ? "免费注册之后，$3.99 多了什么？"
+      : "What changes after free registration?";
+  }
+  if (bodyEl) {
+    bodyEl.textContent = language === "zh"
+      ? "免费注册解锁增强摘要；一次性完整报告会补充完整可比成交表、估值方法说明、规划与分区信号、Future Outlook 解释和本房产的数据限制。"
+      : "Registration unlocks the enhanced summary. The one-time report adds the full comparable-sales table, valuation methodology notes, planning and zoning signals, Future Outlook explanations and this property's data limitations.";
+  }
+}
+
 /**
  * Submit lead consent (email + optional phone) to the backend.
  * Returns the leadContactId on success.
@@ -3240,6 +3284,7 @@ function openCheckoutModal() {
   // ── Payment mode: open Stripe checkout modal ──
   var modal = byId("checkout-modal");
   if (!modal || typeof modal.showModal !== "function") return;
+  ensureCheckoutValueNote();
   var addrEl = byId("checkout-address");
   if (addrEl && currentReportDraft) {
     addrEl.textContent = currentReportDraft.address || "";

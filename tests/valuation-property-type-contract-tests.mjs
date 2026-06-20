@@ -49,3 +49,14 @@ test("ordinary house address remains House", () => {
     "House"
   );
 });
+
+test("explicit townhouse or villa address overrides default House", () => {
+  assert.equal(
+    overridePropertyTypeFromAddress("Townhouse 3, 11 McIntosh Street, Oakleigh VIC", "House"),
+    "Townhouse"
+  );
+  assert.equal(
+    overridePropertyTypeFromAddress("Villa 2, 11 McIntosh Street, Oakleigh VIC", "House"),
+    "Villa"
+  );
+});
