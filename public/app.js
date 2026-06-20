@@ -1991,47 +1991,65 @@ function renderValuation(data) {
       existingLinkEl.textContent = text;
     }
   }
-  function hidePriceNote() {
-    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
-    if (priceLabelEl) { priceLabelEl.style.display = "none"; }
+  function setLeadPanelCopy(mode) {
+    if (!leadPanel2) return;
+    var eyebrowEl = leadPanel2.querySelector(".eyebrow");
+    var titleEl = leadPanel2.querySelector('[data-i18n="checkout-title"]');
+    var subtitleEl = leadPanel2.querySelector('[data-i18n="checkout-subtitle"]');
+    var noteEl = leadPanel2.querySelector(".form-provider-note");
+    if (mode === "paid") {
+      if (eyebrowEl) eyebrowEl.textContent = language === "zh" ? "第三步 — 完整报告" : "Step 3 — Full report checkout";
+      if (titleEl) titleEl.textContent = language === "zh" ? "解锁完整估值报告" : "Unlock Full Valuation Report";
+      if (subtitleEl) subtitleEl.textContent = language === "zh"
+        ? "你已解锁增强摘要。继续通过 Stripe 安全支付，查看完整报告。"
+        : "You have unlocked the enhanced summary. Continue to Stripe to view the complete report.";
+      if (noteEl) {
+        noteEl.style.display = "";
+        noteEl.textContent = language === "zh"
+          ? "你将跳转到 Stripe Checkout。本网站不会收集银行卡信息。"
+          : "You will be redirected to Stripe Checkout. No card details are collected on this site.";
+      }
+      return;
+    }
+    if (eyebrowEl) eyebrowEl.textContent = language === "zh" ? "第二步 — 免费注册" : "Step 2 — Free registration";
+    if (titleEl) titleEl.textContent = language === "zh" ? "解锁增强摘要" : "Unlock Enhanced Summary";
+    if (subtitleEl) subtitleEl.textContent = language === "zh"
+      ? "免费注册后查看这套房产的 Future Score、关键机会、主要风险和样本可比销售。此步骤无需付款。"
+      : "Register free to view this property's Future Score, key opportunities, key risks and sample comparable evidence. No payment is required for this step.";
+    if (noteEl) {
+      noteEl.style.display = "";
+      noteEl.textContent = language === "zh"
+        ? "此处不会收取付款。我们会安全保存你的注册信息，以便恢复报告摘要。"
+        : "No payment is collected here. We securely store your registration so this property summary can be restored.";
+    }
   }
 
   // Phase 2: Three-tier lead/payment gate
   // Free estimate → free registration insights → paid full report.
-  if (hasDraft && paymentsEnabled) {
-    // ── Draft + payments live: show purchase button with price ──
+  if (isRegistered && hasDraft && paymentsEnabled) {
+    // ── Registered + draft + payments live: show purchase button with price ──
     showLeadPanel();
+    setLeadPanelCopy("paid");
     if (unlockBtn2) {
       unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
     }
     setLeadMessage(language === "zh" ? "一次性付款解锁完整估值报告。" : "One-time payment unlocks the complete valuation report.");
-    var priceLabelEl = leadPanel2 && leadPanel2.querySelector(".form-provider-note");
-    if (priceLabelEl) { priceLabelEl.style.display = ""; }
   } else if (isRegistered) {
     // ── Registered tier: mid-tier data unlocked (no payment mode) ──
     if (layoutEl) { layoutEl.classList.remove("payments-disabled"); }
     hideLeadPanel();
     renderRegisteredTierCards(data, language);
   } else {
-    // ── Free tier: show registration CTA, never price unless paymentsEnabled === true ──
+    // ── Free tier: show registration CTA. Payment is never shown before registration. ──
     showLeadPanel();
+    setLeadPanelCopy("free");
     if (unlockBtn2) {
-      unlockBtn2.textContent = paymentsEnabled
-        ? (language === "zh" ? "注册后继续查看完整报告" : "Register to Continue")
-        : (language === "zh" ? "免费注册解锁增强摘要" : "Register Free to Unlock Enhanced Summary");
+      unlockBtn2.textContent = language === "zh" ? "免费注册解锁增强摘要" : "Register Free to Unlock Enhanced Summary";
     }
     setLeadMessage(language === "zh"
       ? "免费注册后查看 Future Score、关键机会、主要风险和样本可比销售。"
       : "Free registration unlocks Future Score, key opportunities, key risks and sample comparable evidence. Paid full reports are separate.");
-    hidePriceNote();
     hideRegisteredTierCards();
-  }
-
-  // Payment-enabled mode overrides the above when payments are live
-  if (paymentsEnabled && unlockBtn2) {
-    if (unlockBtn2.style.display !== "none") {
-      unlockBtn2.textContent = language === "zh" ? "解锁完整报告 — AUD $3.99" : "Unlock Full Report — AUD $3.99";
-    }
   }
 
   renderLockState();
@@ -3024,12 +3042,16 @@ function updatePurchaseButton() {
   if (!hasValuationResult) {
     btn.disabled = true;
     btn.setAttribute("aria-disabled", "true");
+  } else if (!pgIsRegd) {
+    // Free registration is available before the paid checkout layer.
+    btn.disabled = false;
+    btn.removeAttribute("aria-disabled");
   } else if (pgHasDraft && paymentsEnabled) {
-    // Draft + payments live: use draft validity for checkout
+    // Registered + draft + payments live: use draft validity for checkout.
     btn.disabled = !draftValid;
     btn.setAttribute("aria-disabled", draftValid ? "false" : "true");
   } else if (paymentsEnabled) {
-    // Payment mode: use draft validity
+    // Registered payment mode without a valid draft cannot proceed.
     btn.disabled = !draftValid;
     btn.setAttribute("aria-disabled", draftValid ? "false" : "true");
   } else if (pgIsRegd) {
@@ -3108,21 +3130,10 @@ async function submitLeadConsent(email, phone) {
 
 /**
  * Open the checkout modal. Called from purchase button click.
- * When payments are disabled, runs the registration flow instead.
+ * Unregistered users always complete the free registration layer first.
  */
 function openCheckoutModal() {
-  if (!paymentsEnabled) {
-    // ── Already registered? Then cards are shown; nothing more to do ──
-    if (getLeadContactId()) {
-      // User is already registered — scroll to the registered-tier section
-      var section = byId("registered-tier-section");
-      if (section) {
-        var top = section.offsetTop - 20;
-        window.scrollTo({ top: top < 0 ? 0 : top, behavior: "smooth" });
-      }
-      return;
-    }
-
+  if (!getLeadContactId()) {
     // ── Registration mode: gather consent instead of opening checkout ──
     var emailEl = byId("lead-email");
     var phoneEl = byId("lead-phone");
@@ -3173,6 +3184,16 @@ function openCheckoutModal() {
         : "Submission failed. Please try again.";
       if (btn) { btn.disabled = false; btn.textContent = language === "zh" ? "免费注册解锁增强摘要" : "Register Free to Unlock Enhanced Summary"; }
     });
+    return;
+  }
+
+  if (!paymentsEnabled) {
+    // User is already registered — scroll to the registered-tier section
+    var section = byId("registered-tier-section");
+    if (section) {
+      var top = section.offsetTop - 20;
+      window.scrollTo({ top: top < 0 ? 0 : top, behavior: "smooth" });
+    }
     return;
   }
 

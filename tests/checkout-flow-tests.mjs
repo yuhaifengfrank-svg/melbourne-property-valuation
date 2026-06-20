@@ -107,6 +107,10 @@ function getBtn(dom) {
   return dom.window.document.getElementById("unlock-report");
 }
 
+function markRegistered(dom) {
+  dom.window.localStorage.setItem("aushomevalue.leadContactId", "123");
+}
+
 // Drain any pending async from app.js self-init so its fetch
 // resolves BEFORE our explicit renderValuation calls.
 async function drainInit(dom) {
@@ -157,6 +161,7 @@ test("T2: button enabled after valid draft token", async () => {
   const dom = createPage();
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN,
     draftExpiresAt: VALID_EXPIRES,
@@ -170,6 +175,7 @@ test("T3: button disabled with expired token", async () => {
   const dom = createPage();
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN,
     draftExpiresAt: new Date(Date.now() - 3600000).toISOString(),
@@ -181,6 +187,7 @@ test("T4: new valuation overwrites old token", async () => {
   const dom = createPage();
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   const tokA = "draft_A_a1b2c3d4";
   const tokB = "draft_B_f6e5d4c3";
   dom.window.renderValuation(makeValuation({
@@ -197,6 +204,7 @@ test("T5: token cleared on address mismatch", async () => {
   const dom = createPage();
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.currentReportDraft = {
     token: VALID_TOKEN, expiresAt: VALID_EXPIRES, address: "123 St",
   };
@@ -227,6 +235,7 @@ test("T7: modal opens and shows price/address", async () => {
   const dom = createPage();
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
     address: "123 Test St, Oakleigh VIC 3166",
@@ -242,6 +251,7 @@ test("T8: empty email shows error", async () => {
   const dom = createPage();
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
   }));
@@ -256,6 +266,7 @@ test("T9: consent required", async () => {
   const dom = createPage();
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
   }));
@@ -275,6 +286,7 @@ test("T10: request body only email+token", async () => {
   };
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
   }));
@@ -298,6 +310,7 @@ test("T11: credentials same-origin", async () => {
   };
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
   }));
@@ -318,6 +331,7 @@ test("T12: no amount/priceId/reportId in body", async () => {
   };
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
   }));
@@ -350,6 +364,7 @@ test("T13: double-click guard — direct handleCheckoutSubmit call", async () =>
   };
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
   }));
@@ -399,6 +414,7 @@ test("T13b: generation guard — cancel then new request", async () => {
   };
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
   }));
@@ -448,6 +464,7 @@ test("T13c: direct calls during pending blocked", async () => {
   };
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
   }));
@@ -505,6 +522,7 @@ test("T15c: _navigateTo called once for valid Stripe URL through full checkout f
   };
 
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
   }));
@@ -561,6 +579,7 @@ test("T19: DRAFT_EXPIRED clears token", async () => {
   };
   loadApp(dom);
   await drainInit(dom);
+  markRegistered(dom);
   dom.window.renderValuation(makeValuation({
     reportDraftToken: VALID_TOKEN, draftExpiresAt: VALID_EXPIRES,
   }));
@@ -628,7 +647,7 @@ function makeApiResponse(overrides = {}) {
   };
 }
 
-test("paymentsEnabled=true thru runAddressValuation yields unlock button", async () => {
+test("paymentsEnabled=true thru runAddressValuation keeps unregistered users on free registration", async () => {
   const dom = createPage();
 
   // Override fetch BEFORE loadApp: the app init fires on startup
@@ -655,27 +674,27 @@ test("paymentsEnabled=true thru runAddressValuation yields unlock button", async
   assert.equal(result.paymentsEnabled, true,
     "runAddressValuation must forward paymentsEnabled=true from API");
 
-  // 2) renderValuation processes it
+  // 2) renderValuation processes it, but does not skip the free registration layer.
   dom.window.renderValuation(result);
 
   const btn = getBtn(dom);
   assert.ok(btn, "unlock-report button must exist");
   assert.ok(!btn.disabled, "button must be enabled");
-  assert.equal(btn.getAttribute("aria-disabled"), "false");
+  assert.equal(btn.getAttribute("aria-disabled"), null);
 
-  // 3) Price label shows AUD $3.99
-  assert.ok(btn.textContent.includes("$3.99") || btn.textContent.includes("3.99"),
-    "Button must show AUD $3.99 price");
+  // 3) Free registration remains the second layer.
+  assert.ok(btn.textContent.includes("Register Free") || btn.textContent.includes("免费注册"),
+    "Button must remain a free registration CTA before lead registration");
+  assert.ok(!btn.textContent.includes("$3.99") && !btn.textContent.includes("3.99"),
+    "Button must not show AUD $3.99 before lead registration");
 
-  // 4) Draft token captured — verify via updatePurchaseButton enabling the button
-  //    (currentReportDraft is in Function closure scope, not on dom.window)
-  //    Button enabled + paymentsEnabled=true + draft token present = token captured
+  // 4) Draft token captured, but checkout is gated behind registration.
   assert.ok(!btn.disabled, "button must be enabled (proxies token capture)");
-  assert.equal(btn.getAttribute("aria-disabled"), "false",
-    "aria-disabled must be false (proxies token capture)");
+  assert.equal(btn.getAttribute("aria-disabled"), null,
+    "free registration CTA should not advertise paid checkout state");
 });
 
-test("Phase 2B: paymentsEnabled=true with draft shows $3.99 CTA", async () => {
+test("Phase 2B: registered user + paymentsEnabled=true with draft shows $3.99 CTA", async () => {
   const dom = createPage();
 
   dom.window.fetch = function () {
@@ -687,6 +706,7 @@ test("Phase 2B: paymentsEnabled=true with draft shows $3.99 CTA", async () => {
 
   loadApp(dom);
   dom.window.paymentsEnabled = true;
+  markRegistered(dom);
   // Simulate a valid reportDraft token
   dom.window.currentReportDraft = { token: "draft_abc123" };
   await drainInit(dom);
@@ -716,6 +736,44 @@ test("Phase 2B: paymentsEnabled=true with draft shows $3.99 CTA", async () => {
   assert.ok(leadPanel, "lead-panel exists");
   assert.notEqual(leadPanel.style.display, "none",
     "lead panel must be visible");
+});
+
+test("Phase 2B: unregistered user + paymentsEnabled=true click does not open Stripe modal", async () => {
+  const dom = createPage();
+
+  dom.window.fetch = function () {
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(makeApiResponse({ paymentsEnabled: true, reportDraftToken: "draft_abc123", draftExpiresAt: new Date(Date.now() + 86400000).toISOString() })),
+    });
+  };
+
+  loadApp(dom);
+  await drainInit(dom);
+
+  const result = await dom.window.runAddressValuation(
+    "8 Melrose Ct, Scoresby VIC 3179",
+    "house",
+    "VIC",
+    "Scoresby"
+  );
+
+  dom.window.renderValuation(result);
+
+  const btn = getBtn(dom);
+  assert.ok(btn, "unlock-report button exists");
+  assert.ok(!btn.disabled, "free registration button must be enabled");
+  assert.ok(!btn.textContent.includes("$3.99") && !btn.textContent.includes("3.99"),
+    "unregistered CTA must not show paid price");
+
+  btn.click();
+
+  const modal = dom.window.document.getElementById("checkout-modal");
+  assert.equal(modal.open, false,
+    "Stripe checkout modal must not open before free registration");
+  const leadEmail = dom.window.document.getElementById("lead-email");
+  assert.equal(dom.window.document.activeElement, leadEmail,
+    "clicking unregistered CTA should keep user in free registration form");
 });
 
 test("Phase 2B: paymentsEnabled=false hides all $3.99 and lead panel", async () => {
