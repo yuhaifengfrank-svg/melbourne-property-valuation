@@ -738,6 +738,55 @@ test("Phase 2B: registered user + paymentsEnabled=true with draft shows $3.99 CT
     "lead panel must be visible");
 });
 
+test("Phase 2B: free registration success keeps third-layer paid CTA visible", async () => {
+  const dom = createPage();
+
+  dom.window.fetch = function (url) {
+    if (String(url).includes("/api/lead-consent")) {
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ ok: true, leadContactId: 456 }),
+      });
+    }
+    return Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(makeApiResponse({
+        paymentsEnabled: true,
+        reportDraftToken: "draft_after_registration",
+        draftExpiresAt: new Date(Date.now() + 86400000).toISOString(),
+      })),
+    });
+  };
+
+  loadApp(dom);
+  await drainInit(dom);
+
+  const result = await dom.window.runAddressValuation(
+    "8 Melrose Ct, Scoresby VIC 3179",
+    "house",
+    "VIC",
+    "Scoresby"
+  );
+  dom.window.renderValuation(result);
+
+  dom.window.document.getElementById("lead-email").value = "buyer@example.com";
+  dom.window.document.getElementById("lead-name").value = "Buyer";
+  dom.window.openCheckoutModal();
+  await drainInit(dom);
+
+  const leadPanel = dom.window.document.querySelector(".lead-panel");
+  assert.ok(leadPanel, "lead-panel exists");
+  assert.notEqual(leadPanel.style.display, "none",
+    "lead panel must remain visible after registration so the paid CTA is reachable");
+
+  const btn = getBtn(dom);
+  assert.ok(btn, "unlock-report button exists");
+  assert.equal(btn.style.display, "", "paid CTA button must remain visible");
+  assert.ok(!btn.disabled, "paid CTA must be enabled after registration + draft");
+  assert.ok(btn.textContent.includes("$3.99") || btn.textContent.includes("3.99"),
+    "paid CTA must show the third-layer $3.99 offer after free registration");
+});
+
 test("Phase 2B: unregistered user + paymentsEnabled=true click does not open Stripe modal", async () => {
   const dom = createPage();
 
@@ -875,6 +924,34 @@ test("Phase 2B: paymentsEnabled=undefined fail-closed still shows free registrat
   assert.ok(leadPanel, "lead-panel exists");
   assert.notEqual(leadPanel.style.display, "none",
     "lead panel remains visible when paymentsEnabled missing");
+});
+
+test("Micro-location right card renders context fallback instead of blank map", async () => {
+  const dom = createPage();
+  loadApp(dom);
+  await drainInit(dom);
+
+  dom.window.renderValuation(makeValuation({
+    location: {
+      rank: 83,
+      type: "Residential — predominantly detached homes",
+      amenity: 70,
+      parking: 60,
+    },
+    reportDraftToken: VALID_TOKEN,
+    draftExpiresAt: VALID_EXPIRES,
+  }));
+
+  const mapContainer = dom.window.document.getElementById("map-container");
+  assert.ok(mapContainer, "map-container exists");
+  assert.ok(mapContainer.classList.contains("map-fallback"),
+    "map container must render a non-empty fallback when map coordinates are unavailable");
+  assert.ok(mapContainer.textContent.includes("Location context"),
+    "fallback must explain what the right-hand card represents");
+  assert.ok(mapContainer.textContent.includes("Street rank"),
+    "fallback must include micro-location signals instead of blank space");
+  assert.ok(mapContainer.textContent.includes("83/100"),
+    "fallback must include the street rank value");
 });
 
 test("Phase 2B: registered user + paymentsEnabled=false shows no price", async () => {

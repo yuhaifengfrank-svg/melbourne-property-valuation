@@ -1107,6 +1107,63 @@ th {
   border-radius: 0;
 }
 
+.map-container.map-fallback {
+  align-items: flex-start;
+  background: linear-gradient(135deg, #f7fbf8 0%, #eef6f2 100%);
+  box-sizing: border-box;
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+  justify-content: center;
+  min-height: 300px;
+  padding: 34px;
+}
+
+.map-container.map-fallback h3 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.map-container.map-fallback p {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 0;
+  max-width: 620px;
+}
+
+.map-container.map-fallback ul {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  width: 100%;
+}
+
+.map-container.map-fallback li {
+  align-items: center;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding-top: 10px;
+}
+
+.map-container.map-fallback li span {
+  color: var(--muted);
+}
+
+.map-container.map-fallback li strong {
+  text-align: right;
+}
+
+.map-fallback-note {
+  font-size: 13px !important;
+}
+
 .map-status {
   display: none;
 }

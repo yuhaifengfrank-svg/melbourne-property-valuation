@@ -1713,14 +1713,8 @@ function addressSeed(address) {
 }
 
 function renderMap(data) {
-  const map = data.map || {};
-  // 旧版 DOM 元素（map-target/map-station/map-shops）已被移除；见 UI 升级
   const mapContainer = document.getElementById("map-container");
-  if (mapContainer) {
-    // 容器保留，后续 Leaflet 使用
-    mapContainer.innerHTML = "<p style='color:#888;padding:1rem;text-align:center'>" +
-      (language === "zh" ? "地图加载中…" : "Map loading…") + "</p>";
-  }
+  if (!mapContainer) return;
 
   if (mapInstance) {
     mapInstance.remove();
@@ -1729,12 +1723,54 @@ function renderMap(data) {
   const lat = data.lat || (data.coordinates?.lat);
   const lon = data.lon || (data.coordinates?.lon);
   if (!lat || !lon) {
-    const suburb = data.propertySuburb || "";
-    const state = data.propertyState || "VIC";
-    if (suburb) fetchNominatimSuburb(suburb, state, data);
+    renderMapFallback(data, "missing-coordinates");
     return;
   }
   renderLeafletMap(lat, lon, data);
+}
+
+function renderMapFallback(data, reason) {
+  const container = byId("map-container");
+  if (!container) return;
+  container.classList.add("map-fallback");
+  container.textContent = "";
+
+  const title = document.createElement("h3");
+  title.textContent = language === "zh" ? "位置上下文" : "Location context";
+  container.appendChild(title);
+
+  const intro = document.createElement("p");
+  intro.textContent = language === "zh"
+    ? "地图预览需要可靠坐标或地图服务。当前先展示这套房产的微位置读数，避免空白或误导性地图。"
+    : "Map preview needs reliable coordinates or map service availability. For now, this card summarises the micro-location signals instead of leaving a blank map.";
+  container.appendChild(intro);
+
+  const list = document.createElement("ul");
+  const items = [
+    [language === "zh" ? "街道评分" : "Street rank", getLocalizedLocation(data, "rank")],
+    [language === "zh" ? "便利度" : "Amenity access", getLocalizedLocation(data, "amenity")],
+    [language === "zh" ? "停车压力" : "Parking pressure", getLocalizedLocation(data, "parking")],
+    [language === "zh" ? "街道类型" : "Street type", getLocalizedLocation(data, "type")]
+  ];
+  items.forEach(function (item) {
+    if (item[1] == null || item[1] === "" || item[1] === "—") return;
+    const li = document.createElement("li");
+    const label = document.createElement("span");
+    label.textContent = item[0];
+    const value = document.createElement("strong");
+    value.textContent = typeof item[1] === "number" ? item[1] + "/100" : String(item[1]);
+    li.appendChild(label);
+    li.appendChild(value);
+    list.appendChild(li);
+  });
+  container.appendChild(list);
+
+  const note = document.createElement("p");
+  note.className = "map-fallback-note";
+  note.textContent = reason === "map-library"
+    ? (language === "zh" ? "地图组件未加载时显示此摘要。" : "This summary appears when the map component is unavailable.")
+    : (language === "zh" ? "坐标可用后将显示地图预览。" : "A map preview will appear when coordinates are available.");
+  container.appendChild(note);
 }
 
 async function fetchNominatimSuburb(suburb, state, data) {
@@ -1750,9 +1786,14 @@ async function fetchNominatimSuburb(suburb, state, data) {
 }
 
 function renderLeafletMap(lat, lon, data) {
-  if (typeof L === "undefined") return;
   const container = byId("map-container");
   if (!container) return;
+  if (typeof L === "undefined") {
+    renderMapFallback(data, "map-library");
+    return;
+  }
+  container.classList.remove("map-fallback");
+  container.textContent = "";
   const zoom = data.zoom || 16;
   mapInstance = L.map(container, { center: [lat, lon], zoom, zoomControl: true, attributionControl: false });
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OpenStreetMap" }).addTo(mapInstance);
@@ -1926,6 +1967,7 @@ function renderValuation(data) {
   byId("school-density").textContent = getLocalizedLocation(data, "schoolDensity");
   var occValue = getLocalizedLocation(data, "occupancyRate");
   byId("occupancy-rate").textContent = occValue ? occValue + " per dwelling" : (language === "zh" ? "数据待更新" : "Pending");
+  renderMap(data);
   document.querySelectorAll(".fundamentals-grid .detail-panel:nth-child(2) dt").forEach((dt, index) => {
     dt.textContent = planningLabels[index] || dt.textContent;
   });
@@ -3175,8 +3217,6 @@ function openCheckoutModal() {
         // Re-render with updated data
         renderValuation(newValuation);
       }
-      var panel = document.querySelector(".lead-panel");
-      if (panel) panel.style.display = "none";
       if (msgEl) msgEl.textContent = language === "zh" ? "增强摘要已解锁。" : "Enhanced summary unlocked.";
     }).catch(function (err) {
       if (msgEl) msgEl.textContent = language === "zh"
