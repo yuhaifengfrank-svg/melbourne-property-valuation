@@ -40,14 +40,53 @@ function parsePlaceLdJson(html) {
 }
 
 /**
+ * Build score-available factors list from scores object, filtering NaN/out-of-range.
+ */
+function getAvailableFactors(scores) {
+  const factorNames = ['growth', 'value', 'yield', 'vacancy', 'school', 'income', 'population', 'supply', 'infrastructure'];
+  const factorLabels = {
+    growth: 'Growth', value: 'Value', yield: 'Yield', vacancy: 'Vacancy',
+    school: 'School', income: 'Income', population: 'Population',
+    supply: 'Supply', infrastructure: 'Infrastructure'
+  };
+  const factorScoreMap = {
+    growth: scores.growthScore, value: scores.valueScore, yield: scores.yieldScore,
+    vacancy: scores.vacancyScore, school: scores.schoolScore, income: scores.incomeScore,
+    population: scores.populationScore, supply: scores.supplyScore, infrastructure: scores.infrastructureScore
+  };
+  return factorNames
+    .map(f => ({ name: factorLabels[f], score: factorScoreMap[f] }))
+    .filter(f => f.score != null && !isNaN(f.score) && f.score >= 0 && f.score <= 100)
+    .sort((a, b) => b.score - a.score);
+}
+
+/**
  * Build FAQPage LD+JSON block from suburb data.
+ * Dynamically adapts to available factor data — old-format pages only have
+ * Opportunity Score + School Score; new-format pages have all 9 factors.
  */
 function buildFaqPageSchema(suburb, state, scores) {
   const scoreLabel = scores.opportunityScore != null ? `${scores.opportunityScore}/100` : 'not available';
-  const valueLabel = scores.valueScore != null ? `${scores.valueScore}/100` : 'not available';
-  const growthLabel = scores.growthScore != null ? `${scores.growthScore}/100` : 'not available';
   const schoolLabel = scores.schoolScore != null ? `${scores.schoolScore}/100` : 'not available';
-  const yieldLabel = scores.yieldScore != null ? `${scores.yieldScore}/100` : 'not available';
+
+  const available = getAvailableFactors(scores);
+  const top3 = available.length > 0
+    ? available.slice(0, 3).map(f => `${f.name} ${f.score}/100`).join(', ')
+    : 'not available';
+  const strongest = available.length > 0
+    ? `${available[0].name} (${available[0].score}/100)`
+    : 'Opportunity Score';
+  const investSignals = available.filter(f => f.name !== 'School').length > 0
+    ? available.filter(f => f.name !== 'School').slice(0, 3).map(f => `${f.name} ${f.score}/100`).join(', ')
+    : null;
+
+  const investSignalStr = investSignals
+    ? `Key signals: ${investSignals}. School: ${schoolLabel}.`
+    : `School: ${schoolLabel}. Overall opportunity: ${scoreLabel}.`;
+
+  const topStr = available.length > 0
+    ? top3
+    : `Opportunity Score: ${scoreLabel}`;
 
   const faqs = [
     {
@@ -55,7 +94,7 @@ function buildFaqPageSchema(suburb, state, scores) {
       "name": `What is the property opportunity score for ${suburb}?`,
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": `${suburb} scores ${scoreLabel} on AusHomeValue's opportunity scale. Scores range 0–100 and combine growth, value, yield, school quality, income, population, supply, infrastructure and vacancy factors.`
+        "text": `${suburb} scores ${scoreLabel} on AusHomeValue's opportunity scale. Scores range 0\u2013100 and combine growth, value, yield, school quality, income, population, supply, infrastructure and vacancy factors.`
       }
     },
     {
@@ -71,7 +110,7 @@ function buildFaqPageSchema(suburb, state, scores) {
       "name": `Is ${suburb} a good area for property investment?`,
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": `${suburb}'s opportunity score of ${scoreLabel} reflects a composite of 9 investment factors. Key signals: Growth ${growthLabel}, Value ${valueLabel}, Yield ${yieldLabel}, School ${schoolLabel}. This is a relative opportunity index, not a price forecast or investment guarantee. Always conduct your own due diligence.`
+        "text": `${suburb}'s opportunity score of ${scoreLabel} reflects a composite of 9 investment factors. ${investSignalStr} This is a relative opportunity index, not a price forecast or investment guarantee. Always conduct your own due diligence.`
       }
     },
     {
@@ -79,7 +118,7 @@ function buildFaqPageSchema(suburb, state, scores) {
       "name": `What are the strongest investment signals for ${suburb}?`,
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": `The highest-scoring factors for ${suburb} are: Growth ${growthLabel}, Value ${valueLabel}, School ${schoolLabel}, Yield ${yieldLabel}. Higher scores indicate stronger relative signals compared to other suburbs in the dataset.`
+        "text": `The highest-scoring factors for ${suburb} are: ${topStr}. Higher scores indicate stronger relative signals compared to other suburbs in the dataset.`
       }
     }
   ];
@@ -96,25 +135,15 @@ function buildFaqPageSchema(suburb, state, scores) {
  */
 function buildFaqHtml(suburb, scores) {
   const scoreLabel = scores.opportunityScore != null ? `${scores.opportunityScore}/100` : `not available`;
-  const valueLabel = scores.valueScore;
-  const growthLabel = scores.growthScore;
-  const schoolLabel = scores.schoolScore;
-  const yieldLabel = scores.yieldScore;
+  const schoolLabel = scores.schoolScore != null ? `${scores.schoolScore}/100` : null;
 
-  const topFactors = [
-    { name: 'Growth', score: growthLabel },
-    { name: 'Value', score: valueLabel },
-    { name: 'School', score: schoolLabel },
-    { name: 'Yield', score: yieldLabel },
-    { name: 'Vacancy', score: scores.vacancyScore },
-    { name: 'Income', score: scores.incomeScore },
-    { name: 'Population', score: scores.populationScore },
-    { name: 'Supply', score: scores.supplyScore },
-    { name: 'Infrastructure', score: scores.infrastructureScore }
-  ].filter(f => f.score != null).sort((a, b) => (b.score || 0) - (a.score || 0));
-
-  const top3Signal = topFactors.slice(0, 3).map(f => `${f.name} ${f.score}/100`).join(', ');
-  const strongestSignal = topFactors.length > 0 ? `${topFactors[0].name} (${topFactors[0].score}/100)` : 'Mixed';
+  const available = getAvailableFactors(scores);
+  const top3 = available.length > 0
+    ? available.slice(0, 3).map(f => `${f.name} ${f.score}/100`).join(', ')
+    : 'Opportunity Score ' + scoreLabel;
+  const strongest = available.length > 0
+    ? `${available[0].name} (${available[0].score}/100)`
+    : 'Opportunity Score';
 
   return `
     <h2 class="section-title" style="margin-top:48px;">❓ Frequently Asked Questions — ${escapeHtml(suburb)} Property</h2>
@@ -129,11 +158,11 @@ function buildFaqHtml(suburb, scores) {
       </div>
       <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
         <div class="faq-q" style="font-weight:600;margin-bottom:6px;">Is ${escapeHtml(suburb)} a good area for property investment?</div>
-        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">${escapeHtml(suburb)}'s opportunity score of ${scoreLabel} reflects a composite of 9 investment factors. Top signals: ${top3Signal}. Strongest factor: ${strongestSignal}. This is a relative opportunity index, not a price forecast or investment guarantee. Always conduct your own due diligence.</div>
+        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">${escapeHtml(suburb)}'s opportunity score of ${scoreLabel} reflects a composite of 9 investment factors. Top signals: ${top3}. Strongest factor: ${strongest}. This is a relative opportunity index, not a price forecast or investment guarantee. Always conduct your own due diligence.</div>
       </div>
       <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
         <div class="faq-q" style="font-weight:600;margin-bottom:6px;">What are the strongest investment signals for ${escapeHtml(suburb)}?</div>
-        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">The highest-scoring factors for ${escapeHtml(suburb)} are: ${top3Signal}. Higher scores indicate stronger relative signals compared to other suburbs in the dataset.</div>
+        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">The highest-scoring factors for ${escapeHtml(suburb)} are: ${top3}. Higher scores indicate stronger relative signals compared to other suburbs in the dataset.</div>
       </div>
     </div>`;
 }
@@ -176,10 +205,13 @@ function extractScores(html) {
         const parts = String(prop.value).split('/');
         const v = parseInt(parts[0], 10);
         if (!isNaN(v)) scores.schoolScore = v;
-      } else if (prop.name === 'Growth Score' || prop.name === 'Growth Signal (experimental)') {
-        // New format: integer; Old format: string like "-8.00%" — extract sign-only, not a score
+      } else if (prop.name === 'Growth Score') {
+        // New format: integer score 0-100
         const val = parseInt(prop.value, 10);
-        if (!isNaN(val)) scores.growthScore = val;
+        if (!isNaN(val) && val >= 0 && val <= 100) scores.growthScore = val;
+      } else if (prop.name === 'Growth Signal (experimental)') {
+        // Old format: string like "-8.00%" — percentage change, NOT a 0-100 factor score
+        // Explicitly skip — do not parse as growthScore
       } else {
         const val = parseInt(prop.value, 10);
         if (isNaN(val)) continue;
