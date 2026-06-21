@@ -127,6 +127,13 @@
       futureUnavailable: "Future Opportunity Outlook was not included in this report snapshot. Run a fresh valuation after the Future Opportunity model update to include this section.",
       suburbOnlyFuture: "A suburb-level future opportunity signal was available, but this report snapshot did not include enough property-specific data to calculate a property-level score.",
       futureDisclaimer: "This is a relative opportunity index, not a predicted price growth percentage or promise of return.",
+      futureReadTitle: "How to read this outlook",
+      futureReadItems: [
+        { term: "Property Future Score", desc: "The combined opportunity signal for this specific property. It blends suburb outlook with the property's own fit." },
+        { term: "Suburb Future Outlook", desc: "The suburb-level signal. It carries most of the weight because suburb fundamentals influence many properties at once." },
+        { term: "Property-Specific Fit", desc: "A property-level adjustment for signals such as planning context, land/use fit and evidence quality where available." },
+        { term: "Opportunity signals and risks", desc: "Use these as a checklist for further review. They are not approval, forecast or return guarantees." }
+      ],
       methodology: "Valuation Methodology",
       methodLabel: "Methodology",
       largeLotMode: "Large Lot Mode",
@@ -146,6 +153,13 @@
       halfRange: "Half Range",
       sigma: "Sigma",
       multiSourceNote: "Multi-source analysis was considered where available. Differences between sources may reflect listing corrections, timing, title differences or incomplete public records.",
+      methodologyReadTitle: "How to read the methodology",
+      methodologyReadItems: [
+        { term: "Anchor Value", desc: "The model's starting centre point from accepted comparable sales before final weighting and range checks." },
+        { term: "Weighted Median", desc: "A centre value that gives stronger evidence more influence while reducing the effect of extreme sales." },
+        { term: "Weighted Mean", desc: "The weighted average of accepted evidence. It can move more when high-value or low-value evidence is influential." },
+        { term: "Factor Adjustments", desc: "Directional adjustments for differences such as land size, sale recency, property type and evidence quality when those fields are available." }
+      ],
       marketContext: "Market Context",
       marketContextUnavailable: "This report snapshot does not include display-ready suburb market context metrics such as suburb median, rent, yield, school or vacancy. The estimate above is still generated from accepted comparable-sales evidence and confidence checks.",
       suburbMedian: "Suburb Median",
@@ -287,6 +301,13 @@
       futureUnavailable: "这份报告快照尚未包含未来机会模型。请重新生成估值，以纳入最新 Future Opportunity 分析。",
       suburbOnlyFuture: "当前仅有区域层面的未来机会信号，但本报告快照缺少足够的房产层面数据，因此没有生成房产级分数。",
       futureDisclaimer: "这是相对机会指数，不是价格涨幅预测，也不代表确定收益。",
+      futureReadTitle: "如何理解未来机会",
+      futureReadItems: [
+        { term: "房产未来分数", desc: "针对这套房产的综合机会信号，结合区域前景和房产自身匹配度。" },
+        { term: "区域未来展望", desc: "区域层面的信号。它权重更高，因为区域基本面对很多房产都会产生影响。" },
+        { term: "房产匹配度", desc: "房产层面的调整，参考规划环境、土地/用途匹配和证据质量等可用信号。" },
+        { term: "机会与风险", desc: "请把这些内容当作进一步核查清单，不代表审批、涨幅预测或收益承诺。" }
+      ],
       methodology: "估值方法",
       methodLabel: "方法说明",
       largeLotMode: "大地块模式",
@@ -306,6 +327,13 @@
       halfRange: "半区间",
       sigma: "Sigma",
       multiSourceNote: "如数据可用，模型会参考多来源信息。不同来源之间的差异可能来自挂牌修正、时间差、产权差异或公开记录不完整。",
+      methodologyReadTitle: "如何理解估值方法",
+      methodologyReadItems: [
+        { term: "锚定价值", desc: "模型基于已接受可比成交生成的初始中心点，之后还会经过权重和区间检查。" },
+        { term: "加权中位数", desc: "让质量更高或更相关的证据影响更大，同时降低极端成交对中心值的影响。" },
+        { term: "加权平均数", desc: "已接受证据的加权平均。如果高价或低价证据权重较大，它会更容易移动。" },
+        { term: "因素调整", desc: "在字段可用时，模型会对土地面积、成交时间、房产类型和证据质量等差异做方向性调整。" }
+      ],
       marketContext: "市场背景",
       marketContextUnavailable: "这份报告快照未包含可展示的区域市场背景指标，例如区域中位价、租金、收益率、学校或空置率。上方估值仍基于已接受的可比成交证据和置信度检查生成。",
       suburbMedian: "区域中位价",
@@ -1053,6 +1081,25 @@
       return true;
     }
 
+    function appendExplainBox(el, title, items) {
+      var valid = Array.isArray(items) ? items.filter(function (item) {
+        return item && item.term && item.desc;
+      }) : [];
+      if (!valid.length) return false;
+
+      var box = document.createElement("div");
+      box.className = "rv-explain-box";
+
+      var heading = document.createElement("div");
+      heading.className = "rv-explain-title";
+      heading.textContent = title;
+      box.appendChild(heading);
+
+      appendDefinitionList(box, valid);
+      el.appendChild(box);
+      return true;
+    }
+
     function firstPresentText(items, maxItems) {
       var out = [];
       var valid = Array.isArray(items) ? items : [];
@@ -1306,6 +1353,7 @@
       } else {
         appendParagraph(el, text("futureUnavailable"));
       }
+      appendExplainBox(el, text("futureReadTitle"), text("futureReadItems"));
       appendParagraph(el, text("futureDisclaimer"));
     });
 
@@ -1367,6 +1415,7 @@
       if (p.multiSourceAnalysis) {
         appendParagraph(el, text("multiSourceNote"));
       }
+      appendExplainBox(el, text("methodologyReadTitle"), text("methodologyReadItems"));
     });
 
     // ── 7. Market Context ──

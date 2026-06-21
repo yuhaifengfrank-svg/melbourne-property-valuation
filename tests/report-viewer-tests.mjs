@@ -237,6 +237,12 @@ test("3b. paid report renders Future Score, key opportunities, risks, welcome an
   assert.ok(text.indexOf("How to Read These Metrics") !== -1, "metric glossary shown");
   assert.ok(text.indexOf("Anchor Value") !== -1, "anchor value definition shown");
   assert.ok(text.indexOf("Weighted Median") !== -1, "weighted median definition shown");
+  assert.ok(text.indexOf("How to read this outlook") !== -1, "future outlook inline explanation shown");
+  assert.ok(text.indexOf("The combined opportunity signal for this specific property") !== -1,
+    "future score explanation shown");
+  assert.ok(text.indexOf("How to read the methodology") !== -1, "methodology inline explanation shown");
+  assert.ok(text.indexOf("The model's starting centre point") !== -1,
+    "anchor value inline explanation shown");
   assert.ok(text.indexOf("Factor Adjustments") !== -1, "factor adjustment definition shown");
   assert.ok(sections.querySelector(".rv-definition-list"), "definition list DOM exists");
   assert.ok(text.indexOf("Thank You") !== -1, "thank you section shown");
@@ -491,6 +497,8 @@ test("3f. demo paid report sample renders without fetching API", async () => {
   assert.ok(text.indexOf("Score position") !== -1, "demo score position shown");
   assert.ok(text.indexOf("Strong opportunity signal") !== -1, "demo score band shown");
   assert.ok(text.indexOf("How to Read These Metrics") !== -1, "demo glossary shown");
+  assert.ok(text.indexOf("How to read this outlook") !== -1, "demo future explanation shown");
+  assert.ok(text.indexOf("How to read the methodology") !== -1, "demo methodology explanation shown");
   assert.ok(text.indexOf("Planning & Zoning Signals") !== -1, "planning section shown");
   assert.ok(text.indexOf("Investor Watch") !== -1, "investor watch upsell shown");
   assert.equal(text.indexOf("single-source"), -1, "internal single-source detail hidden in demo");
@@ -513,6 +521,8 @@ test("3g. demo paid report sample renders Chinese with lang=zh", async () => {
   assert.ok(text.indexOf("较强机会信号") !== -1, "Chinese score band shown");
   assert.equal(text.indexOf("前 25%"), -1, "Chinese score band does not pretend to be percentile");
   assert.ok(text.indexOf("如何理解这些指标") !== -1, "Chinese glossary shown");
+  assert.ok(text.indexOf("如何理解未来机会") !== -1, "Chinese future explanation shown");
+  assert.ok(text.indexOf("如何理解估值方法") !== -1, "Chinese methodology explanation shown");
   assert.ok(text.indexOf("规划与分区信号") !== -1, "Chinese planning title shown");
   assert.equal(text.indexOf("single-source"), -1, "internal single-source detail hidden in Chinese demo");
 });
