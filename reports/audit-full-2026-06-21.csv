@@ -1,0 +1,341 @@
+address,propertyType,suburb,ok,midpoint,low,high,confidence,dataScore,compCount,elapsedMs,source
+"402/2 Main Road, Clayton South, Clayton South, VIC ",Unit,Clayton South,true,660411,561349,759473,Low-Medium,46,10,10421,,existing
+"1 Bishop Street, Oakleigh, Oakleigh, VIC 3166",House,Oakleigh,true,1521014,1292862,1749166,Medium-High,66,5,4394,,existing
+"5 Tea Tree Court, Lyndhurst, Lyndhurst, VIC ",House,Lyndhurst,true,905412,769600,1041224,Medium-High,74,12,4809,,existing
+"90 Domain Way, Craigieburn, Craigieburn, VIC ",House,Craigieburn,true,709718,603260,816176,Medium,61,12,4916,,existing
+"23 Hudson Street, Fawkner, Fawkner, VIC ",House,Fawkner,true,804135,683515,924755,High,79,12,4401,,existing
+"3/2-4 Keefer Street, Mordialloc, Mordialloc, VIC ",Unit,Mordialloc,true,658973,560127,757819,Medium,56,9,3176,,existing
+"1/2A Dobson Street, South Yarra, South Yarra, VIC ",Unit,South Yarra,true,603215,512733,693697,Low-Medium,46,8,2922,,existing
+"2605/105 Batman Street, West Melbourne, West Melbourne, VIC 3003",Unit,West Melbourne,true,605574,514738,696410,Low-Medium,46,12,3529,,existing
+"1/28 Coromandel Crescent South, Knoxfield, Knoxfield, VIC ",Unit,Knoxfield,true,824889,753284,896494,Medium-High,72,6,3070,,existing
+"68 Alderford Drive, Wantirna, Wantirna, VIC ",House,Wantirna,true,1030518,875940,1185096,Low-Medium,49,12,4504,,existing
+"7/64 Cross Street, Footscray, Footscray, VIC ",Unit,Footscray,true,563527,478998,648056,Low-Medium,46,10,3281,,existing
+"3/15 Bent Street, Bentleigh, Bentleigh, VIC ",Unit,Bentleigh,true,645126,559545,730707,Medium-High,65,3,3181,,existing
+"33 Beauford Street, Huntingdale, Huntingdale, VIC ",House,Huntingdale,true,1226244,1042307,1410181,High,92,5,3883,,existing
+"21/2-18 Bourke Road, Oakleigh South, Oakleigh South, VIC ",Unit,Oakleigh South,true,784958,667214,902702,Medium,62,5,3042,,existing
+"5 Evelyn Crescent, Sunshine West, Sunshine West, VIC ",House,Sunshine West,true,769275,653884,884666,Medium-High,76,12,4228,,existing
+"12 Allambi Street, Ashwood, Ashwood, VIC ",House,Ashwood,true,1149194,976815,1321573,Medium-High,77,4,4299,,existing
+"49 Burt Street, Altona, Altona, VIC ",Unit,Altona,true,881283,749091,1013475,Medium-High,65,12,4405,,existing
+"6/37-39 Hillcrest Grove, Springvale, Springvale, VIC ",Unit,Springvale,true,594928,505689,684167,Medium-High,65,4,3313,,existing
+"102/690 High Street, Thornbury, Thornbury, VIC 3071",Unit,Thornbury,true,429886,377104,482668,Medium-High,70,4,3218,,existing
+"453 Station Street, Bonbeach, Bonbeach, VIC ",House,Bonbeach,true,712447,605580,819314,Medium,51,9,4740,,existing
+"3/14 Golden Avenue, Bonbeach, Bonbeach, VIC ",Unit,Bonbeach,true,641236,545051,737421,Medium,63,8,2551,,existing
+"9 Botany Court, Clarinda, Clarinda, VIC ",House,Clarinda,true,870907,740271,1001543,High,90,12,4509,,existing
+"1 Wembley Court, Mulgrave, Mulgrave, VIC ",House,Mulgrave,true,909408,772997,1045819,Medium-High,69,12,4501,,existing
+"23 Castlerock Drive, Wyndham Vale, Wyndham Vale, VIC ",House,Wyndham Vale,true,628286,534043,722529,Medium-High,77,12,4407,,existing
+"47 Milton Street, Bell Park, Bell Park, VIC ",House,Bell Park,true,615450,523133,707768,High,97,12,4606,,existing
+"4 Twain Street, Officer, Officer, VIC ",House,Officer,true,718011,610309,825713,Medium-High,66,12,4404,,existing
+"603/8 Martin Street, Heidelberg, Heidelberg, VIC ",Unit,Heidelberg,true,608203,516973,699433,Low-Medium,46,9,3184,,existing
+"1/67 Kingston Road, Heatherton, Heatherton, VIC ",Unit,Heatherton,true,712682,605780,819584,Medium,52,4,3367,,existing
+"80 Barretts Road, Langwarrin South, Langwarrin South, VIC ",House,Langwarrin South,true,6791,5772,7810,Medium,60,12,3894,,existing
+"8/15-19 Argus Street, Cheltenham, Cheltenham, VIC ",Unit,Cheltenham,true,571716,485959,657473,Medium,58,5,3275,,existing
+"409B/1093 Plenty Road, Bundoora, Bundoora, VIC ",House,Bundoora,true,754866,641636,868096,Medium,61,12,4029,,existing
+"62 James Street, Fawkner, Fawkner, VIC ",House,Fawkner,true,804135,683515,924755,High,79,12,3560,,existing
+"114 Boundary Road, Narre Warren East, Narre Warren East, VIC ",House,Narre Warren East,true,1806063,1535154,2076972,Low-Medium,44,12,4596,,existing
+"4 Leslie Street, Frankston South, Frankston South, VIC ",House,Frankston South,true,1051732,893972,1209492,Medium,54,12,4314,,existing
+"2/42 Abercrombie Avenue, Keysborough, Keysborough, VIC ",Unit,Keysborough,true,679983,577986,781980,Low-Medium,48,2,4081,,existing
+"2/5 Vista Avenue, Ringwood East, Ringwood East, VIC ",Unit,Ringwood East,true,772330,656481,888179,Medium-High,73,10,3484,,existing
+"403A/41 Stockade Avenue, Coburg, Coburg, VIC ",House,Coburg,true,1092074,928263,1255885,Low-Medium,47,12,4197,,existing
+"12/6 Walnut Street, Carnegie, Carnegie, VIC ",Unit,Carnegie,true,674584,573396,775772,Low-Medium,46,12,3590,,existing
+"6/51 Buckley Street, Moonee Ponds, Moonee Ponds, VIC 3039",Unit,Moonee Ponds,true,477892,406208,549576,Low-Medium,33,1,4397,,existing
+"2/181 Civic Parade, Altona, Altona, VIC ",Unit,Altona,true,710393,603834,816952,Low-Medium,47,12,2662,,existing
+"91 Cambridge Crescent, Wyndham Vale, Wyndham Vale, VIC ",House,Wyndham Vale,true,554198,471068,637328,Medium-High,67,12,3379,,existing
+"1 Kempsey Walk, Armstrong Creek, Armstrong Creek, VIC ",House,Armstrong Creek,true,637329,541730,732928,Medium-High,68,12,4404,,existing
+"335 Boundary Road, Dromana, Dromana, VIC ",House,Dromana,true,669641,569195,770087,Low-Medium,49,12,4507,,existing
+"51 Crossdale Rise, Endeavour Hills, Endeavour Hills, VIC ",House,Endeavour Hills,true,765102,650337,879867,Medium-High,75,12,4582,,existing
+"2/333-335 North Road, Caulfield South, Caulfield South, VIC ",Unit,Caulfield South,true,470204,399673,540735,Low-Medium,46,4,2788,,existing
+"50 Bella Vista Drive, Tootgarook, Tootgarook, VIC ",House,Tootgarook,true,685616,582774,788458,Medium,60,12,3914,,existing
+"6 Essex Court, Bayswater, Bayswater, VIC ",House,Bayswater,true,768563,653279,883847,High,92,12,4588,,existing
+"13 Brushton Street, Manor Lakes, Manor Lakes, VIC ",House,Manor Lakes,true,618569,525784,711354,Medium-High,74,12,4419,,existing
+"1 Dudley Grove, Edithvale, Edithvale, VIC ",House,Edithvale,true,1433567,1218532,1648602,Medium-High,70,12,4489,,existing
+"101/158 Francis Street, Yarraville, Yarraville, VIC 3013",Unit,Yarraville,true,545877,465293,626461,Medium-High,70,6,3275,,existing
+"52 Purches Street, Mitcham, Mitcham, VIC ",House,Mitcham,true,1206541,1025560,1387522,Medium-High,74,11,3976,,existing
+"8/24 Rushall Street, Fairfield, Fairfield, VIC ",Unit,Fairfield,true,621003,527853,714153,Medium,59,12,3398,,existing
+"9 Scarlett Street, Rockbank, Rockbank, VIC ",House,Rockbank,true,534664,454464,614864,High,78,12,4547,,existing
+"106/337 Balaclava Road, Caulfield North, Caulfield North, VIC ",Unit,Caulfield North,true,507818,431645,583991,Medium,58,4,2518,,existing
+"1/15 Fitzpatrick Drive, Altona Meadows, Altona Meadows, VIC ",Unit,Altona Meadows,true,580117,515297,644937,Medium-High,70,6,3190,,existing
+"30 Barretts Road, Langwarrin South, Langwarrin South, VIC ",House,Langwarrin South,true,6791,5772,7810,Medium,60,12,3261,,existing
+"1309/850 Whitehorse Road, Box Hill, Box Hill, VIC 3128",Unit,Box Hill,true,501051,425893,576209,Low-Medium,46,12,3790,,existing
+"1/994 Glen Huntly Road, Caulfield South, Caulfield South, VIC ",Unit,Caulfield South,true,470204,399673,540735,Low-Medium,46,4,2046,,existing
+"9/8 Lambert Road, Toorak, Toorak, VIC ",Unit,Toorak,true,844331,717681,970981,Low-Medium,43,3,3381,,existing
+"8 Rowena Place, Mount Martha, Mount Martha, VIC ",House,Mount Martha,true,1004932,854192,1155672,Low-Medium,47,12,4506,,existing
+"104 Ireland Street, West Melbourne, West Melbourne, VIC ",House,West Melbourne,true,5079516,4317589,5841443,Medium,57,12,5120,,existing
+"13 Trapani Avenue, Point Cook, Point Cook, VIC ",House,Point Cook,true,1128515,959238,1297792,Low-Medium,48,12,4607,,existing
+"3/18 Neilson Street, Bayswater, Bayswater, VIC ",Unit,Bayswater,true,671494,570770,772218,Low-Medium,46,9,2254,,existing
+"g19a/399 Burwood Highway, Burwood, Burwood, VIC ",House,Burwood,true,1588840,1350514,1827166,Low-Medium,47,9,3994,,existing
+"6 Colby Link, Derrimut, Derrimut, VIC ",House,Derrimut,true,908697,772392,1045002,Medium-High,69,12,4607,,existing
+"4/121 Mcdonald Street, Mordialloc, Mordialloc, VIC ",Unit,Mordialloc,true,660056,561048,759064,Medium,59,9,2456,,existing
+"11AB Gori Court, Narre Warren North, Narre Warren North, VIC ",House,Narre Warren North,true,1392841,1183915,1601767,Medium,64,12,4098,,existing
+"101/112-124 Middleborough Road, Blackburn South, Blackburn South, VIC ",Unit,Blackburn South,true,752755,639842,865668,Medium,56,11,3993,,existing
+"221/177 Bonnyvale Road, Ocean Grove, Ocean Grove, VIC ",Unit,Ocean Grove,true,645125,548356,741894,Low-Medium,46,4,3176,,existing
+"45 Earlswood Place, Lilydale, Lilydale, VIC ",House,Lilydale,true,1084894,922160,1247628,Low-Medium,47,12,4606,,existing
+"209/60 Edgewater Boulevard, Maribyrnong, Maribyrnong, VIC ",Unit,Maribyrnong,true,542698,461293,624103,Medium,58,12,3483,,existing
+"22 Edward Freeth Drive, Endeavour Hills, Endeavour Hills, VIC ",House,Endeavour Hills,true,781844,664567,899121,High,80,12,4198,,existing
+"19 Elder Street, Watsonia, Watsonia, VIC ",House,Watsonia,true,924686,785983,1063389,High,89,12,4298,,existing
+"1/1 Meagher Street, Watsonia, Watsonia, VIC ",Unit,Watsonia,true,773718,657660,889776,Medium,60,11,2561,,existing
+"217/125 Francis Street, Yarraville, Yarraville, VIC ",Unit,Yarraville,true,545877,465293,626461,Medium-High,70,6,2150,,existing
+"2 Andrew Crescent, Croydon South, Croydon South, VIC ",House,Croydon South,true,752208,639377,865039,Medium-High,68,12,4405,,existing
+"45 Veronica Street, Ferntree Gully, Ferntree Gully, VIC ",House,Ferntree Gully,true,810661,689062,932260,Medium,55,11,4268,,existing
+"3 Elizabeth Street, Elsternwick, Elsternwick, VIC ",House,Elsternwick,true,2877971,2446275,3309667,Medium,64,3,4642,,existing
+"7 Tennyson Street, Sandringham, Sandringham, VIC ",House,Sandringham,true,1794226,1525092,2063360,Low-Medium,48,5,4691,,existing
+"39 Geoffrey Drive, Kilsyth, Kilsyth, VIC ",House,Kilsyth,true,787246,669159,905333,Medium-High,73,12,4439,,existing
+"1 Waxflower Crescent, Bundoora, Bundoora, VIC ",Unit,Bundoora,true,754866,641636,868096,Medium,60,12,3668,,existing
+"402/39 Ryan Street, Footscray, Footscray, VIC ",Unit,Footscray,true,602396,512037,692755,Low-Medium,46,10,2356,,existing
+"11/43 Latham Street, Werribee, Werribee, VIC 3030",Unit,Werribee,true,479773,407807,551739,Medium,64,6,3378,,existing
+"2 Henty Street, Dandenong, Dandenong, VIC ",House,Dandenong,true,584300,496655,671945,Medium-High,65,9,4385,,existing
+"6 Thornton Close, Hallam, Hallam, VIC ",House,Hallam,true,585048,497291,672805,Medium-High,72,12,4423,,existing
+"29 Visage Drive, South Morang, South Morang, VIC ",House,South Morang,true,792536,673656,911416,Medium,60,12,4402,,existing
+"414/1044-1046 Mount Alexander Road, Essendon, Essendon, VIC ",Unit,Essendon,true,556804,473283,640325,Low-Medium,46,10,2867,,existing
+"E01/42 Stephen Street, Yarraville, Yarraville, VIC ",House,Yarraville,true,1314125,1117006,1511244,Low-Medium,46,12,3174,,existing
+"8 Ailsa Street, Laverton, Laverton, VIC ",House,Laverton,true,577162,490588,663736,High,90,12,4405,,existing
+"204/404 Burwood Highway, Wantirna South, Wantirna South, VIC ",Unit,Wantirna South,true,417230,354646,479814,Low-Medium,43,3,3175,,existing
+"2 Briar Rose Walk, Croydon South, Croydon South, VIC ",House,Croydon South,true,752208,639377,865039,High,78,12,3584,,existing
+"9 Banjo Circuit, Lynbrook, Lynbrook, VIC ",House,Lynbrook,true,794958,675714,914202,Medium-High,72,12,4506,,existing
+"111 Gowanbrae Drive, Gowanbrae, Gowanbrae, VIC ",House,Gowanbrae,true,968714,823407,1114021,Low-Medium,45,12,3172,,existing
+"2 Auburn Crescent, Doncaster, Doncaster, VIC 3108",House,Doncaster,true,1068526,908247,1228805,Medium,52,10,4507,,existing
+"20 Akuna Avenue, Notting Hill, Notting Hill, VIC ",House,Notting Hill,true,2929207,2489826,3368588,Medium,57,9,3691,,existing
+"10 Breadalbane Avenue, Cairnlea, Cairnlea, VIC ",House,Cairnlea,true,1017920,865232,1170608,High,79,12,4502,,existing
+"5909/70 Southbank Boulevard, Southbank, Southbank, VIC 3006",Unit,Southbank,true,575773,489407,662139,Low-Medium,46,11,4303,,existing
+"7 Plane Street, Thomastown, Thomastown, VIC ",House,Thomastown,true,711318,604620,818016,High,87,12,4603,,existing
+"3/18 Tudor Street, Glenroy, Glenroy, VIC ",Unit,Glenroy,true,583539,496008,671070,Medium-High,65,6,3379,,existing
+"38 Ferris Street, Sunbury, Sunbury, VIC ",House,Sunbury,true,679070,577210,780930,Medium-High,66,12,4507,,existing
+"1/8 Florence Road, Surrey Hills, Surrey Hills, VIC ",Unit,Surrey Hills,true,1057960,899266,1216654,Low-Medium,48,5,3276,,existing
+"4 Vule Street, St Albans, St Albans, VIC ",House,St Albans,true,463907,394321,533493,Medium,61,12,4607,,existing
+"2/51-53 Bank Street, Box Hill, Box Hill, VIC ",Unit,Box Hill,true,506344,430392,582296,Low-Medium,46,12,2970,,existing
+"308/118 Cairnlea Drive, Cairnlea, Cairnlea, VIC ",Unit,Cairnlea,true,359146,305274,413018,Medium-High,65,6,2357,,existing
+"25 Nira Drive, Sunbury, Sunbury, VIC ",House,Sunbury,true,679070,577210,780930,Medium-High,66,12,3890,,existing
+"1 Glyndon Avenue, Coburg North, Coburg North, VIC ",House,Coburg North,true,1108630,942336,1274925,Medium-High,70,11,4404,,existing
+"2/47 Union Street, Brighton East, Brighton East, VIC ",Unit,Brighton East,true,936880,796348,1077412,Low-Medium,43,3,3892,,existing
+"16 Wolseley Parade, Kensington, Kensington, VIC 3031",House,Kensington,true,1348718,1253451,1443985,Medium-High,70,8,5323,,existing
+"7 Nareen Avenue, Endeavour Hills, Endeavour Hills, VIC ",House,Endeavour Hills,true,765102,650337,879867,Medium-High,67,12,4303,,existing
+"306/1090 Nepean Highway, Highett, Highett, VIC ",Unit,Highett,true,555126,471857,638395,Low-Medium,46,4,3341,,existing
+"1405/851 Whitehorse Road, Box Hill, Box Hill, VIC ",Unit,Box Hill,true,506344,430392,582296,Low-Medium,46,12,2802,,existing
+"249/173 City Road,, Southbank, Southbank, VIC 3006",Unit,249/173 City Road,true,575773,489407,662139,Low-Medium,46,11,3001,,existing
+"3/47 Moonya Road, Carnegie, Carnegie, VIC 3163",Unit,Carnegie,true,677519,575891,779147,Low-Medium,47,12,2629,,existing
+"4/26 Beach Avenue, Elwood, Elwood, VIC 3184",Unit,Elwood,true,548549,466267,630831,Low-Medium,46,8,3278,,existing
+"8 Cinerea Glade, Langwarrin, Langwarrin, VIC ",House,Langwarrin,true,834614,709422,959806,High,82,12,4505,,existing
+"902/101 Tram Road, Doncaster, Doncaster, VIC 3108",Unit,Doncaster,true,685140,582369,787911,Low-Medium,47,7,2355,,existing
+"18 Verdon Street, Clyde, Clyde, VIC ",House,Clyde,true,763838,650106,877570,Medium-High,71,12,3686,,existing
+"111/220 Bay Road, Sandringham, Sandringham, VIC ",Unit,Sandringham,true,733672,623621,843723,Low-Medium,46,8,1951,,existing
+"40 Finch Street, Burwood, Burwood, VIC ",House,Burwood,true,1588840,1350514,1827166,Medium,55,9,3477,,existing
+"3/9 Wilgah Street, Thomastown, Thomastown, VIC ",Unit,Thomastown,true,501127,425958,576296,Low-Medium,34,2,3280,,existing
+"4/54-56 Gladstone Street, St Albans, St Albans, VIC ",Unit,St Albans,true,655714,557357,754071,Medium,58,5,2557,,existing
+"7 Kalawar Avenue, Bayswater North, Bayswater North, VIC ",House,Bayswater North,true,809577,688140,931014,High,80,12,4711,,existing
+"404/107 Hawke Street, West Melbourne, West Melbourne, VIC ",Unit,West Melbourne,true,603569,513034,694104,Low-Medium,46,12,2662,,existing
+"30 Madura Promenade, Mickleham, Mickleham, VIC ",House,Mickleham,true,611874,520093,703655,Medium-High,65,12,3638,,existing
+"13 Sturdee Road, Donvale, Donvale, VIC ",House,Donvale,true,1473876,1252795,1694957,Low-Medium,46,12,4534,,existing
+"1108/65 Dudley Street, West Melbourne, West Melbourne, VIC 3003",Unit,West Melbourne,true,605575,514739,696411,Low-Medium,46,12,2989,,existing
+"314 Serpells Road, Templestowe, Templestowe, VIC ",House,Templestowe,true,1492141,1268320,1715962,Medium,58,12,4540,,existing
+"16a St Kinnord Street, Aberfeldie, Aberfeldie, VIC ",House,Aberfeldie,true,2104492,1788818,2420166,Medium,62,12,5394,,existing
+"48 Medway Road, Craigieburn, Craigieburn, VIC ",House,Craigieburn,true,709718,603260,816176,Medium,60,12,4095,,existing
+"2/13 Slevin Street, Lilydale, Lilydale, VIC ",Unit,Lilydale,true,671679,570927,772431,Low-Medium,34,1,3380,,existing
+"2 Gunbower Close, Thomastown, Thomastown, VIC ",House,Thomastown,true,714401,607241,821561,High,97,12,3685,,existing
+"19 Glenvale Road, Donvale, Donvale, VIC ",House,Donvale,true,1473876,1252795,1694957,Low-Medium,46,12,3633,,existing
+"2 Albany Court, Wantirna, Wantirna, VIC ",House,Wantirna,true,1030518,875940,1185096,Medium,62,12,3622,,existing
+"25 Belindavale Drive, Knoxfield, Knoxfield, VIC ",House,Knoxfield,true,777754,661091,894417,High,83,12,3484,,existing
+"20 Oban Road, Officer South, Officer South, VIC ",House,Officer South,true,900984,765836,1036132,High,80,12,4197,,existing
+"35 Peebles Street, Endeavour Hills, Endeavour Hills, VIC ",House,Endeavour Hills,true,765102,650337,879867,Medium-High,71,12,3894,,existing
+"2/46 Richardson Street, Essendon, Essendon, VIC ",Unit,Essendon,true,556804,473283,640325,Low-Medium,46,10,2414,,existing
+"3/14 Ella Grove, Chelsea, Chelsea, VIC ",Unit,Chelsea,true,776513,660036,892990,Medium,59,12,3282,,existing
+"7 Meyer Crescent, Clyde North, Clyde North, VIC ",House,Clyde North,true,773834,657759,889909,Medium-High,66,12,4855,,existing
+"21 Curlew Avenue, Altona, Altona, VIC ",House,Altona,true,882766,750351,1015181,Medium-High,65,12,3678,,existing
+"15 Loyola Court, Watsonia, Watsonia, VIC ",House,Watsonia,true,924686,785983,1063389,High,90,12,3694,,existing
+"9/12 Leonard Crescent, Ascot Vale, Ascot Vale, VIC 3032",Unit,Ascot Vale,true,424403,360743,488063,Low-Medium,46,4,3482,,existing
+"39 Willaroy Boulevard, Donnybrook, Donnybrook, VIC ",House,Donnybrook,true,642418,546055,738781,Medium,59,12,3277,,existing
+"18 Franleigh Drive, Narre Warren, Narre Warren, VIC ",House,Narre Warren,true,586571,498585,674557,Medium-High,74,12,4813,,existing
+"45 Meadowlark Lane, Mooroolbark, Mooroolbark, VIC ",House,Mooroolbark,true,943871,802290,1085452,Medium-High,76,12,4609,,existing
+"123A Abbott Street, Sandringham, Sandringham, VIC ",House,Sandringham,true,1794226,1525092,2063360,Low-Medium,49,5,3890,,existing
+"23 St Ives Grove, Mount Martha, Mount Martha, VIC ",House,Mount Martha,true,1004932,854192,1155672,Medium,55,12,3789,,existing
+"80 Shady Grove, Forest Hill, Forest Hill, VIC ",House,Forest Hill,true,1008372,857116,1159628,Medium,58,10,4198,,existing
+"46 Reverence Drive, Rockbank, Rockbank, VIC ",House,Rockbank,true,534664,454464,614864,High,83,12,4145,,existing
+"6/2 Flowers Street, Caulfield South, Caulfield South, VIC ",Unit,Caulfield South,true,470205,399674,540736,Low-Medium,46,4,2103,,existing
+"4 Tumut Court, Patterson Lakes, Patterson Lakes, VIC ",House,Patterson Lakes,true,1183298,1005803,1360793,High,79,12,4402,,existing
+"2/153 Warrandyte Road, Langwarrin, Langwarrin, VIC ",House,Langwarrin,true,623148,529676,716620,Medium,64,10,2316,,existing
+"G14/1 Queen Street, Blackburn, Blackburn, VIC ",House,Blackburn,true,1244624,1057930,1431318,Medium-High,73,10,3809,,existing
+"2/23 Dalsten Grove, Mount Eliza, Mount Eliza, VIC ",Unit,Mount Eliza,true,884947,752205,1017689,Medium,64,10,3601,,existing
+"21 Greengables Drive, Wyndham Vale, Wyndham Vale, VIC ",House,Wyndham Vale,true,554198,471068,637328,Medium-High,72,12,3646,,existing
+"1/136 Booran Road, Glen Huntly, Glen Huntly, VIC ",Unit,Glen Huntly,true,663883,564301,763465,Low-Medium,47,12,3420,,existing
+"6/108 Glen Iris Road, Glen Iris, Glen Iris, VIC 3146",Unit,Glen Iris,true,731199,621519,840879,Low-Medium,45,12,4096,,existing
+"802/18 Mccombie Street, Elsternwick, Elsternwick, VIC ",Unit,Elsternwick,true,627693,533539,721847,Medium,64,6,2355,,existing
+"310/19 Pentridge Boulevard, Coburg, Coburg, VIC ",Unit,Coburg,true,602888,512455,693321,Low-Medium,46,8,2662,,existing
+"3/4 The Strand, Chelsea, Chelsea, VIC ",Unit,Chelsea,true,777403,660793,894013,Medium,60,12,2561,,existing
+"67 Cinerama Crescent, McCrae, McCrae, VIC ",House,McCrae,true,1061985,902687,1221283,Low-Medium,45,12,3278,,existing
+"2/7 Dudley Street, Caulfield East, Caulfield East, VIC ",Unit,Caulfield East,true,283697,241142,326252,Low-Medium,45,11,3070,,existing
+"2/1 Inga Street, Oakleigh East, Oakleigh East, VIC ",Unit,Oakleigh East,true,716641,609145,824137,Low-Medium,47,9,2765,,existing
+"6/18A Bloomfield Road, Ascot Vale, Ascot Vale, VIC 3032",Unit,Ascot Vale,true,424403,360743,488063,Low-Medium,46,4,2048,,existing
+"24 Guardian Street, Mickleham, Mickleham, VIC ",House,Mickleham,true,640532,544452,736612,Medium,59,12,2641,,existing
+"53 Hargreaves Crescent, Braybrook, Braybrook, VIC ",House,Braybrook,true,978997,832147,1125847,Medium-High,74,11,4322,,existing
+"2/198 Hilton Street, Glenroy, Glenroy, VIC ",Unit,Glenroy,true,609983,518486,701480,Medium-High,65,6,2357,,existing
+"65 Welcome Road, Diggers Rest, Diggers Rest, VIC ",House,Diggers Rest,true,601414,511202,691626,High,78,12,4710,,existing
+"511/1 Warde Street, Footscray, Footscray, VIC 3011",Unit,Footscray,true,602396,512037,692755,Low-Medium,46,10,2662,,existing
+"28 Llewellyn Court, Noble Park, Noble Park, VIC ",House,Noble Park,true,732164,622339,841989,High,91,12,4302,,existing
+"32 Hatherley Grove, Altona North, Altona North, VIC ",House,Altona North,true,805084,684321,925847,High,80,9,3995,,existing
+"34 Callistemon Avenue, Keysborough, Keysborough, VIC ",Unit,Keysborough,true,818409,695648,941170,Medium-High,66,12,3790,,existing
+"8/65 Station Street, Malvern, Malvern, VIC 3144",Unit,Malvern,true,707885,601702,814068,Low-Medium,43,3,3478,,existing
+"2/252 Station Street, Edithvale, Edithvale, VIC ",Unit,Edithvale,true,922174,783848,1060500,Medium,59,6,2357,,existing
+"14 Mackenzie Court, Croydon South, Croydon South, VIC ",House,Croydon South,true,752208,639377,865039,Medium-High,73,12,5206,,existing
+"2/29 Willow Drive, Hampton Park, Hampton Park, VIC ",Unit,Hampton Park,true,573428,536872,609984,Medium,64,3,3471,,existing
+"106/801 Whitehorse Rd, Mont Albert, Mont Albert, VIC ",Unit,Mont Albert,true,700299,595254,805344,Medium,60,3,3021,,existing
+"1/16 Tarella Road, Chelsea, Chelsea, VIC ",Unit,Chelsea,true,776513,660036,892990,Medium,59,12,2859,,existing
+"30/31 Moreland Street, Footscray, Footscray, VIC ",Unit,Footscray,true,602396,512037,692755,Low-Medium,46,10,2457,,existing
+"1/5 Tom Roberts Parade, Point Cook, Point Cook, VIC ",Unit,Point Cook,true,462992,433476,492508,Medium-High,66,3,3992,,existing
+"1/40 Fenton Street, Huntingdale, Huntingdale, VIC ",Unit,Huntingdale,true,465353,395550,535156,Medium,57,9,2621,,existing
+"3/21 William Street, McCrae, McCrae, VIC ",Unit,McCrae,true,652470,554600,750341,Low-Medium,33,1,3554,,existing
+"3/608 Moreland Road, Brunswick West, Brunswick West, VIC ",Unit,Brunswick West,true,524553,445870,603236,Low-Medium,46,12,3552,,existing
+"1/129 Moriah Street, Clayton, Clayton, VIC ",Unit,Clayton,true,525657,446808,604506,Low-Medium,46,12,3275,,existing
+"1302/5 Joseph Road, Footscray, Footscray, VIC ",Unit,Footscray,true,602396,512037,692755,Low-Medium,46,10,2634,,existing
+"203/125 Francis Street, Yarraville, Yarraville, VIC ",Unit,Yarraville,true,545877,465294,626460,Medium-High,70,6,2078,,existing
+"150 Keneally Street, Dandenong, Dandenong, VIC ",Unit,Dandenong,true,584300,496655,671945,Medium,60,9,3481,,existing
+"3/12 David Street, Altona, Altona, VIC ",Unit,Altona,true,708433,602168,814698,Low-Medium,47,12,2663,,existing
+"101/21 Lethbridge Street, Moonee Ponds, Moonee Ponds, VIC 3039",Unit,Moonee Ponds,true,477892,406208,549576,Low-Medium,33,1,3584,,existing
+"2/70 Glen Huntly Road, Elwood, Elwood, VIC 3184",Unit,Elwood,true,548549,466267,630831,Low-Medium,46,8,2570,,existing
+"1/17 Braund Avenue, Bell Post Hill, Bell Post Hill, VIC ",Unit,Bell Post Hill,true,554989,471741,638237,Medium-High,69,3,2754,,existing
+"8 Noel Road, Langwarrin, Langwarrin, VIC ",Unit,Langwarrin,true,834614,709422,959806,Medium-High,77,12,3721,,existing
+"9/292-294 Canterbury Road, Heathmont, Heathmont, VIC ",Unit,Heathmont,true,725920,617032,834808,Medium,53,4,3490,,existing
+"1310/41 Batman Street, West Melbourne, West Melbourne, VIC ",Unit,West Melbourne,true,605575,514739,696411,Low-Medium,46,12,2722,,existing
+"33 Nursery Avenue, Frankston, Frankston, VIC ",House,Frankston,true,826675,702674,950676,Low-Medium,48,12,5143,,existing
+"10 Balmoral Avenue, Balwyn, VIC",House,Balwyn,true,1780430,1513366,2047494,Low-Medium,44,3,4698,yes,existing
+"42 Tintern Avenue, Toorak, VIC",House,Toorak,true,2388687,2030384,2746990,Low-Medium,36,2,5109,yes,existing
+"8 Russell Street, Camberwell, VIC",House,Camberwell,true,2722100,2313785,3130415,Low-Medium,45,3,5734,yes,existing
+"25 Fulton Drive, Templestowe, VIC",House,Templestowe,true,1486987,1263939,1710035,Low-Medium,48,12,3436,yes,existing
+"15 Brooklyn Avenue, Mount Waverley, VIC",House,Mount Waverley,true,1231910,1047124,1416697,Medium-High,73,9,4147,yes,existing
+"7 Pannam Drive, Doncaster East, VIC",House,Doncaster East,true,1391148,1182476,1599820,Medium-High,67,12,4145,yes,existing
+"68 Kameruka Road, Wheelers Hill, VIC",House,Wheelers Hill,true,1161456,987238,1335674,Medium,63,9,3937,yes,existing
+"33 Baringo Close, Mulgrave, VIC",House,Mulgrave,true,909408,772997,1045819,Medium-High,68,12,3073,yes,existing
+"19 Inglesby Road, Camberwell, VIC",House,Camberwell,true,2718152,2310429,3125875,Low-Medium,45,3,4407,yes,existing
+"12 Cygnet Street, Wantirna South, VIC",House,Wantirna South,true,1108713,942406,1275020,Low-Medium,48,11,3172,yes,existing
+"10/5-7 St James Road, Armadale, Armadale, VIC 3143",Unit,Armadale,false,,,,,,,4301,,existing
+"1202S/889 Collins Street, Docklands, Docklands, VIC 3008",Unit,Docklands,false,,,,,,,4113,,existing
+"7/9 St Georges Road, Armadale, Armadale, VIC 3143",Unit,Armadale,false,,,,,,,4504,,existing
+"511/187 Boundary Road, North Melbourne, North Melbourne, VIC ",Unit,North Melbourne,false,,,,,,,47539,,existing
+"G01/881 High Street, Armadale, Armadale, VIC 3143",Unit,Armadale,false,,,,,,,4466,,existing
+"6 Lumbrook Parade, Truganina, Truganina, VIC",House,Truganina,true,658606,559815,757397,Medium-High,71,12,5211,new
+"8 Prowse Walk, Epping, Epping, VIC",House,Epping,true,833111,708144,958078,Medium-High,66,12,4501,new
+"3 Brookside Court, Caroline Springs, Caroline Springs, VIC",House,Caroline Springs,true,691288,587595,794981,High,79,12,4200,new
+"12 Kalbow Street, Botanic Ridge, Botanic Ridge, VIC",House,Botanic Ridge,true,929828,790354,1069302,Medium,55,12,4096,new
+"45 Hertford Road, Sunshine, Sunshine, VIC",House,Sunshine,true,947636,805491,1089781,Medium,52,12,4506,new
+"9/305 Grange Road, Ormond, Ormond, VIC",Unit,Ormond,true,468951,398608,539294,Low-Medium,46,10,3173,new
+"10 Earnshaw Drive, Carrum Downs, Carrum Downs, VIC",House,Carrum Downs,true,745338,633537,857139,High,80,12,4504,new
+"106/1 Wilfred Road, Ivanhoe East, Ivanhoe East, VIC",Unit,Ivanhoe East,true,1114658,947459,1281857,Low-Medium,46,6,3072,new
+"130/6 Paine Street, Newport, Newport, VIC",Unit,Newport,true,744146,632524,855768,Low-Medium,47,8,3075,new
+"10/405 Beach Road, Beaumaris, Beaumaris, VIC",Unit,Beaumaris,true,777763,661099,894427,Low-Medium,43,3,3255,new
+"2/1 Ford Street, Ringwood, Ringwood, VIC",Unit,Ringwood,true,628840,534514,723166,Low-Medium,46,8,3312,new
+"9/14-16 Rennison Street, Parkdale, Parkdale, VIC",Unit,Parkdale,true,579116,492249,665983,Low-Medium,46,8,2851,new
+"3/2-3 Kevin Close, Beaconsfield, Beaconsfield, VIC",Unit,Beaconsfield,true,596180,506753,685607,Medium,54,3,3071,new
+"201/240-250 McKinnon Road, McKinnon, McKinnon, VIC",Unit,McKinnon,true,646820,549797,743843,Low-Medium,46,5,3174,new
+"5/74 Rathmines Road, Hawthorn East, Hawthorn East, VIC",Unit,Hawthorn East,true,473930,402841,545020,Low-Medium,46,4,3121,new
+"306/213 Burwood Highway, Burwood East, Burwood East, VIC",Unit,Burwood East,true,664557,564873,764241,Medium,59,5,3125,new
+"20/8 Crefden Street, Maidstone, Maidstone, VIC",Unit,Maidstone,true,449809,382338,517280,Low-Medium,46,5,2719,new
+"20 Phillip Street, Melton South, Melton, VIC",House,Melton South,true,312780,265863,359697,Medium,51,6,4654,new
+"30 Clowes Street, Melton South, Melton, VIC, 3337",House,Melton South,true,312780,265863,359697,Low-Medium,47,6,3684,new
+"108/11 Foundation Boulevard, Burwood East, Burwood East, VIC",Unit,Burwood East,true,666699,566694,766704,Medium,58,5,2561,new
+"401/233 Maroondah Highway, Ringwood, Ringwood, VIC",Unit,Ringwood,true,628840,534514,723166,Low-Medium,46,8,2386,new
+"1 Bayview Court, Highton, Highton, VIC",House,Highton,true,852409,724548,980270,Medium,61,12,4347,new
+"903/17 Taylor Street, Moorabbin, Moorabbin, VIC",Unit,Moorabbin,true,596776,507260,686292,Low-Medium,43,3,3113,new
+"1/16 Wandsworth Avenue, Deer Park, Deer Park, VIC",Unit,Deer Park,true,536447,456133,616761,Medium-High,74,5,3148,new
+"14 Stringy Bark Rise, Croydon North, Croydon North, VIC",House,Croydon North,true,1037300,881705,1192895,Medium,58,12,4177,new
+"51 Redditch Crescent, Deer Park, Deer Park, VIC",House,Deer Park,true,462236,392901,531571,Medium,60,12,3671,new
+"16 Mary Court, Croydon North, Croydon North, VIC",House,Croydon North,true,1037300,881705,1192895,Medium,58,12,3189,new
+"133/116 Main Drive, Macleod, Macleod, VIC",Unit,Macleod,true,687211,584129,790293,Medium,58,5,2760,new
+"30 Lyall Street, Hastings, Hastings, VIC",House,Hastings,true,605667,514817,696517,Low-Medium,49,12,4445,new
+"6 Lake View Drive, Safety Beach, Safety Beach, VIC",House,Safety Beach,true,1153074,980113,1326035,Low-Medium,47,11,3592,new
+"16 Brittingham Court, Macleod, Macleod, VIC",House,Macleod,true,1473155,1252182,1694128,Medium,55,9,2847,new
+"7 Pitta Place, Carrum Downs, Carrum Downs, VIC",House,Carrum Downs,true,745338,633537,857139,High,96,12,3695,new
+"15/190 Murrumbeena Road, Murrumbeena, Murrumbeena, VIC",Unit,Murrumbeena,true,396365,336910,455820,Medium,59,7,3174,new
+"202/36-46 High Street, Preston, Preston, VIC",Unit,Preston,true,521556,443323,599789,Low-Medium,42,2,4084,new
+"76 Mulcahy Road, Pakenham, Pakenham, VIC",House,Pakenham,true,890449,756882,1024016,Low-Medium,47,12,4311,new
+"3/35-37 Eveline Street, Brunswick, Brunswick, VIC",Unit,Brunswick,true,532396,452537,612255,Low-Medium,46,6,3073,new
+"7/5 Phillip Street, Mentone, Mentone, VIC",Unit,Mentone,true,617721,525063,710379,Low-Medium,46,11,3174,new
+"35 Paxton Street, Malvern East, Malvern East, VIC, 3145",House,Malvern East,true,2252670,1914770,2590571,Medium,51,6,4300,new
+"38 Grundy Grove, Pascoe Vale South, Pascoe Vale South, VIC",House,Pascoe Vale South,true,1261792,1072523,1451061,Medium,61,12,3603,new
+"26 Tableland Road, Tarneit, Tarneit, VIC",House,Tarneit,true,607544,516412,698676,Medium-High,66,12,4608,new
+"8 Ramsgate Crescent, Truganina, Truganina, VIC",House,Truganina,true,658606,559815,757397,Medium,60,12,3462,new
+"16 Rosewood Boulevard, Lysterfield, Lysterfield, VIC",House,Lysterfield,true,1527049,1297992,1756106,Medium,58,12,4504,new
+"5 Ashworth Street, Albert Park, Albert Park, VIC",House,Albert Park,true,3140856,2669728,3611984,Low-Medium,46,3,5094,new
+"3 Featherdale Road, Wollert, Wollert, VIC",House,Wollert,true,913947,776855,1051039,Medium-High,65,12,4429,new
+"6 Casuarina Avenue, Torquay, Torquay, VIC",House,Torquay,true,884619,751926,1017312,Medium-High,67,12,4504,new
+"23 Greenglade Court, Blackburn North, Blackburn North, VIC",House,Blackburn North,true,1154316,981169,1327463,High,78,12,4037,new
+"11 Yering Place, Chirnside Park, Chirnside Park, VIC",House,Chirnside Park,true,963631,819086,1108176,Medium,51,12,4379,new
+"13 Fraser Avenue, Beaconsfield Upper, Beaconsfield Upper, VIC",House,Beaconsfield Upper,true,1943875,1652294,2235456,Low-Medium,47,12,3668,new
+"11 Brennan Avenue, Beaconsfield Upper, Beaconsfield Upper, VIC",House,Beaconsfield Upper,true,1943875,1652294,2235456,Low-Medium,47,12,2765,new
+"43 Park Street, Seaford, Seaford, VIC",House,Seaford,true,768022,652819,883225,Medium-High,75,12,4609,new
+"4/27 Gosford Crescent, Broadmeadows, Broadmeadows, VIC",Unit,Broadmeadows,true,369141,313770,424512,Low-Medium,36,2,4096,new
+"8 Harpenden Terrace, Cranbourne, Cranbourne, VIC",House,Cranbourne,true,1123088,954625,1291551,Medium-High,65,12,4504,new
+"29 Fosters Road, Keilor Park, Keilor Park, VIC",House,Keilor Park,true,852841,724915,980767,Medium-High,72,12,3585,new
+"10 Charlton Street, Blackburn North, Blackburn North, VIC",House,Blackburn North,true,1154316,981169,1327463,High,88,12,3172,new
+"1/33 Kincumber Drive, Glen Waverley, Glen Waverley, VIC",Unit,Glen Waverley,true,1008332,857082,1159582,Medium,64,5,3073,new
+"27 Tulk Street, Berwick, Berwick, VIC",House,Berwick,true,974753,828540,1120966,Low-Medium,47,12,4369,new
+"206/828 Burke Road, Camberwell, Camberwell, VIC",Unit,Camberwell,true,927114,788047,1066181,Low-Medium,46,5,2305,new
+"1/10 Pine Court, Aspendale, Aspendale, VIC",Unit,Aspendale,true,791565,672830,910300,Medium,59,10,3190,new
+"14/294 Nicholson Street, Seddon, Seddon, VIC, 3011",Unit,Seddon,true,343451,291933,394969,Low-Medium,33,1,4060,new
+"1/20 Turnham Avenue, Rosanna, Rosanna, VIC",Unit,Rosanna,true,782393,665034,899752,Low-Medium,46,6,2970,new
+"14/5 Beavers Road, Northcote, Northcote, VIC",Unit,Northcote,true,785753,667890,903616,Medium-High,65,3,3174,new
+"4/8-10 Golfwood Close, Dingley Village, Dingley Village, VIC",Unit,Dingley Village,true,708938,660162,757714,Medium-High,71,5,3156,new
+"2/159 Porter Road, Heidelberg Heights, Heidelberg Heights, VIC",Unit,Heidelberg Heights,true,922155,783832,1060478,Medium,57,3,2363,new
+"34 Fairview Avenue, Newtown, Newtown, VIC",House,Newtown,true,1124935,956195,1293675,Medium,61,10,3425,new
+"1/135 Ivanhoe Parade, Ivanhoe, Ivanhoe, VIC",Unit,Ivanhoe,true,868533,738253,998813,Low-Medium,46,10,3334,new
+"411/1 Danks Street West, Port Melbourne, Port Melbourne, VIC",Unit,Port Melbourne,true,665869,565989,765749,Medium,58,6,3277,new
+"41/195 Beaconsfield Parade, Middle Park, Middle Park, VIC",Unit,Middle Park,true,529377,449970,608784,Low-Medium,46,5,2764,new
+"1 Heyington Court, Somerville, Somerville, VIC",House,Somerville,true,952007,809206,1094808,Medium,60,12,3483,new
+"91 First Avenue, Rosebud, Rosebud, VIC",House,Rosebud,true,650582,552995,748169,Medium,55,12,4507,new
+"266 Latrobe Terrace, Newtown, Newtown, VIC",House,Newtown,true,1125976,957080,1294872,Medium,59,10,2352,new
+"49 Suffolk Street, West Footscray, West Footscray, VIC",House,West Footscray,true,1632165,1387340,1876990,Medium-High,65,10,4712,new
+"3/14 Terrara Road, Vermont, Vermont, VIC",Unit,Vermont,true,678285,576542,780028,Low-Medium,34,2,3994,new
+"8/3 Studley Park Road, Kew, Kew, VIC, 3101",Unit,Kew,true,640821,544698,736944,Low-Medium,44,3,3175,new
+"1/65 Craigmoor Crescent, Mernda, Mernda, VIC",Unit,Mernda,true,513047,436090,590004,Low-Medium,46,4,3277,new
+"2/68 Hewish Road, Croydon, Croydon, VIC",Unit,Croydon,true,559229,475345,643113,Medium,58,4,3173,new
+"10/24 Croydon Road, Croydon, Croydon, VIC",Unit,Croydon,true,559229,475345,643113,Medium,60,4,2151,new
+"29 Mascoma Street, Strathmore, Strathmore, VIC",House,Strathmore,true,1766123,1501205,2031041,Medium-High,70,7,4216,new
+"11 Coridale Boulevard, Lara, Lara, VIC",House,Lara,true,729820,620347,839293,Medium-High,67,12,4445,new
+"11 Lineham Drive, Cranbourne East, Cranbourne East, VIC",House,Cranbourne East,true,763751,649188,878314,Medium-High,74,12,4753,new
+"24 Jillian Drive, Rye, Rye, VIC",House,Rye,true,769107,653741,884473,Medium,61,12,4095,new
+"22 Miller Grove, Kew, Kew, VIC, 3101",House,Kew,true,3189454,2711036,3667872,Low-Medium,40,2,5017,new
+"1/13 Rose Avenue, Boronia, Boronia, VIC",Unit,Boronia,true,721346,613144,829548,Medium,59,8,3275,new
+"126 Everard Road, Mernda, Mernda, VIC",House,Mernda,true,727953,618760,837146,Medium-High,66,12,3521,new
+"402 Lower Plenty Road, Viewbank, Viewbank, VIC",House,Viewbank,true,1137252,966664,1307840,High,79,12,5294,new
+"7 Christine Street, Viewbank, Viewbank, VIC",House,Viewbank,true,1137252,966664,1307840,High,80,12,3681,new
+"8/894 Burke Road, Canterbury, Canterbury, VIC",Unit,Canterbury,true,887249,754162,1020336,Low-Medium,43,3,3275,new
+"1/4 Hopetoun Avenue, Canterbury, Canterbury, VIC",Unit,Canterbury,true,907590,771452,1043728,Low-Medium,43,3,2367,new
+"15 Xavier Drive, Wheelers Hill, Wheelers Hill, VIC",House,Wheelers Hill,true,1161456,987238,1335674,Medium,63,9,3373,new
+"Unit 208/50 Catamaran Dr, Werribee South, Werribee South, VIC",Unit,Werribee South,true,375253,318965,431541,Medium,58,8,2760,new
+"52 Jetty Road, Werribee South, Werribee South, VIC",House,Werribee South,true,474870,403640,546101,Low-Medium,47,11,3275,new
+"4 Kerrabee Drive, Mernda, Mernda, VIC",House,Mernda,true,727953,618760,837146,Medium-High,70,12,3480,new
+"3/22 Willansby Avenue, Brighton, Brighton, VIC",Unit,Brighton,true,937536,796906,1078166,Low-Medium,43,3,3455,new
+"2 El Greco Court, Scoresby, Scoresby, VIC, 3179",House,Scoresby,true,985464,837644,1133284,High,88,12,4533,new
+"12 Roberts Road, Belmont, Belmont, VIC",House,Belmont,true,808979,687632,930326,Medium-High,73,12,4505,new
+"30 Wilpena Place, Vermont South, Vermont South, VIC, 3133",House,Vermont South,true,1272324,1081475,1463173,High,84,11,4440,new
+"32 Illawarra Avenue, Rowville, Rowville, VIC",House,Rowville,true,1161895,987611,1336179,Medium-High,65,12,4571,new
+"3/42 Grosvenor Street, Brighton, Brighton, VIC, 3186",Unit,Brighton,true,938302,797557,1079047,Low-Medium,43,3,2783,new
+"423/70 Batesford Road, Chadstone, Chadstone, VIC",Unit,Chadstone,true,826220,702287,950153,Low-Medium,46,5,3258,new
+"6 Kingston Boulevard, Hoppers Crossing, Hoppers Crossing, VIC",House,Hoppers Crossing,true,590705,502099,679311,Medium,62,12,4332,new
+"215 Roslyn Road, Belmont, Belmont, VIC",House,Belmont,true,808979,687632,930326,Medium-High,73,12,3780,new
+"41 Tannin Way, Waurn Ponds, Waurn Ponds, VIC",House,Waurn Ponds,true,722350,613998,830702,Medium-High,73,12,3932,new
+"5 Ulah Close, Scoresby, Scoresby, VIC, 3179",House,Scoresby,true,985464,837644,1133284,High,83,12,3621,new
+"3/11 Silverdale Road, Eaglemont, Eaglemont, VIC",Unit,Eaglemont,true,788163,669939,906387,Medium,55,4,2871,new
+"9 Seaview Street, Mount Waverley, Mount Waverley, VIC, 3149",House,Mount Waverley,true,1231910,1047124,1416697,High,79,9,3588,new
+"3/6 Kellerher Street, Lalor, Lalor, VIC",Unit,Lalor,true,467401,397291,537511,Medium-High,73,4,3138,new
+"6 Bianca Crescent, Greenvale, Greenvale, VIC",House,Greenvale,true,945693,803839,1087547,Low-Medium,47,12,4434,new
+"2/17 Anderson Street, Caulfield, Caulfield, VIC",Unit,Caulfield,true,746190,634262,858118,Low-Medium,46,5,3278,new
+"14A Poet Road, Bentleigh East, Bentleigh East, VIC",Unit,Bentleigh East,true,1177986,1001288,1354684,High,84,8,4305,new
+"121 Windermere Street, Ballarat Central, Ballarat, VIC",House,Ballarat Central,true,576180,489753,662607,Low-Medium,47,4,3481,new
+"29 Rhone Grove, Skye, Skye, VIC",House,Skye,true,811477,689755,933199,High,91,12,4375,new
+"2/27 Etzel Street, Airport West, Airport West, VIC",Unit,Airport West,true,953523,810495,1096551,Low-Medium,35,2,4228,new
+"6/11 Henry Street, Hawthorn, Hawthorn, VIC",Unit,Hawthorn,true,756463,642994,869932,Medium-High,70,7,3269,new
+"2/5 Blanche Court, Doncaster East, Doncaster East, VIC",Unit,Doncaster East,true,989566,841131,1138001,Low-Medium,44,3,2464,new
+"21 Lodden Street, Sunshine North, Sunshine North, VIC",House,Sunshine North,true,714841,607615,822067,High,96,12,4507,new
+"6/49 Electra Street, Williamstown, Williamstown, VIC, 3016",Unit,Williamstown,true,621141,527970,714312,Medium,58,6,3274,new
+"8 Sequoia Court, Narre Warren South, Narre Warren South, VIC",House,Narre Warren South,true,907246,771159,1043333,Medium-High,68,12,4712,new
+"2/191 Wonga Road, Warranwood, Warranwood, VIC",Unit,Warranwood,true,813182,691205,935159,Medium,60,4,3277,new
+"4/20 Crookston Road, Reservoir, Reservoir, VIC",Unit,Reservoir,true,638644,542847,734441,Medium-High,65,5,3279,new
+"302/15 Small Street, Hampton, Hampton, VIC",Unit,Hampton,true,651117,553449,748785,Medium,56,5,3378,new
+"22 Landau Drive, Warranwood, Warranwood, VIC",House,Warranwood,true,1156094,982680,1329508,High,83,12,3584,new
+"167 King Street, Bendigo, Bendigo, VIC",House,Bendigo,true,606254,515316,697192,Medium-High,65,7,3340,new
+"1/4 Normanby Street, Hughesdale, Hughesdale, VIC",Unit,Hughesdale,true,815588,693250,937926,Low-Medium,47,9,3008,new
+"5/13 Lindsay Avenue, Nunawading, Nunawading, VIC",Unit,Nunawading,true,751857,639078,864636,Low-Medium,46,7,3231,new
+"2/17 Burnt Street, Nunawading, Nunawading, VIC",Unit,Nunawading,true,752844,639917,865771,Low-Medium,47,7,2295,new
+"26 Garden Street, Blairgowrie, Blairgowrie, VIC",House,Blairgowrie,true,909254,772866,1045642,Low-Medium,47,12,3583,new
+"65B Ferguson Road, Leopold, Leopold, VIC",House,Leopold,true,748295,636051,860539,Medium,55,12,4505,new
+"2/61 Strachans Road, Mornington, Mornington, VIC",Unit,Mornington,true,810477,688905,932049,Low-Medium,32,2,9723,new
+"1/10 Evelyn Street, Pascoe Vale, Pascoe Vale, VIC",Unit,Pascoe Vale,true,651121,553453,748789,Low-Medium,46,4,4192,new
+"4/247 Inkerman Street, Balaclava, Balaclava, VIC, 3183",Unit,Balaclava,false,,,,,,,3611,new
+"5/62 Gourlay Street, Balaclava, Balaclava, VIC, 3183",Unit,Balaclava,false,,,,,,,3659,new
