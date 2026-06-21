@@ -81,20 +81,7 @@ async function main() {
 
     for (const s of sales) {
       try {
-        // Check if record exists (simple dedup before insert)
-        const exists = await sql`
-          SELECT 1 FROM comparable_sales
-          WHERE sale_address = ${s.address || ""}
-            AND sale_date = ${s.saleDate || null}
-            AND sale_price = ${s.price ? Number(s.price) : null}
-            AND source_name = ${s.source || "unknown"}
-          LIMIT 1
-        `;
-        if (Array.isArray(exists) && exists.length > 0) {
-          continue; // skip duplicate
-        }
-        
-        await sql`
+        const result = await sql`
           INSERT INTO comparable_sales (
             sale_address, sale_price, sale_date, property_type,
             bedrooms, bathrooms, car_spaces, land_size_sqm,
@@ -116,8 +103,11 @@ async function main() {
             ${s.rawPrice || null},
             CURRENT_DATE, 'weekly', ${batchId}
           )
+          ON CONFLICT ON CONSTRAINT uq_sale_addr_date_price DO NOTHING
         `;
-        totalSaved++;
+        if (result && result.length > 0 && result[0]?.id) {
+          totalSaved++;
+        }
       } catch (err) {
         console.warn(`[Cron Weekly] DB insert error: ${err.message}`);
       }
