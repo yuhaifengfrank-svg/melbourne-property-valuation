@@ -103,7 +103,8 @@ async function main() {
             ${s.rawPrice || null},
             CURRENT_DATE, 'weekly', ${batchId}
           )
-          ON CONFLICT ON CONSTRAINT uq_sale_addr_date_price DO NOTHING
+          ON CONFLICT (sale_address, sale_date, sale_price, source_name)
+            WHERE sale_date IS NOT NULL AND sale_price IS NOT NULL DO NOTHING
         `;
         if (result && result.length > 0 && result[0]?.id) {
           totalSaved++;
