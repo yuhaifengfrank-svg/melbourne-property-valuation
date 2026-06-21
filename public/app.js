@@ -3017,8 +3017,15 @@ byId("start-valuation").addEventListener("click", async () => {
   button.disabled = true;
   button.textContent = language === "zh" ? "正在核验公开数据…" : "Checking public evidence…";
 
-  const selectedType = document.querySelector(".chip.active")?.dataset.type || "House";
+  // Infer property type from address and auto-select matching chip
   const { canonicalAddress, effectiveSuburb } = buildEnteredAddress();
+  const inferredType = inferPropertyTypeFromAddress(canonicalAddress || byId("address").value);
+  if (inferredType) {
+    document.querySelectorAll(".chip").forEach((chip) => {
+      chip.classList.toggle("active", chip.dataset.type === inferredType);
+    });
+  }
+  const selectedType = document.querySelector(".chip.active")?.dataset.type || "House";
   const selectedState = getSelectedState();
 
   const valuation = await runAddressValuation(
