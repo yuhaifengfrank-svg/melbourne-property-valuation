@@ -25,8 +25,8 @@ const outputArg = process.argv.find(a => a.startsWith("--output="));
 const OUTPUT = outputArg ? resolve(outputArg.split("=")[1]) : DEFAULT_OUTPUT;
 
 async function main() {
-  const { default: neon } = await import("@neondatabase/serverless");
-  const { sql } = neon(process.env.DATABASE_URL);
+  const { getSql } = await import("../api/_db.js");
+  const sql = getSql();
 
   console.log("[LandSizeStats] Fetching House-only land size stats from DB...");
 
