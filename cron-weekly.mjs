@@ -116,6 +116,22 @@ async function main() {
   }
 
   console.log(`[Cron Weekly] Complete: ${totalFetched} fetched, ${totalSaved} saved (batch ${batchId})`);
+
+  // ── Post-step: regenerate land size stats (House-only) ──
+  try {
+    const { execSync } = await import("child_process");
+    const { dirname } = await import("path");
+    const root = dirname(new URL(import.meta.url).pathname);
+    console.log("[Cron Weekly] Regenerating suburb land size stats (House-only)...");
+    execSync(`node ${root}/scripts/update-land-size-stats.mjs`, {
+      cwd: root, stdio: "inherit",
+      env: { ...process.env, DATABASE_URL: process.env.DATABASE_URL }
+    });
+    console.log("[Cron Weekly] Land size stats updated.");
+  } catch (regenErr) {
+    console.warn("[Cron Weekly] Land size stats regeneration failed (non-fatal):", regenErr.message);
+  }
+
   process.exit(0);
 }
 
