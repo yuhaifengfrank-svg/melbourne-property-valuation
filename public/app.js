@@ -3018,12 +3018,18 @@ byId("start-valuation").addEventListener("click", async () => {
   button.textContent = language === "zh" ? "正在核验公开数据…" : "Checking public evidence…";
 
   // Infer property type from address and auto-select matching chip
+  // (only if user hasn't manually selected a different type recently)
   const { canonicalAddress, effectiveSuburb } = buildEnteredAddress();
   const inferredType = inferPropertyTypeFromAddress(canonicalAddress || byId("address").value);
   if (inferredType) {
-    document.querySelectorAll(".chip").forEach((chip) => {
-      chip.classList.toggle("active", chip.dataset.type === inferredType);
-    });
+    const currentActive = document.querySelector(".chip.active")?.dataset.type;
+    // Only auto-select if user hasn't changed from the default (House)
+    // or if the current selection is incompatible with the inferred type
+    if (!currentActive || currentActive === "House" || currentActive === inferredType) {
+      document.querySelectorAll(".chip").forEach((chip) => {
+        chip.classList.toggle("active", chip.dataset.type === inferredType);
+      });
+    }
   }
   const selectedType = document.querySelector(".chip.active")?.dataset.type || "House";
   const selectedState = getSelectedState();

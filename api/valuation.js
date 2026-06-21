@@ -193,8 +193,9 @@ export default async function handler(request, response) {
   try {
     const body = typeof request.body === "string" ? JSON.parse(request.body) : request.body || {};
     const result = await runValuation(body, {
-      fetch: false,
-      useDatabaseFallback: true
+      // DB 为第一数据源，CDP 浏览器仅在 DB 数据不足时作为补充
+      // Vercel 环境无需 CDP（AWS Lambda 无 Chrome）
+      fetch: false
     });
 
     let sql = null;
