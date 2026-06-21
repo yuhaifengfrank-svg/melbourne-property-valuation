@@ -70,6 +70,125 @@ async function fetchJSON(path) {
   return res.json();
 }
 
+// ── FAQ helpers ────────────────────────────────────────────────────
+
+/**
+ * Build FAQPage LD+JSON schema block for structured data.
+ */
+function buildFaqPageSchema(suburb, state, data, confidence) {
+  const schoolScore = data.school?.score ?? null;
+  const growthScore = data.growth?.score ?? null;
+  const valueScore = data.value?.score ?? null;
+  const yieldScore = data.yield?.score ?? null;
+
+  const scoreLabel = confidence != null && confidence !== '—' ? `${confidence}/100` : 'not available';
+  const schoolLabel = schoolScore != null ? `${schoolScore}/100` : 'not available';
+
+  const factors = ['value','growth','yield','vacancy','school','income','population','supply','infrastructure'];
+  const factorLabels = {
+    value: 'Value', growth: 'Growth', yield: 'Yield', vacancy: 'Vacancy',
+    school: 'School', income: 'Income', population: 'Population',
+    supply: 'Supply', infrastructure: 'Infrastructure'
+  };
+
+  const topScores = factors
+    .map(f => ({ name: factorLabels[f], score: data[f]?.score ?? null }))
+    .filter(f => f.score != null)
+    .sort((a, b) => b.score - a.score);
+
+  const top3 = topScores.slice(0, 3).map(f => `${f.name} ${f.score}/100`).join(', ');
+
+  const faqs = [
+    {
+      "@type": "Question",
+      "name": `What is the property opportunity score for ${suburb}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `${suburb} scores ${scoreLabel} on AusHomeValue's opportunity scale. Scores range 0\u2013100 and combine growth, value, yield, school quality, income, population, supply, infrastructure and vacancy factors.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `How does ${suburb} score on school quality?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `${suburb} scores ${schoolLabel} for school quality. This is based on ACARA ICSEA data and proximity to high-ranking schools in the area.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Is ${suburb} a good area for property investment?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `${suburb}'s opportunity score of ${scoreLabel} reflects a composite of 9 investment factors. Key signals: ${top3}. This is a relative opportunity index, not a price forecast or investment guarantee. Always conduct your own due diligence.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `What are the strongest investment signals for ${suburb}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `The highest-scoring factors for ${suburb} are: ${top3}. Higher scores indicate stronger relative signals compared to other suburbs in the dataset.`
+      }
+    }
+  ];
+
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs
+  }, null, 2);
+}
+
+/**
+ * Build visual FAQ section HTML.
+ */
+function buildFaqHtml(suburb, data, confidence) {
+  const schoolScore = data.school?.score ?? null;
+  const scoreLabel = confidence != null && confidence !== '—' ? `${confidence}/100` : 'not available';
+  const schoolLabel = schoolScore != null ? `${schoolScore}/100` : 'not available';
+
+  const factors = ['value','growth','yield','vacancy','school','income','population','supply','infrastructure'];
+  const factorLabels = {
+    value: 'Value', growth: 'Growth', yield: 'Yield', vacancy: 'Vacancy',
+    school: 'School', income: 'Income', population: 'Population',
+    supply: 'Supply', infrastructure: 'Infrastructure'
+  };
+
+  const topScores = factors
+    .map(f => ({ name: factorLabels[f], score: data[f]?.score ?? null }))
+    .filter(f => f.score != null)
+    .sort((a, b) => b.score - a.score);
+
+  const top3 = topScores.slice(0, 3).map(f => `${f.name} ${f.score}/100`).join(', ');
+  const strongest = topScores.length > 0 ? `${topScores[0].name} (${topScores[0].score}/100)` : 'Mixed';
+
+  const suburbEsc = escapeHtml(suburb);
+
+  return `
+    <h2 class="section-title" style="margin-top:48px;">\u2753 Frequently Asked Questions \u2014 ${suburbEsc} Property</h2>
+    <div class="faq-section" style="margin-bottom:32px;">
+      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
+        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">What is the property opportunity score for ${suburbEsc}?</div>
+        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">${suburbEsc} scores ${scoreLabel} on AusHomeValue's opportunity scale. Scores range 0\u2013100 and combine growth, value, yield, school quality, income, population, supply, infrastructure and vacancy factors.</div>
+      </div>
+      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
+        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">How does ${suburbEsc} score on school quality?</div>
+        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">${suburbEsc} scores ${schoolLabel} for school quality. This is based on ACARA ICSEA data and proximity to high-ranking schools in the area.</div>
+      </div>
+      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
+        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">Is ${suburbEsc} a good area for property investment?</div>
+        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">${suburbEsc}'s opportunity score of ${scoreLabel} reflects a composite of 9 investment factors. Top signals: ${top3}. Strongest factor: ${strongest}. This is a relative opportunity index, not a price forecast or investment guarantee. Always conduct your own due diligence.</div>
+      </div>
+      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
+        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">What are the strongest investment signals for ${suburbEsc}?</div>
+        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">The highest-scoring factors for ${suburbEsc} are: ${top3}. Higher scores indicate stronger relative signals compared to other suburbs in the dataset.</div>
+      </div>
+    </div>`;
+}
+
+// ── Page builders ───────────────────────────────────────────────────
+
 function buildSuburbPage(data, suburb) {
   const state = data.state || 'VIC';
   const slug = suburb.toLowerCase().replace(/[\s.]+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-');
@@ -203,6 +322,9 @@ function buildSuburbPage(data, suburb) {
     ]
   }
   </script>
+  <script type="application/ld+json">
+${buildFaqPageSchema(suburb, state, data, confidence)}
+  </script>
 </head>
 <body>
   <div class="topbar">
@@ -246,6 +368,8 @@ function buildSuburbPage(data, suburb) {
       <a href="/top-school-zone-suburbs-victoria.html" class="next-link">🏫 Top School Zones</a>
       <a href="/opportunities/" class="next-link">📋 All Opportunities</a>
     </div>
+
+    ${buildFaqHtml(suburb, data, confidence)}
   </div>
   <div class="footer">
     <div class="foot-links">

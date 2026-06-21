@@ -1,0 +1,264 @@
+#!/usr/bin/env node
+/**
+ * restore-faq-schema.cjs — Batch restore FAQPage LD+JSON schema + visual FAQ section
+ *
+ * Injects into all existing /public/suburb/*.html pages:
+ * 1. FAQPage structured data <script> in <head>
+ * 2. Visible FAQ section before the closing </div> of .container
+ *
+ * Reads each page's existing Place LD+JSON to extract suburb data.
+ * Run: node scripts/restore-faq-schema.cjs
+ * Dry-run: DRY_RUN=1 node scripts/restore-faq-schema.cjs
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+const SUBURB_DIR = path.join(__dirname, '..', 'public', 'suburb');
+const DRY_RUN = process.env.DRY_RUN === '1';
+
+function escapeHtml(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function escapeJson(s) {
+  return String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+}
+
+/**
+ * Parse existing Place LD+JSON block from suburb page HTML.
+ */
+function parsePlaceLdJson(html) {
+  const match = html.match(/<script type="application\/ld\+json">\s*({[\s\S]*?})\s*<\/script>/);
+  if (!match) return null;
+  try {
+    return JSON.parse(match[1]);
+  } catch (e) {
+    return null;
+  }
+}
+
+/**
+ * Build FAQPage LD+JSON block from suburb data.
+ */
+function buildFaqPageSchema(suburb, state, scores) {
+  const scoreLabel = scores.opportunityScore != null ? `${scores.opportunityScore}/100` : 'not available';
+  const valueLabel = scores.valueScore != null ? `${scores.valueScore}/100` : 'not available';
+  const growthLabel = scores.growthScore != null ? `${scores.growthScore}/100` : 'not available';
+  const schoolLabel = scores.schoolScore != null ? `${scores.schoolScore}/100` : 'not available';
+  const yieldLabel = scores.yieldScore != null ? `${scores.yieldScore}/100` : 'not available';
+
+  const faqs = [
+    {
+      "@type": "Question",
+      "name": `What is the property opportunity score for ${suburb}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `${suburb} scores ${scoreLabel} on AusHomeValue's opportunity scale. Scores range 0–100 and combine growth, value, yield, school quality, income, population, supply, infrastructure and vacancy factors.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `How does ${suburb} score on school quality?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `${suburb} scores ${schoolLabel} for school quality. This is based on ACARA ICSEA data and proximity to high-ranking schools in the area.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `Is ${suburb} a good area for property investment?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `${suburb}'s opportunity score of ${scoreLabel} reflects a composite of 9 investment factors. Key signals: Growth ${growthLabel}, Value ${valueLabel}, Yield ${yieldLabel}, School ${schoolLabel}. This is a relative opportunity index, not a price forecast or investment guarantee. Always conduct your own due diligence.`
+      }
+    },
+    {
+      "@type": "Question",
+      "name": `What are the strongest investment signals for ${suburb}?`,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": `The highest-scoring factors for ${suburb} are: Growth ${growthLabel}, Value ${valueLabel}, School ${schoolLabel}, Yield ${yieldLabel}. Higher scores indicate stronger relative signals compared to other suburbs in the dataset.`
+      }
+    }
+  ];
+
+  return JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqs
+  }, null, 2);
+}
+
+/**
+ * Build visual FAQ HTML section.
+ */
+function buildFaqHtml(suburb, scores) {
+  const scoreLabel = scores.opportunityScore != null ? `${scores.opportunityScore}/100` : `not available`;
+  const valueLabel = scores.valueScore;
+  const growthLabel = scores.growthScore;
+  const schoolLabel = scores.schoolScore;
+  const yieldLabel = scores.yieldScore;
+
+  const topFactors = [
+    { name: 'Growth', score: growthLabel },
+    { name: 'Value', score: valueLabel },
+    { name: 'School', score: schoolLabel },
+    { name: 'Yield', score: yieldLabel },
+    { name: 'Vacancy', score: scores.vacancyScore },
+    { name: 'Income', score: scores.incomeScore },
+    { name: 'Population', score: scores.populationScore },
+    { name: 'Supply', score: scores.supplyScore },
+    { name: 'Infrastructure', score: scores.infrastructureScore }
+  ].filter(f => f.score != null).sort((a, b) => (b.score || 0) - (a.score || 0));
+
+  const top3Signal = topFactors.slice(0, 3).map(f => `${f.name} ${f.score}/100`).join(', ');
+  const strongestSignal = topFactors.length > 0 ? `${topFactors[0].name} (${topFactors[0].score}/100)` : 'Mixed';
+
+  return `
+    <h2 class="section-title" style="margin-top:48px;">❓ Frequently Asked Questions — ${escapeHtml(suburb)} Property</h2>
+    <div class="faq-section" style="margin-bottom:32px;">
+      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
+        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">What is the property opportunity score for ${escapeHtml(suburb)}?</div>
+        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">${escapeHtml(suburb)} scores ${scoreLabel} on AusHomeValue's opportunity scale. Scores range 0–100 and combine growth, value, yield, school quality, income, population, supply, infrastructure and vacancy factors.</div>
+      </div>
+      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
+        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">How does ${escapeHtml(suburb)} score on school quality?</div>
+        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">${escapeHtml(suburb)} scores ${schoolLabel != null ? schoolLabel + '/100' : 'not available'} for school quality. This is based on ACARA ICSEA data and proximity to high-ranking schools in the area.</div>
+      </div>
+      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
+        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">Is ${escapeHtml(suburb)} a good area for property investment?</div>
+        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">${escapeHtml(suburb)}'s opportunity score of ${scoreLabel} reflects a composite of 9 investment factors. Top signals: ${top3Signal}. Strongest factor: ${strongestSignal}. This is a relative opportunity index, not a price forecast or investment guarantee. Always conduct your own due diligence.</div>
+      </div>
+      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
+        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">What are the strongest investment signals for ${escapeHtml(suburb)}?</div>
+        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">The highest-scoring factors for ${escapeHtml(suburb)} are: ${top3Signal}. Higher scores indicate stronger relative signals compared to other suburbs in the dataset.</div>
+      </div>
+    </div>`;
+}
+
+/**
+ * Extract suburb data from Place LD+JSON and factor card HTML.
+ */
+function extractScores(html) {
+  const scores = {
+    valueScore: null,
+    growthScore: null,
+    yieldScore: null,
+    vacancyScore: null,
+    schoolScore: null,
+    incomeScore: null,
+    populationScore: null,
+    supplyScore: null,
+    infrastructureScore: null,
+    opportunityScore: null,
+  };
+
+  // Parse Place LD+JSON for factor scores
+  const place = parsePlaceLdJson(html);
+  if (place && Array.isArray(place.additionalProperty)) {
+    for (const prop of place.additionalProperty) {
+      const val = parseInt(prop.value, 10);
+      if (isNaN(val)) continue;
+      if (prop.name === 'Value Score') scores.valueScore = val;
+      else if (prop.name === 'Growth Score') scores.growthScore = val;
+      else if (prop.name === 'Yield Score') scores.yieldScore = val;
+      else if (prop.name === 'Vacancy Score') scores.vacancyScore = val;
+      else if (prop.name === 'School Score') scores.schoolScore = val;
+      else if (prop.name === 'Income Score') scores.incomeScore = val;
+      else if (prop.name === 'Population Score') scores.populationScore = val;
+      else if (prop.name === 'Supply Score') scores.supplyScore = val;
+      else if (prop.name === 'Infrastructure Score') scores.infrastructureScore = val;
+    }
+  }
+
+  // Try to extract confidence score from confidence bar
+  const confMatch = html.match(/conf-badge[^>]*>(\d+)</);
+  if (confMatch) {
+    scores.opportunityScore = parseInt(confMatch[1], 10);
+  }
+
+  return scores;
+}
+
+function processFile(filepath) {
+  let html = fs.readFileSync(filepath, 'utf-8');
+
+  // Extract suburb name from h1 (handles both "Property Intelligence" and "Property Market Analysis")
+  const titleMatch = html.match(/<h1[^>]*>([^<]+),\s*([A-Z]+)\s*[—–-]?\s*Property (?:Intelligence|Market Analysis)/i);
+  if (!titleMatch) {
+    console.error(`  ⚠ Cannot find suburb name in ${path.basename(filepath)}`);
+    return false;
+  }
+  const suburb = titleMatch[1].trim();
+  const state = titleMatch[2].trim();
+
+  // Check if FAQPage already exists
+  if (/FAQPage/.test(html)) {
+    console.log(`  ✓ FAQPage already present: ${path.basename(filepath)}`);
+    return false;
+  }
+
+  const scores = extractScores(html);
+
+  // Build FAQPage schema
+  const faqSchemaJson = buildFaqPageSchema(suburb, state, scores);
+  const faqSchemaHtml = `  <script type="application/ld+json">\n${faqSchemaJson}\n  </script>`;
+
+  // Inject FAQPage schema before </head>
+  const headInsert = html.indexOf('</head>');
+  if (headInsert === -1) {
+    console.error(`  ⚠ No </head> in ${path.basename(filepath)}`);
+    return false;
+  }
+
+  // Check if page has the old-style visual FAQ block (class="faq" without FAQPage schema)
+  const hasOldVisualFaq = /class="faq"/.test(html);
+
+  // Inject FAQ schema (applies to both old and new format pages)
+  html = html.slice(0, headInsert) + faqSchemaHtml + '\n' + html.slice(headInsert);
+
+  // For new format pages (no visual FAQ), inject visual FAQ section before .footer
+  if (!hasOldVisualFaq) {
+    const faqHtml = buildFaqHtml(suburb, scores);
+    // Recalculate footer position after head change
+    const footerPos = html.indexOf('<div class="footer">');
+    if (footerPos === -1) {
+      console.error(`  ⚠ No footer in ${path.basename(filepath)}`);
+      return false;
+    }
+    html = html.slice(0, footerPos) + faqHtml + '\n  ' + html.slice(footerPos);
+  }
+
+  if (DRY_RUN) {
+    console.log(`  [dry-run] ${hasOldVisualFaq ? 'schema-only' : 'full-inject'} for ${path.basename(filepath)}`);
+    return true;
+  }
+
+  fs.writeFileSync(filepath, html, 'utf-8');
+  console.log(`  ✓ ${path.basename(filepath)}${hasOldVisualFaq ? ' (schema only)' : ''}`);
+  return true;
+}
+
+function main() {
+  const files = fs.readdirSync(SUBURB_DIR).filter(f => f.endsWith('.html'));
+  console.log(`Found ${files.length} suburb pages.\n`);
+
+  let count = 0;
+  let skipped = 0;
+  let errors = 0;
+
+  for (const file of files) {
+    const filepath = path.join(SUBURB_DIR, file);
+    const result = processFile(filepath);
+    if (result === true) count++;
+    else if (result === false) skipped++;
+    else errors++;
+  }
+
+  console.log(`\nDone. ${count} updated, ${skipped} skipped, ${errors} errors.`);
+  if (DRY_RUN) console.log('(DRY RUN — no files changed)');
+}
+
+main();
