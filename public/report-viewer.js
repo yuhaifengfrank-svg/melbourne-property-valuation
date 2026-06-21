@@ -85,13 +85,20 @@
       confidenceFactors: "Confidence Factors",
       futureOpportunityScore: "Future Opportunity Score",
       futureScoreConfidence: "Future Score Confidence",
+      reportScopeTitle: "Before you use this report",
+      reportScopeItems: [
+        "This report is decision-support research, not a formal valuation, legal, tax, credit or financial advice.",
+        "The estimate, Future Opportunity score and planning signals are model outputs based on data available at the report date.",
+        "Future Opportunity scores are relative signals only. They are not a forecast percentage, market percentile, guarantee of growth, or promise of return.",
+        "Title, heritage, overlays, building condition, renovations, finance and council application status should be independently checked before acting."
+      ],
       scorePosition: "Score position",
-      scorePositionIntro: "This places the score into a broad opportunity band so you can interpret {score}/100 as a relative signal, not a guaranteed outcome.",
-      scoreBands: ["Lower 25%", "25-50%", "50-75%", "Top 25%"],
-      scoreBandTop: "Top 25% opportunity band",
-      scoreBandUpperMid: "50-75% opportunity band",
-      scoreBandLowerMid: "25-50% opportunity band",
-      scoreBandLower: "Lower 25% opportunity band",
+      scorePositionIntro: "This places {score}/100 into a broad model signal band. It is not a market percentile, ranking, guaranteed outcome, or promised return.",
+      scoreBands: ["Low signal", "Emerging", "Strong", "Very strong"],
+      scoreBandTop: "Very strong opportunity signal",
+      scoreBandUpperMid: "Strong opportunity signal",
+      scoreBandLowerMid: "Emerging opportunity signal",
+      scoreBandLower: "Low opportunity signal",
       mainValuationSignals: "Main valuation signals:",
       keyFutureOpportunitySignals: "Key future opportunity signals:",
       keyFutureRisks: "Key future risks to check:",
@@ -133,11 +140,14 @@
       weightedMedian: "Weighted Median",
       weightedMean: "Weighted Mean",
       factorAdjustments: "Factor Adjustments",
+      factorAdjustmentDetails: "Display-ready factor adjustment details:",
+      factorAdjustmentUnavailable: "Factor adjustments were considered by the model, but this report snapshot does not include display-ready adjustment detail.",
       factorTotal: "Factor Total",
       halfRange: "Half Range",
       sigma: "Sigma",
       multiSourceNote: "Multi-source analysis was considered where available. Differences between sources may reflect listing corrections, timing, title differences or incomplete public records.",
       marketContext: "Market Context",
+      marketContextUnavailable: "This report snapshot does not include display-ready suburb market context metrics such as suburb median, rent, yield, school or vacancy. The estimate above is still generated from accepted comparable-sales evidence and confidence checks.",
       suburbMedian: "Suburb Median",
       rentEstimate: "Rent Estimate",
       grossYield: "Gross Yield",
@@ -235,13 +245,20 @@
       confidenceFactors: "置信度依据",
       futureOpportunityScore: "未来机会分数",
       futureScoreConfidence: "未来分数置信度",
+      reportScopeTitle: "使用本报告前请注意",
+      reportScopeItems: [
+        "本报告属于决策辅助研究，不构成正式估值、法律、税务、信贷或财务建议。",
+        "估值、Future Opportunity 分数和规划信号，均基于报告日期可用数据生成。",
+        "Future Opportunity 分数只是相对信号，不是涨幅预测、市场百分位、确定结果或收益承诺。",
+        "产权、Heritage、Overlay、房屋状况、翻新、贷款和 Council 申请状态，仍需独立核查。"
+      ],
       scorePosition: "分数位置",
-      scorePositionIntro: "这里把分数放入大致机会分位，让你理解 {score}/100 在相对机会中的位置；它不是确定收益承诺。",
-      scoreBands: ["后 25%", "25-50%", "50-75%", "前 25%"],
-      scoreBandTop: "前 25% 机会区间",
-      scoreBandUpperMid: "50-75% 机会区间",
-      scoreBandLowerMid: "25-50% 机会区间",
-      scoreBandLower: "后 25% 机会区间",
+      scorePositionIntro: "这里把 {score}/100 放入模型信号区间，帮助理解信号强弱。它不是市场百分位、排名、确定结果或收益承诺。",
+      scoreBands: ["较弱信号", "初步信号", "较强信号", "强机会信号"],
+      scoreBandTop: "强机会信号",
+      scoreBandUpperMid: "较强机会信号",
+      scoreBandLowerMid: "初步机会信号",
+      scoreBandLower: "较弱机会信号",
       mainValuationSignals: "主要估值信号：",
       keyFutureOpportunitySignals: "关键未来机会信号：",
       keyFutureRisks: "需要核查的未来风险：",
@@ -283,11 +300,14 @@
       weightedMedian: "加权中位数",
       weightedMean: "加权平均数",
       factorAdjustments: "因素调整",
+      factorAdjustmentDetails: "可展示的因素调整明细：",
+      factorAdjustmentUnavailable: "模型已考虑因素调整，但本报告快照没有包含可展示的调整明细。",
       factorTotal: "总调整",
       halfRange: "半区间",
       sigma: "Sigma",
       multiSourceNote: "如数据可用，模型会参考多来源信息。不同来源之间的差异可能来自挂牌修正、时间差、产权差异或公开记录不完整。",
       marketContext: "市场背景",
+      marketContextUnavailable: "这份报告快照未包含可展示的区域市场背景指标，例如区域中位价、租金、收益率、学校或空置率。上方估值仍基于已接受的可比成交证据和置信度检查生成。",
       suburbMedian: "区域中位价",
       rentEstimate: "租金估计",
       grossYield: "毛租金收益率",
@@ -880,9 +900,9 @@
       sections.removeChild(sections.firstChild);
     }
 
-    function appendSection(title, contentFn) {
+    function appendSection(title, contentFn, className) {
       var div = document.createElement("div");
-      div.className = "rv-section";
+      div.className = className ? "rv-section " + className : "rv-section";
 
       var h2 = document.createElement("h2");
       h2.textContent = title;
@@ -894,6 +914,7 @@
       div.appendChild(body);
 
       sections.appendChild(div);
+      return div;
     }
 
     function appendParagraph(el, text, className) {
@@ -1032,10 +1053,103 @@
       return true;
     }
 
+    function firstPresentText(items, maxItems) {
+      var out = [];
+      var valid = Array.isArray(items) ? items : [];
+      for (var i = 0; i < valid.length && out.length < maxItems; i++) {
+        if (valid[i] == null) continue;
+        var s = String(valid[i]).trim();
+        if (s) out.push(s);
+      }
+      return out;
+    }
+
+    function buildMainValuationSignals(p, confidenceReasons) {
+      if (p.keyFactors && p.keyFactors.length) {
+        return firstPresentText(p.keyFactors, 5);
+      }
+      var fallback = firstPresentText(confidenceReasons, 4);
+      var plan = p.planningSignals || null;
+      if (fallback.length < 5 && plan && plan.zone && plan.zone.code) {
+        fallback.push("Planning zone signal: " + plan.zone.code + " — " +
+          displayText(plan.zone.category || plan.zone.name, NA));
+      }
+      if (fallback.length < 5 && plan && plan.manualReviewRequired) {
+        fallback.push("Planning controls require manual review before relying on redevelopment assumptions.");
+      }
+      return fallback.slice(0, 5);
+    }
+
+    function formatAdjustmentItem(item) {
+      if (item == null) return null;
+      if (typeof item === "number") return fmtPct(item);
+      if (typeof item === "string") return item.trim() || null;
+      if (typeof item !== "object" || Array.isArray(item)) return null;
+
+      var label = item.label || item.name || item.factor || item.type || item.reason || item.field || "Adjustment";
+      var note = item.description || item.note || item.explanation || null;
+      var rawValue = item.value != null ? item.value
+        : item.adjustment != null ? item.adjustment
+        : item.adjustmentPercent != null ? item.adjustmentPercent
+        : item.delta != null ? item.delta
+        : null;
+      var valueText = null;
+      if (typeof rawValue === "number" && Number.isFinite(rawValue)) {
+        valueText = Math.abs(rawValue) <= 2 ? fmtPct(rawValue) : String(rawValue);
+      } else if (typeof rawValue === "string" && rawValue.trim()) {
+        valueText = rawValue.trim();
+      }
+
+      var parts = [String(label).trim()];
+      if (valueText) parts.push(valueText);
+      if (note) parts.push(String(note).trim());
+      return parts.filter(Boolean).join(" — ");
+    }
+
+    function appendFactorAdjustments(el, value) {
+      if (value == null) return false;
+      if (typeof value === "number" && Number.isFinite(value)) {
+        return appendOptionalInfoRow(el, text("factorAdjustments"), fmtPct(value));
+      }
+      if (typeof value === "string" && value.trim()) {
+        return appendOptionalInfoRow(el, text("factorAdjustments"), value.trim());
+      }
+
+      var items = [];
+      if (Array.isArray(value)) {
+        for (var i = 0; i < value.length; i++) {
+          var itemText = formatAdjustmentItem(value[i]);
+          if (itemText) items.push(itemText);
+        }
+      } else if (typeof value === "object") {
+        var keys = Object.keys(value);
+        for (var k = 0; k < keys.length && items.length < 6; k++) {
+          var key = keys[k];
+          var v = value[key];
+          if (v == null) continue;
+          if (typeof v === "number" && Number.isFinite(v)) {
+            items.push(key + " — " + (Math.abs(v) <= 2 ? fmtPct(v) : String(v)));
+          } else if (typeof v === "string" && v.trim()) {
+            items.push(key + " — " + v.trim());
+          }
+        }
+      }
+
+      if (items.length) {
+        appendParagraph(el, text("factorAdjustmentDetails"));
+        appendBulletList(el, items.slice(0, 6));
+        return true;
+      }
+
+      appendParagraph(el, text("factorAdjustmentUnavailable"));
+      return true;
+    }
+
     var customerName = displayText(p.customerName, "Customer");
     var reportAddress = displayText(p.address, "the selected property");
     var futureOutlook = p.propertyFutureOutlook || null;
     var confidenceReasons = publicConfidenceReasons(p.confidenceReasons);
+    var mainValuationSignals = buildMainValuationSignals(p, confidenceReasons);
 
     // ── 1. Welcome / report guide ──
     appendSection(text("welcome"), function (el) {
@@ -1045,6 +1159,11 @@
       appendParagraph(el, text("welcomeLine3"));
       appendParagraph(el, text("welcomeLine4"));
     });
+
+    // ── 1b. Prominent scope note ──
+    appendSection(text("reportScopeTitle"), function (el) {
+      appendBulletList(el, text("reportScopeItems"));
+    }, "rv-scope-box");
 
     // ── 2. Executive Summary ──
     appendSection(text("executiveSummary"), function (el) {
@@ -1069,9 +1188,9 @@
       if (futureOutlook && futureOutlook.confidence) {
         el.appendChild(makeInfoRow(text("futureScoreConfidence"), futureOutlook.confidence));
       }
-      if (p.keyFactors && p.keyFactors.length) {
+      if (mainValuationSignals.length) {
         appendParagraph(el, text("mainValuationSignals"));
-        appendBulletList(el, p.keyFactors.slice(0, 5));
+        appendBulletList(el, mainValuationSignals);
       }
       if (futureOutlook && Array.isArray(futureOutlook.why) && futureOutlook.why.length) {
         appendParagraph(el, text("keyFutureOpportunitySignals"));
@@ -1241,7 +1360,7 @@
       appendOptionalInfoRow(el, text("anchorValue"), fmtCurrency(p.anchor));
       appendOptionalInfoRow(el, text("weightedMedian"), fmtCurrency(p.weightedMedian));
       appendOptionalInfoRow(el, text("weightedMean"), fmtCurrency(p.weightedMean));
-      appendOptionalInfoRow(el, text("factorAdjustments"), p.factorAdjustments != null ? fmtPct(p.factorAdjustments) : null);
+      appendFactorAdjustments(el, p.factorAdjustments);
       appendOptionalInfoRow(el, text("factorTotal"), p.factorTotal != null ? fmtPct(p.factorTotal) : null);
       appendOptionalInfoRow(el, text("halfRange"), fmtCurrency(p.customerHalfRange));
       appendOptionalInfoRow(el, text("sigma"), p.sigma != null ? String(Number(p.sigma).toFixed(4)) : null);
@@ -1259,9 +1378,7 @@
       rows += appendOptionalInfoRow(el, text("nearbySchool"), p.school) ? 1 : 0;
       rows += appendOptionalInfoRow(el, text("vacancyRate"), p.vacancy != null ? fmtPct(p.vacancy) : null) ? 1 : 0;
       if (!rows) {
-        appendParagraph(el, language === "zh"
-          ? "这份报告快照未包含可展示的区域市场背景指标。估值仍基于可比成交证据生成。"
-          : "This report snapshot does not include display-ready suburb market context metrics. The valuation is still generated from comparable-sales evidence.");
+        appendParagraph(el, text("marketContextUnavailable"));
       }
     });
 

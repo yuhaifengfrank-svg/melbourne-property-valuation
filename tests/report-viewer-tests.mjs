@@ -225,7 +225,9 @@ test("3b. paid report renders Future Score, key opportunities, risks, welcome an
   assert.ok(text.indexOf("Property Future Score") !== -1, "property future score label shown");
   assert.ok(text.indexOf("72/100") !== -1, "future score value shown");
   assert.ok(text.indexOf("Score position") !== -1, "score position card shown");
-  assert.ok(text.indexOf("50-75% opportunity band") !== -1, "score band interpretation shown");
+  assert.ok(text.indexOf("Strong opportunity signal") !== -1, "score band interpretation shown");
+  assert.ok(text.indexOf("Before you use this report") !== -1, "prominent scope note shown");
+  assert.ok(text.indexOf("not a formal valuation") !== -1, "scope note explains report limits");
   assert.ok(sections.querySelector(".rv-score-card"), "score card DOM exists");
   assert.ok(sections.querySelector(".rv-score-marker"), "score marker DOM exists");
   assert.ok(text.indexOf("Good school access") !== -1, "opportunity reason shown");
@@ -277,11 +279,104 @@ test("3b.1 score position copy uses the actual score and unit property type", as
   var sections = dom.window.document.getElementById('rv-sections');
   var text = sections.textContent;
   assert.ok(text.indexOf("31/100") !== -1, "actual score shown");
-  assert.ok(text.indexOf("interpret 31/100") !== -1, "score intro uses actual score");
-  assert.equal(text.indexOf("interpret 72/100"), -1, "hard-coded score removed");
-  assert.ok(text.indexOf("25-50% opportunity band") !== -1, "actual score band shown");
+  assert.ok(text.indexOf("places 31/100") !== -1, "score intro uses actual score");
+  assert.equal(text.indexOf("places 72/100"), -1, "hard-coded score removed");
+  assert.ok(text.indexOf("Emerging opportunity signal") !== -1, "actual score band shown");
+  assert.equal(text.indexOf("Top 25%"), -1, "score band does not pretend to be percentile");
   assert.ok(text.indexOf("Property Type") !== -1, "property type row shown");
   assert.ok(text.indexOf("Unit") !== -1, "unit property type displayed");
+});
+
+// ── 3b.2 Missing keyFactors falls back to public confidence reasons ──
+test("3b.2 missing keyFactors still shows main valuation signals from public evidence", async () => {
+  var response = makeSuccessResponse({
+    report: {
+      subject: {
+        address: "8 Melrose Ct, Scoresby VIC",
+        suburb: "Scoresby",
+        state: "VIC",
+        propertyType: "House"
+      },
+      estimate: {
+        midpoint: 1065340,
+        low: 905539,
+        high: 1225141
+      },
+      valuationMode: "standard_house",
+      acceptedComparables: [],
+      confidence: {
+        label: "Medium",
+        reasons: ["12 accepted comparable sales", "Dispersion 9.9%", "17% single-source"]
+      },
+      keyFactors: []
+    }
+  });
+  var dom = createDom(mockFetchOk(response));
+  await new Promise(function (r) { setTimeout(r, 50); });
+  var text = dom.window.document.getElementById('rv-sections').textContent;
+  assert.ok(text.indexOf("Main valuation signals") !== -1, "fallback signal heading shown");
+  assert.ok(text.indexOf("12 accepted comparable sales") !== -1, "public confidence reason reused");
+  assert.equal(text.indexOf("single-source"), -1, "internal single-source detail remains hidden");
+});
+
+// ── 3b.3 Factor adjustments render arrays/objects safely ──
+test("3b.3 factor adjustments array/object values do not render as object noise", async () => {
+  var response = makeSuccessResponse({
+    report: {
+      subject: {
+        address: "8 Melrose Ct, Scoresby VIC",
+        suburb: "Scoresby",
+        state: "VIC"
+      },
+      estimate: {
+        midpoint: 1065340,
+        low: 905539,
+        high: 1225141,
+        factorAdjustments: [
+          { factor: "Land size", adjustment: 0.031, note: "slightly above the comparable set" },
+          { factor: "Recency", value: "Included in model" }
+        ]
+      },
+      valuationMode: "standard_house",
+      acceptedComparables: [],
+      confidence: { label: "Medium" }
+    }
+  });
+  var dom = createDom(mockFetchOk(response));
+  await new Promise(function (r) { setTimeout(r, 50); });
+  var text = dom.window.document.getElementById('rv-sections').textContent;
+  assert.ok(text.indexOf("Display-ready factor adjustment details") !== -1, "factor adjustment details heading shown");
+  assert.ok(text.indexOf("Land size") !== -1, "factor label shown");
+  assert.ok(text.indexOf("3.1%") !== -1, "numeric factor adjustment formatted");
+  assert.equal(text.indexOf("[object Object]"), -1, "object values are not leaked");
+});
+
+// ── 3b.4 Missing market context is explained rather than looking broken ──
+test("3b.4 missing market context shows explanatory snapshot note", async () => {
+  var response = makeSuccessResponse({
+    report: {
+      subject: {
+        address: "8 Melrose Ct, Scoresby VIC",
+        suburb: "Scoresby",
+        state: "VIC"
+      },
+      estimate: {
+        midpoint: 1065340,
+        low: 905539,
+        high: 1225141
+      },
+      valuationMode: "standard_house",
+      acceptedComparables: [],
+      confidence: { label: "Medium" }
+    }
+  });
+  var dom = createDom(mockFetchOk(response));
+  await new Promise(function (r) { setTimeout(r, 50); });
+  var text = dom.window.document.getElementById('rv-sections').textContent;
+  assert.ok(text.indexOf("does not include display-ready suburb market context metrics") !== -1,
+    "market context missing-data explanation shown");
+  assert.ok(text.indexOf("accepted comparable-sales evidence") !== -1,
+    "explanation preserves valuation evidence chain");
 });
 
 // ── 3c. Missing customer name falls back to Customer ──
@@ -394,7 +489,7 @@ test("3f. demo paid report sample renders without fetching API", async () => {
   assert.ok(text.indexOf("Future Opportunity Score") !== -1, "future score shown");
   assert.ok(text.indexOf("72/100") !== -1, "future score value shown");
   assert.ok(text.indexOf("Score position") !== -1, "demo score position shown");
-  assert.ok(text.indexOf("50-75% opportunity band") !== -1, "demo score band shown");
+  assert.ok(text.indexOf("Strong opportunity signal") !== -1, "demo score band shown");
   assert.ok(text.indexOf("How to Read These Metrics") !== -1, "demo glossary shown");
   assert.ok(text.indexOf("Planning & Zoning Signals") !== -1, "planning section shown");
   assert.ok(text.indexOf("Investor Watch") !== -1, "investor watch upsell shown");
@@ -415,7 +510,8 @@ test("3g. demo paid report sample renders Chinese with lang=zh", async () => {
   assert.ok(text.indexOf("尊敬的小鱼") !== -1, "Chinese demo greeting shown");
   assert.ok(text.indexOf("未来机会分数") !== -1, "Chinese future score label shown");
   assert.ok(text.indexOf("分数位置") !== -1, "Chinese score position shown");
-  assert.ok(text.indexOf("50-75% 机会区间") !== -1, "Chinese score band shown");
+  assert.ok(text.indexOf("较强机会信号") !== -1, "Chinese score band shown");
+  assert.equal(text.indexOf("前 25%"), -1, "Chinese score band does not pretend to be percentile");
   assert.ok(text.indexOf("如何理解这些指标") !== -1, "Chinese glossary shown");
   assert.ok(text.indexOf("规划与分区信号") !== -1, "Chinese planning title shown");
   assert.equal(text.indexOf("single-source"), -1, "internal single-source detail hidden in Chinese demo");
