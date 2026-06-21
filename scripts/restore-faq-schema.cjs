@@ -155,28 +155,43 @@ function extractScores(html) {
     opportunityScore: null,
   };
 
-  // Parse Place LD+JSON for factor scores
-  const place = parsePlaceLdJson(html);
-  if (place && Array.isArray(place.additionalProperty)) {
-    for (const prop of place.additionalProperty) {
-      const val = parseInt(prop.value, 10);
-      if (isNaN(val)) continue;
-      if (prop.name === 'Value Score') scores.valueScore = val;
-      else if (prop.name === 'Growth Score') scores.growthScore = val;
-      else if (prop.name === 'Yield Score') scores.yieldScore = val;
-      else if (prop.name === 'Vacancy Score') scores.vacancyScore = val;
-      else if (prop.name === 'School Score') scores.schoolScore = val;
-      else if (prop.name === 'Income Score') scores.incomeScore = val;
-      else if (prop.name === 'Population Score') scores.populationScore = val;
-      else if (prop.name === 'Supply Score') scores.supplyScore = val;
-      else if (prop.name === 'Infrastructure Score') scores.infrastructureScore = val;
-    }
-  }
-
-  // Try to extract confidence score from confidence bar
+  // Try to extract confidence score from confidence bar (new format)
   const confMatch = html.match(/conf-badge[^>]*>(\d+)</);
   if (confMatch) {
     scores.opportunityScore = parseInt(confMatch[1], 10);
+  }
+
+  // Parse Place LD+JSON for factor scores
+  // Handles both:
+  // - New format: "Value Score", "Growth Score" etc. (integer values)
+  // - Old format: "Opportunity Score", "School Score" etc. (string values like "65/100")
+  const place = parsePlaceLdJson(html);
+  if (place && Array.isArray(place.additionalProperty)) {
+    for (const prop of place.additionalProperty) {
+      if (prop.name === 'Opportunity Score' && scores.opportunityScore == null) {
+        // Old format: value like "18.0/100" — extract numeric part
+        const intMatch = String(prop.value).match(/^(\d+)(?:\.\d+)?\/100$/);
+        if (intMatch) scores.opportunityScore = parseInt(intMatch[1], 10);
+      } else if (prop.name === 'School Score' && scores.schoolScore == null) {
+        const parts = String(prop.value).split('/');
+        const v = parseInt(parts[0], 10);
+        if (!isNaN(v)) scores.schoolScore = v;
+      } else if (prop.name === 'Growth Score' || prop.name === 'Growth Signal (experimental)') {
+        // New format: integer; Old format: string like "-8.00%" — extract sign-only, not a score
+        const val = parseInt(prop.value, 10);
+        if (!isNaN(val)) scores.growthScore = val;
+      } else {
+        const val = parseInt(prop.value, 10);
+        if (isNaN(val)) continue;
+        if (prop.name === 'Value Score') scores.valueScore = val;
+        else if (prop.name === 'Yield Score') scores.yieldScore = val;
+        else if (prop.name === 'Vacancy Score') scores.vacancyScore = val;
+        else if (prop.name === 'Income Score') scores.incomeScore = val;
+        else if (prop.name === 'Population Score') scores.populationScore = val;
+        else if (prop.name === 'Supply Score') scores.supplyScore = val;
+        else if (prop.name === 'Infrastructure Score') scores.infrastructureScore = val;
+      }
+    }
   }
 
   return scores;
@@ -194,10 +209,40 @@ function processFile(filepath) {
   const suburb = titleMatch[1].trim();
   const state = titleMatch[2].trim();
 
-  // Check if FAQPage already exists
-  if (/FAQPage/.test(html)) {
-    console.log(`  ✓ FAQPage already present: ${path.basename(filepath)}`);
+  // Check if FAQPage already exists and has correct data
+  // Old-format pages may have "not available" due to missing score extraction in first pass
+  const hasFaq = /FAQPage/.test(html);
+  const hasBadData = /scores not available/i.test(html);
+  if (hasFaq && !hasBadData) {
+    console.log(`  ✓ FAQPage OK: ${path.basename(filepath)}`);
     return false;
+  }
+  if (hasFaq && hasBadData) {
+    console.log(`  ⚠ FAQPage exists but has 'not available' data: ${path.basename(filepath)}`);
+    // Safely remove only FAQPage LD+JSON blocks without touching Place/LocalBusiness blocks
+    // Approach: split by <script type="application/ld+json">, parse each, filter out FAQPage, reassemble
+    var parts = html.split(/<script type="application\/ld\+json">/);
+    var newParts = [parts[0]];
+    for (var i = 1; i < parts.length; i++) {
+      var endTag = parts[i].indexOf('</script>');
+      if (endTag === -1) {
+        newParts.push('<script type="application/ld+json">' + parts[i]);
+        continue;
+      }
+      var jsonStr = parts[i].substring(0, endTag);
+      try {
+        var obj = JSON.parse(jsonStr);
+        if (obj['@type'] === 'FAQPage') {
+          // Skip this block entirely
+          newParts.push(parts[i].substring(endTag + 9)); // after </script>
+        } else {
+          newParts.push('<script type="application/ld+json">' + parts[i]);
+        }
+      } catch (e) {
+        newParts.push('<script type="application/ld+json">' + parts[i]);
+      }
+    }
+    html = newParts.join('');
   }
 
   const scores = extractScores(html);
