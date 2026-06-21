@@ -412,6 +412,13 @@ button:hover {
   font-size: 0.85em;
   color: var(--ink-50);
 }
+.land-hint {
+  width: 100%;
+  font-size: 0.77em;
+  color: var(--ink-30);
+  line-height: 1.4;
+  margin-top: 2px;
+}
 
 .chip.active {
   background: var(--accent);
@@ -2760,6 +2767,7 @@ th {
                 <label for="land-size">Land size <small>(optional)</small></label>
                 <input id="land-size" name="land-size" type="number" placeholder="e.g. 1027" min="0" step="1" />
                 <span class="land-unit">m²</span>
+                <div class="land-hint">For houses, larger/smaller blocks get ±5% land adjustment; big lots (>2000m²) enable dedicated estate comparison.</div>
               </div>
             </form>
           </div>
