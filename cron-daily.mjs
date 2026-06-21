@@ -85,8 +85,8 @@ async function main() {
             'daily',
             ${batchId}
           )
-          ON CONFLICT (sale_address, COALESCE(sale_date, '1970-01-01'::date), COALESCE(sale_price, -1), source_name)
-          DO NOTHING
+          ON CONFLICT (sale_address, sale_date, sale_price, source_name)
+            WHERE sale_date IS NOT NULL AND sale_price IS NOT NULL DO NOTHING
           RETURNING id
         `;
         if (Array.isArray(result) && result.length > 0) {
