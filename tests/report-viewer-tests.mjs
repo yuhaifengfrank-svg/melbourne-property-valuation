@@ -291,6 +291,53 @@ test("3b.1 score position copy uses the actual score and unit property type", as
   assert.equal(text.indexOf("Top 25%"), -1, "score band does not pretend to be percentile");
   assert.ok(text.indexOf("Property Type") !== -1, "property type row shown");
   assert.ok(text.indexOf("Unit") !== -1, "unit property type displayed");
+  assert.ok(text.indexOf("Unit 1, 11 McIntosh Street") !== -1, "unit address spacing normalized for display");
+  assert.ok(text.indexOf("below the suburb outlook") !== -1,
+    "property score is explained as lower than suburb-level signal");
+  assert.ok(text.indexOf("suburb may look promising") !== -1,
+    "copy explains property score and suburb score are different layers");
+});
+
+// ── 3b.1a Missing physical attributes are grouped as verification items ──
+test("3b.1a missing property attributes render as verification checklist, not empty data rows", async () => {
+  var response = makeSuccessResponse({
+    report: {
+      subject: {
+        address: "8 Melrose Ct, Scoresby VIC",
+        suburb: "Scoresby",
+        state: "VIC",
+        propertyType: "House",
+        landSize: 618
+      },
+      estimate: {
+        midpoint: 1065340,
+        low: 905539,
+        high: 1225141
+      },
+      valuationMode: "standard_house",
+      acceptedComparables: [],
+      confidence: {
+        label: "Medium"
+      }
+    }
+  });
+  var dom = createDom(mockFetchOk(response));
+  await new Promise(function (r) { setTimeout(r, 50); });
+  var sections = dom.window.document.getElementById('rv-sections');
+  var text = sections.textContent;
+  assert.ok(text.indexOf("Core address and property attributes") !== -1,
+    "property details intro explains snapshot fields");
+  assert.ok(text.indexOf("Land Size") !== -1, "available land size still shown");
+  assert.ok(text.indexOf("618 m²") !== -1, "available land size value shown");
+  assert.ok(text.indexOf("Attributes to verify manually") !== -1,
+    "missing attributes grouped into verification note");
+  assert.ok(text.indexOf("Bedrooms") !== -1, "missing bedrooms named for verification");
+  assert.ok(text.indexOf("Bathrooms") !== -1, "missing bathrooms named for verification");
+  assert.ok(text.indexOf("Car Spaces") !== -1, "missing car spaces named for verification");
+  assert.equal(text.indexOf("BedroomsData unavailable"), -1,
+    "missing bedroom value is not rendered as a blank data row");
+  assert.equal(text.indexOf("Building AreaData unavailable"), -1,
+    "missing building area value is not rendered as a blank data row");
 });
 
 // ── 3b.2 Missing keyFactors falls back to public confidence reasons ──

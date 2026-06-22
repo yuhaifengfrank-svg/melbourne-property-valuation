@@ -103,6 +103,9 @@
       keyFutureOpportunitySignals: "Key future opportunity signals:",
       keyFutureRisks: "Key future risks to check:",
       propertyDetails: "Property Details",
+      propertyDetailsIntro: "Core address and property attributes used in the report snapshot. Some physical attributes may be absent when they were not supplied or not reliably available in the source evidence.",
+      attributesToVerify: "Attributes to verify manually:",
+      attributesToVerifyNote: "The estimate can still be generated from comparable-sales evidence, but these fields should be checked against the listing, contract, title, strata records or an inspection before relying on the report.",
       address: "Address",
       suburb: "Suburb",
       state: "State",
@@ -127,6 +130,9 @@
       futureUnavailable: "Future Opportunity Outlook was not included in this report snapshot. Run a fresh valuation after the Future Opportunity model update to include this section.",
       suburbOnlyFuture: "A suburb-level future opportunity signal was available, but this report snapshot did not include enough property-specific data to calculate a property-level score.",
       futureDisclaimer: "This is a relative opportunity index, not a predicted price growth percentage or promise of return.",
+      futureScoreBelowSuburb: "The property score is below the suburb outlook because property-specific fit is weaker than the suburb-level signal. In plain English: the suburb may look promising, but this property still needs closer checks before assuming it captures that upside.",
+      futureScoreAboveSuburb: "The property score is above the suburb outlook because property-specific fit is stronger than the suburb-level signal. This means the property may screen better than the suburb average, subject to the risks listed below.",
+      futureScoreAlignedSuburb: "The property score is broadly aligned with the suburb outlook. This means the signal is mainly coming from suburb fundamentals rather than a large property-specific adjustment.",
       futureReadTitle: "How to read this outlook",
       futureReadItems: [
         { term: "Property Future Score", desc: "The combined opportunity signal for this specific property. It blends suburb outlook with the property's own fit." },
@@ -277,6 +283,9 @@
       keyFutureOpportunitySignals: "关键未来机会信号：",
       keyFutureRisks: "需要核查的未来风险：",
       propertyDetails: "房产信息",
+      propertyDetailsIntro: "这里展示本报告快照中用于说明房产的核心地址和属性。若某些物理属性未由用户提供，或公开证据中不够可靠，报告会把它列为需要人工核查。",
+      attributesToVerify: "需要人工核查的属性：",
+      attributesToVerifyNote: "即使这些字段缺失，模型仍可基于可比成交证据生成估值；但在依赖报告前，请用挂牌、合同、产权、strata 记录或实地检查核实这些信息。",
       address: "地址",
       suburb: "区域",
       state: "州",
@@ -301,6 +310,9 @@
       futureUnavailable: "这份报告快照尚未包含未来机会模型。请重新生成估值，以纳入最新 Future Opportunity 分析。",
       suburbOnlyFuture: "当前仅有区域层面的未来机会信号，但本报告快照缺少足够的房产层面数据，因此没有生成房产级分数。",
       futureDisclaimer: "这是相对机会指数，不是价格涨幅预测，也不代表确定收益。",
+      futureScoreBelowSuburb: "房产分数低于区域展望，说明这套房产自身匹配度弱于区域层面的信号。简单说：区域可能有机会，但这套房是否能承接机会，还需要进一步核查。",
+      futureScoreAboveSuburb: "房产分数高于区域展望，说明这套房产自身匹配度强于区域层面的信号。它可能比区域平均水平更值得关注，但仍需结合下方风险核查。",
+      futureScoreAlignedSuburb: "房产分数与区域展望大致一致，说明主要信号来自区域基本面，而不是明显的房产自身加减分。",
       futureReadTitle: "如何理解未来机会",
       futureReadItems: [
         { term: "房产未来分数", desc: "针对这套房产的综合机会信号，结合区域前景和房产自身匹配度。" },
@@ -984,6 +996,17 @@
       return text ? text : fallback;
     }
 
+    function formatAddressForDisplay(value) {
+      var out = displayText(value, NA);
+      if (out === NA) return out;
+      return out
+        .replace(/\b(unit|apt|apartment|villa)\s*(\d+)/ig, function (_m, word, number) {
+          return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() + " " + number;
+        })
+        .replace(/\s+/g, " ")
+        .trim();
+    }
+
     function opportunityBandLabel(score) {
       var n = Number(score);
       if (!Number.isFinite(n)) return null;
@@ -1100,6 +1123,29 @@
       return true;
     }
 
+    function appendFutureScoreComparison(el, outlook) {
+      if (!outlook || outlook.futureOpportunityIndex == null || outlook.suburbFutureOutlookScore == null) {
+        return false;
+      }
+      var propertyScore = Number(outlook.futureOpportunityIndex);
+      var suburbScore = Number(outlook.suburbFutureOutlookScore);
+      if (!Number.isFinite(propertyScore) || !Number.isFinite(suburbScore)) return false;
+
+      var key = "futureScoreAlignedSuburb";
+      if (propertyScore <= suburbScore - 10) key = "futureScoreBelowSuburb";
+      if (propertyScore >= suburbScore + 10) key = "futureScoreAboveSuburb";
+      appendParagraph(el, text(key));
+      return true;
+    }
+
+    function appendMissingAttributeNote(el, missing) {
+      if (!Array.isArray(missing) || !missing.length) return false;
+      appendParagraph(el, text("attributesToVerify"));
+      appendBulletList(el, missing);
+      appendParagraph(el, text("attributesToVerifyNote"));
+      return true;
+    }
+
     function firstPresentText(items, maxItems) {
       var out = [];
       var valid = Array.isArray(items) ? items : [];
@@ -1193,7 +1239,8 @@
     }
 
     var customerName = displayText(p.customerName, "Customer");
-    var reportAddress = displayText(p.address, "the selected property");
+    var reportAddress = formatAddressForDisplay(p.address);
+    if (reportAddress === NA) reportAddress = "the selected property";
     var futureOutlook = p.propertyFutureOutlook || null;
     var confidenceReasons = publicConfidenceReasons(p.confidenceReasons);
     var mainValuationSignals = buildMainValuationSignals(p, confidenceReasons);
@@ -1251,16 +1298,24 @@
 
     // ── 3. Property Details ──
     appendSection(text("propertyDetails"), function (el) {
-      el.appendChild(makeInfoRow(text("address"), p.address));
-      el.appendChild(makeInfoRow(text("suburb"), p.suburb));
-      el.appendChild(makeInfoRow(text("state"), p.state));
-      el.appendChild(makeInfoRow(text("propertyType"), p.propertyType));
-      el.appendChild(makeInfoRow(text("bedrooms"), p.bedrooms != null ? String(p.bedrooms) : NA));
-      el.appendChild(makeInfoRow(text("bathrooms"), p.bathrooms != null ? String(p.bathrooms) : NA));
-      el.appendChild(makeInfoRow(text("carSpaces"), p.carSpaces != null ? String(p.carSpaces) : NA));
-      el.appendChild(makeInfoRow(text("landSize"), fmtArea(p.landSize)));
-      el.appendChild(makeInfoRow(text("buildingArea"), fmtArea(p.buildingArea)));
-      el.appendChild(makeInfoRow(text("zoning"), p.zoning));
+      appendParagraph(el, text("propertyDetailsIntro"));
+      appendOptionalInfoRow(el, text("address"), formatAddressForDisplay(p.address));
+      appendOptionalInfoRow(el, text("suburb"), p.suburb);
+      appendOptionalInfoRow(el, text("state"), p.state);
+      appendOptionalInfoRow(el, text("propertyType"), p.propertyType);
+
+      var missingAttributes = [];
+      function appendAttribute(label, value) {
+        if (!appendOptionalInfoRow(el, label, value)) missingAttributes.push(label);
+      }
+
+      appendAttribute(text("bedrooms"), p.bedrooms != null ? String(p.bedrooms) : null);
+      appendAttribute(text("bathrooms"), p.bathrooms != null ? String(p.bathrooms) : null);
+      appendAttribute(text("carSpaces"), p.carSpaces != null ? String(p.carSpaces) : null);
+      appendAttribute(text("landSize"), fmtArea(p.landSize));
+      appendAttribute(text("buildingArea"), fmtArea(p.buildingArea));
+      appendAttribute(text("zoning"), p.zoning);
+      appendMissingAttributeNote(el, missingAttributes);
     });
 
     // ── 4. Comparable Sales ──
@@ -1336,6 +1391,7 @@
         if (outlook.propertySpecificScore != null) {
           el.appendChild(makeInfoRow(text("propertySpecificFit"), String(outlook.propertySpecificScore) + "/100"));
         }
+        appendFutureScoreComparison(el, outlook);
         el.appendChild(makeInfoRow(text("horizon"), outlook.forecastHorizon || "3-5 years"));
         el.appendChild(makeInfoRow(text("confidence"), outlook.confidence || (language === "zh" ? "低" : "Low")));
         appendParagraph(el, outlook.formula && language === "en" ? outlook.formula : text("formula"));
