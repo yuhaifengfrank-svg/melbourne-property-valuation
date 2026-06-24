@@ -13,7 +13,7 @@ abs_census_2021:
 rba_macro_full:
   source_url: "https://www.rba.gov.au/statistics/"
   processing: "Cash rate + CPI + GDP + Labour → macro indicators"
-  artifact: "macro_summary.json"
+  artifact: "rba_macro_full.json"
   row_count: 5175
   safe_for_preview: true
   safe_for_production: false
@@ -21,7 +21,7 @@ rba_macro_full:
 vicplan_monash:
   source_url: "https://mapshare.vic.gov.au"
   processing: "Monash LGA zone/overlay → planning summary"
-  artifact: "planning_summary.json"
+  artifact: "vicplan_monash.json"
   row_count: 953
   safe_for_preview: true
   safe_for_production: false

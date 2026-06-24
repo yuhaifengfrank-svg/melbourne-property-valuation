@@ -12,6 +12,7 @@ preview:
     - suburb_metrics
     - suburb_scores
     - suburb_planning_summary
+    - rba_macro_full
   commands:
     - dry-run     # Read artifact, validate, print plan. No DB connection.
     - verify      # Connect to Preview, check table/row count. No writes.
@@ -25,6 +26,7 @@ production:
     - suburb_metrics
     - suburb_scores
     - suburb_planning_summary
+    - rba_macro_full
     - sync_log
   commands:
     - verify      # Connect to Production, check table/row count. No writes.
