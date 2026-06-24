@@ -1,0 +1,31 @@
+# sync.yaml — Sync target configuration
+# Preview = staging/validation
+# Production = website serving
+#
+# Both targets are DISABLED by default.
+# Enable only by operator action + env override.
+
+preview:
+  enabled: false
+  host_hint: "ep-damp-lab-a7oknmrc-pooler.ap-southeast-2"
+  allowed_tables:
+    - suburb_metrics
+    - suburb_scores
+    - suburb_planning_summary
+  commands:
+    - dry-run     # Read artifact, validate, print plan. No DB connection.
+    - verify      # Connect to Preview, check table/row count. No writes.
+    - sync        # Write to Preview (requires manual approval)
+
+production:
+  enabled: false
+  host_hint: "ep-winter-band-a7qym6bq-pooler.ap-southeast-2"
+  allowed_tables:
+    - suburb_master
+    - suburb_metrics
+    - suburb_scores
+    - suburb_planning_summary
+    - sync_log
+  commands:
+    - verify      # Connect to Production, check table/row count. No writes.
+    - promote     # Sync from Preview to Production (requires Codex + manual approval)

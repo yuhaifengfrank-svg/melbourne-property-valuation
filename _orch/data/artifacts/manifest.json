@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-06-24T05:20:18.876Z",
+  "artifacts": [
+    {
+      "artifact_key": "suburb_metrics",
+      "source": "abs_census_2021",
+      "file_path": "./suburb_metrics.json",
+      "file_size_bytes": 211722,
+      "row_count": 524,
+      "sha256": "c9b7d65a4029957888c7902228520b9ba585f94da829afbbbbc72344362a6962",
+      "safe_for_preview": true,
+      "safe_for_production": false
+    },
+    {
+      "artifact_key": "vicplan_monash",
+      "source": "vicplan_monash",
+      "file_path": "./vicplan_monash.json",
+      "file_size_bytes": 414777,
+      "row_count": 953,
+      "sha256": "8700b845818c7a1489fff366acb1b322e0ac29deb33848a6dab7dae4143d9aa8",
+      "safe_for_preview": true,
+      "safe_for_production": false
+    },
+    {
+      "artifact_key": "rba_macro_full",
+      "source": "rba_macro_full",
+      "file_path": "./rba_macro_full.json",
+      "file_size_bytes": 1314873,
+      "row_count": 5175,
+      "sha256": "6313b59b7077fefb03d2718019edb6faf0a0adf3856781aee71bb7c42b42da7b",
+      "safe_for_preview": true,
+      "safe_for_production": false
+    }
+  ]
+}

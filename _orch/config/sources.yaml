@@ -1,0 +1,27 @@
+# sources.yaml — Data source definitions
+# Only artifacts may be synced to Neon.
+# Never sync raw datasets or parcel-level geometry.
+
+abs_census_2021:
+  source_url: "https://www.abs.gov.au/census/find-census-data/datapacks"
+  processing: "2021 GCP SA2 data → suburb-level metrics"
+  artifact: "suburb_metrics.json"
+  row_count: 524
+  safe_for_preview: true
+  safe_for_production: false  # Requires Preview verification first
+
+rba_macro_full:
+  source_url: "https://www.rba.gov.au/statistics/"
+  processing: "Cash rate + CPI + GDP + Labour → macro indicators"
+  artifact: "macro_summary.json"
+  row_count: 5175
+  safe_for_preview: true
+  safe_for_production: false
+
+vicplan_monash:
+  source_url: "https://mapshare.vic.gov.au"
+  processing: "Monash LGA zone/overlay → planning summary"
+  artifact: "planning_summary.json"
+  row_count: 953
+  safe_for_preview: true
+  safe_for_production: false
