@@ -171,7 +171,7 @@ function buildLockedPreview(fullResult) {
 export default async function handler(request, response) {
   // ── UV/Undervaluation endpoint (GET only) ──
   if (request.method === 'GET' && (request.query?.uv || request.query?.opportunities)) {
-    const { default: uvHandler } = await import('./uv.js');
+    const { default: uvHandler } = await import('../lib/uv-api-handler.js');
     return uvHandler(request, response);
   }
 

@@ -6,6 +6,14 @@
   },
   "rewrites": [
     {
+      "source": "/api/member/(.*)",
+      "destination": "/api/member?action=$1"
+    },
+    {
+      "source": "/api/uv",
+      "destination": "/api/valuation?uv=1"
+    },
+    {
       "source": "/robots.txt",
       "destination": "/public/robots.txt"
     },

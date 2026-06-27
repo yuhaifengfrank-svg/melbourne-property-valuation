@@ -3,16 +3,16 @@ import test from "node:test";
 import { MEMBER_SESSION_COOKIE, hashOpaqueToken } from "../lib/member-session-service.js";
 import requestLinkHandler, {
   setTestDependencies as setRequestLinkDependencies,
-} from "../api/member/request-link.js";
+} from "../lib/member-api/request-link.js";
 import verifyHandler, {
   setTestDependencies as setVerifyDependencies,
-} from "../api/member/verify.js";
+} from "../lib/member-api/verify.js";
 import meHandler, {
   setTestDependencies as setMeDependencies,
-} from "../api/member/me.js";
+} from "../lib/member-api/me.js";
 import logoutHandler, {
   setTestDependencies as setLogoutDependencies,
-} from "../api/member/logout.js";
+} from "../lib/member-api/logout.js";
 
 function renderSql(strings, values) {
   return strings.map((part, index) =>
