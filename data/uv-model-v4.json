@@ -1,0 +1,1638 @@
+{
+  "version": "v4.0",
+  "date": "2026-06-27",
+  "cashRate": 4.35,
+  "segments": {
+    "C1_PrimeInnerEast": {
+      "name": "C1_PrimeInnerEast",
+      "n": 29,
+      "coreVars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "satVars": [
+        "school",
+        "cbdDist",
+        "occupancy"
+      ],
+      "vars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon",
+        "school",
+        "cbdDist",
+        "occupancy"
+      ],
+      "varcount": 8,
+      "intercept": 11.697042007383253,
+      "beta": {
+        "logIncome": 0.3418087875999816,
+        "logUnemp": -0.09460350119545238,
+        "logPop": -0.15832523315114658,
+        "logSupply": 0.9798492057419956,
+        "supplyCon": -0.0789141960585571,
+        "school": -0.008117401885505053,
+        "cbdDist": 0.02122267590938935,
+        "occupancy": 2.345901222542787
+      },
+      "cashBeta": 5.46759383715321e-13,
+      "coreR2": 0.4625146986245714,
+      "allR2": 0.5264116503535374,
+      "members": [
+        "aberfeldie",
+        "albert park",
+        "armadale",
+        "ashburton",
+        "balwyn",
+        "balwyn north",
+        "brighton",
+        "brighton east",
+        "camberwell",
+        "canterbury",
+        "caulfield",
+        "caulfield east",
+        "caulfield north",
+        "caulfield south",
+        "eaglemont",
+        "elsternwick",
+        "essendon",
+        "glen iris",
+        "hawthorn",
+        "hawthorn east",
+        "ivanhoe east",
+        "kew",
+        "malvern",
+        "malvern east",
+        "mckinnon",
+        "middle park",
+        "mont albert",
+        "south yarra",
+        "surrey hills",
+        "toorak"
+      ]
+    },
+    "C2_BaysideCoastal": {
+      "name": "C2_BaysideCoastal",
+      "n": 16,
+      "coreVars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "satVars": [
+        "school",
+        "cbdDist"
+      ],
+      "vars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon",
+        "school",
+        "cbdDist"
+      ],
+      "varcount": 7,
+      "intercept": -4.096225973857826,
+      "beta": {
+        "logIncome": 1.2833248540018172,
+        "logUnemp": 0.07106821770184361,
+        "logPop": 0.07897169137483537,
+        "logSupply": -0.5496955063726328,
+        "supplyCon": -0.3520682387089022,
+        "school": 0.02344085088765565,
+        "cbdDist": 0.018356188786434236
+      },
+      "cashBeta": 3.363343986372243e-14,
+      "coreR2": 0.6027094308713278,
+      "allR2": 0.7483276147021647,
+      "members": [
+        "black rock",
+        "beaumaris",
+        "sandringham",
+        "aspendale",
+        "bonbeach",
+        "chelsea",
+        "cheltenham",
+        "edithvale",
+        "elwood",
+        "hampton",
+        "mentone",
+        "mordialloc",
+        "parkdale",
+        "patterson lakes",
+        "port melbourne",
+        "williamstown",
+        "newport"
+      ]
+    },
+    "C3_InnerMidActivityCentre": {
+      "name": "C3_InnerMidActivityCentre",
+      "n": 44,
+      "coreVars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "satVars": [
+        "growthPct",
+        "cbdDist",
+        "school",
+        "vac"
+      ],
+      "vars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon",
+        "growthPct",
+        "cbdDist",
+        "school",
+        "vac"
+      ],
+      "varcount": 9,
+      "intercept": 1.0221045338884527,
+      "beta": {
+        "logIncome": 0.4958609498925885,
+        "logUnemp": 0.10335688636717241,
+        "logPop": 0.03798509895444047,
+        "logSupply": -3.326224483720747,
+        "supplyCon": -2.026794897428998,
+        "growthPct": 0.07264998673606116,
+        "cbdDist": 0.0260872395996212,
+        "school": 0.012604605896064136,
+        "vac": -0.11063823838176397
+      },
+      "cashBeta": 0.8478081410263619,
+      "coreR2": 0.43303661078892075,
+      "allR2": 0.7387215302512244,
+      "members": [
+        "airport west",
+        "altona",
+        "altona north",
+        "ascot vale",
+        "balaclava",
+        "bentleigh",
+        "bentleigh east",
+        "box hill",
+        "brunswick",
+        "brunswick west",
+        "burwood",
+        "burwood east",
+        "carnegie",
+        "chadstone",
+        "clayton",
+        "coburg",
+        "coburg north",
+        "doncaster",
+        "doncaster east",
+        "fairfield",
+        "footscray",
+        "glen huntly",
+        "heidelberg",
+        "heidelberg heights",
+        "hughesdale",
+        "huntingdale",
+        "ivanhoe",
+        "kensington",
+        "maidstone",
+        "maribyrnong",
+        "moonee ponds",
+        "murrumbeena",
+        "north melbourne",
+        "northcote",
+        "notting hill",
+        "oakleigh",
+        "oakleigh east",
+        "oakleigh south",
+        "pascoe vale",
+        "pascoe vale south",
+        "preston",
+        "reservoir",
+        "seddon",
+        "springvale",
+        "thornbury",
+        "west footscray",
+        "west melbourne",
+        "yarraville"
+      ]
+    },
+    "C4_EstablishedMiddleRing": {
+      "name": "C4_EstablishedMiddleRing",
+      "n": 38,
+      "coreVars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "satVars": [
+        "school",
+        "cbdDist",
+        "occupancy",
+        "popGrowth5yr"
+      ],
+      "vars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon",
+        "school",
+        "cbdDist",
+        "occupancy",
+        "popGrowth5yr"
+      ],
+      "varcount": 9,
+      "intercept": 6.083522258849216,
+      "beta": {
+        "logIncome": 0.19041674456401766,
+        "logUnemp": -0.06954913976586757,
+        "logPop": 0.020860929729659982,
+        "logSupply": -0.4647713545018487,
+        "supplyCon": 0.07851501280451463,
+        "school": 0.008317897394194097,
+        "cbdDist": -0.003144543857866013,
+        "occupancy": 0.5631589118906223,
+        "popGrowth5yr": -0.004609104328633158
+      },
+      "cashBeta": 0.9408186819037802,
+      "coreR2": 0.5283687616065567,
+      "allR2": 0.7199218402280363,
+      "members": [
+        "ashwood",
+        "blackburn",
+        "blackburn north",
+        "blackburn south",
+        "boronia",
+        "bundoora",
+        "chirnside park",
+        "clarinda",
+        "croydon",
+        "croydon north",
+        "croydon south",
+        "dingley village",
+        "donvale",
+        "ferntree gully",
+        "forest hill",
+        "frankston south",
+        "glen waverley",
+        "heatherton",
+        "heathmont",
+        "highett",
+        "knoxfield",
+        "lysterfield",
+        "macleod",
+        "mitcham",
+        "moorabbin",
+        "mooroolbark",
+        "mount waverley",
+        "mulgrave",
+        "nunawading",
+        "ormond",
+        "rosanna",
+        "ringwood",
+        "ringwood east",
+        "rowville",
+        "scoresby",
+        "strathmore",
+        "templestowe",
+        "vermont",
+        "vermont south",
+        "viewbank",
+        "wantirna",
+        "wantirna south",
+        "warranwood",
+        "watsonia",
+        "wheelers hill"
+      ]
+    },
+    "C5_ValueIndustrialMulti": {
+      "name": "C5_ValueIndustrialMulti",
+      "n": 43,
+      "coreVars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "satVars": [
+        "popGrowth5yr",
+        "vac",
+        "growthPct"
+      ],
+      "vars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon",
+        "popGrowth5yr",
+        "vac",
+        "growthPct"
+      ],
+      "varcount": 8,
+      "intercept": 10.893077337776603,
+      "beta": {
+        "logIncome": -0.4167777812129332,
+        "logUnemp": -0.398830632781754,
+        "logPop": 0.004837253684910243,
+        "logSupply": -0.3572535051294234,
+        "supplyCon": 0.03056109336006708,
+        "popGrowth5yr": -0.0050414727144191636,
+        "vac": -0.06647314082173192,
+        "growthPct": -0.00022027435791257088
+      },
+      "cashBeta": 1.7810106028388755,
+      "coreR2": 0.5317997751198092,
+      "allR2": 0.6016955456360491,
+      "members": [
+        "altona meadows",
+        "bayswater",
+        "bayswater north",
+        "braybrook",
+        "broadmeadows",
+        "cairnlea",
+        "carrum downs",
+        "clayton south",
+        "cranbourne",
+        "dandenong",
+        "deer park",
+        "derrimut",
+        "endeavour hills",
+        "epping",
+        "fawkner",
+        "frankston",
+        "glenroy",
+        "gowanbrae",
+        "hallam",
+        "hampton park",
+        "hastings",
+        "hoppers crossing",
+        "keilor park",
+        "keysborough",
+        "kilsyth",
+        "lalor",
+        "langwarrin",
+        "laverton",
+        "lilydale",
+        "lynbrook",
+        "lyndhurst",
+        "melton",
+        "narre warren",
+        "narre warren north",
+        "narre warren south",
+        "noble park",
+        "seaford",
+        "skye",
+        "somerville",
+        "st albans",
+        "sunbury",
+        "sunshine",
+        "sunshine north",
+        "sunshine west",
+        "thomastown",
+        "werribee",
+        "werribee south"
+      ]
+    },
+    "C6_GreenfieldGrowth": {
+      "name": "C6_GreenfieldGrowth",
+      "n": 21,
+      "coreVars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply"
+      ],
+      "satVars": [
+        "growthPct",
+        "popGrowth5yr"
+      ],
+      "vars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "growthPct",
+        "popGrowth5yr"
+      ],
+      "varcount": 6,
+      "intercept": 9.474485717632826,
+      "beta": {
+        "logIncome": 0.23642044941899898,
+        "logUnemp": -0.2305313717172274,
+        "logPop": 0.13233682295587987,
+        "logSupply": -0.32269034759071513,
+        "growthPct": 0.009277091281562348,
+        "popGrowth5yr": -0.0025336529582084245
+      },
+      "cashBeta": -1.4546323637901514e-13,
+      "coreR2": 0.47242987929015723,
+      "allR2": 0.8091748638362195,
+      "members": [
+        "armstrong creek",
+        "beaconsfield",
+        "berwick",
+        "botanic ridge",
+        "caroline springs",
+        "clyde",
+        "clyde north",
+        "craigieburn",
+        "cranbourne east",
+        "diggers rest",
+        "donnybrook",
+        "greenvale",
+        "lara",
+        "manor lakes",
+        "mernda",
+        "mickleham",
+        "officer",
+        "officer south",
+        "pakenham",
+        "point cook",
+        "rockbank",
+        "south morang",
+        "tarneit",
+        "truganina",
+        "wollert",
+        "wyndham vale"
+      ]
+    },
+    "C7_RegionalCoastalLifestyle": {
+      "name": "C7_RegionalCoastalLifestyle",
+      "n": 19,
+      "coreVars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "satVars": [
+        "popGrowth5yr",
+        "vac"
+      ],
+      "vars": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon",
+        "popGrowth5yr",
+        "vac"
+      ],
+      "varcount": 7,
+      "intercept": -13.982292499973337,
+      "beta": {
+        "logIncome": 1.9745947806295407,
+        "logUnemp": 0.4205642016265376,
+        "logPop": 0.5012011392156135,
+        "logSupply": 0.4401964417555104,
+        "supplyCon": 0.5083739254859737,
+        "popGrowth5yr": -0.027852491484992425,
+        "vac": 0.009985552429221754
+      },
+      "cashBeta": 8.385924413475402e-15,
+      "coreR2": 0.5431791361660339,
+      "allR2": 0.7277835115272515,
+      "members": [
+        "aireys inlet",
+        "anglesea",
+        "ballarat",
+        "barwon heads",
+        "beaconsfield upper",
+        "bell park",
+        "bell post hill",
+        "belmont",
+        "bendigo",
+        "blairgowrie",
+        "dromana",
+        "highton",
+        "langwarrin south",
+        "leopold",
+        "lorne",
+        "mccrae",
+        "mornington",
+        "mount eliza",
+        "mount martha",
+        "narre warren east",
+        "newtown",
+        "ocean grove",
+        "point lonsdale",
+        "portsea",
+        "queenscliff",
+        "rosebud",
+        "rye",
+        "safety beach",
+        "sorrento",
+        "tootgarook",
+        "torquay",
+        "waurn ponds"
+      ]
+    }
+  },
+  "uvScores": {
+    "albert park": {
+      "uv": 51,
+      "label": "接近合理"
+    },
+    "armadale": {
+      "uv": 75,
+      "label": "略微偏低"
+    },
+    "ashburton": {
+      "uv": 28,
+      "label": "略微偏高"
+    },
+    "camberwell": {
+      "uv": 20,
+      "label": "略微偏高"
+    },
+    "caulfield": {
+      "uv": 29,
+      "label": "略微偏高"
+    },
+    "hawthorn east": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "beaumaris": {
+      "uv": 33,
+      "label": "略微偏高"
+    },
+    "elwood": {
+      "uv": 56,
+      "label": "接近合理"
+    },
+    "patterson lakes": {
+      "uv": 34,
+      "label": "略微偏高"
+    },
+    "williamstown": {
+      "uv": 54,
+      "label": "接近合理"
+    },
+    "newport": {
+      "uv": 58,
+      "label": "接近合理"
+    },
+    "altona north": {
+      "uv": 56,
+      "label": "接近合理"
+    },
+    "ascot vale": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "box hill": {
+      "uv": 23,
+      "label": "略微偏高"
+    },
+    "glen huntly": {
+      "uv": 37,
+      "label": "略微偏高"
+    },
+    "oakleigh": {
+      "uv": 40,
+      "label": "接近合理"
+    },
+    "springvale": {
+      "uv": 57,
+      "label": "接近合理"
+    },
+    "west footscray": {
+      "uv": 48,
+      "label": "接近合理"
+    },
+    "west melbourne": {
+      "uv": 70,
+      "label": "略微偏低"
+    },
+    "ashwood": {
+      "uv": 30,
+      "label": "略微偏高"
+    },
+    "blackburn north": {
+      "uv": 41,
+      "label": "接近合理"
+    },
+    "boronia": {
+      "uv": 51,
+      "label": "接近合理"
+    },
+    "mooroolbark": {
+      "uv": 57,
+      "label": "接近合理"
+    },
+    "mulgrave": {
+      "uv": 55,
+      "label": "接近合理"
+    },
+    "ormond": {
+      "uv": 59,
+      "label": "接近合理"
+    },
+    "rosanna": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "derrimut": {
+      "uv": 62,
+      "label": "略微偏低"
+    },
+    "endeavour hills": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "epping": {
+      "uv": 75,
+      "label": "略微偏低"
+    },
+    "frankston": {
+      "uv": 43,
+      "label": "接近合理"
+    },
+    "glenroy": {
+      "uv": 62,
+      "label": "略微偏低"
+    },
+    "portsea": {
+      "uv": 30,
+      "label": "略微偏高"
+    },
+    "lyndhurst": {
+      "uv": 54,
+      "label": "接近合理"
+    },
+    "narre warren": {
+      "uv": 54,
+      "label": "接近合理"
+    },
+    "st albans": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "werribee south": {
+      "uv": 57,
+      "label": "接近合理"
+    },
+    "clyde": {
+      "uv": 68,
+      "label": "略微偏低"
+    },
+    "mount eliza": {
+      "uv": 43,
+      "label": "接近合理"
+    },
+    "ocean grove": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "rye": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "mernda": {
+      "uv": 56,
+      "label": "接近合理"
+    },
+    "chelsea": {
+      "uv": 40,
+      "label": "接近合理"
+    },
+    "balaclava": {
+      "uv": 71,
+      "label": "略微偏低"
+    },
+    "heatherton": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "mccrae": {
+      "uv": 44,
+      "label": "接近合理"
+    },
+    "seddon": {
+      "uv": 63,
+      "label": "略微偏低"
+    },
+    "south yarra": {
+      "uv": 67,
+      "label": "略微偏低"
+    },
+    "keilor park": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "blairgowrie": {
+      "uv": 28,
+      "label": "略微偏高"
+    },
+    "beaconsfield": {
+      "uv": 46,
+      "label": "接近合理"
+    },
+    "greenvale": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "malvern east": {
+      "uv": 58,
+      "label": "接近合理"
+    },
+    "south morang": {
+      "uv": 56,
+      "label": "接近合理"
+    },
+    "watsonia": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "tarneit": {
+      "uv": 63,
+      "label": "略微偏低"
+    },
+    "kew": {
+      "uv": 28,
+      "label": "略微偏高"
+    },
+    "beaconsfield upper": {
+      "uv": 6,
+      "label": "明显偏高"
+    },
+    "manor lakes": {
+      "uv": 70,
+      "label": "略微偏低"
+    },
+    "balwyn north": {
+      "uv": 20,
+      "label": "略微偏高"
+    },
+    "lysterfield": {
+      "uv": 55,
+      "label": "接近合理"
+    },
+    "hallam": {
+      "uv": 46,
+      "label": "接近合理"
+    },
+    "keysborough": {
+      "uv": 38,
+      "label": "略微偏高"
+    },
+    "braybrook": {
+      "uv": 55,
+      "label": "接近合理"
+    },
+    "truganina": {
+      "uv": 70,
+      "label": "略微偏低"
+    },
+    "noble park": {
+      "uv": 48,
+      "label": "接近合理"
+    },
+    "langwarrin": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "north melbourne": {
+      "uv": 59,
+      "label": "接近合理"
+    },
+    "mount waverley": {
+      "uv": 37,
+      "label": "略微偏高"
+    },
+    "botanic ridge": {
+      "uv": 47,
+      "label": "接近合理"
+    },
+    "moorabbin": {
+      "uv": 26,
+      "label": "略微偏高"
+    },
+    "lilydale": {
+      "uv": 44,
+      "label": "接近合理"
+    },
+    "clarinda": {
+      "uv": 54,
+      "label": "接近合理"
+    },
+    "bayswater north": {
+      "uv": 40,
+      "label": "接近合理"
+    },
+    "clayton south": {
+      "uv": 44,
+      "label": "接近合理"
+    },
+    "mckinnon": {
+      "uv": 30,
+      "label": "略微偏高"
+    },
+    "wheelers hill": {
+      "uv": 33,
+      "label": "略微偏高"
+    },
+    "sunshine": {
+      "uv": 45,
+      "label": "接近合理"
+    },
+    "tootgarook": {
+      "uv": 49,
+      "label": "接近合理"
+    },
+    "notting hill": {
+      "uv": 58,
+      "label": "接近合理"
+    },
+    "lorne": {
+      "uv": 42,
+      "label": "接近合理"
+    },
+    "mont albert": {
+      "uv": 41,
+      "label": "接近合理"
+    },
+    "malvern": {
+      "uv": 66,
+      "label": "略微偏低"
+    },
+    "mickleham": {
+      "uv": 58,
+      "label": "接近合理"
+    },
+    "sunshine west": {
+      "uv": 49,
+      "label": "接近合理"
+    },
+    "officer south": {
+      "uv": 57,
+      "label": "接近合理"
+    },
+    "skye": {
+      "uv": 67,
+      "label": "略微偏低"
+    },
+    "narre warren south": {
+      "uv": 59,
+      "label": "接近合理"
+    },
+    "carnegie": {
+      "uv": 49,
+      "label": "接近合理"
+    },
+    "maidstone": {
+      "uv": 60,
+      "label": "略微偏低"
+    },
+    "huntingdale": {
+      "uv": 83,
+      "label": "明显偏低"
+    },
+    "knoxfield": {
+      "uv": 56,
+      "label": "接近合理"
+    },
+    "gowanbrae": {
+      "uv": 55,
+      "label": "接近合理"
+    },
+    "somerville": {
+      "uv": 47,
+      "label": "接近合理"
+    },
+    "safety beach": {
+      "uv": 51,
+      "label": "接近合理"
+    },
+    "officer": {
+      "uv": 50,
+      "label": "接近合理"
+    },
+    "highton": {
+      "uv": 48,
+      "label": "接近合理"
+    },
+    "narre warren east": {
+      "uv": 41,
+      "label": "接近合理"
+    },
+    "oakleigh south": {
+      "uv": 39,
+      "label": "略微偏高"
+    },
+    "strathmore": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "black rock": {
+      "uv": 29,
+      "label": "略微偏高"
+    },
+    "heidelberg heights": {
+      "uv": 16,
+      "label": "明显偏高"
+    },
+    "aberfeldie": {
+      "uv": 63,
+      "label": "略微偏低"
+    },
+    "mount martha": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "rosebud": {
+      "uv": 33,
+      "label": "略微偏高"
+    },
+    "sandringham": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "airport west": {
+      "uv": 43,
+      "label": "接近合理"
+    },
+    "highett": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "caulfield east": {
+      "uv": 67,
+      "label": "略微偏低"
+    },
+    "caulfield north": {
+      "uv": 41,
+      "label": "接近合理"
+    },
+    "eaglemont": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "balwyn": {
+      "uv": 14,
+      "label": "明显偏高"
+    },
+    "hawthorn": {
+      "uv": 65,
+      "label": "略微偏低"
+    },
+    "middle park": {
+      "uv": 0,
+      "label": "明显偏高"
+    },
+    "bundoora": {
+      "uv": 65,
+      "label": "略微偏低"
+    },
+    "bendigo": {
+      "uv": 78,
+      "label": "略微偏低"
+    },
+    "wollert": {
+      "uv": 64,
+      "label": "略微偏低"
+    },
+    "essendon": {
+      "uv": 72,
+      "label": "略微偏低"
+    },
+    "reservoir": {
+      "uv": 56,
+      "label": "接近合理"
+    },
+    "point cook": {
+      "uv": 62,
+      "label": "略微偏低"
+    },
+    "pascoe vale": {
+      "uv": 54,
+      "label": "接近合理"
+    },
+    "blackburn south": {
+      "uv": 42,
+      "label": "接近合理"
+    },
+    "heathmont": {
+      "uv": 59,
+      "label": "接近合理"
+    },
+    "burwood east": {
+      "uv": 31,
+      "label": "略微偏高"
+    },
+    "broadmeadows": {
+      "uv": 40,
+      "label": "接近合理"
+    },
+    "caulfield south": {
+      "uv": 56,
+      "label": "接近合理"
+    },
+    "burwood": {
+      "uv": 21,
+      "label": "略微偏高"
+    },
+    "clayton": {
+      "uv": 37,
+      "label": "略微偏高"
+    },
+    "brighton": {
+      "uv": 10,
+      "label": "明显偏高"
+    },
+    "ballarat": {
+      "uv": 79,
+      "label": "略微偏低"
+    },
+    "cheltenham": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "dromana": {
+      "uv": 42,
+      "label": "接近合理"
+    },
+    "footscray": {
+      "uv": 68,
+      "label": "略微偏低"
+    },
+    "heidelberg": {
+      "uv": 67,
+      "label": "略微偏低"
+    },
+    "preston": {
+      "uv": 60,
+      "label": "略微偏低"
+    },
+    "werribee": {
+      "uv": 62,
+      "label": "略微偏低"
+    },
+    "scoresby": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "sunbury": {
+      "uv": 70,
+      "label": "略微偏低"
+    },
+    "glen iris": {
+      "uv": 69,
+      "label": "略微偏低"
+    },
+    "hastings": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "leopold": {
+      "uv": 58,
+      "label": "接近合理"
+    },
+    "northcote": {
+      "uv": 59,
+      "label": "接近合理"
+    },
+    "queenscliff": {
+      "uv": 35,
+      "label": "略微偏高"
+    },
+    "cairnlea": {
+      "uv": 44,
+      "label": "接近合理"
+    },
+    "barwon heads": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "mornington": {
+      "uv": 17,
+      "label": "明显偏高"
+    },
+    "newtown": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "kensington": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "bayswater": {
+      "uv": 57,
+      "label": "接近合理"
+    },
+    "fairfield": {
+      "uv": 58,
+      "label": "接近合理"
+    },
+    "diggers rest": {
+      "uv": 69,
+      "label": "略微偏低"
+    },
+    "yarraville": {
+      "uv": 51,
+      "label": "接近合理"
+    },
+    "mitcham": {
+      "uv": 54,
+      "label": "接近合理"
+    },
+    "mentone": {
+      "uv": 57,
+      "label": "接近合理"
+    },
+    "port melbourne": {
+      "uv": 55,
+      "label": "接近合理"
+    },
+    "toorak": {
+      "uv": 22,
+      "label": "略微偏高"
+    },
+    "thornbury": {
+      "uv": 25,
+      "label": "略微偏高"
+    },
+    "murrumbeena": {
+      "uv": 40,
+      "label": "接近合理"
+    },
+    "warranwood": {
+      "uv": 47,
+      "label": "接近合理"
+    },
+    "torquay": {
+      "uv": 62,
+      "label": "略微偏低"
+    },
+    "carrum downs": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "kilsyth": {
+      "uv": 46,
+      "label": "接近合理"
+    },
+    "hampton": {
+      "uv": 28,
+      "label": "略微偏高"
+    },
+    "seaford": {
+      "uv": 31,
+      "label": "略微偏高"
+    },
+    "brighton east": {
+      "uv": 54,
+      "label": "接近合理"
+    },
+    "altona": {
+      "uv": 26,
+      "label": "略微偏高"
+    },
+    "parkdale": {
+      "uv": 18,
+      "label": "明显偏高"
+    },
+    "hampton park": {
+      "uv": 57,
+      "label": "接近合理"
+    },
+    "aspendale": {
+      "uv": 51,
+      "label": "接近合理"
+    },
+    "dingley village": {
+      "uv": 39,
+      "label": "略微偏高"
+    },
+    "ivanhoe east": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "bentleigh": {
+      "uv": 31,
+      "label": "略微偏高"
+    },
+    "pascoe vale south": {
+      "uv": 36,
+      "label": "略微偏高"
+    },
+    "wantirna south": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "bentleigh east": {
+      "uv": 51,
+      "label": "接近合理"
+    },
+    "ferntree gully": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "bonbeach": {
+      "uv": 48,
+      "label": "接近合理"
+    },
+    "bell park": {
+      "uv": 50,
+      "label": "接近合理"
+    },
+    "doncaster east": {
+      "uv": 45,
+      "label": "接近合理"
+    },
+    "nunawading": {
+      "uv": 37,
+      "label": "略微偏高"
+    },
+    "donvale": {
+      "uv": 35,
+      "label": "略微偏高"
+    },
+    "forest hill": {
+      "uv": 30,
+      "label": "略微偏高"
+    },
+    "glen waverley": {
+      "uv": 33,
+      "label": "略微偏高"
+    },
+    "ringwood": {
+      "uv": 51,
+      "label": "接近合理"
+    },
+    "frankston south": {
+      "uv": 36,
+      "label": "略微偏高"
+    },
+    "rowville": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "templestowe": {
+      "uv": 38,
+      "label": "略微偏高"
+    },
+    "deer park": {
+      "uv": 69,
+      "label": "略微偏低"
+    },
+    "chirnside park": {
+      "uv": 60,
+      "label": "略微偏低"
+    },
+    "altona meadows": {
+      "uv": 57,
+      "label": "接近合理"
+    },
+    "oakleigh east": {
+      "uv": 42,
+      "label": "接近合理"
+    },
+    "cranbourne east": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "pakenham": {
+      "uv": 63,
+      "label": "略微偏低"
+    },
+    "macleod": {
+      "uv": 53,
+      "label": "接近合理"
+    },
+    "lynbrook": {
+      "uv": 59,
+      "label": "接近合理"
+    },
+    "brunswick": {
+      "uv": 36,
+      "label": "略微偏高"
+    },
+    "maribyrnong": {
+      "uv": 80,
+      "label": "明显偏低"
+    },
+    "elsternwick": {
+      "uv": 11,
+      "label": "明显偏高"
+    },
+    "chadstone": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "coburg north": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "clyde north": {
+      "uv": 60,
+      "label": "略微偏低"
+    },
+    "langwarrin south": {
+      "uv": 0,
+      "label": "明显偏高"
+    },
+    "aireys inlet": {
+      "uv": 42,
+      "label": "接近合理"
+    },
+    "waurn ponds": {
+      "uv": 80,
+      "label": "明显偏低"
+    },
+    "canterbury": {
+      "uv": 34,
+      "label": "略微偏高"
+    },
+    "mordialloc": {
+      "uv": 67,
+      "label": "略微偏低"
+    },
+    "brunswick west": {
+      "uv": 71,
+      "label": "略微偏低"
+    },
+    "belmont": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "coburg": {
+      "uv": 52,
+      "label": "接近合理"
+    },
+    "doncaster": {
+      "uv": 25,
+      "label": "略微偏高"
+    },
+    "berwick": {
+      "uv": 49,
+      "label": "接近合理"
+    },
+    "melton": {
+      "uv": 58,
+      "label": "接近合理"
+    },
+    "thomastown": {
+      "uv": 47,
+      "label": "接近合理"
+    },
+    "rockbank": {
+      "uv": 67,
+      "label": "略微偏低"
+    },
+    "vermont": {
+      "uv": 47,
+      "label": "接近合理"
+    },
+    "sorrento": {
+      "uv": 40,
+      "label": "接近合理"
+    },
+    "dandenong": {
+      "uv": 43,
+      "label": "接近合理"
+    },
+    "narre warren north": {
+      "uv": 22,
+      "label": "略微偏高"
+    },
+    "ivanhoe": {
+      "uv": 32,
+      "label": "略微偏高"
+    },
+    "cranbourne": {
+      "uv": 62,
+      "label": "略微偏低"
+    },
+    "surrey hills": {
+      "uv": 48,
+      "label": "接近合理"
+    },
+    "moonee ponds": {
+      "uv": 74,
+      "label": "略微偏低"
+    },
+    "blackburn": {
+      "uv": 27,
+      "label": "略微偏高"
+    },
+    "fawkner": {
+      "uv": 43,
+      "label": "接近合理"
+    },
+    "point lonsdale": {
+      "uv": 35,
+      "label": "略微偏高"
+    },
+    "edithvale": {
+      "uv": 64,
+      "label": "略微偏低"
+    },
+    "wantirna": {
+      "uv": 50,
+      "label": "接近合理"
+    },
+    "hughesdale": {
+      "uv": 27,
+      "label": "略微偏高"
+    },
+    "croydon north": {
+      "uv": 61,
+      "label": "略微偏低"
+    },
+    "ringwood east": {
+      "uv": 48,
+      "label": "接近合理"
+    },
+    "anglesea": {
+      "uv": 42,
+      "label": "接近合理"
+    },
+    "lalor": {
+      "uv": 50,
+      "label": "接近合理"
+    },
+    "sunshine north": {
+      "uv": 47,
+      "label": "接近合理"
+    },
+    "craigieburn": {
+      "uv": 47,
+      "label": "接近合理"
+    },
+    "croydon": {
+      "uv": 49,
+      "label": "接近合理"
+    },
+    "bell post hill": {
+      "uv": 48,
+      "label": "接近合理"
+    },
+    "viewbank": {
+      "uv": 57,
+      "label": "接近合理"
+    },
+    "hoppers crossing": {
+      "uv": 56,
+      "label": "接近合理"
+    },
+    "lara": {
+      "uv": 62,
+      "label": "略微偏低"
+    },
+    "vermont south": {
+      "uv": 24,
+      "label": "略微偏高"
+    },
+    "wyndham vale": {
+      "uv": 64,
+      "label": "略微偏低"
+    },
+    "croydon south": {
+      "uv": 44,
+      "label": "接近合理"
+    },
+    "caroline springs": {
+      "uv": 59,
+      "label": "接近合理"
+    },
+    "laverton": {
+      "uv": 74,
+      "label": "略微偏低"
+    },
+    "armstrong creek": {
+      "uv": 69,
+      "label": "略微偏低"
+    },
+    "donnybrook": {
+      "uv": 55,
+      "label": "接近合理"
+    }
+  },
+  "config": {
+    "C1_PrimeInnerEast": {
+      "core": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "sat": [
+        "school",
+        "cbdDist",
+        "occupancy"
+      ]
+    },
+    "C2_BaysideCoastal": {
+      "core": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "sat": [
+        "school",
+        "cbdDist"
+      ]
+    },
+    "C3_InnerMidActivityCentre": {
+      "core": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "sat": [
+        "growthPct",
+        "cbdDist",
+        "school",
+        "vac"
+      ]
+    },
+    "C4_EstablishedMiddleRing": {
+      "core": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "sat": [
+        "school",
+        "cbdDist",
+        "occupancy",
+        "popGrowth5yr"
+      ]
+    },
+    "C5_ValueIndustrialMulti": {
+      "core": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "sat": [
+        "popGrowth5yr",
+        "vac",
+        "growthPct"
+      ]
+    },
+    "C6_GreenfieldGrowth": {
+      "core": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "sat": [
+        "growthPct",
+        "popGrowth5yr"
+      ]
+    },
+    "C7_RegionalCoastalLifestyle": {
+      "core": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "sat": [
+        "popGrowth5yr",
+        "vac"
+      ]
+    },
+    "C8_CBD_ApartmentDense": {
+      "core": [
+        "logIncome",
+        "logUnemp",
+        "logPop",
+        "logSupply",
+        "supplyCon"
+      ],
+      "sat": []
+    }
+  }
+}
