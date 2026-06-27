@@ -255,22 +255,16 @@ export default async function handler(request, response) {
 
     try {
       if (result.ok) {
-        // Sanity-check Nominatim coordinates — reject coords far outside Melbourne
         const subject = result.subject || {};
-        let targetLat = subject.coordinates?.lat != null ? Number(subject.coordinates.lat) : null;
-        let targetLon = subject.coordinates?.lon != null ? Number(subject.coordinates.lon) : null;
         const suburbName = subject.suburb || body.suburb || "";
 
-        // Melbourne metro bounding box
-        const MELB_LAT_MIN = -38.7;
-        const MELB_LAT_MAX = -37.2;
-        const MELB_LON_MIN = 143.8;
-        const MELB_LON_MAX = 145.8;
+        // Check if Nominatim coordinates are far from the suburb's actual sales center.
+        // If the deviation is >5km, override with AVG sales coordinates.
+        let targetLat = subject.coordinates?.lat != null ? Number(subject.coordinates.lat) : null;
+        let targetLon = subject.coordinates?.lon != null ? Number(subject.coordinates.lon) : null;
+        let coordsOverridden = false;
 
-        if (suburbName && (targetLat == null || targetLon == null ||
-            targetLat < MELB_LAT_MIN || targetLat > MELB_LAT_MAX ||
-            targetLon < MELB_LON_MIN || targetLon > MELB_LON_MAX)) {
-          // Nominatim returned wrong coords — query AVG sale coordinates as suburb center
+        if (suburbName && targetLat != null && targetLon != null) {
           if (!sql) sql = getSql();
           const centerRows = await sql`
             SELECT ROUND(AVG(lat)::numeric, 4) AS avg_lat,
@@ -282,26 +276,41 @@ export default async function handler(request, response) {
             LIMIT 1
           `;
           if (centerRows.length > 0 && centerRows[0].avg_lat != null) {
-            targetLat = Number(centerRows[0].avg_lat);
-            targetLon = Number(centerRows[0].avg_lon);
-            console.log(
-              `[coord-fix] ${suburbName}: Nominatim (${subject.coordinates?.lat},${subject.coordinates?.lon})` +
-              ` → override (${targetLat},${targetLon})`
-            );
+            const avgLat = Number(centerRows[0].avg_lat);
+            const avgLon = Number(centerRows[0].avg_lon);
+            const latDiff = Math.abs(targetLat - avgLat);
+            const lonDiff = Math.abs(targetLon - avgLon);
+            const distDeg = Math.sqrt(latDiff*latDiff + lonDiff*lonDiff);
+            // ~5km threshold (0.045° ≈ 5km at Melbourne latitude)
+            if (distDeg > 0.045) {
+              console.log(
+                `[coord-fix] ${suburbName}: Nominatim (${targetLat},${targetLon}) ` +
+                `differs from sales center (${avgLat},${avgLon}) by ${(distDeg*111).toFixed(1)}km — overriding`
+              );
+              targetLat = avgLat;
+              targetLon = avgLon;
+              coordsOverridden = true;
+            }
           }
         }
 
-        if (targetLat == null || targetLon == null) {
-          // Fall back to body-level lat/lng if subject coords missing
-          if (body.lat != null && body.lng != null) {
-            targetLat = Number(body.lat);
-            targetLon = Number(body.lng);
-          }
+        if ((targetLat == null || targetLon == null) && body.lat != null && body.lng != null) {
+          targetLat = Number(body.lat);
+          targetLon = Number(body.lng);
         }
 
         if (targetLat != null && targetLon != null) {
           const { getPlanningSignals } = await import("../lib/planning-signal-service.js");
           result.planningSignals = await getPlanningSignals(sql || getSql(), targetLat, targetLon);
+          
+          // If we overrode the coords, also update subject for debugging clarity
+          if (coordsOverridden && result.planningSignals.zone) {
+            result.planningSignals._coordFixed = true;
+            result.planningSignals._nominatimCoords = {
+              lat: subject.coordinates?.lat,
+              lon: subject.coordinates?.lon
+            };
+          }
         }
       }
     } catch (planningErr) {
