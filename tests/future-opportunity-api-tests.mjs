@@ -6,6 +6,8 @@ import path from "node:path";
 import {
   appendPriceFilter,
   mapOpportunityRow,
+  publicOpportunityError,
+  sanitizeOpportunityErrorForLog,
 } from "../api/opportunity.js";
 import {
   isSupportedFutureStrategy,
@@ -139,4 +141,35 @@ test("strategy aliases support customer-facing funnel labels", () => {
   assert.equal(normalizeStrategy("Rental Income"), "income");
   assert.equal(isSupportedFutureStrategy("Capital Growth"), true);
   assert.equal(isSupportedFutureStrategy("mystery goal"), false);
+});
+
+test("Opportunity API returns a fixed public error without internal details", () => {
+  const payload = publicOpportunityError();
+  const serialized = JSON.stringify(payload);
+
+  assert.deepEqual(payload, {
+    ok: false,
+    error: "internal_server_error",
+    message: "Opportunity data is temporarily unavailable. Please try again later.",
+    opportunities: [],
+  });
+  assert.doesNotMatch(serialized, /postgres(?:ql)?:\/\//i);
+  assert.doesNotMatch(serialized, /password/i);
+  assert.doesNotMatch(serialized, /stack/i);
+});
+
+test("Opportunity API redacts database credentials from server logs", () => {
+  const error = new Error(
+    "Connection failed for postgresql://owner:secret-value@example.test/db?sslmode=require password=another-secret"
+  );
+  error.code = "DB_CONNECT_FAILED";
+
+  const logEntry = sanitizeOpportunityErrorForLog(error);
+  const serialized = JSON.stringify(logEntry);
+
+  assert.equal(logEntry.code, "DB_CONNECT_FAILED");
+  assert.match(logEntry.message, /\[REDACTED_DATABASE_URL\]/);
+  assert.match(logEntry.message, /password=\[REDACTED\]/);
+  assert.doesNotMatch(serialized, /secret-value/);
+  assert.doesNotMatch(serialized, /another-secret/);
 });
