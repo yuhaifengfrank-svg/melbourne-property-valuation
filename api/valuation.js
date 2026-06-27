@@ -264,6 +264,15 @@ export default async function handler(request, response) {
         let targetLon = subject.coordinates?.lon != null ? Number(subject.coordinates.lon) : null;
         let coordsOverridden = false;
 
+        // Melbourne bounding box: lat -38.7 to -37.2, lon 143.8 to 145.8
+        // Covers metro area plus outer suburbs (Sunbury to Dromana, Werribee to Lilydale)
+        const MELBOURNE_BBOX = { minLat: -38.7, maxLat: -37.2, minLng: 143.8, maxLng: 145.8 };
+
+        function isInMelbourne(lat, lng) {
+          return lat >= MELBOURNE_BBOX.minLat && lat <= MELBOURNE_BBOX.maxLat
+            && lng >= MELBOURNE_BBOX.minLng && lng <= MELBOURNE_BBOX.maxLng;
+        }
+
         if (suburbName && targetLat != null && targetLon != null) {
           if (!sql) sql = getSql();
           const centerRows = await sql`
@@ -291,6 +300,28 @@ export default async function handler(request, response) {
               targetLon = avgLon;
               coordsOverridden = true;
             }
+          } else {
+            // No comparable_sales for this suburb — check Melbourne bounding box directly.
+            // If Nominatim returned coordinates far outside Melbourne (e.g. NSW Box Hill),
+            // we reject them rather than passing wrong coords to planning.
+            if (!isInMelbourne(targetLat, targetLon)) {
+              console.log(
+                `[coord-reject] ${suburbName}: Nominatim (${targetLat},${targetLon}) ` +
+                `outside Melbourne bbox — skipping planning signals`
+              );
+              targetLat = null;
+              targetLon = null;
+            }
+          }
+        } else if (targetLat != null && targetLon != null) {
+          // No suburb name available — fall back to bbox check
+          if (!isInMelbourne(targetLat, targetLon)) {
+            console.log(
+              `[coord-reject] (no suburb): Nominatim (${targetLat},${targetLon}) ` +
+              `outside Melbourne bbox — skipping planning signals`
+            );
+            targetLat = null;
+            targetLon = null;
           }
         }
 
