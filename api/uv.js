@@ -8,10 +8,13 @@
  *   → Returns ranked undervalued suburbs
  */
 
-const uvService = require('../lib/uv-service');
+let uvService = null;
 
-// Load model once on cold start
-uvService.loadModel();
+async function ensureLoaded() {
+  if (uvService) return;
+  uvService = await import('../lib/uv-service.js');
+  uvService.loadModel();
+}
 
 module.exports = async (req, res) => {
   // CORS
@@ -19,6 +22,7 @@ module.exports = async (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
   try {
+    await ensureLoaded();
     const { suburb, opportunities, minUv, limit, segment } = req.query;
 
     // Mode 1: single suburb UV score
@@ -47,7 +51,6 @@ module.exports = async (req, res) => {
     return res.status(200).json({
       model: 'uv-v4.0',
       description: 'Core + Satellite OLS undervaluation model',
-      segments: Object.keys(uvService.getCachedScore('brighton') ? {} : {}).length || 7,
       docs: 'GET /api/uv?suburb=brighton or GET /api/uv?opportunities=true'
     });
   } catch (err) {
