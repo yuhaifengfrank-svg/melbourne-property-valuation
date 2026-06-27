@@ -3,9 +3,11 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 
-import {
+import opportunityHandler, {
   appendPriceFilter,
+  appendStateFilter,
   mapOpportunityRow,
+  normalizeStateFilter,
   publicOpportunityError,
   sanitizeOpportunityErrorForLog,
 } from "../api/opportunity.js";
@@ -13,6 +15,56 @@ import {
   isSupportedFutureStrategy,
   normalizeStrategy,
 } from "../lib/future-opportunity-outlook.js";
+
+test("state filters are normalized and parameterized", () => {
+  assert.equal(normalizeStateFilter("vic"), "VIC");
+  assert.equal(normalizeStateFilter(" NSW "), "NSW");
+  assert.equal(normalizeStateFilter("victoria"), null);
+  assert.equal(normalizeStateFilter(""), null);
+
+  const where = [];
+  const params = ["existing"];
+  const { p } = appendStateFilter({ where, params, p: 1, state: "VIC" });
+
+  assert.equal(p, 2);
+  assert.deepEqual(where, ["UPPER(s.state) = $2"]);
+  assert.deepEqual(params, ["existing", "VIC"]);
+});
+
+test("Opportunity API rejects unsupported state filters before querying", async () => {
+  const response = {
+    headers: {},
+    setHeader(name, value) {
+      this.headers[name] = value;
+    },
+    status(code) {
+      this.statusCode = code;
+      return this;
+    },
+    json(payload) {
+      this.payload = payload;
+      return this;
+    },
+  };
+
+  await opportunityHandler(
+    { method: "GET", query: { state: "victoria", strategy: "balanced" } },
+    response
+  );
+
+  assert.equal(response.statusCode, 400);
+  assert.equal(response.payload.error, "unsupported_state");
+  assert.deepEqual(response.payload.opportunities, []);
+});
+
+test("Opportunity API scores every eligible row before applying the result limit", () => {
+  const source = fs.readFileSync(path.resolve("api/opportunity.js"), "utf8");
+
+  assert.doesNotMatch(source, /candidateLimit/);
+  assert.doesNotMatch(source, /ORDER BY s\.opportunity_score/);
+  assert.match(source, /sort\(\(a, b\) => b\.futureOpportunityIndex - a\.futureOpportunityIndex\)/);
+  assert.match(source, /slice\(0, maxResults\)/);
+});
 
 test("appendPriceFilter uses house median for house budget filters", () => {
   const where = [];

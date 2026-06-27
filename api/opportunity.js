@@ -13,6 +13,8 @@ import {
   supportedFutureStrategies,
 } from '../lib/future-opportunity-outlook.js';
 
+const AU_STATE_CODES = new Set(['ACT', 'NSW', 'NT', 'QLD', 'SA', 'TAS', 'VIC', 'WA']);
+
 let _sql = null;
 function getSql() {
   if (!_sql && process.env.DATABASE_URL) {
@@ -35,6 +37,8 @@ export default async function handler(request, response) {
   const minScore = Number(request.query.minScore || 0);
   const maxResults = Math.min(Number(request.query.maxResults || 50), 200);
   const requestedStrategy = request.query.strategy || 'balanced';
+  const requestedState = request.query.state;
+  const state = normalizeStateFilter(requestedState);
   const strategy = normalizeStrategy(requestedStrategy);
   const validStrategies = supportedFutureStrategies();
   if (!isSupportedFutureStrategy(requestedStrategy)) {
@@ -47,6 +51,16 @@ export default async function handler(request, response) {
     });
     return;
   }
+  if (requestedState && !state) {
+    response.status(400).json({
+      ok: false,
+      error: 'unsupported_state',
+      message: `State "${requestedState}" is not supported.`,
+      supportedStates: [...AU_STATE_CODES],
+      opportunities: []
+    });
+    return;
+  }
   const minPrice = request.query.minPrice ? Number(request.query.minPrice) : null;
   const maxPrice = request.query.maxPrice ? Number(request.query.maxPrice) : null;
   const propertyType = normalizePropertyType(request.query.propertyType || request.query.property_type || 'either');
@@ -54,16 +68,16 @@ export default async function handler(request, response) {
   try {
     const sql = getSql();
 
-    let where = [`opportunity_score IS NOT NULL`];
+    let where = [`s.opportunity_score IS NOT NULL`];
     let params = [];
     let p = 0;
 
     if (suburbFilter) {
       p++; where.push(`LOWER(s.suburb) LIKE $${p}`); params.push(`%${suburbFilter.toLowerCase()}%`);
     }
+    ({ p } = appendStateFilter({ where, params, p, state }));
     ({ p } = appendPriceFilter({ where, params, p, propertyType, minPrice, maxPrice }));
 
-    const candidateLimit = Math.min(Math.max(maxResults * 4, 100), 500);
     const q = `
       SELECT s.suburb, s.state,
              s.median_house_price, s.median_unit_price,
@@ -89,10 +103,7 @@ export default async function handler(request, response) {
                s.supply_constraint_score, s.infrastructure_score,
                s.overall_confidence, s.opportunity_score, s.opportunity_type,
                s.conf_school, s.conf_yield, s.conf_vacancy, s.updated_at
-      ORDER BY s.opportunity_score DESC
-      LIMIT $${++p}
     `;
-    params.push(candidateLimit);
 
     const rows = await sql.query(q, params);
 
@@ -109,6 +120,7 @@ export default async function handler(request, response) {
         totalFound: opportunities.length,
         totalCandidates: rows.length,
         strategy,
+        state: state || 'all',
         propertyType,
         scoreType: 'Future Opportunity Index',
         modelVersion: opportunities[0]?.modelVersion || 'future_outlook_v1',
@@ -123,6 +135,20 @@ export default async function handler(request, response) {
     console.error('Opportunity API error:', sanitizeOpportunityErrorForLog(error));
     response.status(500).json(publicOpportunityError());
   }
+}
+
+export function normalizeStateFilter(value) {
+  if (value === null || value === undefined || value === '') return null;
+  const state = String(value).trim().toUpperCase();
+  return AU_STATE_CODES.has(state) ? state : null;
+}
+
+export function appendStateFilter({ where, params, p, state }) {
+  if (!state) return { p };
+  p++;
+  where.push(`UPPER(s.state) = $${p}`);
+  params.push(state);
+  return { p };
 }
 
 export function publicOpportunityError() {
