@@ -179,7 +179,7 @@ export default async function handler(request, response) {
   const [
     { runValuation },
     { createReportDraft },
-    { getSql, ensureCustomerFunnelSchema, ensureReportPaymentSchema },
+    { getSql, getDbStatus, ensureCustomerFunnelSchema, ensureReportPaymentSchema },
     { isPaymentsEnabled },
     { scoreFutureOpportunity, scorePropertyFutureOpportunity }
   ] = await Promise.all([
@@ -209,14 +209,23 @@ export default async function handler(request, response) {
         const stateName = subject.state || body.state || "VIC";
         if (suburbName) {
           const rows = await sql`
-            SELECT suburb, state,
-                   median_house_price, median_unit_price,
-                   gross_yield, school_score, vacancy_rate,
-                   supply_constraint_score, infrastructure_score,
-                   overall_confidence, updated_at
-            FROM suburb_metrics
-            WHERE LOWER(suburb) = LOWER(${suburbName})
-              AND state = ${stateName}
+            SELECT s.suburb, s.state,
+                   s.median_house_price, s.median_unit_price,
+                   s.gross_yield, s.school_score, s.vacancy_rate,
+                   s.supply_constraint_score, s.infrastructure_score,
+                   s.overall_confidence, s.updated_at,
+                   s.median_rent,
+                   s.median_house_rent,
+                   s.median_rent_dffh,
+                   s.median_rent_source,
+                   (c.g02->>'Median_tot_hhd_inc_weekly')::int * 52 AS hhd_income,
+                   (SELECT PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY median_house_price)
+                    FROM suburb_metrics WHERE median_house_price > 0) AS vic_median_house_price
+            FROM suburb_metrics s
+            LEFT JOIN school_locations sl ON LOWER(s.suburb) = LOWER(sl.suburb)
+            LEFT JOIN census_sa2_data c ON c.sa2_code::text = sl.sa2_code::text
+            WHERE LOWER(s.suburb) = LOWER(${suburbName})
+              AND s.state = ${stateName}
             LIMIT 1
           `;
           const metric = rows && rows[0];
@@ -258,6 +267,8 @@ export default async function handler(request, response) {
       }
     } catch (planningErr) {
       console.error("Planning signals query failed (non-fatal):", planningErr.message);
+      result._planningError = planningErr.message;
+      result._planningStack = planningErr.stack?.split('\n').slice(0,3).join(' | ');
     }
 
     // Generate short-lived draft token for this valuation
@@ -285,6 +296,17 @@ export default async function handler(request, response) {
 
     // Payments gate: shared single source of truth
     freeSummary.paymentsEnabled = isPaymentsEnabled();
+
+    // Debug info (only for requests with debug=true)
+    if (body.debug) {
+      freeSummary._debug = { 
+        db: getDbStatus(),
+        planningError: result._planningError,
+        planningStack: result._planningStack,
+        hasSql: !!sql,
+        coords: result.subject?.coordinates || null,
+      };
+    }
 
     return response.status(result.ok ? 200 : 400)
       .setHeader("Content-Type", "application/json")

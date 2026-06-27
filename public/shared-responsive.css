@@ -605,6 +605,25 @@ textarea {
   }
 }
 
+@supports (display: flex) {
+  .summary {
+    display: flex;
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .summary-main {
+    flex: 1 1 400px;
+    min-width: 280px;
+    overflow: visible;
+  }
+
+  .summary-card {
+    flex: 0 1 340px;
+    min-width: 260px;
+  }
+}
+
 /* ── summary-main: single-column at ALL breakpoints ── */
 .summary-main {
   min-width: 0;
@@ -613,6 +632,22 @@ textarea {
 /* ── summary-card (Why this estimate) ── */
 .summary-card {
   min-width: 0;
+}
+
+.value-band {
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.value-band div {
+  flex: 1 1 170px;
+  min-width: 130px;
+}
+
+.value-band strong {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 /* ── Check Status panel in side-panel ── */

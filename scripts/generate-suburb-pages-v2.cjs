@@ -19,25 +19,21 @@ const path = require('path');
 const OUT = 'public';
 
 async function main() {
-  // Fetch Top-50 from each factor for Phase 3C
-  const growthTop50 = await fetchJSON('/api/top-growth?limit=50');
-  const valueTop50 = await fetchJSON('/api/top-value?limit=50');
-  const yieldTop50 = await fetchJSON('/api/top-yield?limit=50');
-  const schoolTop50 = await fetchJSON('/api/top-school?limit=50');
+  // Fetch ALL suburbs from opportunity API sorted by score
+  const oppRes = await fetchJSON('/api/opportunity?maxResults=250&minScore=0');
 
-  // Fetch suburb intelligence for all unique suburbs from top rankings
+  // Fetch suburb intelligence for each suburb
   const allSuburbs = new Map();
 
   console.log('Fetching suburb intelligence data...');
-  const allLists = [growthTop50, valueTop50, yieldTop50, schoolTop50];
-  for (const list of allLists) {
-    for (const r of (list.results || [])) {
-      if (allSuburbs.has(r.suburb)) continue;
-      const data = await fetchJSON(`/api/suburb-intelligence?suburb=${encodeURIComponent(r.suburb)}`);
-      if (data && data.suburb) {
-        allSuburbs.set(data.suburb, data);
-        if (allSuburbs.size % 20 === 0) process.stdout.write(`  ${allSuburbs.size}...\n`);
-      }
+  const allResults = oppRes.opportunities || oppRes.results || oppRes.data || [];
+  for (const r of allResults) {
+    const sub = r.suburb;
+    if (!sub || allSuburbs.has(sub)) continue;
+    const data = await fetchJSON(`/api/suburb-intelligence?suburb=${encodeURIComponent(sub)}`);
+    if (data && data.suburb) {
+      allSuburbs.set(data.suburb, data);
+      if (allSuburbs.size % 20 === 0) process.stdout.write(`  ${allSuburbs.size}...\n`);
     }
   }
   console.log(`  Total unique suburbs: ${allSuburbs.size}`);
@@ -56,10 +52,10 @@ async function main() {
   }
   console.log(`  Generated ${genCount} suburb pages`);
 
-  // Generate homepage preview (Phase 3C preview)
-  const homepagePreview = buildHomepagePreview(growthTop50, valueTop50, yieldTop50, schoolTop50);
-  fs.writeFileSync(path.join(OUT, 'index-phase3c-preview.html'), homepagePreview, 'utf-8');
-  console.log('  Generated index-phase3c-preview.html');
+  // Generate homepage preview (Phase 3C preview) — disabled, old top endpoints removed
+  // const homepagePreview = buildHomepagePreview(growthTop50, valueTop50, yieldTop50, schoolTop50);
+  // fs.writeFileSync(path.join(OUT, 'index-phase3c-preview.html'), homepagePreview, 'utf-8');
+  // console.log('  Generated index-phase3c-preview.html');
   console.log('\n✅ Done');
 }
 

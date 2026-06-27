@@ -3,269 +3,95 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pakenham Property Market Analysis & Opportunity Score | AusHomeValue</title>
-  <meta name="description" content="Property intelligence for Pakenham, VIC. 81/100 confidence. Factor breakdown: Value 70, Growth 85, School 45. Analysis from AusHomeValue." />
+  <title>pakenham VIC Property Market & Opportunity Analysis | AusHomeValue</title>
+  <meta name="description" content="Detailed property market analysis for pakenham, VIC. Opportunity Score: 72/100. Median house price $709K. Growth Score: +72. Schools: 51/100." />
   <link rel="canonical" href="https://www.aushomevalue.com.au/suburb/pakenham-vic.html" />
   <meta name="robots" content="index, follow" />
-  <meta property="og:title" content="Pakenham Property Intelligence | AusHomeValue" />
-  <meta property="og:description" content="Confidence 81/100. Growth 85, School 45, Value 70, Infrastructure 70. Full factor breakdown with explanations." />
+  <meta property="og:title" content="pakenham Property Market Analysis | AusHomeValue" />
+  <meta property="og:description" content="Opportunity Score 72/100 — Cashflow Opportunity. Median house price $709K. Growth score +72." />
   <meta property="og:url" content="https://www.aushomevalue.com.au/suburb/pakenham-vic.html" />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/shared-responsive.css" />
   <style>
-    h1 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 800; line-height: 1.2; margin-bottom: 8px; }
-    .breadcrumb { font-size: 0.85rem; color: #66736d; margin-bottom: 20px; }
-    .breadcrumb a { color: #0d6b57; }
-    .stamp { font-size: 0.8rem; color: #8a9b93; margin: 8px 0 16px; line-height: 1.5; }
-    .confidence-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; }
-    .conf-badge { background: #0d6b57; color: white; border-radius: 30px; padding: 8px 20px; font-size: 1.5rem; font-weight: 700; }
-    .conf-badge.high { background: #1a7a1a; }
-    .conf-badge.medium { background: #b8860b; }
-    .conf-badge.low { background: #cc4444; }
-    .conf-label { font-size: 0.85rem; color: #66736d; }
-    .top-links { margin-bottom: 24px; }
-    .section-title { font-size: 1.3rem; font-weight: 700; margin: 36px 0 16px 0; }
-    .section-subtitle { color: #4a5650; margin-bottom: 20px; }
-    .factor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-bottom: 8px; }
-    .factor-card {
-      background: white; border: 1px solid #dbe2de; border-radius: 10px; padding: 16px;
-      transition: box-shadow 0.15s;
-    }
-    .factor-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
-    .factor-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-    .factor-label { font-size: 0.85rem; color: #66736d; text-transform: uppercase; letter-spacing: 0.03em; font-weight: 600; }
-    .factor-score { font-size: 1.4rem; font-weight: 800; }
-    .factor-tier { font-size: 0.8rem; color: #66736d; display: block; margin-bottom: 6px; }
-    .factor-explain { list-style: none; padding: 0; margin: 6px 0 0; }
-    .factor-explain li { font-size: 0.82rem; color: #4a5650; padding-left: 14px; position: relative; margin-bottom: 2px; line-height: 1.4; }
-    .factor-explain li::before { content: '→'; position: absolute; left: 0; color: #0d6b57; }
-    .why-section { background: white; border: 1px solid #dbe2de; border-radius: 10px; padding: 20px; margin-bottom: 32px; }
-    .why-item { padding: 10px 0; border-bottom: 1px solid #f0f2f0; font-size: 0.9rem; line-height: 1.5; }
-    .why-item:last-child { border-bottom: none; }
-    .why-item strong { color: #0d6b57; }
-    .next-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 40px; }
-    .next-link { background: white; border: 1px solid #dbe2de; border-radius: 8px; padding: 10px 18px; color: #0d6b57; font-size: 0.9rem; font-weight: 500; transition: all 0.12s; }
-    .next-link:hover { background: #e8f3ef; border-color: #0d6b57; text-decoration: none; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Inter, system-ui, -apple-system, sans-serif; background: #f4f6f5; color: #17211d; line-height: 1.6; }
+    .topbar { background: #0d6b57; color: white; padding: 14px 24px; }
+    .topbar a { color: white; text-decoration: none; font-weight: 600; }
+    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: clamp(1.3rem, 4vw, 1.8rem); margin-bottom: 8px; }
+    .score-hero { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-bottom: 32px; }
+    .score-badge { background: #0d6b57; color: white; border-radius: 30px; padding: 10px 24px; font-size: 2rem; font-weight: 700; }
+    .score-sub { color: #66736d; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 32px; }
+    .card { background: white; border: 1px solid #dbe2de; border-radius: 10px; padding: 18px; }
+    .card h3 { font-size: 0.85rem; color: #66736d; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .card .value { font-size: 1.3rem; font-weight: 700; }
+    .disclaimer { font-size: 0.82rem; color: #5c7068; margin: 24px 0; line-height: 1.5; }
+    .faq { margin-top: 40px; }
+    .faq h2 { margin-bottom: 16px; }
+    .faq-q { font-weight: 600; margin-top: 18px; }
+    .faq-a { color: #66736d; margin-top: 4px; }
+    @media (max-width: 640px) { .grid-2 { grid-template-columns: 1fr; } .grid-3 { grid-template-columns: 1fr; } }
   </style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Place",
-    "name": "Pakenham, VIC",
-    "description": "Property intelligence for Pakenham — 81/100 confidence score across 9 investment factors.",
+    "name": "pakenham, VIC",
+    "description": "Property market analysis for pakenham, VIC. Opportunity score 72/100.",
     "containedInPlace": { "@type": "State", "name": "VIC, Australia" },
     "additionalProperty": [
-      { "@type": "PropertyValue", "name": "Value Score", "value": "70" },
-      { "@type": "PropertyValue", "name": "Growth Score", "value": "85" },
-      { "@type": "PropertyValue", "name": "Yield Score", "value": "28" },
-      { "@type": "PropertyValue", "name": "Vacancy Score", "value": "65" },
-      { "@type": "PropertyValue", "name": "School Score", "value": "45" },
-      { "@type": "PropertyValue", "name": "Income Score", "value": "50" },
-      { "@type": "PropertyValue", "name": "Population Score", "value": "45" },
-      { "@type": "PropertyValue", "name": "Supply Score", "value": "59" },
-      { "@type": "PropertyValue", "name": "Infrastructure Score", "value": "70" }
+      { "@type": "PropertyValue", "name": "Opportunity Score", "value": "72/100" },
+      { "@type": "PropertyValue", "name": "Median House Price", "value": "$709K" },
+      { "@type": "PropertyValue", "name": "Median Unit Price", "value": "$551K" },
+      { "@type": "PropertyValue", "name": "Growth Score", "value": "+72/100" },
+      { "@type": "PropertyValue", "name": "School Score", "value": "51/100" },
+      { "@type": "PropertyValue", "name": "Opportunity Type", "value": "Cashflow Opportunity" },
+      { "@type": "PropertyValue", "name": "Gross Rental Yield", "value": "4.0%" },
+      { "@type": "PropertyValue", "name": "Vacancy Rate (adjusted)", "value": "1.3%" }
     ]
   }
   </script>
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "What is the property opportunity score for Pakenham?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Pakenham scores 81/100 on AusHomeValue's opportunity scale. Scores range 0–100 and combine growth, value, yield, school quality, income, population, supply, infrastructure and vacancy factors."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "How does Pakenham score on school quality?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Pakenham scores 45/100 for school quality. This is based on ACARA ICSEA data and proximity to high-ranking schools in the area."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What investment signals are tracked for Pakenham?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Pakenham's opportunity score of 81/100 reflects a composite of 9 investment factors. Key signals: Growth 85/100, Value 70/100, Infrastructure 70/100. School: 45/100. This is a relative opportunity index, not a price forecast or investment guarantee. Always conduct your own due diligence."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What are the strongest investment signals for Pakenham?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "The highest-scoring factors for Pakenham are: Growth 85/100, Value 70/100, Infrastructure 70/100. Higher scores indicate stronger relative signals compared to other suburbs in the dataset."
-      }
-    }
-  ]
-}
-  </script>
 </head>
 <body>
-  <div class="topbar">
-    <a href="/" class="back">← AusHomeValue</a>
-  </div>
+  <div class="topbar"><a href="/">← AusHomeValue</a></div>
   <div class="container">
-    <div class="breadcrumb">
-      <a href="/">Home</a> / <a href="/opportunities/">Opportunities</a> / Pakenham
-    </div>
-    <h1>Pakenham, VIC — Property Intelligence</h1>
-    <div class="stamp">AI-powered opportunity analysis based on 9 investment factors. Updated when new market data is available.</div>
-
-    <div class="confidence-bar">
-      <div class="conf-badge high">81</div>
-      <div>
-        <strong>Overall Intelligence Confidence</strong><br />
-        <span class="conf-label">High confidence · Strong data coverage and calibration</span>
-      </div>
+    <h1>Pakenham, VIC — Property Market Analysis</h1>
+    <div class="score-hero">
+      <div class="score-badge">72</div>
+      <div><strong>Cashflow Opportunity</strong><br /><span class="score-sub">Opportunity Score · 72/100</span></div>
     </div>
 
-    <div class="top-links">
-      <a href="/top-growth-suburbs-victoria.html" style="color:#0d6b57;font-size:0.85rem;display:inline-block;margin-right:12px;">📈 Top Growth</a><a href="/top-value-suburbs-victoria.html" style="color:#0d6b57;font-size:0.85rem;display:inline-block;margin-right:12px;">💎 Top Value</a><a href="/top-yield-suburbs-victoria.html" style="color:#0d6b57;font-size:0.85rem;display:inline-block;margin-right:12px;">💰 Top Yield</a><a href="/top-school-zone-suburbs-victoria.html" style="color:#0d6b57;font-size:0.85rem;display:inline-block;margin-right:12px;">🏫 Top Schools</a>
+    <div class="grid-2">
+      <div class="card"><h3>Median House Price</h3><div class="value">$709K</div></div>
+      <div class="card"><h3>School Score</h3><div class="value">51/100</div></div>
     </div>
 
-    <h2 class="section-title">📊 Factor Breakdown</h2>
-    <p class="section-subtitle">9-factor analysis scored 0–100. Higher scores = stronger investment signal.</p>
-    <div class="factor-grid">
-
-    <div class="factor-card">
-      <div class="factor-head">
-        <span class="factor-label">Value Score</span>
-        <span class="factor-score" style="color:#0d6b57">70</span>
-      </div>
-      <span class="factor-tier">B+</span>
-      <ul class="factor-explain"><li>Median house price of $709,000 is moderately affordable with room for capital appreciation</li></ul>
-    </div>
-    <div class="factor-card">
-      <div class="factor-head">
-        <span class="factor-label">Growth Score</span>
-        <span class="factor-score" style="color:#1a7a1a">85</span>
-      </div>
-      <span class="factor-tier">A</span>
-      <ul class="factor-explain"><li>Experimental short-term trend signal</li><li>Based on limited recent transaction data</li></ul>
-    </div>
-    <div class="factor-card">
-      <div class="factor-head">
-        <span class="factor-label">Yield Score</span>
-        <span class="factor-score" style="color:#cc4444">28</span>
-      </div>
-      <span class="factor-tier">C</span>
-      <ul class="factor-explain"><li>Gross yield of 2.71% is below 3% — yield-focused investors may look elsewhere</li></ul>
-    </div>
-    <div class="factor-card">
-      <div class="factor-head">
-        <span class="factor-label">Vacancy Score</span>
-        <span class="factor-score" style="color:#0d6b57">65</span>
-      </div>
-      <span class="factor-tier">B+</span>
-      <ul class="factor-explain"><li>Moderate vacancy of 4.2% — rental demand is healthy but not tight</li></ul>
-    </div>
-    <div class="factor-card">
-      <div class="factor-head">
-        <span class="factor-label">School Score</span>
-        <span class="factor-score" style="color:#cc4444">45</span>
-      </div>
-      <span class="factor-tier">C</span>
-      <ul class="factor-explain"><li>School score of 44.4 is average — adequate schooling available</li></ul>
-    </div>
-    <div class="factor-card">
-      <div class="factor-head">
-        <span class="factor-label">Income Score</span>
-        <span class="factor-score" style="color:#b8860b">50</span>
-      </div>
-      <span class="factor-tier">C+</span>
-      <ul class="factor-explain"><li>Mid-range pricing reflects middle-income demographic — broad buyer demand pool</li><li>Unemployment rate of 5.8% is healthy — supports sustainable housing demand</li></ul>
-    </div>
-    <div class="factor-card">
-      <div class="factor-head">
-        <span class="factor-label">Population Score</span>
-        <span class="factor-score" style="color:#cc4444">45</span>
-      </div>
-      <span class="factor-tier">C</span>
-      <ul class="factor-explain"><li>Lower population growth suggests a mature or aging demographic profile</li></ul>
-    </div>
-    <div class="factor-card">
-      <div class="factor-head">
-        <span class="factor-label">Supply Score</span>
-        <span class="factor-score" style="color:#b8860b">59</span>
-      </div>
-      <span class="factor-tier">B</span>
-      <ul class="factor-explain"><li>Moderate supply constraint — development is occurring but not oversupplying</li><li>Employment base of 8,569 workers provides local economic activity</li></ul>
-    </div>
-    <div class="factor-card">
-      <div class="factor-head">
-        <span class="factor-label">Infrastructure Score</span>
-        <span class="factor-score" style="color:#0d6b57">70</span>
-      </div>
-      <span class="factor-tier">B+</span>
-      <ul class="factor-explain"><li>Infrastructure projects nearby — moderate value uplift expected</li></ul>
-    </div>
+    <div class="grid-3">
+      <div class="card"><h3>Growth Score</h3><div class="value">+72</div></div>
+      <div class="card"><h3>Gross Yield</h3><div class="value">4.0%</div></div>
+      <div class="card"><h3>Vacancy</h3><div class="value">1.3%</div></div>
     </div>
 
+    <p class="disclaimer">Future Opportunity Index is a relative screening score, not a forecast, valuation or promise of future capital growth. Data updated nightly from public sources.</p>
 
-    <h2 class="section-title">🏆 Why Pakenham Scores Highly</h2>
-    <div class="why-section">
-      <div class="why-item">
-        <strong>Value Score (70/B+)</strong> — Median house price of $709,000 is moderately affordable with room for capital appreciation
-      </div><div class="why-item">
-        <strong>Growth Score (85/A)</strong> — Experimental short-term trend signal
-      </div><div class="why-item">
-        <strong>Vacancy Score (65/B+)</strong> — Moderate vacancy of 4.2% — rental demand is healthy but not tight
-      </div><div class="why-item">
-        <strong>Infrastructure Score (70/B+)</strong> — Infrastructure projects nearby — moderate value uplift expected
-      </div>
-    </div>
+    <h2>Growth Drivers</h2>
+    <ul><li>Metric-supported opportunity ranking</li><li>Standard school zone performance</li><li>Positive growth signal</li><li>Median price available for comparison</li></ul>
 
-    <div class="next-links">
-      <a href="/top-growth-suburbs-victoria.html" class="next-link">📈 Top Growth Suburbs</a>
-      <a href="/top-value-suburbs-victoria.html" class="next-link">💎 Top Value Suburbs</a>
-      <a href="/top-yield-suburbs-victoria.html" class="next-link">💰 Top Yield Suburbs</a>
-      <a href="/top-school-zone-suburbs-victoria.html" class="next-link">🏫 Top School Zones</a>
-      <a href="/opportunities/" class="next-link">📋 All Opportunities</a>
+    <h2 style="margin-top: 24px;">Risk Factors</h2>
+    <ul><li>Competitive market conditions</li><li>Stable growth indicator</li></ul>
+
+    <div class="faq">
+      <h2>FAQ — pakenham Property Market</h2>
+      <div class="faq-q">What is the property opportunity score for pakenham?</div>
+      <div class="faq-a">pakenham scores 72/100, classified as cashflow opportunity.</div>
+      <div class="faq-q">What is the median house price in pakenham?</div>
+      <div class="faq-a">The median house price is approximately $709K, based on recent comparable sales data.</div>
+      <div class="faq-q">Is pakenham a good area for property investment?</div>
+      <div class="faq-a">With an opportunity score of 72/100 and a growth score of +72/100, pakenham presents a stronger composite indicator. This is a relative screening score, not a price forecast.</div>
+      <div class="faq-q">What are the schools like in pakenham?</div>
+      <div class="faq-a">The school quality score for pakenham is 51/100, based on ICSEA data from ACARA school profiles in the area.</div>
     </div>
-  </div>
-  
-    <h2 class="section-title" style="margin-top:48px;">❓ Frequently Asked Questions — Pakenham Property</h2>
-    <div class="faq-section" style="margin-bottom:32px;">
-      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
-        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">What is the property opportunity score for Pakenham?</div>
-        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">Pakenham scores 81/100 on AusHomeValue's opportunity scale. Scores range 0–100 and combine growth, value, yield, school quality, income, population, supply, infrastructure and vacancy factors.</div>
-      </div>
-      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
-        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">How does Pakenham score on school quality?</div>
-        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">Pakenham scores 45/100/100 for school quality. This is based on ACARA ICSEA data and proximity to high-ranking schools in the area.</div>
-      </div>
-      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
-        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">What investment signals are tracked for Pakenham?</div>
-        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">Pakenham's opportunity score of 81/100 reflects a composite of 9 investment factors. Top signals: Growth 85/100, Value 70/100, Infrastructure 70/100. Strongest factor: Growth (85/100). This is a relative opportunity index, not a price forecast or investment guarantee. Always conduct your own due diligence.</div>
-      </div>
-      <div class="faq-item" style="background:white;border:1px solid #dbe2de;border-radius:10px;padding:16px;margin-bottom:12px;">
-        <div class="faq-q" style="font-weight:600;margin-bottom:6px;">What are the strongest investment signals for Pakenham?</div>
-        <div class="faq-a" style="color:#4a5650;font-size:0.9rem;">The highest-scoring factors for Pakenham are: Growth 85/100, Value 70/100, Infrastructure 70/100. Higher scores indicate stronger relative signals compared to other suburbs in the dataset.</div>
-      </div>
-    </div>
-  <div class="footer">
-    <div class="foot-links">
-      <a href="/">Home</a>
-      <a href="/opportunities/">Opportunities</a>
-      <a href="/top-growth-suburbs-victoria.html">Top Growth</a>
-      <a href="/top-value-suburbs-victoria.html">Top Value</a>
-      <a href="/top-yield-suburbs-victoria.html">Top Yield</a>
-      <a href="/top-school-zone-suburbs-victoria.html">Top Schools</a>
-      <a href="/contact.html">Contact</a>
-    </div>
-    <p>© 2026 AusHomeValue — Australian Property Intelligence</p>
   </div>
 </body>
 </html>

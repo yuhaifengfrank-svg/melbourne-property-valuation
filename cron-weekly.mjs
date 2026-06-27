@@ -92,7 +92,7 @@ async function main() {
             ${s.address || ""},
             ${s.price ? Number(s.price) : null},
             ${s.saleDate || null},
-            ${s.propertyType || null},
+            ${s.propertyType ? s.propertyType.charAt(0).toUpperCase() + s.propertyType.slice(1).toLowerCase() : null},
             ${s.bedrooms ? Number(s.bedrooms) : null},
             ${s.bathrooms ? Number(s.bathrooms) : null},
             ${s.carSpaces ? Number(s.carSpaces) : null},
@@ -119,14 +119,12 @@ async function main() {
 
   // ── Post-step: regenerate land size stats (House-only) ──
   try {
-    const { execSync } = await import("child_process");
     const { dirname } = await import("path");
     const root = dirname(new URL(import.meta.url).pathname);
     console.log("[Cron Weekly] Regenerating suburb land size stats (House-only)...");
-    execSync(`node ${root}/scripts/update-land-size-stats.mjs`, {
-      cwd: root, stdio: "inherit",
-      env: { ...process.env, DATABASE_URL: process.env.DATABASE_URL }
-    });
+    process.chdir(root);
+    const { default: updateLandSize } = await import("./scripts/update-land-size-stats.mjs");
+    await updateLandSize();
     console.log("[Cron Weekly] Land size stats updated.");
   } catch (regenErr) {
     console.warn("[Cron Weekly] Land size stats regeneration failed (non-fatal):", regenErr.message);

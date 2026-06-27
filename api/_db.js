@@ -361,3 +361,11 @@ export async function ensureDataLayerFoundationSchema(sql) {
 
   dataLayerInitialized = true;
 }
+
+export function getDbStatus() {
+  return {
+    hasDb: !!process.env.DATABASE_URL,
+    dbPrefix: process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 45) : 'MISSING',
+    nodeVersion: process.version,
+  };
+}
