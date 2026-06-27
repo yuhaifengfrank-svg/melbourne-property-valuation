@@ -16,7 +16,7 @@ async function ensureLoaded() {
   uvService.loadModel();
 }
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Content-Type', 'application/json');
@@ -57,4 +57,4 @@ module.exports = async (req, res) => {
     console.error('[uv-api]', err);
     return res.status(500).json({ error: err.message });
   }
-};
+}
