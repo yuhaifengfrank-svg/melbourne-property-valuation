@@ -560,6 +560,7 @@ async function run() {
 }
 
 run().catch((err) => {
-  console.error(`BACKFILL_FAILED code=${err?.code || "unknown"}`);
+  console.error(`BACKFILL_FAILED code=${err?.code || "unknown"} message=${err?.message || ""}`);
+  console.error(err?.stack?.slice(0, 500) || "(no stack)");
   process.exit(1);
 });

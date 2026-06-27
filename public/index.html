@@ -760,14 +760,17 @@ button:hover {
 }
 
 .summary {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
-  grid-template-columns: minmax(0, 1.4fr) minmax(260px, 0.6fr);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .summary-main {
+  flex: 1 1 400px;
+  min-width: 280px;
   padding: clamp(22px, 3vw, 32px);
+  overflow: visible;
 }
 
 .summary-main h2 {
@@ -777,10 +780,16 @@ button:hover {
 }
 
 .value-band {
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
   gap: 12px;
-  grid-template-columns: 1.25fr 0.8fr 0.8fr;
   margin-top: 26px;
+  min-width: 0;
+}
+
+.value-band div {
+  flex: 1 1 170px;
+  min-width: 130px;
 }
 
 .value-band div,
@@ -788,6 +797,8 @@ button:hover {
   background: #f7faf8;
   border: 1px solid var(--line);
   border-radius: 8px;
+  min-width: 0;
+  overflow: hidden;
   padding: 16px;
 }
 
@@ -803,11 +814,14 @@ button:hover {
   display: block;
   font-size: clamp(22px, 3vw, 32px);
   line-height: 1;
-  overflow-wrap: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .summary-card {
   background: #f2eee7;
+  flex: 0 1 340px;
+  min-width: 260px;
   padding: 26px;
 }
 

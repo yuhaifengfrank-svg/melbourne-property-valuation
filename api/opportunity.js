@@ -59,22 +59,37 @@ export default async function handler(request, response) {
     let p = 0;
 
     if (suburbFilter) {
-      p++; where.push(`LOWER(suburb) LIKE $${p}`); params.push(`%${suburbFilter.toLowerCase()}%`);
+      p++; where.push(`LOWER(s.suburb) LIKE $${p}`); params.push(`%${suburbFilter.toLowerCase()}%`);
     }
     ({ p } = appendPriceFilter({ where, params, p, propertyType, minPrice, maxPrice }));
 
     const candidateLimit = Math.min(Math.max(maxResults * 4, 100), 500);
     const q = `
-      SELECT suburb, state,
-             median_house_price, median_unit_price,
-             growth_1y, growth_3y, growth_5y,
-             gross_yield, school_score, vacancy_rate,
-             supply_constraint_score, infrastructure_score,
-             overall_confidence, opportunity_score, opportunity_type,
-             conf_school, conf_yield, conf_vacancy, updated_at
-      FROM suburb_metrics
+      SELECT s.suburb, s.state,
+             s.median_house_price, s.median_unit_price,
+             s.median_rent,
+             s.median_house_rent,
+             s.median_rent_dffh,
+             s.median_rent_source,
+             s.growth_1y, s.growth_3y, s.growth_5y,
+             s.gross_yield, s.school_score, s.vacancy_rate,
+             s.supply_constraint_score, s.infrastructure_score,
+             s.overall_confidence, s.opportunity_score, s.opportunity_type,
+             s.conf_school, s.conf_yield, s.conf_vacancy,
+             s.updated_at,
+             AVG((c.g02->>'Median_tot_hhd_inc_weekly')::int) * 52 AS hhd_income
+      FROM suburb_metrics s
+      LEFT JOIN school_locations sl ON LOWER(s.suburb) = LOWER(sl.suburb)
+      LEFT JOIN census_sa2_data c ON c.sa2_code::text = sl.sa2_code::text
       WHERE ${where.join(' AND ')}
-      ORDER BY opportunity_score DESC
+      GROUP BY s.suburb, s.state, s.median_house_price, s.median_unit_price, s.median_rent,
+               s.median_house_rent, s.median_rent_dffh, s.median_rent_source,
+               s.growth_1y, s.growth_3y, s.growth_5y,
+               s.gross_yield, s.school_score, s.vacancy_rate,
+               s.supply_constraint_score, s.infrastructure_score,
+               s.overall_confidence, s.opportunity_score, s.opportunity_type,
+               s.conf_school, s.conf_yield, s.conf_vacancy, s.updated_at
+      ORDER BY s.opportunity_score DESC
       LIMIT $${++p}
     `;
     params.push(candidateLimit);
@@ -150,6 +165,8 @@ export function mapOpportunityRow(r, { strategy = 'balanced', propertyType = 'ei
     state: r.state || 'VIC',
     medianHousePrice: toNumberOrNull(r.median_house_price),
     medianUnitPrice: toNumberOrNull(r.median_unit_price),
+    medianRent: toNumberOrNull(r.median_rent_dffh) ?? toNumberOrNull(r.median_rent) ?? toNumberOrNull(r.median_house_rent),
+    hhdIncome: toNumberOrNull(r.hhd_income),
     grossYield: toNumberOrNull(r.gross_yield),
     rentalYield: toNumberOrNull(r.gross_yield),
     schoolScore: toNumberOrNull(r.school_score),

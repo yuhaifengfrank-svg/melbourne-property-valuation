@@ -22,6 +22,7 @@ import { ensureComparableSchema } from "../lib/db-schema.js";
 import { scrapeSoldData, formatAsComparables } from "../lib/browser-collector.js";
 import fs from "fs";
 import path from "path";
+import { execSync } from "child_process";
 
 const STATE = "VIC";
 const COLLECTION_ROUND = "weekly-refresh";
@@ -127,7 +128,49 @@ async function scrapeWithBackoff(suburb, state, postcode) {
 }
 
 // ── Upsert records into DB ──
+// ── Config ──
+const VM_HOST = "vm-aushomevalue";
+const VM_RAW_DIR = "/opt/aushomevalue/data/raw/parcel";
+
+// ── Write raw JSON to VM data lake ──
+function writeRawToVMLake(suburb, records) {
+  if (!records || records.length === 0) return;
+  const dateStr = new Date().toISOString().split("T")[0];
+  const safeName = suburb.replace(/[^a-zA-Z0-9_-]/g, "_").toLowerCase();
+  const filename = `weekly_${dateStr}_${safeName}.json`;
+  const tmpPath = `/tmp/${filename}`;
+
+  const payload = JSON.stringify({
+    metadata: {
+      suburb,
+      collection_date: dateStr,
+      collection_round: "weekly",
+      source: "REA+Domain CDP",
+      record_count: records.length,
+      collected_at: new Date().toISOString()
+    },
+    records
+  }, null, 2);
+
+  try {
+    fs.writeFileSync(tmpPath, payload, "utf8");
+    execSync(`rsync -az --rsync-path="mkdir -p ${VM_RAW_DIR} && rsync" ${tmpPath} ${VM_HOST}:${VM_RAW_DIR}/${filename}`, { timeout: 15000 });
+    fs.unlinkSync(tmpPath);
+    return { ok: true, filename };
+  } catch (e) {
+    console.error(`    ⚠️  VM lake write failed for ${suburb}: ${e.message.slice(0, 100)}`);
+    return { ok: false, error: e.message };
+  }
+}
+
 async function upsertRecords(suburb, records) {
+  // Write to VM data lake
+  const lake = writeRawToVMLake(suburb, records);
+  if (lake.ok) {
+    console.log(`    📦 raw/${lake.filename} sent to VM lake`);
+  }
+
+  // Write to Neon (to be deprecated)
   let inserted = 0, skipped = 0;
   for (const rec of records) {
     try {

@@ -12,7 +12,7 @@
  * Default output: data/vicmap/suburb_land_size_from_sales.json
  */
 
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { writeFileSync } from "fs";
 import { dirname, resolve } from "path";
 import { fileURLToPath } from "url";
 
@@ -20,13 +20,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, "..");
 const DEFAULT_OUTPUT = resolve(ROOT, "data/vicmap/suburb_land_size_from_sales.json");
 
-// Parse args
-const outputArg = process.argv.find(a => a.startsWith("--output="));
-const OUTPUT = outputArg ? resolve(outputArg.split("=")[1]) : DEFAULT_OUTPUT;
-
-async function main() {
+export default async function updateLandSize(outputPath) {
   const { getSql } = await import("../api/_db.js");
   const sql = getSql();
+  const OUTPUT = outputPath || DEFAULT_OUTPUT;
 
   console.log("[LandSizeStats] Fetching House-only land size stats from DB...");
 
@@ -73,7 +70,13 @@ async function main() {
   console.log(`[LandSizeStats] Done.`);
 }
 
-main().catch(err => {
-  console.error("[LandSizeStats] Error:", err.message);
-  process.exit(1);
-});
+// ── CLI entry point (only runs when called directly) ──
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const outputArg = process.argv.find(a => a.startsWith("--output="));
+  const OUTPUT = outputArg ? resolve(outputArg.split("=")[1]) : DEFAULT_OUTPUT;
+
+  updateLandSize(OUTPUT).catch(err => {
+    console.error("[LandSizeStats] Error:", err.message);
+    process.exit(1);
+  });
+}
