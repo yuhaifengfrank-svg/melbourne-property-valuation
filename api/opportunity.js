@@ -120,13 +120,30 @@ export default async function handler(request, response) {
     });
 
   } catch (error) {
-    console.error('Opportunity API error:', error);
-    response.status(500).json({
-      ok: false,
-      error: error.message,
-      opportunities: []
-    });
+    console.error('Opportunity API error:', sanitizeOpportunityErrorForLog(error));
+    response.status(500).json(publicOpportunityError());
   }
+}
+
+export function publicOpportunityError() {
+  return {
+    ok: false,
+    error: 'internal_server_error',
+    message: 'Opportunity data is temporarily unavailable. Please try again later.',
+    opportunities: [],
+  };
+}
+
+export function sanitizeOpportunityErrorForLog(error) {
+  const message = String(error?.message || 'Unknown opportunity API error')
+    .replace(/postgres(?:ql)?:\/\/[^\s'"`]+/gi, '[REDACTED_DATABASE_URL]')
+    .replace(/(password=)[^&\s]+/gi, '$1[REDACTED]');
+
+  return {
+    name: String(error?.name || 'Error'),
+    code: error?.code ? String(error.code) : undefined,
+    message,
+  };
 }
 
 export function appendPriceFilter({ where, params, p, propertyType, minPrice, maxPrice }) {
