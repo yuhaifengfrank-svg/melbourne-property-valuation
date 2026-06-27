@@ -255,14 +255,53 @@ export default async function handler(request, response) {
 
     try {
       if (result.ok) {
-        // Query planning signals
-        if (!sql) sql = getSql();
-        const { getPlanningSignals } = await import("../lib/planning-signal-service.js");
-        const coords = result.subject?.coordinates;
-        if (coords && coords.lat != null && coords.lon != null) {
-          result.planningSignals = await getPlanningSignals(sql, Number(coords.lat), Number(coords.lon));
-        } else if (body.lat != null && body.lng != null) {
-          result.planningSignals = await getPlanningSignals(sql, Number(body.lat), Number(body.lng));
+        // Sanity-check Nominatim coordinates — reject coords far outside Melbourne
+        const subject = result.subject || {};
+        let targetLat = subject.coordinates?.lat != null ? Number(subject.coordinates.lat) : null;
+        let targetLon = subject.coordinates?.lon != null ? Number(subject.coordinates.lon) : null;
+        const suburbName = subject.suburb || body.suburb || "";
+
+        // Melbourne metro bounding box
+        const MELB_LAT_MIN = -38.7;
+        const MELB_LAT_MAX = -37.2;
+        const MELB_LON_MIN = 143.8;
+        const MELB_LON_MAX = 145.8;
+
+        if (suburbName && (targetLat == null || targetLon == null ||
+            targetLat < MELB_LAT_MIN || targetLat > MELB_LAT_MAX ||
+            targetLon < MELB_LON_MIN || targetLon > MELB_LON_MAX)) {
+          // Nominatim returned wrong coords — query AVG sale coordinates as suburb center
+          if (!sql) sql = getSql();
+          const centerRows = await sql`
+            SELECT ROUND(AVG(lat)::numeric, 4) AS avg_lat,
+                   ROUND(AVG(lon)::numeric, 4) AS avg_lon
+            FROM comparable_sales
+            WHERE LOWER(suburb) = LOWER(${suburbName})
+              AND lat IS NOT NULL AND lat != 0 AND lon IS NOT NULL AND lon != 0
+            GROUP BY LOWER(suburb)
+            LIMIT 1
+          `;
+          if (centerRows.length > 0 && centerRows[0].avg_lat != null) {
+            targetLat = Number(centerRows[0].avg_lat);
+            targetLon = Number(centerRows[0].avg_lon);
+            console.log(
+              `[coord-fix] ${suburbName}: Nominatim (${subject.coordinates?.lat},${subject.coordinates?.lon})` +
+              ` → override (${targetLat},${targetLon})`
+            );
+          }
+        }
+
+        if (targetLat == null || targetLon == null) {
+          // Fall back to body-level lat/lng if subject coords missing
+          if (body.lat != null && body.lng != null) {
+            targetLat = Number(body.lat);
+            targetLon = Number(body.lng);
+          }
+        }
+
+        if (targetLat != null && targetLon != null) {
+          const { getPlanningSignals } = await import("../lib/planning-signal-service.js");
+          result.planningSignals = await getPlanningSignals(sql || getSql(), targetLat, targetLon);
         }
       }
     } catch (planningErr) {
