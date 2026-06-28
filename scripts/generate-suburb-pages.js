@@ -20,9 +20,16 @@ function slug(suburb) {
 
 async function getAllSuburbs(limit) {
   const rows = await sql`
-    SELECT suburb, state, median_house_price, median_unit_price,
-      growth_score, gross_yield, vacancy_rate_adjusted, school_score,
-      undervaluation, opportunity_score, opportunity_type
+    SELECT suburb, state,
+      median_house_price, median_unit_price, median_apartment_price, median_townhouse_price, median_combined_price,
+      median_rent, median_unit_rent,
+      growth_score, gross_yield, vacancy_rate, vacancy_rate_adjusted, school_score,
+      undervaluation, undervaluation_label,
+      opportunity_score, opportunity_type,
+      overall_confidence,
+      population_2021, population_2025, population_growth_1y,
+      conf_supply_constraint, conf_income,
+      dwelling_total, dwelling_separate_house
     FROM suburb_metrics
     WHERE opportunity_score IS NOT NULL
     ORDER BY opportunity_score DESC
@@ -33,13 +40,27 @@ async function getAllSuburbs(limit) {
     suburb: r.suburb, state: r.state || 'VIC',
     medianHousePrice: n(r.median_house_price),
     medianUnitPrice: n(r.median_unit_price),
+    medianApartmentPrice: n(r.median_apartment_price),
+    medianTownhousePrice: n(r.median_townhouse_price),
+    medianCombinedPrice: n(r.median_combined_price),
+    medianRent: n(r.median_rent),
+    medianUnitRent: n(r.median_unit_rent),
     growthScore: n(r.growth_score),
     grossYield: n(r.gross_yield),
     vacancyRate: n(r.vacancy_rate_adjusted),
     schoolScore: n(r.school_score),
     undervaluation: n(r.undervaluation),
+    undervaluationLabel: r.undervaluation_label,
     opportunityScore: n(r.opportunity_score),
     opportunityType: r.opportunity_type,
+    overallConfidence: n(r.overall_confidence),
+    population2021: n(r.population_2021),
+    population2025: n(r.population_2025),
+    populationGrowth: n(r.population_growth_1y),
+    supplyConstraintScore: n(r.conf_supply_constraint),
+    confIncome: n(r.conf_income),
+    dwellingTotal: n(r.dwelling_total),
+    dwellingSeparateHouse: n(r.dwelling_separate_house),
   }));
 }
 
@@ -50,6 +71,21 @@ function suburbPageHTML(data) {
     : 'N/A';
   const unitStr = data.medianUnitPrice
     ? `$${(data.medianUnitPrice / 1000).toFixed(0)}K`
+    : 'N/A';
+  const aptStr = data.medianApartmentPrice
+    ? `$${(data.medianApartmentPrice / 1000).toFixed(0)}K`
+    : 'N/A';
+  const townStr = data.medianTownhousePrice
+    ? `$${(data.medianTownhousePrice / 1000).toFixed(0)}K`
+    : 'N/A';
+  const combinedStr = data.medianCombinedPrice
+    ? `$${(data.medianCombinedPrice / 1000).toFixed(0)}K`
+    : 'N/A';
+  const rentStr = data.medianRent
+    ? `$${data.medianRent}`
+    : 'N/A';
+  const unitRentStr = data.medianUnitRent
+    ? `$${data.medianUnitRent}`
     : 'N/A';
   const growthStr = data.growthScore != null
     ? `${data.growthScore >= 0 ? '+' : ''}${data.growthScore}`
@@ -65,6 +101,15 @@ function suburbPageHTML(data) {
     : 'N/A';
   const uvStr = data.undervaluation != null
     ? Number(data.undervaluation).toFixed(2)
+    : 'N/A';
+  const pop2021Str = data.population2021 != null
+    ? data.population2021.toLocaleString()
+    : 'N/A';
+  const popGrowthStr = data.populationGrowth != null
+    ? data.populationGrowth.toFixed(1) + '%'
+    : 'N/A';
+  const confStr = data.overallConfidence != null
+    ? data.overallConfidence + '/100'
     : 'N/A';
 
   function titleCase(s) {
@@ -158,6 +203,12 @@ function suburbPageHTML(data) {
       <div class="card"><h3>Growth Score</h3><div class="value">${growthStr}</div></div>
       <div class="card"><h3>Gross Yield</h3><div class="value">${yieldStr}</div></div>
       <div class="card"><h3>Vacancy</h3><div class="value">${vacStr}</div></div>
+    </div>
+
+    <div class="grid-3">
+      <div class="card"><h3>Median Unit</h3><div class="value">${unitStr}</div></div>
+      <div class="card"><h3>Median Rent</h3><div class="value">${rentStr}/wk</div></div>
+      <div class="card"><h3>Data Confidence</h3><div class="value">${confStr}</div></div>
     </div>
 
     <p class="disclaimer">Future Opportunity Index is a relative screening score, not a forecast, valuation or promise of future capital growth. Data updated nightly from public sources.</p>
