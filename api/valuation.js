@@ -392,6 +392,7 @@ export default async function handler(request, response) {
         planningStack: result._planningStack,
         hasSql: !!sql,
         coords: result.subject?.coordinates || null,
+        fullResult: sanitizeForClient(result, true)
       };
     }
 
