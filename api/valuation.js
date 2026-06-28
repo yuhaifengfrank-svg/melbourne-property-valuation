@@ -20,7 +20,7 @@ function sanitizeForClient(obj, debug = false) {
     safe.valuation.confidence = { label, dataScore: score };
   }
 
-  if (safe.valuation?.acceptedComparables) {
+  if (safe.valuation?.acceptedComparables && !debug) {
     safe.valuation.acceptedComparables = safe.valuation.acceptedComparables.map(c => ({
       address: c.address,
       salePrice: c.salePrice,
@@ -42,11 +42,13 @@ function sanitizeForClient(obj, debug = false) {
     }));
   }
 
-  delete safe.rejectedComparables;
-  if (safe.valuation?.rejectedComparables) delete safe.valuation.rejectedComparables;
-  delete safe.methodology;
-  if (safe.valuation?.methodology) delete safe.valuation.methodology;
-  if (safe.valuation?.statisticalIntervals) delete safe.valuation.statisticalIntervals;
+  if (!debug) {
+    delete safe.rejectedComparables;
+    if (safe.valuation?.rejectedComparables) delete safe.valuation.rejectedComparables;
+    delete safe.methodology;
+    if (safe.valuation?.methodology) delete safe.valuation.methodology;
+    if (safe.valuation?.statisticalIntervals) delete safe.valuation.statisticalIntervals;
+  }
 
   if (safe.valuation?.estimate && !debug) {
     const { midpoint, low, high } = safe.valuation.estimate;
