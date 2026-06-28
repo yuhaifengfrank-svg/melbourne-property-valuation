@@ -55,6 +55,14 @@ function sanitizeForClient(obj, debug = false) {
     safe.valuation.estimate = { midpoint, low, high };
   }
 
+  // Debug mode: keep factorResults and streetQuality for diagnosis
+  if (!debug && safe.valuation?.factorResults) {
+    delete safe.valuation.factorResults;
+  }
+  if (!debug && safe.valuation?.streetQuality) {
+    delete safe.valuation.streetQuality;
+  }
+
   if (safe.subject) {
     delete safe.subject.coordinates;
     delete safe.subject.lat;
@@ -388,6 +396,8 @@ export default async function handler(request, response) {
     if (body.debug) {
       freeSummary._debug = { 
         db: getDbStatus(),
+        factorResults: result.valuation?.factorResults || null,
+        streetQuality: result.valuation?.streetQuality || null,
         planningError: result._planningError,
         planningStack: result._planningStack,
         hasSql: !!sql,
