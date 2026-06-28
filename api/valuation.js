@@ -396,7 +396,8 @@ export default async function handler(request, response) {
     if (body.debug) {
       freeSummary._debug = { 
         db: getDbStatus(),
-        factorResults: result.valuation?.factorResults || null,
+        factorTotal: result.valuation?.estimate?.factorTotal || null,
+        factorAdjustments: result.valuation?.estimate?.factorAdjustments || null,
         streetQuality: result.valuation?.streetQuality || null,
         planningError: result._planningError,
         planningStack: result._planningStack,
