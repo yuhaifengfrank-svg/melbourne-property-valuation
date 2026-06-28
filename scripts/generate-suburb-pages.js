@@ -72,9 +72,7 @@ function suburbPageHTML(data) {
   const unitStr = data.medianUnitPrice
     ? `$${(data.medianUnitPrice / 1000).toFixed(0)}K`
     : 'N/A';
-  const aptStr = data.medianApartmentPrice
-    ? `$${(data.medianApartmentPrice / 1000).toFixed(0)}K`
-    : 'N/A';
+  // medianApartmentPrice temporarily hidden — data quality issue in Glen Waverley
   const townStr = data.medianTownhousePrice
     ? `$${(data.medianTownhousePrice / 1000).toFixed(0)}K`
     : 'N/A';
