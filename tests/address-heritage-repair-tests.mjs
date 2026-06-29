@@ -58,7 +58,7 @@ test("frontend only infers the narrow supported hyphen-unit shorthand", () => {
 test("Heritage combines exact HO and VHR query results", async () => {
   const sql = {
     async query(text) {
-      if (text.includes("vicplan_overlays")) {
+      if (text.includes("heritage_overlays")) {
         return { rows: [{ zone_code: "HO12", zone_description: "Heritage Overlay" }] };
       }
       if (text.includes("vhr_zones")) {
@@ -101,7 +101,7 @@ test("valuation chain applies the approved 20 percent Heritage discount", async 
   const emptySql = { async query() { return { rows: [] }; } };
   const heritageSql = {
     async query(text) {
-      if (text.includes("vicplan_overlays")) {
+      if (text.includes("heritage_overlays")) {
         return { rows: [{ zone_code: "HO1", zone_description: "Heritage Overlay" }] };
       }
       return { rows: [] };
