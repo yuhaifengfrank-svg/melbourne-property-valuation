@@ -1030,6 +1030,8 @@ function normalizeAddress(value) {
     .replace(/\bapartment(\d+)\b/g, "apartment $1")
     .replace(/\bu\s*(\d+)\b/g, "unit $1")
     .replace(/\bunit(\d+)\b/g, "unit $1")
+    // AU address convention: "2-11 mcintosh st" = Unit 2, 11 McIntosh St (not a range)
+    // Normalize to "2/11" so addressSignature treats it as a unit correctly
     .replace(/\b(\d+)\s*-\s*(\d+)\b/g, "$1/$2")
     .replace(/\b(no|num|number|#)\s*(\d+)\b/g, "$2")
     .replace(/[,.-]/g, " ")
@@ -1424,6 +1426,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         evidenceSummary: "",
         paymentsEnabled: result.paymentsEnabled === true,
         reportDraftToken: result.reportDraftToken || null,
+        heritage: result.heritage || null,
         draftExpiresAt: result.draftExpiresAt || null,
         propertyFutureOutlook: result.propertyFutureOutlook || null,
         evidenceSummaryZh: ""
@@ -1481,6 +1484,7 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
       reportDraftToken: result.reportDraftToken || null,
       draftExpiresAt: result.draftExpiresAt || null,
       propertyFutureOutlook: result.propertyFutureOutlook || null,
+      heritage: result.heritage || null,
       evidenceSummaryZh: ""
     };
 
@@ -1976,6 +1980,42 @@ function renderValuation(data) {
   byId("approval-certainty").textContent = getLocalizedPlanning(data, "approval");
   renderPropertyFutureOutlook(data.propertyFutureOutlook);
   setList("reasons", getLocalizedArray(data, "reasons"));
+
+  // ── Heritage Warning ──
+  var heritageEl = document.getElementById("heritage-warning");
+  if (heritageEl) {
+    if (data.heritage && data.heritage.flagged) {
+      var srcStr = data.heritage.sources ? data.heritage.sources.join(" + ") : "";
+      var discountStr = data.heritage.discountPercent ? data.heritage.discountPercent + "%" : "20%";
+      var detailStr = "";
+      if (data.heritage.details && data.heritage.details.length) {
+        detailStr = data.heritage.details.map(function(d) {
+          return d.name ? d.code + ": " + d.name.substring(0, 40) : d.code;
+        }).join("; ");
+      }
+      heritageEl.style.display = "block";
+      if (language === "zh") {
+        heritageEl.innerHTML = '<div class="heritage-banner">'
+          + '<span class="heritage-icon">🏛️</span>'
+          + '<div class="heritage-body">'
+          + '<strong>遗产规划约束</strong><br>'
+          + '此物业受 <strong>' + srcStr + '</strong> 遗产规划约束，市场估值已下调 ' + discountStr + '。'
+          + (detailStr ? '<br><small>' + detailStr + '</small>' : '')
+          + '</div></div>';
+      } else {
+        heritageEl.innerHTML = '<div class="heritage-banner">'
+          + '<span class="heritage-icon">🏛️</span>'
+          + '<div class="heritage-body">'
+          + '<strong>Heritage Designation</strong><br>'
+          + 'This property is under <strong>' + srcStr + '</strong> heritage protection. Valuation adjusted down by ' + discountStr + '. '
+          + (data.heritage.note || '')
+          + (detailStr ? '<br><small>' + detailStr + '</small>' : '')
+          + '</div></div>';
+      }
+    } else {
+      heritageEl.style.display = "none";
+    }
+  }
   renderSuburbFundamentals(data.suburb, language);
   renderComparables(data.comparables, data.comparableCount);
   // 估值有有效数据时隐藏教育卡片（Fast starting point / Clear next steps）

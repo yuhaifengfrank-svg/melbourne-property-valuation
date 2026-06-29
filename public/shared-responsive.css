@@ -663,3 +663,30 @@ textarea {
 .payments-disabled .locked-preview-cta {
   display: none;
 }
+
+/* ── Heritage Warning Banner ── */
+.heritage-banner {
+  background: #fef3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.heritage-banner .heritage-icon {
+  font-size: 1.4rem;
+  line-height: 1;
+}
+.heritage-banner .heritage-body strong {
+  display: inline;
+}
+.heritage-banner small {
+  display: block;
+  margin-top: 4px;
+  color: #666;
+  font-size: 0.85rem;
+}
