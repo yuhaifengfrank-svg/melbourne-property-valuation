@@ -328,6 +328,7 @@ export default async function handler(req, res) {
       location,
       suburb: suburbFundamentals,
       planning,
+      heritage: result.heritage || null,
 
       schools,
       opportunityPreview: {

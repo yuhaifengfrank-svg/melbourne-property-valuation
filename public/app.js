@@ -136,6 +136,7 @@ let unlocked = false;
 let currentValuation = emptyValuation;
 let selectedLvr = 0.6;
 let language = "en";
+let propertyTypeManuallySelected = false;
 
 // Phase 1E3D-1A: Report draft token (memory only, never localStorage/sessionStorage/Cookie)
 var currentReportDraft = null;
@@ -1020,7 +1021,19 @@ const evidenceTypes = {
   }
 };
 
-function normalizeAddress(value) {
+function shouldInterpretHyphenAsUnit(value, selectedType = "", allowHeuristic = false) {
+  if (["Unit", "Townhouse", "Villa"].includes(selectedType)) return true;
+  if (!allowHeuristic) return false;
+  const match = String(value || "").trim().match(/^(\d+)\s*-\s*(\d+)\b/);
+  if (!match) return false;
+  const unitNumber = Number(match[1]);
+  const streetNumber = Number(match[2]);
+  // Conservative support for common shorthand such as 2-11. Other ambiguous
+  // forms require the user to select Unit/Townhouse/Villa explicitly.
+  return unitNumber >= 1 && unitNumber <= 4 && streetNumber >= 10;
+}
+
+function normalizeAddress(value, hyphenAsUnit = false) {
   return String(value || "")
     .toLowerCase()
     .replace(/\boakley\b|\boaklrigh\b/g, "oakleigh")
@@ -1030,9 +1043,7 @@ function normalizeAddress(value) {
     .replace(/\bapartment(\d+)\b/g, "apartment $1")
     .replace(/\bu\s*(\d+)\b/g, "unit $1")
     .replace(/\bunit(\d+)\b/g, "unit $1")
-    // AU address convention: "2-11 mcintosh st" = Unit 2, 11 McIntosh St (not a range)
-    // Normalize to "2/11" so addressSignature treats it as a unit correctly
-    .replace(/\b(\d+)\s*-\s*(\d+)\b/g, "$1/$2")
+    .replace(/\b(\d+)\s*-\s*(\d+)\b/g, hyphenAsUnit ? "$1/$2" : "$1-$2")
     .replace(/\b(no|num|number|#)\s*(\d+)\b/g, "$2")
     .replace(/[,.-]/g, " ")
     .replace(/\bvic\b/g, "")
@@ -1045,8 +1056,8 @@ function normalizeAddress(value) {
     .trim();
 }
 
-function getAddressSignature(value) {
-  const normalized = normalizeAddress(value);
+function getAddressSignature(value, hyphenAsUnit = false) {
+  const normalized = normalizeAddress(value, hyphenAsUnit);
   const slashMatch = normalized.match(/\b(\d+)\s*\/\s*(\d+)\b/);
   const unitMatch = normalized.match(/\bunit\s+(\d+)\b/);
   const apartmentMatch = normalized.match(/\b(?:apartment|apt|flat)\s+([a-z]?\d+[a-z]?)\b/);
@@ -1218,8 +1229,9 @@ function applyComparableSalesModel(data, confidence = data.confidence || "Low") 
 function inferPropertyTypeFromAddress(address, directAddressMatch = null, selectedType = "") {
   if (directAddressMatch) return directAddressMatch.type;
   if (selectedType === "Commercial") return "Commercial";
-  const normalized = normalizeAddress(address);
-  const signature = getAddressSignature(address);
+  const hyphenAsUnit = shouldInterpretHyphenAsUnit(address, selectedType, !selectedType);
+  const normalized = normalizeAddress(address, hyphenAsUnit);
+  const signature = getAddressSignature(address, hyphenAsUnit);
 
   if (/\b(vacant land|development site|land only|land)\b/.test(normalized)) return "Vacant land";
   if (/\b(shop|retail|office|warehouse|commercial|factory)\b/.test(normalized)) return "Commercial";
@@ -1860,6 +1872,50 @@ function renderComparables(rows, comparableCount) {
   });
 }
 
+function renderHeritageWarning(container, heritage, currentLanguage) {
+  if (!container) return;
+  container.replaceChildren();
+  if (!heritage?.flagged) {
+    container.style.display = "none";
+    return;
+  }
+
+  const sources = Array.isArray(heritage.sources) ? heritage.sources.join(" + ") : "";
+  const discount = heritage.discountPercent || 20;
+  const details = Array.isArray(heritage.details)
+    ? heritage.details.map((detail) => {
+        const code = String(detail?.code || "");
+        const name = String(detail?.name || "").slice(0, 40);
+        return name ? `${code}: ${name}` : code;
+      }).filter(Boolean).join("; ")
+    : "";
+
+  const banner = document.createElement("div");
+  banner.className = "heritage-banner";
+  const icon = document.createElement("span");
+  icon.className = "heritage-icon";
+  icon.textContent = "H";
+  const body = document.createElement("div");
+  body.className = "heritage-body";
+  const title = document.createElement("strong");
+  title.textContent = currentLanguage === "zh" ? "遗产规划约束" : "Heritage Designation";
+  body.append(title, document.createElement("br"));
+
+  const message = currentLanguage === "zh"
+    ? `此物业受 ${sources} 遗产规划约束，市场估值已下调 ${discount}%。`
+    : `This property is under ${sources} heritage protection. Valuation adjusted down by ${discount}%.`;
+  body.append(document.createTextNode(message));
+  if (details) {
+    body.append(document.createElement("br"));
+    const small = document.createElement("small");
+    small.textContent = details;
+    body.appendChild(small);
+  }
+  banner.append(icon, body);
+  container.appendChild(banner);
+  container.style.display = "block";
+}
+
 function renderValuation(data) {
   hasValuationResult = true;
   /* Handle Phase 1B free summary format (from /api/valuation) or old format */
@@ -1882,6 +1938,7 @@ function renderValuation(data) {
       comparableCount: data.comparableCount || 0,
       customerDataStatus: data.customerDataStatus || "unavailable",
       dataLimitations: data.dataLimitations || [],
+      heritage: data.heritage || null,
       lockedPreview: data.lockedPreview || null,
       reportDraftToken: data.reportDraftToken || null,
       draftExpiresAt: data.draftExpiresAt || null,
@@ -1981,41 +2038,7 @@ function renderValuation(data) {
   renderPropertyFutureOutlook(data.propertyFutureOutlook);
   setList("reasons", getLocalizedArray(data, "reasons"));
 
-  // ── Heritage Warning ──
-  var heritageEl = document.getElementById("heritage-warning");
-  if (heritageEl) {
-    if (data.heritage && data.heritage.flagged) {
-      var srcStr = data.heritage.sources ? data.heritage.sources.join(" + ") : "";
-      var discountStr = data.heritage.discountPercent ? data.heritage.discountPercent + "%" : "20%";
-      var detailStr = "";
-      if (data.heritage.details && data.heritage.details.length) {
-        detailStr = data.heritage.details.map(function(d) {
-          return d.name ? d.code + ": " + d.name.substring(0, 40) : d.code;
-        }).join("; ");
-      }
-      heritageEl.style.display = "block";
-      if (language === "zh") {
-        heritageEl.innerHTML = '<div class="heritage-banner">'
-          + '<span class="heritage-icon">🏛️</span>'
-          + '<div class="heritage-body">'
-          + '<strong>遗产规划约束</strong><br>'
-          + '此物业受 <strong>' + srcStr + '</strong> 遗产规划约束，市场估值已下调 ' + discountStr + '。'
-          + (detailStr ? '<br><small>' + detailStr + '</small>' : '')
-          + '</div></div>';
-      } else {
-        heritageEl.innerHTML = '<div class="heritage-banner">'
-          + '<span class="heritage-icon">🏛️</span>'
-          + '<div class="heritage-body">'
-          + '<strong>Heritage Designation</strong><br>'
-          + 'This property is under <strong>' + srcStr + '</strong> heritage protection. Valuation adjusted down by ' + discountStr + '. '
-          + (data.heritage.note || '')
-          + (detailStr ? '<br><small>' + detailStr + '</small>' : '')
-          + '</div></div>';
-      }
-    } else {
-      heritageEl.style.display = "none";
-    }
-  }
+  renderHeritageWarning(document.getElementById("heritage-warning"), data.heritage, language);
   renderSuburbFundamentals(data.suburb, language);
   renderComparables(data.comparables, data.comparableCount);
   // 估值有有效数据时隐藏教育卡片（Fast starting point / Clear next steps）
@@ -3060,9 +3083,14 @@ byId("start-valuation").addEventListener("click", async () => {
   // Infer property type from address and auto-select matching chip
   // (only if user hasn't manually selected a different type recently)
   const { canonicalAddress, effectiveSuburb } = buildEnteredAddress();
-  const inferredType = inferPropertyTypeFromAddress(canonicalAddress || byId("address").value);
+  const currentActive = document.querySelector(".chip.active")?.dataset.type || "House";
+  const typeContext = propertyTypeManuallySelected ? currentActive : "";
+  const inferredType = inferPropertyTypeFromAddress(
+    canonicalAddress || byId("address").value,
+    null,
+    typeContext
+  );
   if (inferredType) {
-    const currentActive = document.querySelector(".chip.active")?.dataset.type;
     // Only auto-select if user hasn't changed from the default (House)
     // or if the current selection is incompatible with the inferred type
     if (!currentActive || currentActive === "House" || currentActive === inferredType) {
@@ -3095,6 +3123,7 @@ byId("start-valuation").addEventListener("click", async () => {
 
 document.querySelectorAll(".chip").forEach((chip) => {
   chip.addEventListener("click", () => {
+    propertyTypeManuallySelected = true;
     document.querySelectorAll(".chip").forEach((item) => item.classList.remove("active"));
     chip.classList.add("active");
   });

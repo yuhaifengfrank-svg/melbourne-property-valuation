@@ -168,6 +168,11 @@ const context = {
   window: {
     matchMedia: () => ({ matches: false })
   },
+  setTimeout: (callback) => {
+    if (typeof callback === "function") callback();
+    return 1;
+  },
+  clearTimeout: () => {},
   fetch: async (url) => {
     if (String(url).includes("/api/leads")) {
       return {

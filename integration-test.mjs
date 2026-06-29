@@ -171,7 +171,7 @@ describe("P1: 数据库 source", () => {
     assert.ok("customerDataStatus" in result);
   });
 
-  it("CDP ≥3 collector comps 时 DB 不被调用", async () => {
+  it("DB-first 架构下即使有 collector comps 也会先调用 DB", async () => {
     let dbCalledCount = 0;
     const countingDbSource = {
       checkConnection: async () => { dbCalledCount++; return true; },
@@ -187,8 +187,8 @@ describe("P1: 数据库 source", () => {
     const result = await runValuation({
       address: "18 CDP St", suburb: "Testville", state: "VIC", propertyType: "House"
     }, { fetch: false, useDatabaseFallback: true, dbSource: countingDbSource, mockCollectorComparables: mockComps });
-    // CDP 已有 ≥3 comps → DB 不应被调用
-    assert.strictEqual(dbCalledCount, 0, `expected 0 DB calls when CDP has 3+ comps, got ${dbCalledCount}`);
+    // DB 是第一数据源；collector comps 只作为补充，不应跳过 DB。
+    assert.ok(dbCalledCount > 0, `expected DB-first lookup, got ${dbCalledCount} DB calls`);
     assert.ok(result.ok !== false);
   });
 

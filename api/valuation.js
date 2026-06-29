@@ -137,6 +137,7 @@ function buildFreeSummary(fullResult) {
     propertyFutureOutlook: fullResult.propertyFutureOutlook || null,
     suburbFutureOutlook: fullResult.suburbFutureOutlook || null,
     planningSignals: fullResult.planningSignals || null,
+    heritage: fullResult.heritage || null,
     disclaimer: "This free valuation summary is based on publicly available market data, property characteristics and statistical analysis for general information and research purposes only. Data may be delayed, incomplete or subject to third-party recording differences. This is not a formal valuation, credit decision, legal, tax or financial advice. Consult licensed professionals before making transaction or financing decisions.",
     // Locked preview — show what the full report contains
     lockedPreview: buildLockedPreview(fullResult)

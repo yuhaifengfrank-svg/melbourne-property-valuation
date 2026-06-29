@@ -10,7 +10,7 @@
     "test:valuation": "node valuation-engine-test.mjs",
     "test:valuation-api": "node valuation-api-test.mjs",
     "collect:comparables": "node collect-comparables.mjs",
-    "test": "node --test test-address-verification.mjs test-address-lookup.mjs integration-test.mjs regression-test.mjs tests/model-contract-tests.mjs tests/large-lot-mode-tests.mjs tests/large-lot-e2e-test.mjs tests/large-lot-public-app-test.mjs tests/null-distance-test.mjs",
+    "test": "node --test test-address-verification.mjs test-address-lookup.mjs integration-test.mjs regression-test.mjs tests/model-contract-tests.mjs tests/valuation-property-type-contract-tests.mjs tests/address-heritage-repair-tests.mjs tests/large-lot-mode-tests.mjs tests/large-lot-e2e-test.mjs tests/large-lot-public-app-test.mjs tests/null-distance-test.mjs",
     "test:responsive": "node tests/responsive-test.mjs",
     "test:responsive-v2": "node tests/responsive-test-v2.mjs",
     "check": "node --check app.js && npm test",
