@@ -3,6 +3,7 @@ import test from "node:test";
 import { readFileSync } from "node:fs";
 import { JSDOM } from "jsdom";
 import { checkHeritage } from "../lib/heritage-service.js";
+import { medianSalePrice } from "../lib/db-comparable-source.js";
 
 const valuationSource = readFileSync(new URL("../lib/valuation-service.js", import.meta.url), "utf8");
 const appSource = readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
@@ -53,6 +54,22 @@ test("frontend only infers the narrow supported hyphen-unit shorthand", () => {
   assert.equal(shouldInterpret("5-7 Old Warrandyte Road", "", true), false);
   assert.equal(shouldInterpret("5-11 Example Road", "Unit", false), true);
   assert.equal(shouldInterpret("2-4 Example Road", "House", false), false);
+});
+
+test("database reference median converts Neon numeric strings before addition", () => {
+  assert.equal(
+    medianSalePrice([{ sale_price: "404000" }, { sale_price: "432500" }]),
+    418250
+  );
+  assert.equal(
+    medianSalePrice([
+      { sale_price: "580000" },
+      { sale_price: "invalid" },
+      { sale_price: "460000" },
+      { sale_price: null }
+    ]),
+    520000
+  );
 });
 
 test("Heritage combines exact HO and VHR query results", async () => {
