@@ -34,18 +34,196 @@ const TARGET_MONTH = process.argv.find(a => a.startsWith('--month='))?.split('='
 
 /**
  * Parse a single VBA monthly summary XLSX into per-LGA records.
- * Returns array of { lgaCode, lgaName, permitCounts, permitValues }
+ *
+ * Expected VBA per-LGA format (April 2025+):
+ *   Sheet: "Sheet1" or first sheet
+ *   Row 0: Headers
+ *   Col A: Municipality (council name like "Banyule City Council")
+ *   Col B: New Houses count
+ *   Col C: New Houses value ($'000)
+ *   Col D: New Multi Unit count
+ *   Col E: New Multi Unit value ($'000)
+ *   Col F: Alterations count
+ *   Col G: Alterations value ($'000)
+ *   Col H: Commercial/Industrial count
+ *   Col I: Commercial/Industrial value ($'000)
+ *   Col J: Total count
+ *   Col K: Total value ($'000)
+ *
+ * Calls council_registry for exact or fuzzy LGA name matching.
+ * Returns array of { lgaName, permits, values }
  */
 function parseVbaPermits(filePath) {
   try {
     const wb = XLSX.readFile(filePath);
+    
+    // Find the main data sheet
+    let sheetName = null;
+    for (const name of wb.SheetNames) {
+      const s = name.toLowerCase();
+      // Skip disclaimer/analysis sheets, find the main data sheet
+      if (!s.includes('disclaimer') && !s.includes('graph') && !s.includes('yearly')) {
+        sheetName = name;
+        break;
+      }
+    }
+    
+    if (!sheetName) sheetName = wb.SheetNames[0];
+    
+    const ws = wb.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(ws, { defval: '', header: 1 });
+    
+    // Find the header row - look for row containing "Municipality" or similar
+    let headerRow = -1;
+    for (let i = 0; i < Math.min(20, rows.length); i++) {
+      const row = rows[i];
+      if (!row || row.length === 0) continue;
+      const first = String(row[0] || '').toLowerCase();
+      if (first.includes('municip') || first.includes('council') || first.includes('lga') || first.includes('authority')) {
+        headerRow = i;
+        break;
+      }
+      // Also check if row contains expected header-like values
+      const rowStr = row.map(c => String(c || '')).join(' ').toLowerCase();
+      if (rowStr.includes('municipality') && rowStr.includes('houses')) {
+        headerRow = i;
+        break;
+      }
+    }
+    
+    // If no header found, try: assume first non-empty row is header
+    if (headerRow === -1) {
+      for (let i = 0; i < Math.min(10, rows.length); i++) {
+        if (rows[i] && rows[i].length >= 3 && String(rows[i][0] || '').trim()) {
+          headerRow = i;
+          break;
+        }
+      }
+    }
+    
+    if (headerRow === -1) {
+      console.error(`    [parse] Cannot find header row in ${path.basename(filePath)}`);
+      return [];
+    }
+    
+    // Identify column indices by reading headers
+    const headers = rows[headerRow].map(h => String(h || '').toLowerCase().trim());
+    
+    // Predict column mapping based on common patrols
+    const colMap = { municipality: -1, 
+      houseCount: -1, houseValue: -1,
+      multiCount: -1, multiValue: -1,
+      altCount: -1, altValue: -1,
+      commCount: -1, commValue: -1,
+      totalCount: -1, totalValue: -1 };
+    
+    for (let ci = 0; ci < headers.length; ci++) {
+      const h = headers[ci];
+      if (h.includes('municip') || h.includes('authority') || h.includes('council')) {
+        colMap.municipality = ci;
+      } else if (h.includes('new') && h.includes('house') && (h.includes('no') || h.includes('count') || h.includes('number') || !h.includes('$') && !h.includes('value'))) {
+        colMap.houseCount = ci;
+      } else if (h.includes('new') && h.includes('house') && (h.includes('$') || h.includes('value'))) {
+        colMap.houseValue = ci;
+      } else if (h.includes('multi') && (h.includes('no') || h.includes('count'))) {
+        colMap.multiCount = ci;
+      } else if (h.includes('multi') && (h.includes('$') || h.includes('value'))) {
+        colMap.multiValue = ci;
+      } else if (h.includes('alter') && (h.includes('no') || h.includes('count'))) {
+        colMap.altCount = ci;
+      } else if (h.includes('alter') && (h.includes('$') || h.includes('value'))) {
+        colMap.altValue = ci;
+      } else if (h.includes('comm') && (h.includes('no') || h.includes('count'))) {
+        colMap.commCount = ci;
+      } else if (h.includes('comm') && (h.includes('$') || h.includes('value'))) {
+        colMap.commValue = ci;
+      } else if (h.includes('total') && (h.includes('no') || h.includes('count'))) {
+        colMap.totalCount = ci;
+      } else if (h.includes('total') && (h.includes('$') || h.includes('value'))) {
+        colMap.totalValue = ci;
+      }
+    }
+    
+    // If column detection failed, try to use positional columns (VBA standard format)
+    if (colMap.houseCount === -1 && headers.length >= 6) {
+      // Assume standard position: Municipality=0, NewHousesCount=1, NewHouses$=2, 
+      // NewMultiCount=3, NewMulti$=4, AltCount=5, Alt$=6, CommCount=7, Comm$=8, TotalCount=9, Total$=10
+      colMap.municipality = 0;
+      colMap.houseCount = 1;
+      colMap.houseValue = 2;
+      colMap.multiCount = 3;
+      colMap.multiValue = 4;
+      colMap.altCount = 5;
+      colMap.altValue = 6;
+      colMap.commCount = 7;
+      colMap.commValue = 8;
+      colMap.totalCount = 9;
+      colMap.totalValue = 10;
+    }
+    
+    if (colMap.municipality === -1) {
+      console.error(`    [parse] Cannot find municipality column in ${path.basename(filePath)}`);
+      console.error(`    Headers: ${headers.join(' | ')}`);
+      return [];
+    }
+    
+    // Parse data rows
+    const records = [];
+    for (let ri = headerRow + 1; ri < rows.length; ri++) {
+      const row = rows[ri];
+      if (!row || row.length === 0) continue;
+      
+      const lgaName = String(row[colMap.municipality] || '').trim();
+      
+      // Skip empty, totals, and non-LGA rows
+      if (!lgaName || 
+          lgaName.toLowerCase().includes('total') ||
+          lgaName.toLowerCase().includes('grand total') ||
+          lgaName.toLowerCase().includes('subtotal')) {
+        continue;
+      }
+      
+      // Skip rows that are section headers or summaries (no numeric data in count columns)
+      if (colMap.totalCount >= 0) {
+        const totalVal = parseFloat(row[colMap.totalCount]) || 0;
+        if (totalVal === 0 && colMap.houseCount >= 0) {
+          const hCount = parseFloat(row[colMap.houseCount]) || 0;
+          if (hCount === 0) continue; // Skip header rows
+        }
+      }
+      
+      const getNum = (idx) => {
+        if (idx < 0 || idx >= row.length) return 0;
+        const val = row[idx];
+        if (val === '' || val === null || val === undefined) return 0;
+        const num = parseFloat(String(val).replace(/[$,]/g, ''));
+        return isNaN(num) ? 0 : num;
+      };
+      
+      const permits = {
+        newResidential:   getNum(colMap.houseCount),
+        newMultiUnit:     getNum(colMap.multiCount),
+        alterations:      getNum(colMap.altCount),
+        commercial:       getNum(colMap.commCount),
+        total:            getNum(colMap.totalCount)
+      };
+      
+      const values = {
+        newResidential:   getNum(colMap.houseValue),
+        newMultiUnit:     getNum(colMap.multiValue),
+        alterations:      getNum(colMap.altValue),
+        commercial:       getNum(colMap.commValue),
+        total:            getNum(colMap.totalValue)
+      };
+      
+      records.push({ lgaName, permits, values });
+    }
+    
+    return records;
   } catch (err) {
-    console.error(`  [parse] Cannot parse ${filePath}: ${err.message}`);
+    console.error(`  [parse] Cannot parse ${path.basename(filePath)}: ${err.message}`);
     return [];
   }
-  // Implement actual parsing based on real file format
-  // This will be refined after inspecting actual file structure
-  return [];
 }
 
 async function loadLgaNameMap() {

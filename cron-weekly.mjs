@@ -130,6 +130,16 @@ async function main() {
     console.warn("[Cron Weekly] Land size stats regeneration failed (non-fatal):", regenErr.message);
   }
 
+  // ── Post-step: refresh UV V4 model scores ──
+  try {
+    console.log("[Cron Weekly] Running UV V4 model refresh...");
+    const { execSync } = await import("child_process");
+    execSync('node scripts/uv_v4_core_satellite.mjs', { stdio: 'inherit', timeout: 120000 });
+    console.log("[Cron Weekly] UV V4 scores updated.");
+  } catch (uvErr) {
+    console.warn("[Cron Weekly] UV V4 refresh failed (non-fatal):", uvErr.message);
+  }
+
   process.exit(0);
 }
 
