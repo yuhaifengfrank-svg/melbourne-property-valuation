@@ -23,8 +23,19 @@ if [ $? -ne 0 ]; then
 fi
 
 cd /Users/FrankAI/Documents/澳洲房地产评估系统 || exit 1
+
+NODE_BIN="/Users/FrankAI/.local/bin/node"
+if [ ! -x "$NODE_BIN" ]; then
+  echo "[cron-weekly] Node executable unavailable: $NODE_BIN" >&2
+  exit 1
+fi
+
+# Load the database URL locally so credentials are not embedded in crontab.
+if [ -z "$DATABASE_URL" ] && [ -f .env ]; then
+  export DATABASE_URL="$(grep -E "^DATABASE_URL='" .env | sed "s/^DATABASE_URL='//;s/'$//")"
+fi
 if [ -z "$DATABASE_URL" ]; then
   echo "DATABASE_URL is not set; aborting cron-weekly." >&2
   exit 1
 fi
-node cron-weekly.mjs >> /tmp/cron-weekly.log 2>&1
+"$NODE_BIN" cron-weekly.mjs >> /tmp/cron-weekly.log 2>&1
