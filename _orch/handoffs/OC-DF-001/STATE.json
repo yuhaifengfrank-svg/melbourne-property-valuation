@@ -1,0 +1,20 @@
+{
+  "task_id": "OC-DF-001",
+  "status": "completed",
+  "completed_at": "2026-06-30T17:00:00+10:00",
+  "agent": "OpenClaw",
+  "branch": "deploy/oracle-artifacts",
+  "head_commit": "e0cc8e6",
+  "pushed": true,
+  "database_environment": "none",
+  "production_changed": false,
+  "artifacts": [
+    "_orch/handoffs/OC-DF-001/DATA_SOURCE_REGISTRY_PROPOSAL.md"
+  ],
+  "tests": {
+    "passed": 0,
+    "failed": 0
+  },
+  "next_task_id": "CX-DF-001 (Codex review), then OC-CP-001+",
+  "requires_codex_review": true
+}

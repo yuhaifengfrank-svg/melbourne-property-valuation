@@ -1,0 +1,24 @@
+{
+  "task_id": "OC-DF-001-R1",
+  "status": "completed",
+  "completed_at": "2026-06-30T17:40:00+10:00",
+  "agent": "OpenClaw",
+  "branch": "deploy/oracle-artifacts",
+  "head_commit": "e0cc8e6",
+  "pushed": true,
+  "database_environment": "production (read-only verification)",
+  "production_changed": false,
+  "database_writes": 0,
+  "deployments": 0,
+  "codex_review": "CX-DF-001 — all required changes applied",
+  "next_task_id": "CX-DF-002 (awaiting Codex registry schema approval)",
+  "requires_codex_review": true,
+  "artifacts": [
+    "_orch/handoffs/OC-DF-001-R1/SUMMARY.md",
+    "_orch/handoffs/OC-DF-001-R1/STATE.json",
+    "_orch/handoffs/OC-DF-001-R1/FILES.md",
+    "_orch/handoffs/OC-DF-001-R1/QA.md",
+    "_orch/handoffs/OC-DF-001-R1/DATA_LINEAGE.md",
+    "_orch/handoffs/OC-DF-001-R1/NEXT.md"
+  ]
+}

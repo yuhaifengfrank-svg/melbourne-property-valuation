@@ -1,0 +1,14 @@
+{
+  "task_id": "CX-DF-011",
+  "status": "completed",
+  "result": "changes_requested",
+  "reviewed_branch": "openclaw/data-oc-df-003",
+  "reviewed_head": "2db79c82294412509d0e932f3396201f3c6c0175",
+  "accepted_dependency_rows": 82,
+  "blocking_definition_seed_issues": 2,
+  "database_connections": 0,
+  "database_writes": 0,
+  "deployments": 0,
+  "next_task": "OC-DF-003-R1",
+  "next_task_database_write": "forbidden"
+}

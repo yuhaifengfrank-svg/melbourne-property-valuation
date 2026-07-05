@@ -1,0 +1,40 @@
+{
+  "task_id": "OC-DF-001-R2",
+  "status": "completed",
+  "completed_at": "2026-06-30T17:55:00+10:00",
+  "agent": "OpenClaw",
+  "branch": "deploy/oracle-artifacts",
+  "head_commit": "e0cc8e6",
+  "pushed": false,
+  "artifact_tracked": false,
+  "database_environment": "Production Neon (read-only verification)",
+  "database_writes": 0,
+  "deployments": 0,
+  "codex_review": "CX-DF-002 — all corrections applied; awaiting CX-DF-003 final approval",
+  "next_task_id": "CX-DF-003 (final Codex review)",
+  "requires_codex_review": true,
+  "artifacts": [
+    "_orch/handoffs/OC-DF-001-R2/SUMMARY.md",
+    "_orch/handoffs/OC-DF-001-R2/STATE.json",
+    "_orch/handoffs/OC-DF-001-R2/FILES.md",
+    "_orch/handoffs/OC-DF-001-R2/QA.md",
+    "_orch/handoffs/OC-DF-001-R2/DATA_LINEAGE.md",
+    "_orch/handoffs/OC-DF-001-R2/NEXT.md"
+  ],
+  "continuity_artifacts": [
+    "_orch/docs/HANDOVER.md",
+    "_orch/docs/PROJECT_STATUS.md",
+    "_orch/docs/NEXT_ACTION.md",
+    "_orch/docs/AGENT_ACTIVITY_LOG.md",
+    "_orch/docs/AGENT_TASK_QUEUE.md"
+  ],
+  "tests": {
+    "db_verification_queries": 10,
+    "db_verification_passed": 10,
+    "db_verification_failed": 0,
+    "web_fetch_checks": 5,
+    "file_presence_checks": 3,
+    "git_tracking_checks": 1
+  },
+  "vba_raw_checksum": "unavailable (file not in repo; on local machine only)"
+}

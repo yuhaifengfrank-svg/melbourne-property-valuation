@@ -1,0 +1,12 @@
+{
+  "task_id": "CX-DF-001",
+  "status": "completed",
+  "completed_at": "2026-06-30T17:30:00+10:00",
+  "agent": "Codex",
+  "database_environment": "production-read-only",
+  "production_changed": false,
+  "decision": "changes_requested",
+  "reviewed_tasks": ["OC-DF-000", "OC-DF-001"],
+  "review": "_orch/handoffs/CX-DF-001/REVIEW.md",
+  "next_task_id": "OC-DF-001-R1"
+}

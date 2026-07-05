@@ -20,7 +20,7 @@
     "test:content": "node tests/content-scan.mjs"
   },
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.1",
+    "@neondatabase/serverless": "^1.1.0",
     "@turf/turf": "^7.3.5",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
