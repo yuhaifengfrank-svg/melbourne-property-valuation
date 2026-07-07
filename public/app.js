@@ -1030,11 +1030,8 @@ function normalizeAddress(value) {
     .replace(/\bapartment(\d+)\b/g, "apartment $1")
     .replace(/\bu\s*(\d+)\b/g, "unit $1")
     .replace(/\bunit(\d+)\b/g, "unit $1")
-    // AU address convention: "2-11 mcintosh st" = Unit 2, 11 McIntosh St (not a range)
-    // Normalize to "2/11" so addressSignature treats it as a unit correctly
-    .replace(/\b(\d+)\s*-\s*(\d+)\b/g, "$1/$2")
     .replace(/\b(no|num|number|#)\s*(\d+)\b/g, "$2")
-    .replace(/[,.-]/g, " ")
+    .replace(/[,.]/g, " ")
     .replace(/\bvic\b/g, "")
     .replace(/\b3\d{3}\b/g, "")
     .replace(/\bst\b/g, "street")
@@ -1045,19 +1042,23 @@ function normalizeAddress(value) {
     .trim();
 }
 
-function getAddressSignature(value) {
+function getAddressSignature(value, selectedType = "") {
   const normalized = normalizeAddress(value);
-  const slashMatch = normalized.match(/\b(\d+)\s*\/\s*(\d+)\b/);
+  const attachedType = /^(unit|townhouse|villa|apartment)$/i.test(String(selectedType || ""));
+  const hyphenMatch = normalized.match(/^([a-z\d]+)\s*-\s*(\d+[a-z]?)\s+/i);
+  const hyphenIsUnit = Boolean(attachedType && hyphenMatch);
+  const parsed = hyphenIsUnit ? normalized.replace(/^([a-z\d]+)\s*-\s*(\d+[a-z]?)\b/i, "$1/$2") : normalized;
+  const slashMatch = parsed.match(/\b([a-z\d]+)\s*\/\s*(\d+[a-z]?)\b/i);
   const unitMatch = normalized.match(/\bunit\s+(\d+)\b/);
   const apartmentMatch = normalized.match(/\b(?:apartment|apt|flat)\s+([a-z]?\d+[a-z]?)\b/);
-  const streetMatch = normalized.match(/\b(\d+)\s+([a-z]+(?:\s+[a-z]+)*)\s+(street|avenue|road|grove|drive|court|crescent|parade|place|lane)\b/);
+  const streetMatch = parsed.match(/\b(\d+(?:\s*-\s*\d+)?)\s+([a-z]+(?:\s+[a-z]+)*)\s+(street|avenue|road|grove|drive|court|crescent|parade|place|lane)\b/);
   const streetNumber = slashMatch?.[2] || streetMatch?.[1] || "";
   const streetName = streetMatch ? `${streetMatch[2]} ${streetMatch[3]}` : "";
   const unitNumber = slashMatch?.[1] || apartmentMatch?.[1] || unitMatch?.[1] || "";
   const unitWordStartsAddress = Boolean(normalized.match(/^unit\s+\d+\s+[a-z]+/));
   const ambiguousUnitAsStreetNumber = unitWordStartsAddress && unitNumber === streetNumber;
   const hasApartmentSignal = /\bapartment\b|\bapt\b|\bflat\b|\blevel\s+\d+\b|^\s*\d{3,5}\s*\//.test(normalized);
-  const hasUnitSignal = /\bunit\b|\b\d+\s*\/\s*\d+\b|\bapartment\b|\bapt\b|\bflat\b/.test(normalized);
+  const hasUnitSignal = hyphenIsUnit || /\bunit\b|\b\d+\s*\/\s*\d+\b|\bapartment\b|\bapt\b|\bflat\b/.test(parsed);
 
   return {
     normalized,
@@ -1219,7 +1220,7 @@ function inferPropertyTypeFromAddress(address, directAddressMatch = null, select
   if (directAddressMatch) return directAddressMatch.type;
   if (selectedType === "Commercial") return "Commercial";
   const normalized = normalizeAddress(address);
-  const signature = getAddressSignature(address);
+  const signature = getAddressSignature(address, selectedType);
 
   if (/\b(vacant land|development site|land only|land)\b/.test(normalized)) return "Vacant land";
   if (/\b(shop|retail|office|warehouse|commercial|factory)\b/.test(normalized)) return "Commercial";
@@ -1393,8 +1394,8 @@ async function runAddressValuation(address, selectedType = "", selectedState = "
         status: conf.label || "",
         statusZh: conf.label || "",
         customerDataStatus: result.customerDataStatus || "",
-        valuationMode: "standard_house",
-        experimentalLabel: null,
+        valuationMode: result.valuationMode || "standard_house",
+        experimentalLabel: result.experimentalLabel || null,
         modelVersion: "",
         comparables: Array.isArray(result.comparables) ? result.comparables.map(function(c) {
           return [
@@ -3060,9 +3061,9 @@ byId("start-valuation").addEventListener("click", async () => {
   // Infer property type from address and auto-select matching chip
   // (only if user hasn't manually selected a different type recently)
   const { canonicalAddress, effectiveSuburb } = buildEnteredAddress();
-  const inferredType = inferPropertyTypeFromAddress(canonicalAddress || byId("address").value);
+  const currentActive = document.querySelector(".chip.active")?.dataset.type || "House";
+  const inferredType = inferPropertyTypeFromAddress(canonicalAddress || byId("address").value, null, currentActive);
   if (inferredType) {
-    const currentActive = document.querySelector(".chip.active")?.dataset.type;
     // Only auto-select if user hasn't changed from the default (House)
     // or if the current selection is incompatible with the inferred type
     if (!currentActive || currentActive === "House" || currentActive === inferredType) {

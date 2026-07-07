@@ -100,17 +100,21 @@ function buildFreeSummary(fullResult) {
   const subject = fullResult.subject || {};
   const comparables = val.acceptedComparables || fullResult.comparables || [];
   const confidence = val.confidence || {};
+  const crossVerified = comparables.filter(c => c.verificationStatus === "cross_source_verified").length;
 
   // Why this estimate: data source + model description + disclaimer
   const keyFactors = [
     "This estimate is generated from comparable sales data, public property records and suburb-level market analysis.",
-    "Our valuation model applies multi-factor adjustments (property attributes, location, education, vacancy, supply constraints, census consistency) and is calibrated against thousands of accepted comparable sale transactions.",
+    comparables.length > 0
+      ? `This estimate uses ${comparables.length} accepted comparable sale${comparables.length === 1 ? "" : "s"} after type, price and location checks.`
+      : "No accepted comparable sale was available; the estimate uses suburb-level market evidence and property factors.",
     "Disclaimer: This is a free summary for general information and research purposes only. Not a formal valuation, credit decision, legal, tax or financial advice. Consult licensed professionals before making transaction or financing decisions."
   ];
 
   // Data limitations
   const limitations = [];
   if (comparables.length < 3) limitations.push("Limited comparable sales data in this area");
+  if (comparables.length > 0 && crossVerified === 0) limitations.push("Accepted sales have not yet been cross-verified across independent sources");
   if (confidence.label === "Low") limitations.push("Valuation confidence is low — further evidence may improve accuracy");
   if (!est.midpoint) limitations.push("Estimate is based on available public data only");
   if (limitations.length === 0) limitations.push("Valuation is based on publicly available market data");
@@ -134,6 +138,9 @@ function buildFreeSummary(fullResult) {
     keyFactors: keyFactors,
     dataLimitations: limitations,
     customerDataStatus: mapCustomerDataStatus(fullResult),
+    valuationMode: fullResult.valuationMode || "standard_house",
+    experimentalLabel: fullResult.largeLotResult?.experimental || null,
+    heritage: fullResult.heritage || null,
     propertyFutureOutlook: fullResult.propertyFutureOutlook || null,
     suburbFutureOutlook: fullResult.suburbFutureOutlook || null,
     planningSignals: fullResult.planningSignals || null,
@@ -431,7 +438,8 @@ export default async function handler(request, response) {
       .send(JSON.stringify({
         ok: false,
         status: "error",
-        error: error.message,
+        error: "Valuation service is temporarily unavailable",
+        code: "VALUATION_UNAVAILABLE",
         estimate: null,
         customerDataStatus: "unavailable",
         disclaimer: "This free valuation summary is based on publicly available market data for general information only. This is not a formal valuation."
