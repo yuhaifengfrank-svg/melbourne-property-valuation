@@ -17,7 +17,9 @@
     "update-status": "node scripts/update-status.mjs",
     "video:assets": "node scripts/video-factory/capture-topic.mjs --all",
     "video:topic": "node scripts/video-factory/capture-topic.mjs --topic",
-    "test:content": "node tests/content-scan.mjs"
+    "test:content": "node tests/content-scan.mjs",
+    "generate:suburbs": "node scripts/generate-suburb-pages.js",
+    "audit:suburbs": "node --test tests/suburb-page-data-audit.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

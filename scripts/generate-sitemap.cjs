@@ -91,7 +91,11 @@ function collectUrls() {
   // Suburb pages
   const suburbDir = path.join(PUBLIC, 'suburb');
   if (fs.existsSync(suburbDir)) {
-    const suburbFiles = fs.readdirSync(suburbDir).filter(f => f.endsWith('.html'));
+    const suburbFiles = fs.readdirSync(suburbDir).filter(f => {
+      if (!f.endsWith('.html')) return false;
+      const html = fs.readFileSync(path.join(suburbDir, f), 'utf8');
+      return !/<meta\s+name=["']robots["']\s+content=["'][^"']*noindex/i.test(html);
+    });
     for (const f of suburbFiles) {
       urls.push({ path: '/suburb/' + f, lastmod: getFileMtime(path.join(suburbDir, f)) });
     }
