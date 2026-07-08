@@ -64,13 +64,16 @@ test("three-layer funnel is explicit and keeps 3.99 separate from 9.99", () => {
   assert.match(text, /key risks/i);
 });
 
-test("Investor Watch copy is subscription monitoring, not the one-time report", () => {
+test("Investor Watch includes full reports while standalone purchase remains separate", () => {
   const document = dom().window.document;
   const panel = document.querySelector("#investor-watch");
   assert.ok(panel, "investor watch panel exists");
   const text = panel.textContent;
   assert.match(text, /AUD \$9\.99\/month/);
-  assert.match(text, /AUD \$3\.99 one-time/);
+  assert.match(text, /Included with subscription/);
+  assert.match(text, /without a separate AUD \$3\.99 purchase/);
+  assert.doesNotMatch(text, /AUD \$3\.99 one-time/);
+  assert.match(document.querySelector(".product-funnel")?.textContent || "", /AUD \$3\.99 one-time/);
   assert.match(text, /watchlist/i);
   assert.match(text, /Future Opportunity Scores/i);
   assert.match(text, /zoning and overlay signals when new data is available/i);
