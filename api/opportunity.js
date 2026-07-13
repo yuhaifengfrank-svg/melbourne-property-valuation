@@ -13,11 +13,13 @@ import {
   supportedFutureStrategies,
 } from '../lib/future-opportunity-outlook.js';
 import suburbIntelligenceHandler from '../lib/suburb-intelligence-handler.js';
+import { assertDatabaseEnvironment } from './_db.js';
 
 let _sql = null;
 function getSql() {
-  if (!_sql && process.env.DATABASE_URL) {
-    _sql = neon(process.env.DATABASE_URL, { fetchOptions: { cache: 'no-store' } });
+  const connectionString = assertDatabaseEnvironment();
+  if (!_sql) {
+    _sql = neon(connectionString, { fetchOptions: { cache: 'no-store' } });
   }
   return _sql;
 }
