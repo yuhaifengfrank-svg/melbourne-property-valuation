@@ -5,6 +5,7 @@ import {
   archiveWatchItem,
   canonicalizeWatchItem,
   listWatchItems,
+  listWatchHistory,
   updateWatchItem,
 } from "../lib/investor-watch-service.js";
 
@@ -71,4 +72,15 @@ test("list, update and archive always scope by authenticated contact", async () 
     assert.match(query.raw, /lead_contact_id/);
     assert.ok(query.values.includes(42));
   }
+});
+
+test("history is scoped through watch-item ownership and capped", async () => {
+  const sql = async (strings, ...values) => {
+    const raw = strings.join("?");
+    assert.match(raw, /JOIN investor_watch_items/);
+    assert.match(raw, /i\.lead_contact_id/);
+    assert.deepEqual(values, [9, 42, 100]);
+    return [];
+  };
+  await listWatchHistory(sql, 42, 9, 999);
 });

@@ -5,6 +5,7 @@ import {
   archiveWatchItem,
   getWatchStatus,
   listWatchItems,
+  listWatchHistory,
   updateWatchItem,
 } from "../lib/investor-watch-service.js";
 
@@ -35,6 +36,10 @@ export default async function handler(request, response) {
     if (action === "items" && request.method === "GET") {
       const items = await listWatchItems(sql, member.leadContactId, request.query?.archived === "1");
       return response.status(200).json({ ok: true, items });
+    }
+    if (action === "history" && request.method === "GET") {
+      const history = await listWatchHistory(sql, member.leadContactId, request.query?.id, request.query?.limit);
+      return response.status(200).json({ ok: true, history });
     }
     if (action === "add" && request.method === "POST") {
       return response.status(201).json({ ok: true, item: await addWatchItem(sql, member.leadContactId, bodyOf(request)) });
