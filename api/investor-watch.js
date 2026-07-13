@@ -1,5 +1,7 @@
+import crypto from "node:crypto";
 import { getSql } from "./_db.js";
 import { resolveMemberSession } from "../lib/member-session-service.js";
+import { captureSuburbWatchScores } from "../lib/investor-watch-monitor-service.js";
 import {
   addWatchItem,
   archiveWatchItem,
@@ -17,6 +19,13 @@ function bodyOf(request) {
   return typeof request.body === "string" ? JSON.parse(request.body) : request.body;
 }
 
+function hasCronAccess(request) {
+  const expected = process.env.CRON_SECRET || "";
+  const supplied = String(request.headers?.authorization || "").replace(/^Bearer\s+/i, "");
+  if (!expected || supplied.length !== expected.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(supplied), Buffer.from(expected));
+}
+
 const CLIENT_ERRORS = new Set([
   "INVALID_ITEM_ID", "INVALID_ITEM_TYPE", "INVALID_STATE", "INVALID_POSTCODE",
   "INVALID_INVESTMENT_GOAL", "SUBURB_REQUIRED", "ADDRESS_REQUIRED", "INVALID_ADDRESS",
@@ -26,9 +35,14 @@ export default async function handler(request, response) {
   response.setHeader("Cache-Control", "no-store");
   try {
     const sql = testSql || getSql();
+    const action = typeof request.query?.action === "string" ? request.query.action : "items";
+    if (action === "monitor") {
+      if (request.method !== "GET") return response.status(405).json({ ok: false, error: "METHOD_NOT_ALLOWED" });
+      if (!hasCronAccess(request)) return response.status(401).json({ ok: false, error: "UNAUTHENTICATED" });
+      return response.status(200).json({ ok: true, summary: await captureSuburbWatchScores(sql) });
+    }
     const member = await resolveMemberSession(sql, request);
     if (!member) return response.status(401).json({ ok: false, error: "UNAUTHENTICATED" });
-    const action = typeof request.query?.action === "string" ? request.query.action : "items";
 
     if (action === "status" && request.method === "GET") {
       return response.status(200).json({ ok: true, membership: await getWatchStatus(sql, member.leadContactId) });

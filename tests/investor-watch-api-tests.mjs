@@ -19,6 +19,30 @@ function request(method, action, body, cookie = "session-token") {
   };
 }
 
+test("monitor action is cron-only and does not require a member session", async () => {
+  const previous = process.env.CRON_SECRET;
+  process.env.CRON_SECRET = "test-cron-secret";
+  setTestSql(async (strings) => {
+    assert.match(strings.join("?"), /FROM investor_watch_items/);
+    return [];
+  });
+
+  const denied = responseRecorder();
+  await handler({ method: "GET", query: { action: "monitor" }, headers: {} }, denied);
+  assert.equal(denied.statusCode, 401);
+
+  const allowed = responseRecorder();
+  await handler({
+    method: "GET", query: { action: "monitor" },
+    headers: { authorization: "Bearer test-cron-secret" },
+  }, allowed);
+  assert.equal(allowed.statusCode, 200);
+  assert.deepEqual(allowed.body.summary, { candidates: 0, captured: 0, events: 0 });
+
+  if (previous === undefined) delete process.env.CRON_SECRET;
+  else process.env.CRON_SECRET = previous;
+});
+
 function memberSql(nextQuery) {
   return async (strings, ...values) => {
     const raw = strings.join("?");

@@ -61,23 +61,23 @@ assert("T2: #investor-watch section present", /id="investor-watch"/.test(html));
 // 1c. INR $9.99/month price present (EN copy)
 assert('T3: AUD $9.99 price text in HTML', /AUD.*9\.99/.test(html));
 
-// 1d. $9.99/月 price present (ZH copy)
-assert('T4: AUD $9.99/月 price text in HTML', /AUD.*9\.99.*月/.test(html));
+// 1d. Chinese price copy lives in the runtime i18n map, not duplicated in HTML.
+assert('T4: AUD $9.99/月 price i18n hook in HTML', /data-i18n="investor-watch-price"/.test(html));
 
 // 1e. $3.99 one-time present
 assert("T5: $3.99 one-time price present", /\$3\.99/.test(html));
 
 // 1f. Feature list present
-assert("T6: Feature list 'Opportunity Watchlist'", /Opportunity Watchlist/.test(html));
-assert("T7: Feature list 'Future Outlook Scores'", /Future Outlook Scores/.test(html));
-assert("T8: Feature list 'Saved property tracking'", /Saved property tracking/.test(html));
-assert("T9: Feature list 'New suburb opportunity alerts'", /New suburb opportunity alerts/.test(html));
+assert("T6: Feature list has watchlist saving", /Save suburbs and properties to a watchlist/.test(html));
+assert("T7: Feature list has Future Opportunity Scores", /Track Future Opportunity Scores/.test(html));
+assert("T8: Feature list has planning signals", /Monitor zoning and overlay signals/.test(html));
+assert("T9: Feature list has property comparison", /Compare multiple properties before buying/.test(html));
 
-// 1g. "Coming Soon" button
-assert("T10: 'Coming Soon' button present", /Coming Soon/.test(html));
+// 1g. Preview CTA
+assert("T10: Free Preview CTA present", /Join Investor Watch — Free Preview/.test(html));
 
-// 1h. ZH "Coming Soon"
-assert("T11: 即将开放 text present", /即将开放/.test(html));
+// 1h. Chinese CTA is populated by app.js through this hook.
+assert("T11: CTA i18n hook present", /data-i18n="investor-watch-coming-soon"/.test(html));
 
 // 1i. data-i18n attributes present
 assert("T12: data-i18n investor-watch-eyebrow", /data-i18n="investor-watch-eyebrow"/.test(html));
@@ -117,7 +117,7 @@ assert("T29: ZH investorWatchPrice contains $3.99 一次性", /3\.99 一次性/.
 assert("T30: ZH investorWatchCta contains 即将开放", /即将开放/.test(rvjs));
 
 // Section rendering code
-assert("T31: Section 12 appendSection for investor watch", /12\. Investor Watch upsell/.test(rvjs));
+assert("T31: Section 13 appendSection for investor watch", /13\. Investor Watch upsell/.test(rvjs));
 assert("T32: appendBulletList called with investorWatchFeatures", /appendBulletList.*investorWatchFeatures/.test(rvjs));
 
 // ===============================================================
