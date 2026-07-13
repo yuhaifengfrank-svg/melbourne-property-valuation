@@ -3,7 +3,7 @@
  * production-valuation-audit-large.mjs
  *
  * Runs N valuations against production API from DB-sampled addresses.
- * Gets the sample from /api/audit-sample to avoid local DATABASE_URL dependency.
+ * Gets the sample through /api/valuation?audit_sample=1 to avoid local DATABASE_URL dependency.
  *
  * Targets ~50% House / ~50% Unit, covering diverse suburbs.
  *
@@ -19,7 +19,7 @@ const API_BASE = (() => {
   return idx >= 0 ? process.argv[idx + 1] : "https://aushomevalue.com.au";
 })();
 
-const AUDIT_SAMPLE_URL = `${API_BASE}/api/audit-sample`;
+const AUDIT_SAMPLE_URL = `${API_BASE}/api/valuation?audit_sample=1`;
 const VALUATION_URL = `${API_BASE}/api/valuation`;
 
 const TARGET_COUNT = (() => {

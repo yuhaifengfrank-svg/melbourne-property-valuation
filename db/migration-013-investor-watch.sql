@@ -93,6 +93,42 @@ CREATE INDEX IF NOT EXISTS idx_iw_items_contact_status
 CREATE INDEX IF NOT EXISTS idx_iw_items_suburb_state
   ON investor_watch_items (suburb, state) WHERE status = 'active';
 
+CREATE OR REPLACE FUNCTION enforce_investor_watch_limit()
+RETURNS TRIGGER AS $$
+DECLARE
+  allowed_limit INTEGER;
+  current_count INTEGER;
+BEGIN
+  IF NEW.status <> 'active' THEN RETURN NEW; END IF;
+  IF EXISTS (
+    SELECT 1 FROM investor_watch_items
+    WHERE lead_contact_id = NEW.lead_contact_id
+      AND canonical_item_key = NEW.canonical_item_key
+      AND status = 'active'
+  ) THEN RETURN NEW; END IF;
+
+  SELECT CASE WHEN NEW.item_type = 'suburb' THEN suburb_limit ELSE property_limit END
+    INTO allowed_limit
+    FROM investor_watch_memberships
+    WHERE lead_contact_id = NEW.lead_contact_id
+    FOR UPDATE;
+  IF allowed_limit IS NULL THEN RAISE EXCEPTION 'INVESTOR_WATCH_MEMBERSHIP_REQUIRED'; END IF;
+
+  SELECT COUNT(*) INTO current_count
+    FROM investor_watch_items
+    WHERE lead_contact_id = NEW.lead_contact_id
+      AND item_type = NEW.item_type
+      AND status = 'active';
+  IF current_count >= allowed_limit THEN RAISE EXCEPTION 'INVESTOR_WATCH_LIMIT_REACHED'; END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_enforce_investor_watch_limit ON investor_watch_items;
+CREATE TRIGGER trg_enforce_investor_watch_limit
+  BEFORE INSERT OR UPDATE OF status ON investor_watch_items
+  FOR EACH ROW EXECUTE FUNCTION enforce_investor_watch_limit();
+
 CREATE TABLE IF NOT EXISTS investor_watch_score_history (
   id BIGSERIAL PRIMARY KEY,
   watch_item_id BIGINT NOT NULL REFERENCES investor_watch_items(id) ON DELETE CASCADE,

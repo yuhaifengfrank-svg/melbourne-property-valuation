@@ -10,6 +10,10 @@
       "destination": "/api/member?action=$1"
     },
     {
+      "source": "/api/investor-watch/(.*)",
+      "destination": "/api/investor-watch?action=$1"
+    },
+    {
       "source": "/robots.txt",
       "destination": "/public/robots.txt"
     },

@@ -37,6 +37,8 @@ test("watch ownership, active uniqueness, quotas and history versioning are cons
   assert.match(migration, /suburb_limit INTEGER NOT NULL DEFAULT 3/);
   assert.match(migration, /property_limit INTEGER NOT NULL DEFAULT 2/);
   assert.match(migration, /UNIQUE \(watch_item_id, model_version, data_as_of\)/);
+  assert.match(migration, /CREATE TRIGGER trg_enforce_investor_watch_limit/);
+  assert.match(migration, /FOR UPDATE/);
 });
 
 test("notifications are fail-closed in the MVP", () => {
