@@ -34,10 +34,15 @@ function makeMagicLinkSql(options = {}) {
     inserts: [],
     invalidations: 0,
     consents: [],
+    memberships: [],
   };
   const sql = async (strings, ...values) => {
     const raw = renderSql(strings, values);
     if (raw.includes("INSERT INTO lead_contacts")) return [{ id: 42 }];
+    if (raw.includes("INSERT INTO investor_watch_memberships")) {
+      state.memberships.push({ leadContactId: values[0], status: "free" });
+      return [];
+    }
     if (raw.includes("INSERT INTO consent_records")) {
       state.consents.push({
         leadContactId: values[0],
@@ -124,6 +129,7 @@ test("requestMemberMagicLink stores only token hash and sends one-time URL", asy
 
   assert.deepEqual(result, { accepted: true, sent: true, rateLimited: false });
   assert.equal(state.inserts.length, 1);
+  assert.deepEqual(state.memberships, [{ leadContactId: 42, status: "free" }]);
   assert.equal(state.consents.length, 1);
   assert.equal(state.consents[0].leadContactId, 42);
   assert.equal(state.consents[0].ipHash.length, 64);

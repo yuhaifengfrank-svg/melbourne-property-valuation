@@ -3,16 +3,16 @@ import test from "node:test";
 import { MEMBER_SESSION_COOKIE, hashOpaqueToken } from "../lib/member-session-service.js";
 import requestLinkHandler, {
   setTestDependencies as setRequestLinkDependencies,
-} from "../api/member/request-link.js";
+} from "../lib/member-api/request-link.js";
 import verifyHandler, {
   setTestDependencies as setVerifyDependencies,
-} from "../api/member/verify.js";
+} from "../lib/member-api/verify.js";
 import meHandler, {
   setTestDependencies as setMeDependencies,
-} from "../api/member/me.js";
+} from "../lib/member-api/me.js";
 import logoutHandler, {
   setTestDependencies as setLogoutDependencies,
-} from "../api/member/logout.js";
+} from "../lib/member-api/logout.js";
 
 function renderSql(strings, values) {
   return strings.map((part, index) =>
@@ -47,6 +47,7 @@ function makeRequestLinkSql(options = {}) {
   return async (strings, ...values) => {
     const raw = renderSql(strings, values);
     if (raw.includes("INSERT INTO lead_contacts")) return [{ id: 42 }];
+    if (raw.includes("INSERT INTO investor_watch_memberships")) return [];
     if (raw.includes("INSERT INTO consent_records")) return [];
     if (raw.includes("contact_count")) {
       return [{ contact_count: options.rateLimited ? 3 : 0, ip_count: 0 }];
