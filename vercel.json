@@ -6,6 +6,14 @@
   },
   "rewrites": [
     {
+      "source": "/api/lead-consent",
+      "destination": "/api/member?action=lead-consent"
+    },
+    {
+      "source": "/api/suburb-intelligence",
+      "destination": "/api/opportunity?action=suburb-intelligence"
+    },
+    {
       "source": "/api/member/(.*)",
       "destination": "/api/member?action=$1"
     },

@@ -38,8 +38,8 @@ test("homepage CTA opens the free preview without claiming paid availability", (
   assert.match(home, /Free preview\. No payment setup required\./);
 });
 
-test("Vercel serves the static dashboard and API count is unchanged by the UI", () => {
+test("Vercel serves the static dashboard within the Hobby function budget", () => {
   assert.ok(vercel.rewrites.some((rule) => rule.source === "/investor-watch/(.*)"));
   const apiFiles = fs.readdirSync(path.join(root, "api")).filter((name) => name.endsWith(".js") && name !== "_db.js");
-  assert.equal(apiFiles.length, 13);
+  assert.equal(apiFiles.length, 11);
 });

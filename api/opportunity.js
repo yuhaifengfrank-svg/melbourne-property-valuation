@@ -12,6 +12,7 @@ import {
   scoreFutureOpportunity,
   supportedFutureStrategies,
 } from '../lib/future-opportunity-outlook.js';
+import suburbIntelligenceHandler from '../lib/suburb-intelligence-handler.js';
 
 let _sql = null;
 function getSql() {
@@ -22,6 +23,9 @@ function getSql() {
 }
 
 export default async function handler(request, response) {
+  if (request.query?.action === 'suburb-intelligence') {
+    return suburbIntelligenceHandler(request, response);
+  }
   response.setHeader('Access-Control-Allow-Origin', '*');
   response.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   response.setHeader('Access-Control-Allow-Headers', 'Content-Type');

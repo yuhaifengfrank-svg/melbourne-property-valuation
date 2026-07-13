@@ -27,3 +27,10 @@ test("missing member action fails closed", async () => {
   await handler({ method: "GET", query: {} }, response);
   assert.equal(response.statusCode, 404);
 });
+
+test("legacy lead consent is routed through the member aggregator", async () => {
+  const response = responseRecorder();
+  await handler({ method: "OPTIONS", query: { action: "lead-consent" } }, response);
+  assert.equal(response.statusCode, 204);
+  assert.equal(response.headers["Access-Control-Allow-Methods"], "POST, OPTIONS");
+});

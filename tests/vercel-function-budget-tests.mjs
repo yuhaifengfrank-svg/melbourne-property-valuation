@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const apiDir = path.join(root, "api");
-const MAX_FUNCTIONS = 13;
+const MAX_FUNCTIONS = 12;
 
 function apiFunctions(directory) {
   return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -39,4 +39,14 @@ test("Investor Watch weekly monitoring uses the existing GitHub scheduler", () =
   assert.match(workflow, /secrets\.INVESTOR_WATCH_CRON_SECRET/);
   assert.match(workflow, /\/api\/investor-watch\/monitor/);
   assert.equal("crons" in vercel, false);
+});
+
+test("legacy lead consent and suburb intelligence URLs use aggregated functions", () => {
+  const vercel = JSON.parse(fs.readFileSync(path.join(root, "vercel.json"), "utf8"));
+  assert.ok(vercel.rewrites.some((rule) =>
+    rule.source === "/api/lead-consent" && rule.destination === "/api/member?action=lead-consent"
+  ));
+  assert.ok(vercel.rewrites.some((rule) =>
+    rule.source === "/api/suburb-intelligence" && rule.destination === "/api/opportunity?action=suburb-intelligence"
+  ));
 });
