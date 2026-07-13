@@ -4,12 +4,6 @@
       "maxDuration": 60
     }
   },
-  "crons": [
-    {
-      "path": "/api/investor-watch/monitor",
-      "schedule": "15 18 * * 0"
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/member/(.*)",

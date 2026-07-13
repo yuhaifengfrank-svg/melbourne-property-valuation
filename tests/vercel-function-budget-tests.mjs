@@ -31,3 +31,12 @@ test("Investor Watch must use aggregated APIs", () => {
   assert.equal(functions.some((name) => name.startsWith("member/")), false);
   assert.equal(functions.some((name) => name.startsWith("investor-watch/")), false);
 });
+
+test("Investor Watch weekly monitoring uses the existing GitHub scheduler", () => {
+  const workflow = fs.readFileSync(path.join(root, ".github/workflows/investor-watch-monitor.yml"), "utf8");
+  const vercel = JSON.parse(fs.readFileSync(path.join(root, "vercel.json"), "utf8"));
+  assert.match(workflow, /cron: '15 18 \* \* 0'/);
+  assert.match(workflow, /secrets\.INVESTOR_WATCH_CRON_SECRET/);
+  assert.match(workflow, /\/api\/investor-watch\/monitor/);
+  assert.equal("crons" in vercel, false);
+});

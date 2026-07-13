@@ -1,0 +1,29 @@
+name: Investor Watch Weekly Monitor
+
+on:
+  schedule:
+    # Monday 04:15 Melbourne time during AEST (Sunday 18:15 UTC).
+    - cron: '15 18 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: investor-watch-weekly-monitor
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Capture Investor Watch score snapshots
+        env:
+          CRON_SECRET: ${{ secrets.INVESTOR_WATCH_CRON_SECRET }}
+        run: |
+          test -n "$CRON_SECRET"
+          curl --fail-with-body --silent --show-error \
+            --retry 2 --retry-delay 5 \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "https://aushomevalue.com.au/api/investor-watch/monitor"
