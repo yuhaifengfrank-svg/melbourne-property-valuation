@@ -29,14 +29,17 @@ const expectedTables = [
   "investor_watch_items", "investor_watch_score_history",
   "investor_watch_change_events", "investor_watch_notification_preferences",
 ];
+const dependencyTables = [
+  "lead_contacts", "consent_records", "membership_report_usage", "suburb_metrics",
+];
 
 async function verify(client) {
   const dependencies = await client.query(`
     SELECT table_name FROM information_schema.tables
     WHERE table_schema = 'public' AND table_name = ANY($1::text[])
-  `, [["lead_contacts", "report_snapshots", "suburb_metrics"]]);
+  `, [dependencyTables]);
   const present = new Set(dependencies.rows.map((row) => row.table_name));
-  for (const dependency of ["lead_contacts", "report_snapshots", "suburb_metrics"]) {
+  for (const dependency of dependencyTables) {
     if (!present.has(dependency)) throw new Error(`Missing dependency: ${dependency}`);
   }
   const result = await client.query(`

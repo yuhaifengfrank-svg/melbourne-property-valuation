@@ -1,7 +1,7 @@
 # Investor Watch V1 implementation baseline
 
-Status: implementation in progress  
-Production base: `main` at `3fff7d7`  
+Status: implementation in progress
+Production base: `main` at `3fff7d7`
 Implementation branch: `feat/investor-watch-v1`
 
 ## Product boundary

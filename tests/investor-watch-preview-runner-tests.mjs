@@ -24,3 +24,12 @@ test("writes require an explicit one-purpose switch while verify remains read-on
   assert.match(source, /--apply/);
   assert.match(source, /--rollback/);
 });
+
+test("Preview runner verifies every table used by member and watch services", () => {
+  for (const table of [
+    "lead_contacts", "consent_records", "membership_report_usage", "suburb_metrics",
+  ]) {
+    assert.match(source, new RegExp(`\\b${table}\\b`));
+  }
+  assert.doesNotMatch(source, /\breport_snapshots\b/);
+});
