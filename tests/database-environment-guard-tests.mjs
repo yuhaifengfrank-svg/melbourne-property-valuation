@@ -6,8 +6,19 @@ const previewUrl = "postgresql://user:secret@preview-db.example/neondb";
 
 test("Preview database access requires an explicit approved hostname", () => {
   assert.throws(
-    () => assertDatabaseEnvironment({ VERCEL_ENV: "preview", DATABASE_URL: previewUrl }),
+    () => assertDatabaseEnvironment({ VERCEL_ENV: "preview", PREVIEW_DATABASE_URL: previewUrl }),
     /PREVIEW_DATABASE_HOST/
+  );
+});
+
+test("Preview ignores integration-injected DATABASE_URL and requires its dedicated URL", () => {
+  assert.throws(
+    () => assertDatabaseEnvironment({
+      VERCEL_ENV: "preview",
+      DATABASE_URL: "postgresql://user:secret@production-db.example/neondb",
+      PREVIEW_DATABASE_HOST: "preview-db.example",
+    }),
+    /PREVIEW_DATABASE_URL/
   );
 });
 
@@ -15,7 +26,7 @@ test("Preview database access rejects a different hostname", () => {
   assert.throws(
     () => assertDatabaseEnvironment({
       VERCEL_ENV: "preview",
-      DATABASE_URL: "postgresql://user:secret@production-db.example/neondb",
+      PREVIEW_DATABASE_URL: "postgresql://user:secret@production-db.example/neondb",
       PREVIEW_DATABASE_HOST: "preview-db.example",
     }),
     /not approved/
@@ -25,7 +36,8 @@ test("Preview database access rejects a different hostname", () => {
 test("Preview database access accepts only an exact hostname match", () => {
   assert.equal(assertDatabaseEnvironment({
     VERCEL_ENV: "preview",
-    DATABASE_URL: previewUrl,
+    DATABASE_URL: "postgresql://user:secret@production-db.example/neondb",
+    PREVIEW_DATABASE_URL: previewUrl,
     PREVIEW_DATABASE_HOST: "preview-db.example",
   }), previewUrl);
 });

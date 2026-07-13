@@ -9,10 +9,13 @@ let dataLayerInitialized = false;
 let _sql = null;
 
 export function assertDatabaseEnvironment(env = process.env) {
-  const connectionString = env.DATABASE_URL;
-  if (!connectionString) throw new Error("DATABASE_URL is not configured");
-  if (env.VERCEL_ENV !== "preview") return connectionString;
+  if (env.VERCEL_ENV !== "preview") {
+    if (!env.DATABASE_URL) throw new Error("DATABASE_URL is not configured");
+    return env.DATABASE_URL;
+  }
 
+  const connectionString = env.PREVIEW_DATABASE_URL;
+  if (!connectionString) throw new Error("PREVIEW_DATABASE_URL is not configured");
   const expectedHost = env.PREVIEW_DATABASE_HOST;
   if (!expectedHost) throw new Error("PREVIEW_DATABASE_HOST is not configured");
   let actualHost;
