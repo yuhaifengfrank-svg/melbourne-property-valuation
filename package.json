@@ -17,7 +17,8 @@
     "update-status": "node scripts/update-status.mjs",
     "video:assets": "node scripts/video-factory/capture-topic.mjs --all",
     "video:topic": "node scripts/video-factory/capture-topic.mjs --topic",
-    "test:content": "node tests/content-scan.mjs"
+    "test:content": "node tests/content-scan.mjs",
+    "test:investor-watch:baseline": "node --test tests/vercel-function-budget-tests.mjs tests/future-opportunity-outlook-tests.mjs tests/future-opportunity-api-tests.mjs tests/homepage-product-narrative-tests.mjs tests/report-entitlement-service-tests.mjs tests/create-report-checkout-tests.mjs tests/stripe-report-webhook-signature-tests.mjs"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.0.1",
