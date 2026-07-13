@@ -75,7 +75,8 @@ test("Investor Watch copy is subscription monitoring, not the one-time report", 
   assert.match(text, /Future Opportunity Scores/i);
   assert.match(text, /zoning and overlay signals when new data is available/i);
   assert.match(text, /Compare multiple properties/i);
-  assert.match(text, /Coming Soon/i);
+  assert.match(text, /Free Preview/i);
+  assert.match(text, /No payment setup required/i);
 });
 
 test("Top Opportunity and Investor Watch distinction is visible", () => {

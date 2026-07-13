@@ -30,6 +30,10 @@
       "destination": "/public/opportunities/$1"
     },
     {
+      "source": "/investor-watch/(.*)",
+      "destination": "/public/investor-watch/$1"
+    },
+    {
       "source": "/top-opportunities-snippet.html",
       "destination": "/public/top-opportunities-snippet.html"
     },

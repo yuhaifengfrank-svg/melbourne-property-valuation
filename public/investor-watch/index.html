@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Investor Watch | AusHomeValue</title>
+  <link rel="stylesheet" href="/investor-watch/investor-watch.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">AusHomeValue</a>
+    <div class="header-actions">
+      <button id="language-toggle" class="text-button" type="button">中文</button>
+      <button id="logout-button" class="text-button hidden" type="button" data-copy="logout">Log out</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">Investor Watch</p>
+      <h1 data-copy="title">Keep your property shortlist in one place.</h1>
+      <p data-copy="subtitle">Save suburbs and properties, review opportunity signals and build a history before you buy.</p>
+      <div class="preview-badge" data-copy="preview">Free preview · no payment required</div>
+    </section>
+
+    <section id="loading-panel" class="panel status-panel" aria-live="polite">
+      <div class="spinner"></div><p data-copy="loading">Checking your member session…</p>
+    </section>
+
+    <section id="login-panel" class="panel hidden">
+      <h2 data-copy="signIn">Sign in with a secure email link</h2>
+      <p data-copy="signInCopy">We will email you a one-time link. No password is required.</p>
+      <form id="login-form">
+        <label><span data-copy="email">Email address</span><input id="login-email" type="email" autocomplete="email" required maxlength="254"></label>
+        <label class="consent"><input id="service-consent" type="checkbox" required><span data-copy="consent">I agree to the processing required to provide Investor Watch.</span></label>
+        <button type="submit" class="primary" data-copy="sendLink">Send secure sign-in link</button>
+      </form>
+      <p id="login-message" class="message" aria-live="polite"></p>
+    </section>
+
+    <section id="dashboard" class="hidden">
+      <div class="summary-grid">
+        <article class="metric"><span data-copy="membership">Membership</span><strong id="membership-status">Free</strong></article>
+        <article class="metric"><span data-copy="suburbs">Saved suburbs</span><strong id="suburb-usage">0 / 3</strong></article>
+        <article class="metric"><span data-copy="properties">Saved properties</span><strong id="property-usage">0 / 2</strong></article>
+      </div>
+
+      <section class="panel">
+        <div class="panel-heading"><div><p class="eyebrow" data-copy="addEyebrow">Build your shortlist</p><h2 data-copy="addTitle">Add to Investor Watch</h2></div></div>
+        <form id="add-form" class="add-grid">
+          <label><span data-copy="type">Type</span><select id="item-type"><option value="suburb" data-copy="suburb">Suburb</option><option value="property" data-copy="property">Property</option></select></label>
+          <label><span data-copy="suburbName">Suburb name</span><input id="suburb" required maxlength="120"></label>
+          <label><span data-copy="postcode">Postcode</span><input id="postcode" inputmode="numeric" pattern="[0-9]{4}" maxlength="4"></label>
+          <label id="address-field" class="wide hidden"><span data-copy="address">Property address</span><input id="address" maxlength="300"></label>
+          <label><span data-copy="goal">Investment goal</span><select id="goal"><option value="balanced" data-copy="balanced">Balanced</option><option value="growth" data-copy="growth">Growth</option><option value="income" data-copy="income">Income</option><option value="school" data-copy="school">School</option><option value="value" data-copy="value">Value</option></select></label>
+          <button class="primary form-button" type="submit" data-copy="add">Add to watchlist</button>
+        </form>
+        <p id="add-message" class="message" aria-live="polite"></p>
+      </section>
+
+      <section class="panel">
+        <div class="panel-heading"><div><p class="eyebrow" data-copy="watchlist">Watchlist</p><h2 data-copy="saved">Your saved opportunities</h2></div><button id="refresh-button" class="text-button" type="button" data-copy="refresh">Refresh</button></div>
+        <div id="empty-state" class="empty hidden"><h3 data-copy="emptyTitle">Your watchlist is empty</h3><p data-copy="emptyCopy">Add a suburb or property above to begin.</p></div>
+        <div id="items" class="items"></div>
+      </section>
+    </section>
+  </main>
+  <script src="/investor-watch/investor-watch.js" defer></script>
+</body>
+</html>

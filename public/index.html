@@ -1360,6 +1360,9 @@ th {
   align-items: flex-start;
 }
 .btn-investor-watch {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
   background: var(--accent);
   color: white;
   border: none;
@@ -1368,8 +1371,7 @@ th {
   font-weight: 600;
   min-height: 44px;
   padding: 10px 24px;
-  cursor: default;
-  opacity: 0.7;
+  cursor: pointer;
 }
 .investor-watch-note {
   color: #66736d;
@@ -3066,8 +3068,8 @@ th {
                 <li data-i18n="investor-watch-feature-4">Compare multiple properties before buying</li>
               </ul>
               <div class="investor-watch-cta">
-                <button type="button" class="btn-investor-watch" id="btn-investor-watch-coming-soon" data-i18n="investor-watch-coming-soon">Join Investor Watch — Coming Soon</button>
-                <p class="investor-watch-note" data-i18n="investor-watch-note">No payment setup required. We will notify you when it opens.</p>
+                <a class="btn-investor-watch" id="btn-investor-watch-coming-soon" href="/investor-watch/" data-i18n="investor-watch-coming-soon">Join Investor Watch — Free Preview</a>
+                <p class="investor-watch-note" data-i18n="investor-watch-note">Free preview. No payment setup required.</p>
               </div>
             </section>
           </section>
