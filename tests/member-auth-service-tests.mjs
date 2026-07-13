@@ -235,7 +235,10 @@ test("member session cookies are HttpOnly, scoped and clearable", () => {
 
 test("resolveMemberSession exposes membership summary without email or Stripe IDs", async () => {
   const sql = async (strings, ...values) => {
+    const raw = strings.join("?");
     assert.equal(values[0], hashOpaqueToken("session-token"));
+    assert.doesNotMatch(raw, /membership_report_usage/);
+    assert.match(raw, /0::int AS reports_used/);
     return [{
       session_id: 8,
       lead_contact_id: 42,
@@ -243,7 +246,7 @@ test("resolveMemberSession exposes membership summary without email or Stripe ID
       membership_id: 9,
       membership_status: "active",
       report_limit: 10,
-      reports_used: 3,
+      reports_used: 0,
       current_period_start: new Date("2026-06-27T00:00:00Z"),
       current_period_end: new Date("2026-07-27T00:00:00Z"),
       cancel_at_period_end: false,
@@ -253,8 +256,8 @@ test("resolveMemberSession exposes membership summary without email or Stripe ID
     headers: { cookie: `${MEMBER_SESSION_COOKIE}=session-token` },
   });
   assert.equal(member.membershipStatus, "active");
-  assert.equal(member.reportsUsed, 3);
-  assert.equal(member.reportsRemaining, 7);
+  assert.equal(member.reportsUsed, 0);
+  assert.equal(member.reportsRemaining, 10);
   assert.equal("email" in member, false);
   assert.equal("stripeCustomerId" in member, false);
 });

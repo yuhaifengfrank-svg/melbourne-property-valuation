@@ -30,7 +30,7 @@ const expectedTables = [
   "investor_watch_change_events", "investor_watch_notification_preferences",
 ];
 const dependencyTables = [
-  "lead_contacts", "consent_records", "membership_report_usage", "suburb_metrics",
+  "lead_contacts", "consent_records", "suburb_metrics",
 ];
 
 async function verify(client) {
