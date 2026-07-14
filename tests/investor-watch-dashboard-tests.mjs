@@ -34,8 +34,9 @@ test("dashboard has bilingual copy and escapes watch item output", () => {
 
 test("homepage CTA opens the free preview without claiming paid availability", () => {
   assert.match(home, /href="\/investor-watch\/"/);
-  assert.match(home, /Join Investor Watch — Free Preview/);
+  assert.match(home, /Open Investor Watch — Free Preview/);
   assert.match(home, /Free preview\. No payment setup required\./);
+  assert.match(home, /Subscription billing is not active during the free preview\./);
 });
 
 test("Vercel serves the static dashboard within the Hobby function budget", () => {
