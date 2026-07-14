@@ -176,7 +176,13 @@ test("email delivery failure invalidates the newly-created login token", async (
       randomBytes: deterministicBytes,
       sendEmail: async () => { throw new Error("provider down"); },
     }),
-    /provider down/
+    (error) => {
+      assert.equal(error.name, "MemberMagicLinkPhaseError");
+      assert.equal(error.phase, "email-send");
+      assert.equal(error.code, "OTHER");
+      assert.doesNotMatch(error.message, /provider down/);
+      return true;
+    }
   );
   assert.equal(state.inserts.length, 1);
   assert.equal(state.invalidations, 2);
