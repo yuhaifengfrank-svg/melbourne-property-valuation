@@ -145,8 +145,8 @@ async function testDbFallbackTypeFiltering() {
 
   const unitTypes = new Set(unitResult.valuation?.acceptedComparables?.map(c => c.propertyType) || []);
   if (unitResult.valuation?.acceptedComparables?.length) {
-    assert("Oakleigh Unit: only Unit/Apartment types",
-      [...unitTypes].every(t => t === 'Unit' || t === 'Apartment'),
+    assert("Oakleigh Unit: only Unit/Townhouse/Villa types",
+      [...unitTypes].every(t => t === 'Unit' || t === 'Townhouse' || t === 'Villa'),
       `got types: ${[...unitTypes].join(', ')}`
     );
   } else {
