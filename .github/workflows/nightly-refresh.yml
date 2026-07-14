@@ -1,9 +1,9 @@
-name: Nightly Suburb Metrics Refresh
+name: Weekly Suburb Metrics Refresh
 
 on:
   schedule:
-    # Run daily at 03:00 AEST (17:00 UTC previous day)
-    - cron: '0 17 * * *'
+    # Monday 02:30 AEST / 03:30 AEDT, before Investor Watch at 04:15/05:15.
+    - cron: '30 16 * * 0'
   workflow_dispatch:  # allow manual trigger
 
 jobs:
@@ -20,7 +20,7 @@ jobs:
 
       - run: npm ci
 
-      - name: Run suburb metrics refresh
+      - name: Run weekly suburb metrics refresh
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: node lib/refresh-suburb-metrics.js
