@@ -74,7 +74,7 @@ assert("T8: Feature list has planning signals", /Monitor zoning and overlay sign
 assert("T9: Feature list has property comparison", /Compare multiple properties before buying/.test(html));
 
 // 1g. Preview CTA
-assert("T10: Free Preview CTA present", /Join Investor Watch — Free Preview/.test(html));
+assert("T10: Free Preview CTA present", /Open Investor Watch — Free Preview/.test(html));
 
 // 1h. Chinese CTA is populated by app.js through this hook.
 assert("T11: CTA i18n hook present", /data-i18n="investor-watch-coming-soon"/.test(html));
