@@ -510,7 +510,6 @@ const uiText = {
     selectors: {
       ".topbar .eyebrow": "Currently expanding across Melbourne and Victoria",
       ".topbar h1": "AusHomeValue",
-      '[data-i18n="nav-valuation"]': "Valuation",
       '[data-i18n="nav-opportunities"]': "Top Opportunity",
       '[data-i18n="nav-more"]': "More",
       '[data-i18n="nav-investor-watch"]': "Investor Watch",
@@ -710,10 +709,9 @@ const uiText = {
     selectors: {
       ".topbar .eyebrow": "当前覆盖墨尔本和维多利亚州",
       ".topbar h1": "AusHomeValue",
-      '[data-i18n="nav-valuation"]': "估值",
       '[data-i18n="nav-opportunities"]': "机会榜单",
       '[data-i18n="nav-more"]': "更多",
-      '[data-i18n="nav-investor-watch"]': "Investor Watch（机会监控）",
+      '[data-i18n="nav-investor-watch"]': "机会监控",
       '[data-i18n="nav-research"]': "研究",
       '[data-i18n="nav-about"]': "关于我们",
       '[data-i18n="nav-methodology"]': "方法说明",
