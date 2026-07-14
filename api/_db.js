@@ -8,12 +8,32 @@ let dataLayerInitialized = false;
 // Reusable SQL connection (cold-start win: only connect once per warm instance)
 let _sql = null;
 
-export function getSql() {
-  if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL is not configured");
+export function assertDatabaseEnvironment(env = process.env) {
+  if (env.VERCEL_ENV !== "preview") {
+    if (!env.DATABASE_URL) throw new Error("DATABASE_URL is not configured");
+    return env.DATABASE_URL;
   }
+
+  const connectionString = env.PREVIEW_DATABASE_URL;
+  if (!connectionString) throw new Error("PREVIEW_DATABASE_URL is not configured");
+  const expectedHost = env.PREVIEW_DATABASE_HOST;
+  if (!expectedHost) throw new Error("PREVIEW_DATABASE_HOST is not configured");
+  let actualHost;
+  try {
+    actualHost = new URL(connectionString).hostname;
+  } catch {
+    throw new Error("DATABASE_URL is invalid");
+  }
+  if (actualHost !== expectedHost) {
+    throw new Error("Preview database host is not approved");
+  }
+  return connectionString;
+}
+
+export function getSql() {
+  const connectionString = assertDatabaseEnvironment();
   if (!_sql) {
-    _sql = neon(process.env.DATABASE_URL);
+    _sql = neon(connectionString);
   }
   return _sql;
 }

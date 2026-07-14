@@ -169,6 +169,10 @@ function buildLockedPreview(fullResult) {
 }
 
 export default async function handler(request, response) {
+  if (request.query?.audit_sample === "1") {
+    const { default: auditSampleHandler } = await import("../lib/audit-sample-handler.js");
+    return auditSampleHandler(request, response);
+  }
   if (request.method !== "POST") {
     response.setHeader("Allow", "POST");
     return response.status(405).setHeader("Content-Type", "application/json")

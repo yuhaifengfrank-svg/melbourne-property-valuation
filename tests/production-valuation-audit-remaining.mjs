@@ -15,7 +15,7 @@ const API_BASE = (() => {
   const i = process.argv.indexOf("--api");
   return i >= 0 ? process.argv[i + 1] : "https://aushomevalue.com.au";
 })();
-const AUDIT_SAMPLE_URL = `${API_BASE}/api/audit-sample`;
+const AUDIT_SAMPLE_URL = `${API_BASE}/api/valuation?audit_sample=1`;
 const VALUATION_URL = `${API_BASE}/api/valuation`;
 const TIMEOUT = 30_000;
 const MAX_CONSECUTIVE_FAILURES = 10;

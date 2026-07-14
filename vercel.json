@@ -6,6 +6,22 @@
   },
   "rewrites": [
     {
+      "source": "/api/lead-consent",
+      "destination": "/api/member?action=lead-consent"
+    },
+    {
+      "source": "/api/suburb-intelligence",
+      "destination": "/api/opportunity?action=suburb-intelligence"
+    },
+    {
+      "source": "/api/member/(.*)",
+      "destination": "/api/member?action=$1"
+    },
+    {
+      "source": "/api/investor-watch/(.*)",
+      "destination": "/api/investor-watch?action=$1"
+    },
+    {
       "source": "/robots.txt",
       "destination": "/public/robots.txt"
     },
@@ -20,6 +36,10 @@
     {
       "source": "/opportunities/(.*)",
       "destination": "/public/opportunities/$1"
+    },
+    {
+      "source": "/investor-watch/(.*)",
+      "destination": "/public/investor-watch/$1"
     },
     {
       "source": "/top-opportunities-snippet.html",

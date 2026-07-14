@@ -7,6 +7,20 @@ import {
   appendPriceFilter,
   mapOpportunityRow,
 } from "../api/opportunity.js";
+import opportunityHandler from "../api/opportunity.js";
+
+test("legacy suburb intelligence is routed through the opportunity aggregator", async () => {
+  const response = {
+    statusCode: 200, headers: {}, body: null,
+    setHeader(name, value) { this.headers[name] = value; return this; },
+    status(code) { this.statusCode = code; return this; },
+    json(value) { this.body = value; return this; },
+    end() { return this; },
+  };
+  await opportunityHandler({ method: "GET", query: { action: "suburb-intelligence" } }, response);
+  assert.equal(response.statusCode, 400);
+  assert.equal(response.body.error, "Missing required parameter: suburb");
+});
 import {
   isSupportedFutureStrategy,
   normalizeStrategy,
