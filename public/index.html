@@ -2699,9 +2699,9 @@ th {
             </div>
           </div>
           <div class="home-stats">
-            <div class="stat"><strong>3,600+</strong> <span data-i18n="stat-sales">comparable sales</span></div>
-            <div class="stat"><strong>2,800+</strong> <span data-i18n="stat-schools">schools mapped</span></div>
-            <div class="stat"><strong>230+</strong> <span data-i18n="stat-suburbs">suburbs covered</span></div>
+            <div class="stat"><strong data-site-stat="comparableSales">—</strong> <span data-i18n="stat-sales">sales records indexed</span></div>
+            <div class="stat"><strong data-site-stat="schoolsMapped">—</strong> <span data-i18n="stat-schools">schools mapped</span></div>
+            <div class="stat"><strong data-site-stat="suburbsCovered">—</strong> <span data-i18n="stat-suburbs">suburbs with sales coverage</span></div>
           </div>
           <section class="product-funnel" aria-label="AusHomeValue product levels">
             <article class="funnel-card">
@@ -3494,6 +3494,7 @@ th {
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
     <script src="/opportunity-gate.js"></script>
     <script src="/trust-layer.js"></script>
+    <script src="/site-stats.js"></script>
     <script src="app.js"></script>
   <!-- hidden fallback elements for JS safety (app.js byId references) -->
   <div id="check-status" class="hidden"></div>

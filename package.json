@@ -4,8 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "echo 'Static site with Vercel serverless API'",
-    "vercel-build": "echo 'Static site with Vercel serverless API'",
+    "build": "node scripts/generate-version.mjs",
+    "vercel-build": "node scripts/generate-version.mjs",
+    "test:release-safeguards": "node --test tests/release-safeguards-tests.mjs",
+    "audit:site-stats": "node scripts/update-site-stats.mjs --check",
+    "smoke:production": "node scripts/smoke-production.mjs",
     "test:collector": "node comparable-collector-test.mjs",
     "test:valuation": "node valuation-engine-test.mjs",
     "test:valuation-api": "node valuation-api-test.mjs",

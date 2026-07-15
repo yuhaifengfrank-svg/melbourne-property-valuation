@@ -30,6 +30,18 @@
       "destination": "/public/sitemap.xml"
     },
     {
+      "source": "/site-stats.json",
+      "destination": "/public/site-stats.json"
+    },
+    {
+      "source": "/site-stats.js",
+      "destination": "/public/site-stats.js"
+    },
+    {
+      "source": "/version.json",
+      "destination": "/public/version.json"
+    },
+    {
       "source": "/suburb/(.*)",
       "destination": "/public/suburb/$1"
     },
