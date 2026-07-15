@@ -34,6 +34,10 @@
       "destination": "/public/site-stats.json"
     },
     {
+      "source": "/site-stats.js",
+      "destination": "/public/site-stats.js"
+    },
+    {
       "source": "/version.json",
       "destination": "/public/version.json"
     },
