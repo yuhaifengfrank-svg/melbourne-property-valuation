@@ -89,6 +89,40 @@ test("explicit propertyType=Unit with plain street stays Unit (external source t
     "explicit Unit + no unit signal → downgrade to House per existing rule");
 });
 
+// ── regression: Unit 1, vs Unit1 — must produce identical fetch params ──
+
+test("Unit with comma and Unit1 produce identical dbSource.fetch params", async () => {
+  const mockA = makeMockDbSource();
+  await runValuation(
+    { address: "Unit 1, 11 McIntosh Street, Oakleigh VIC 3166" },
+    { fetch: false, dbSource: mockA }
+  );
+
+  const mockB = makeMockDbSource();
+  await runValuation(
+    { address: "Unit1 11 McIntosh Street, Oakleigh VIC 3166" },
+    { fetch: false, dbSource: mockB }
+  );
+
+  assert.ok(mockA.calls.length >= 1, "A should have fetch call");
+  assert.ok(mockB.calls.length >= 1, "B should have fetch call");
+
+  const pA = mockA.calls[0].params;
+  const pB = mockB.calls[0].params;
+
+  assert.equal(pA.propertyType, pB.propertyType,
+    `propertyType mismatch: A=${pA.propertyType} B=${pB.propertyType}`);
+  assert.equal(pA.suburb, pB.suburb,
+    `suburb mismatch: A=${pA.suburb} B=${pB.suburb}`);
+  assert.equal(pA.state, pB.state,
+    `state mismatch: A=${pA.state} B=${pB.state}`);
+  // Coordinates may be null in fetch:false — but when not, they must match
+  const coordA = pA.coordinates ? `${pA.coordinates.lat},${pA.coordinates.lon}` : "null";
+  const coordB = pB.coordinates ? `${pB.coordinates.lat},${pB.coordinates.lon}` : "null";
+  assert.equal(coordA, coordB,
+    `coordinates mismatch: A=${coordA} B=${coordB}`);
+});
+
 // ── edge: no address at all ──
 
 test("missing address returns early without calling dbSource", async () => {
