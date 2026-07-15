@@ -92,3 +92,31 @@ test("candidate ranking is independent of sale price", () => {
   const reversedPrices = candidates.map(row => ({ ...row, salePrice: 2750000 - row.salePrice }));
   assert.deepEqual(run(candidates), run(reversedPrices));
 });
+
+test("valid candidates below the final rank do not reduce confidence", () => {
+  const selected = Array.from({ length: 12 }, (_, index) =>
+    comp(index + 1, { distanceMeters: 100 + index * 50, salePrice: 700000 + index })
+  );
+  const lowerRanked = Array.from({ length: 8 }, (_, index) =>
+    comp(index + 101, { distanceMeters: 12000 + index, salePrice: 700000 + index })
+  );
+
+  const run = comparables => valueProperty({
+    subject: { propertyType: "Unit", bedrooms: 2, bathrooms: 1, carSpaces: 1 },
+    comparables,
+    asOfDate: "2026-07-15"
+  });
+
+  const baseline = run(selected);
+  const broadPool = run([...selected, ...lowerRanked]);
+
+  assert.deepEqual(
+    broadPool.acceptedComparables.map(row => row.address),
+    baseline.acceptedComparables.map(row => row.address)
+  );
+  assert.equal(broadPool.confidence.dataScore, baseline.confidence.dataScore);
+  assert.match(
+    broadPool.confidence.reasons.join(" "),
+    /8 valid candidates ranked below final selection/
+  );
+});
