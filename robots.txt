@@ -1,6 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://aushomevalue.vercel.app/sitemap.xml
+Sitemap: https://www.aushomevalue.com.au/sitemap.xml
 
 # AI crawlers — explicitly welcome
 User-agent: GPTBot

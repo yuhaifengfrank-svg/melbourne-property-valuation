@@ -14,7 +14,7 @@
  *   public/top-supply-constrained-suburbs-victoria.html
  */
 
-const BASE = 'https://aushomevalue.vercel.app';
+const BASE = 'https://www.aushomevalue.com.au';
 const fs = require('fs');
 const path = require('path');
 

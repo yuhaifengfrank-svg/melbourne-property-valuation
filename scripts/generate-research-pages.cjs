@@ -17,7 +17,7 @@
  *   public/research/top-supply-constrained-suburbs-victoria-2026.html
  */
 
-const BASE = 'https://aushomevalue.vercel.app';
+const BASE = 'https://www.aushomevalue.com.au';
 const CANONICAL = 'https://www.aushomevalue.com.au';
 const fs = require('fs');
 const path = require('path');
@@ -205,7 +205,7 @@ function buildMethodology(page) {
   return `
       <div class="methodology">
         <h2>${escapeHtml(page.methodologyTitle)}</h2>
-        <p>These rankings are generated from the <a href="https://aushomevalue.vercel.app">AusHomeValue</a> property intelligence platform, which combines multiple government and market datasets to produce experimental opportunity scores based on data-driven trend analysis for every suburb in Victoria. Below is how this specific ranking is constructed.</p>
+        <p>These rankings are generated from the <a href="https://www.aushomevalue.com.au">AusHomeValue</a> property intelligence platform, which combines multiple government and market datasets to produce experimental opportunity scores based on data-driven trend analysis for every suburb in Victoria. Below is how this specific ranking is constructed.</p>
         <ol>
 ${points}
         </ol>

@@ -12,7 +12,7 @@
  * Phase 3C: Generates homepage preview blocks inline.
  */
 
-const BASE = 'https://aushomevalue.vercel.app';
+const BASE = 'https://www.aushomevalue.com.au';
 const fs = require('fs');
 const path = require('path');
 
