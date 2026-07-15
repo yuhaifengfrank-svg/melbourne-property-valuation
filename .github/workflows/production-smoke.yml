@@ -1,0 +1,32 @@
+name: Production Release Smoke Test
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      expected_sha:
+        description: Expected production commit SHA (optional)
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-smoke
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Wait for and verify the main Production deployment
+        env:
+          BASE_URL: https://aushomevalue.com.au
+          EXPECTED_SHA: ${{ inputs.expected_sha || github.sha }}
+        run: node scripts/smoke-production.mjs

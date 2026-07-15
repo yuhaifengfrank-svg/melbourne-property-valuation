@@ -10,7 +10,7 @@ function dom() {
   return new JSDOM(INDEX);
 }
 
-test("primary navigation stays focused: Valuation, Top Opportunity, More, Get estimate", () => {
+test("primary navigation stays focused: Get estimate, Top Opportunity, Investor Watch, More", () => {
   const document = dom().window.document;
   const nav = document.querySelector(".topbar-nav");
   assert.ok(nav, "primary nav exists");
@@ -22,13 +22,13 @@ test("primary navigation stays focused: Valuation, Top Opportunity, More, Get es
   assert.equal(nav.querySelector('[data-i18n="nav-get-estimate"]')?.textContent.trim(), "Get estimate");
 });
 
-test("More menu contains secondary product and company links", () => {
+test("More menu contains only secondary research and company links", () => {
   const document = dom().window.document;
   const menu = document.querySelector(".more-menu");
   assert.ok(menu, "more menu exists");
 
   const labels = [...menu.querySelectorAll(".more-menu-panel a")].map((a) => a.textContent.trim());
-  assert.deepEqual(labels, ["Investor Watch", "Research", "About Us", "Methodology", "Contact"]);
+  assert.deepEqual(labels, ["Research", "About Us", "Methodology", "Contact"]);
   assert.equal(menu.querySelector("summary")?.getAttribute("data-i18n"), "nav-more");
 });
 

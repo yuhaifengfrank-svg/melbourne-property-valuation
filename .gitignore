@@ -23,3 +23,6 @@ tmp/
 TEST_RESULTS.log
 video-assets/
 _capture-*.cjs
+
+# Generated at build time from Vercel/GitHub deployment metadata
+public/version.json

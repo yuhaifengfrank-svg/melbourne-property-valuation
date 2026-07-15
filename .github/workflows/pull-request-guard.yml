@@ -1,0 +1,41 @@
+name: Pull Request Release Guard
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Require branch to contain latest main
+        run: |
+          git fetch origin main
+          git merge-base --is-ancestor origin/main HEAD || {
+            echo "Feature branch is stale. Merge origin/main into the branch and rerun checks."
+            exit 1
+          }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run release safeguard tests
+        run: node --test tests/release-safeguards-tests.mjs
+
+      - name: Enforce no manual production deployment commands
+        run: |
+          if grep -RIn --include='*.yml' --include='*.yaml' --include='*.json' --include='*.mjs' --include='*.js' \
+            'vercel[[:space:]]\+--prod' .github package.json scripts; then
+            echo "Manual Production deployment commands are prohibited. Production deploys only from main Git Integration."
+            exit 1
+          fi
