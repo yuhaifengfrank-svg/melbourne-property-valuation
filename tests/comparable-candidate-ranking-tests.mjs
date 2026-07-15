@@ -120,3 +120,29 @@ test("valid candidates below the final rank do not reduce confidence", () => {
     /8 valid candidates ranked below final selection/
   );
 });
+
+test("duplicate representations of one transaction are counted once", () => {
+  const first = comp(1, { distanceMeters: 1800, salePrice: 868000 });
+  const better = {
+    ...comp(2, { distanceMeters: 700, salePrice: 868000 }),
+    address: first.address,
+    saleDate: first.saleDate
+  };
+  const other = comp(3, { distanceMeters: 900, salePrice: 810000 });
+
+  const result = valueProperty({
+    subject: { propertyType: "Unit", bedrooms: 2, bathrooms: 1, carSpaces: 1 },
+    comparables: [first, better, other],
+    asOfDate: "2026-07-15"
+  });
+
+  assert.equal(result.acceptedComparables.length, 2);
+  assert.equal(result.acceptedComparables.filter(row => row.address === first.address).length, 1);
+  assert.equal(result.acceptedComparables.find(row => row.address === first.address).distanceMeters, 700);
+  assert.equal(
+    result.rejectedComparables.filter(row => row.reasons.includes("duplicate-comparable-transaction")).length,
+    1
+  );
+  assert.match(result.confidence.reasons.join(" "), /1 duplicate transactions removed/);
+  assert.match(result.confidence.reasons[0], /0 rejected/);
+});
