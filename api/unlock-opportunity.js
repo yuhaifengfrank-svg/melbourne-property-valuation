@@ -80,8 +80,8 @@ async function fetchRawOpportunities(preferences) {
   return data.opportunities.map((o) => ({
     suburb: String(o.suburb || ""),
     state: String(o.state || ""),
-    opportunityScore: safeNumber(o.opportunityScore) || 0,
-    futureOpportunityIndex: safeNumber(o.futureOpportunityIndex),
+    futureOpportunityIndex: safeNumber(o.score?.value ?? o.futureOpportunityIndex),
+    score: o.score && typeof o.score === "object" ? o.score : null,
     suburbFutureScore: safeNumber(o.suburbFutureScore),
     confidenceScore: safeNumber(o.confidenceScore),
     confidence: String(o.confidence || ""),

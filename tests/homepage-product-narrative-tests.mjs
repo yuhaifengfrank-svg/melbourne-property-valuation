@@ -87,10 +87,10 @@ test("Top Opportunity and Investor Watch distinction is visible", () => {
   assert.match(APP, /Top Opportunity 帮你发现该看哪里/);
 });
 
-test("Methodology anchor exists and is reachable from More menu", () => {
+test("Methodology section exists and the full methodology is reachable from More menu", () => {
   const document = dom().window.document;
   assert.ok(document.querySelector('#methodology'), "#methodology section exists");
-  assert.ok(document.querySelector('.more-menu-panel a[href="#methodology"]'), "More menu links methodology");
+  assert.ok(document.querySelector('.more-menu-panel a[href="/methodology.html"]'), "More menu links full methodology");
   assert.match(document.querySelector("#methodology")?.textContent || "", /Not financial advice/i);
 });
 

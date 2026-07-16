@@ -13,6 +13,7 @@ import {
   supportedFutureStrategies,
 } from '../lib/future-opportunity-outlook.js';
 import suburbIntelligenceHandler from '../lib/suburb-intelligence-handler.js';
+import { buildOpportunityPublicScore } from '../lib/opportunity-public-contract.js';
 import { assertDatabaseEnvironment } from './_db.js';
 
 let _sql = null;
@@ -163,16 +164,13 @@ export function mapOpportunityRow(r, { strategy = 'balanced', propertyType = 'ei
     supplyConstraintScore: toNumberOrNull(r.supply_constraint_score),
     infrastructureScore: toNumberOrNull(r.infrastructure_score),
     overallConfidence: toNumberOrNull(r.overall_confidence),
-    legacyOpportunityScore: toNumberOrNull(r.opportunity_score),
-    legacyOpportunityType: r.opportunity_type || 'Balanced',
     dataUpdated: r.updated_at ? new Date(r.updated_at).toISOString().split('T')[0] : '',
   };
   const outlook = scoreFutureOpportunity(base, { strategy, propertyType });
   return {
     ...base,
     ...outlook,
-    opportunityScore: outlook.futureOpportunityIndex,
-    opportunityType: outlook.opportunityType,
+    score: buildOpportunityPublicScore(outlook),
   };
 }
 

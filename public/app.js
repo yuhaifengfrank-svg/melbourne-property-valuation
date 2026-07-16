@@ -3822,8 +3822,9 @@ async function loadHomeOpportunities() {
       html += `<div><h3 style="color:${cfg.color};">${cfg.label}</h3>`;
       items.forEach(o => {
         const slug = String(o.suburb || '').toLowerCase().replace(/\s+/g, '-') + '-' + (o.state||'vic').toLowerCase();
-        const score = Number.isFinite(Number(o.futureOpportunityIndex)) ? Number(o.futureOpportunityIndex).toFixed(1).replace(/\.0$/, '') : 'N/A';
-        html += `<div><a href="/suburb/${esc(slug)}.html">${esc(o.suburb)}</a> <span style="background:${cfg.color};color:white;border-radius:20px;padding:2px 8px;font-size:0.8rem;">${esc(score)}</span> <span style="color:#66736d;font-size:0.8rem;">${esc(cfg.desc(o))}</span></div>`;
+        const rawScore = o.score && o.score.value != null ? o.score.value : o.futureOpportunityIndex;
+        const score = Number.isFinite(Number(rawScore)) ? Number(rawScore).toFixed(1).replace(/\.0$/, '') + '/100' : 'Data unavailable';
+        html += `<div><a href="/suburb/${esc(slug)}.html">${esc(o.suburb)}</a> <span aria-label="Future Opportunity Index ${esc(score)}" style="background:${cfg.color};color:white;border-radius:20px;padding:2px 8px;font-size:0.8rem;">${esc(score)}</span> <span style="color:#66736d;font-size:0.8rem;">${esc(cfg.desc(o))}</span></div>`;
       });
       html += `</div>`;
     }
