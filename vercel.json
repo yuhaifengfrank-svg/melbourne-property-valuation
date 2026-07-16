@@ -42,6 +42,38 @@
       "destination": "/public/version.json"
     },
     {
+      "source": "/methodology.html",
+      "destination": "/public/methodology.html"
+    },
+    {
+      "source": "/privacy.html",
+      "destination": "/public/privacy.html"
+    },
+    {
+      "source": "/terms.html",
+      "destination": "/public/terms.html"
+    },
+    {
+      "source": "/evidence-handling.html",
+      "destination": "/public/evidence-handling.html"
+    },
+    {
+      "source": "/legal-pages.css",
+      "destination": "/public/legal-pages.css"
+    },
+    {
+      "source": "/admin.html",
+      "destination": "/public/admin.html"
+    },
+    {
+      "source": "/admin.css",
+      "destination": "/public/admin.css"
+    },
+    {
+      "source": "/admin.js",
+      "destination": "/public/admin.js"
+    },
+    {
       "source": "/suburb/(.*)",
       "destination": "/public/suburb/$1"
     },

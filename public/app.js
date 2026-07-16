@@ -594,7 +594,7 @@ const uiText = {
       "#uploads .eyebrow": "Improve accuracy",
       "#uploads h2": "Upload evidence to strengthen the report.",
       "#uploads p:not(.eyebrow):not(.pdf-note)": "Title, Section 32, current photos and inspection notes will be reviewed as part of the evidence assessment.",
-      ".pdf-note": "PDF download requires phone number and contact consent.",
+      ".pdf-note": "Files are used only for the requested property evidence review and related support—not to enrol you in marketing. Remove unnecessary personal details and only upload material you are authorised to share.",
       "#upload-evidence": "Upload evidence",
       "#download-pdf": "Download PDF",
       "#evidence-review h3": "Evidence review applied",
@@ -628,7 +628,7 @@ const uiText = {
       ".modal-content .eyebrow": "Full report locked",
       "#modal-register": "Register to unlock",
       "#modal-close": "Not now",
-      ".modal-content p:not(.eyebrow)": "Register to unlock comparable adjustments, suburb fundamentals, micro-location evidence and planning checks. PDF download requires phone number and contact consent.",
+      ".modal-content p:not(.eyebrow)": "Register to unlock comparable adjustments, suburb fundamentals, micro-location evidence and planning checks. Optional marketing consent is not required.",
       "#manual-data-modal .eyebrow": "Manual evidence",
       "#manual-data-modal h2": "Add extra property notes.",
       "#manual-data-modal p:not(.eyebrow)": "Add title, planning, condition, street, rental or inspection notes. These notes will be included in the evidence review and PDF report.",
@@ -647,8 +647,8 @@ const uiText = {
       "#guide-location": "View location checks",
       "#guide-close": "Stay here",
       "#pdf-requirements-modal .eyebrow": "PDF download requirement",
-      "#pdf-requirements-modal h2": "Phone number and contact consent are required.",
-      "#pdf-requirements-modal p:not(.eyebrow)": "Please add your phone number and tick the contact consent box before downloading the full report PDF.",
+      "#pdf-requirements-modal h2": "A phone number is required for PDF support.",
+      "#pdf-requirements-modal p:not(.eyebrow)": "Please add your phone number before downloading the PDF. Optional marketing consent is not required.",
       "#pdf-fill-details": "Fill phone details",
       "#pdf-close": "Not now",
       '[data-i18n="research-eyebrow"]': "Research",
@@ -847,8 +847,8 @@ const uiText = {
       "#guide-location": "查看位置检查",
       "#guide-close": "留在这里",
       "#pdf-requirements-modal .eyebrow": "PDF 下载要求",
-      "#pdf-requirements-modal h2": "下载 PDF 需要填写电话并勾选联系授权。",
-      "#pdf-requirements-modal p:not(.eyebrow)": "请先补充电话号码，并勾选同意联系，再下载完整报告 PDF。",
+      "#pdf-requirements-modal h2": "PDF 支持需要填写电话号码。",
+      "#pdf-requirements-modal p:not(.eyebrow)": "请先补充电话号码。可选营销同意不是下载报告的条件。",
       "#pdf-fill-details": "去填写电话",
       "#pdf-close": "暂不",
       '[data-i18n="research-eyebrow"]': "研究",
@@ -2876,11 +2876,11 @@ async function saveLead({ pdfDownload = false } = {}) {
     return false;
   }
 
-  if (pdfDownload && (!phone || !consent)) {
+  if (pdfDownload && !phone) {
     message.textContent =
       language === "zh"
-        ? "下载 PDF 前需要填写电话并勾选联系授权。"
-        : "Phone number and contact consent are required before PDF download.";
+        ? "下载 PDF 前需要填写电话号码；无需勾选可选营销同意。"
+        : "A phone number is required before PDF download; optional marketing consent is not required.";
     return false;
   }
 

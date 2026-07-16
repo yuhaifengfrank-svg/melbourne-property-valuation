@@ -1536,4 +1536,8 @@
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
+  <url><loc>https://www.aushomevalue.com.au/methodology.html</loc><lastmod>2026-07-16</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://www.aushomevalue.com.au/privacy.html</loc><lastmod>2026-07-16</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://www.aushomevalue.com.au/terms.html</loc><lastmod>2026-07-16</lastmod><changefreq>yearly</changefreq><priority>0.4</priority></url>
+  <url><loc>https://www.aushomevalue.com.au/evidence-handling.html</loc><lastmod>2026-07-16</lastmod><changefreq>yearly</changefreq><priority>0.5</priority></url>
 </urlset>
