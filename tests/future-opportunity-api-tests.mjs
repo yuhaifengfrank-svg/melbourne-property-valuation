@@ -8,6 +8,7 @@ import {
   mapOpportunityRow,
 } from "../api/opportunity.js";
 import opportunityHandler from "../api/opportunity.js";
+import { buildOpportunityPublicScore } from "../lib/opportunity-public-contract.js";
 
 test("legacy suburb intelligence is routed through the opportunity aggregator", async () => {
   const response = {
@@ -83,7 +84,7 @@ test("appendPriceFilter allows either house or unit when property type is either
   assert.match(where[0], / OR /);
 });
 
-test("mapOpportunityRow returns Future Opportunity fields while preserving legacy score", () => {
+test("mapOpportunityRow returns one canonical public score without legacy fields", () => {
   const row = {
     suburb: "Scoresby",
     state: "VIC",
@@ -107,8 +108,16 @@ test("mapOpportunityRow returns Future Opportunity fields while preserving legac
   assert.equal(mapped.propertyType, "unit");
   assert.equal(mapped.selectedMedianPrice, 720000);
   assert.equal(mapped.selectedMedianPriceType, "unit");
-  assert.equal(mapped.legacyOpportunityScore, 31);
-  assert.equal(mapped.opportunityScore, mapped.futureOpportunityIndex);
+  assert.equal(mapped.score.name, "Future Opportunity Index");
+  assert.equal(mapped.score.value, mapped.futureOpportunityIndex);
+  assert.equal(mapped.score.display, `${mapped.futureOpportunityIndex}/100`);
+  assert.equal(mapped.score.scale, 100);
+  assert.equal(mapped.score.modelVersion, "future_outlook_v1");
+  assert.equal(mapped.score.horizon, "3-5 years");
+  assert.equal(mapped.score.isPriceForecast, false);
+  assert.equal("legacyOpportunityScore" in mapped, false);
+  assert.equal("legacyOpportunityType" in mapped, false);
+  assert.equal("opportunityScore" in mapped, false);
   assert.equal(mapped.predictionType, "future_opportunity_index_0_100");
   assert.equal(mapped.isPriceForecast, false);
   assert.ok(Array.isArray(mapped.why));
@@ -146,6 +155,24 @@ test("homepage Future Outlook snippet uses the real opportunity API endpoint", (
   );
   assert.doesNotMatch(appJs, /\/api\/future-opportunity/);
   assert.match(appJs, /data\.opportunities/);
+});
+
+test("canonical public score does not turn missing data into zero", () => {
+  const score = buildOpportunityPublicScore({
+    futureOpportunityIndex: null,
+    modelVersion: "future_outlook_v1",
+  });
+
+  assert.equal(score.value, null);
+  assert.equal(score.display, "Data unavailable");
+});
+
+test("homepage opportunity score uses the canonical /100 and missing-data displays", () => {
+  const appJs = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
+  assert.match(appJs, /score\.value/);
+  assert.match(appJs, /'\/100'/);
+  assert.match(appJs, /'Data unavailable'/);
+  assert.doesNotMatch(appJs, /rawScore[^\n]+\+\s*'%'/);
 });
 
 test("strategy aliases support customer-facing funnel labels", () => {

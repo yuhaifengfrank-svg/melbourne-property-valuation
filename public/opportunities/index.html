@@ -523,6 +523,7 @@
       }
 
       function number(value) {
+        if (value === null || value === undefined || value === "") return null;
         var n = Number(value);
         return Number.isFinite(n) ? n : null;
       }
@@ -530,10 +531,11 @@
       function scoreFor(item, mode) {
         var personalised = number(item.personalisedFutureScore || item.personalisedScore);
         if (mode === "registered" && personalised !== null) return Math.round(personalised);
-        var direct = number(item.futureOpportunityIndex);
+        var direct = number(item.score && item.score.value);
+        if (direct === null) direct = number(item.futureOpportunityIndex);
         if (direct !== null) return Math.round(direct);
         if (personalised !== null) return Math.round(personalised);
-        var fallback = number(item.opportunityScore || item.baseFutureScore || item.baseScore);
+        var fallback = number(item.baseFutureScore || item.baseScore);
         return fallback === null ? null : Math.round(fallback);
       }
 
@@ -612,7 +614,7 @@
 
         var score = append(top, "div", "opp-score");
         var displayScore = scoreFor(item, mode);
-        append(score, "strong", "", displayScore === null ? "--" : String(displayScore));
+        append(score, "strong", "", displayScore === null ? "Data unavailable" : String(displayScore) + "/100");
         append(score, "span", "", mode === "registered" ? "Personal score" : "Future score");
 
         var scoreline = append(card, "div", "opp-scoreline");
@@ -628,7 +630,7 @@
             addMetric(scoreline, "Personalised formula", "Base " + Math.round(base || 0) + " + capped fit = " + Math.round(personal));
           }
         } else {
-          addMetric(scoreline, "Model", text(item.modelVersion, "future_outlook_v1"));
+          addMetric(scoreline, "Model", text(item.score && item.score.modelVersion || item.modelVersion, "future_outlook_v1"));
           addMetric(scoreline, "Signal", "Relative 0-100 score");
         }
 

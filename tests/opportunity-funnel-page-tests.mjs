@@ -48,6 +48,9 @@ test("opportunity cards show prediction horizon and non-price-forecast type", ()
   assert.match(page, /Prediction type/);
   assert.match(page, /Opportunity index/);
   assert.match(page, /Relative 0-100 score/);
+  assert.match(page, /String\(displayScore\) \+ "\/100"/);
+  assert.match(page, /displayScore === null \? "Data unavailable"/);
+  assert.doesNotMatch(page, /item\.opportunityScore/);
 });
 
 test("opportunity cards support personalised single reason and risk fields", () => {
