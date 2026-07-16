@@ -1,92 +1,92 @@
 #!/usr/bin/env node
 
-import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 
-const DEFAULT_IGNORES = new Set(["version.json"]);
+export const FORBIDDEN_ROOT_STATIC = [
+  "404.html",
+  "admin.css",
+  "admin.html",
+  "admin.js",
+  "app.js",
+  "assets/aushomevalue-wechat-qr.jpg",
+  "index.html",
+  "opportunity-gate.js",
+  "robots.txt",
+  "sitemap.xml",
+  "styles.css",
+];
 
-function walk(root, current = "") {
-  const directory = path.join(root, current);
-  if (!fs.existsSync(directory)) return [];
-  return fs.readdirSync(directory, { withFileTypes: true })
-    .sort((a, b) => a.name.localeCompare(b.name))
-    .flatMap((entry) => {
-      const relative = path.posix.join(current.split(path.sep).join(path.posix.sep), entry.name);
-      return entry.isDirectory() ? walk(root, relative) : [relative];
-    });
+export const REQUIRED_PUBLIC_ENTRIES = [
+  "public/404.html",
+  "public/admin.html",
+  "public/app.js",
+  "public/index.html",
+  "public/opportunities/index.html",
+  "public/robots.txt",
+  "public/sitemap.xml",
+  "public/styles.css",
+];
+
+function exists(root, relative) {
+  return fs.existsSync(path.join(root, relative));
 }
 
-function digest(file) {
-  return crypto.createHash("sha256").update(fs.readFileSync(file)).digest("hex");
-}
+export function inspectCanonicalSource(root = process.cwd()) {
+  const violations = [];
 
-export function compareTrees(leftRoot, rightRoot, { ignores = DEFAULT_IGNORES } = {}) {
-  const leftFiles = new Set(walk(leftRoot).filter((file) => !ignores.has(file)));
-  const rightFiles = new Set(walk(rightRoot).filter((file) => !ignores.has(file)));
-  const allFiles = [...new Set([...leftFiles, ...rightFiles])].sort();
-  const entries = [];
+  if (exists(root, "dist")) {
+    violations.push("dist/ exists; generated output must remain untracked and absent");
+  }
 
-  for (const file of allFiles) {
-    if (!leftFiles.has(file)) {
-      entries.push({ file, status: "right-only" });
-      continue;
+  for (const relative of FORBIDDEN_ROOT_STATIC) {
+    if (exists(root, relative)) {
+      violations.push(`${relative} duplicates the canonical public/ source`);
     }
-    if (!rightFiles.has(file)) {
-      entries.push({ file, status: "left-only" });
-      continue;
+  }
+
+  for (const relative of REQUIRED_PUBLIC_ENTRIES) {
+    if (!exists(root, relative)) violations.push(`${relative} is missing`);
+  }
+
+  const serverPath = path.join(root, "dev-server.mjs");
+  if (!fs.existsSync(serverPath)) {
+    violations.push("dev-server.mjs is missing");
+  } else {
+    const server = fs.readFileSync(serverPath, "utf8");
+    if (!/PUBLIC_DIR\s*=\s*path\.join\(__dirname,\s*["']public["']\)/.test(server)) {
+      violations.push("dev-server.mjs does not define public/ as its static root");
     }
-    const leftHash = digest(path.join(leftRoot, file));
-    const rightHash = digest(path.join(rightRoot, file));
-    entries.push({
-      file,
-      status: leftHash === rightHash ? "identical" : "different",
-      leftHash,
-      rightHash,
-    });
+    if (!/express\.static\(PUBLIC_DIR\)/.test(server)) {
+      violations.push("dev-server.mjs does not serve the canonical PUBLIC_DIR");
+    }
   }
 
-  const counts = entries.reduce((result, entry) => {
-    result[entry.status] = (result[entry.status] || 0) + 1;
-    return result;
-  }, { identical: 0, different: 0, "left-only": 0, "right-only": 0 });
-  const drift = counts.different + counts["left-only"] + counts["right-only"];
-  return { entries, counts, drift };
-}
-
-export function formatReport(result, { leftLabel, rightLabel }) {
-  const lines = [
-    `Generated-output comparison: ${leftLabel} -> ${rightLabel}`,
-    `identical=${result.counts.identical} different=${result.counts.different} left-only=${result.counts["left-only"]} right-only=${result.counts["right-only"]}`,
-  ];
-  for (const entry of result.entries) {
-    if (entry.status !== "identical") lines.push(`${entry.status}\t${entry.file}`);
+  for (const relative of ["scripts/generate-suburb-pages.js", "scripts/generate-ai-pages.js"]) {
+    const target = path.join(root, relative);
+    if (!fs.existsSync(target)) continue;
+    const source = fs.readFileSync(target, "utf8");
+    if (/const\s+OUT\s*=\s*["']dist["']/.test(source)) {
+      violations.push(`${relative} still writes to tracked dist/`);
+    }
   }
-  lines.push(result.drift === 0 ? "No generated-output drift detected." : `Generated-output drift detected in ${result.drift} file(s).`);
-  return lines.join("\n");
+
+  return violations;
 }
 
-function parseArgs(argv) {
-  const valueAfter = (flag, fallback) => {
-    const index = argv.indexOf(flag);
-    return index === -1 ? fallback : argv[index + 1];
-  };
-  return {
-    leftRoot: valueAfter("--left", "dist"),
-    rightRoot: valueAfter("--right", "public"),
-  };
+export function formatReport(violations) {
+  if (violations.length === 0) return "Canonical source governance passed: public/ is the sole static source.";
+  return [
+    `Canonical source governance failed with ${violations.length} violation(s):`,
+    ...violations.map((violation) => `- ${violation}`),
+  ].join("\n");
 }
 
-export function run(argv = process.argv.slice(2)) {
-  const { leftRoot, rightRoot } = parseArgs(argv);
-  if (!leftRoot || !rightRoot || !fs.existsSync(leftRoot) || !fs.existsSync(rightRoot)) {
-    console.error(`Both comparison directories must exist: left=${leftRoot} right=${rightRoot}`);
-    return 2;
-  }
-  const result = compareTrees(leftRoot, rightRoot);
-  console.log(formatReport(result, { leftLabel: leftRoot, rightLabel: rightRoot }));
-  return result.drift === 0 ? 0 : 1;
+export function run(root = process.cwd()) {
+  const violations = inspectCanonicalSource(root);
+  console.log(formatReport(violations));
+  return violations.length === 0 ? 0 : 1;
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
