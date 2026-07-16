@@ -1,0 +1,6 @@
+export default function handler(_req, res) {
+  res.status(404);
+  res.setHeader("Content-Type", "text/html; charset=utf-8");
+  res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+  res.send(`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,follow"><title>Page not found | AusHomeValue</title><style>body{margin:0;background:#0b3d32;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:grid;min-height:100vh;place-items:center}.wrap{max-width:760px;padding:40px}.code{color:#9de4d2;font-size:clamp(5rem,18vw,11rem);font-weight:900;letter-spacing:-.08em;line-height:.8;margin:0}h1{font-size:clamp(2rem,6vw,4rem);margin:24px 0 12px}p{color:#d8ebe5;font-size:1.08rem;line-height:1.6}a{background:#fff;border-radius:9px;color:#0b3d32;display:inline-block;font-weight:750;margin:10px 8px 0 0;padding:12px 16px;text-decoration:none}</style></head><body><main class="wrap"><p class="code">404</p><h1>That page is not here.</h1><p>The link may be old or the address may be incomplete. Return home to start a property estimate or browse current opportunities.</p><a href="/">Start an estimate</a><a href="/opportunities/">View opportunities</a></main></body></html>`);
+}

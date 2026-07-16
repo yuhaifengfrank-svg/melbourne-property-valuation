@@ -115,6 +115,7 @@
     },
     { "source": "/", "destination": "/public/index.html" },
     { "source": "/styles.css", "destination": "/public/styles.css" },
-    { "source": "/assets/(.*)", "destination": "/public/assets/$1" }
+    { "source": "/assets/(.*)", "destination": "/public/assets/$1" },
+    { "source": "/(.*)", "destination": "/api/not-found" }
   ]
 }
