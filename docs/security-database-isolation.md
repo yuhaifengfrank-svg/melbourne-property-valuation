@@ -19,3 +19,5 @@ The response deliberately does not reproduce old or new credentials, connection 
 ## Operational follow-up
 
 Git history is not rewritten by this hotfix. Historical credential copies must be handled separately through a coordinated repository-security process after credential revocation. No database, Vercel environment, Production deployment, or historical branch is modified by this change.
+
+The repository's Vercel Preview build completed successfully after the hotfix. Live Preview endpoint validation remains a required Draft PR check.
