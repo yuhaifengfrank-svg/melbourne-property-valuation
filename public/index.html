@@ -16,7 +16,12 @@
     <meta property="og:description" content="Free property estimates, comparable sales and market intelligence for Melbourne and Victoria. Bilingual EN/中文." />
     <meta property="og:url" content="https://www.aushomevalue.com.au/" />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://www.aushomevalue.com.au/assets/aushomevalue-og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="AusHomeValue property opportunity intelligence" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://www.aushomevalue.com.au/assets/aushomevalue-og.png" />
     <style>:root {
   color-scheme: light;
   --bg: #f4f6f5;
@@ -2610,7 +2615,7 @@ th {
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "AusHomeValue",
-  "url": "https://aushomevalue.vercel.app",
+  "url": "https://www.aushomevalue.com.au/",
   "description": "Property Opportunity Intelligence Platform — free property estimates, comparable sales and market research for Melbourne and Victoria.",
   "foundingDate": "2026",
   "contactPoint": {
@@ -2627,14 +2632,14 @@ th {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "AusHomeValue",
-  "url": "https://aushomevalue.vercel.app",
+  "url": "https://www.aushomevalue.com.au/",
   "description": "Property opportunity intelligence platform for Melbourne and Victorian property research, valuation estimates and comparable sales.",
   "inLanguage": ["en-AU", "zh-CN"],
   "potentialAction": {
     "@type": "SearchAction",
     "target": {
       "@type": "EntryPoint",
-      "urlTemplate": "https://aushomevalue.vercel.app/?address={search_term_string}"
+      "urlTemplate": "https://www.aushomevalue.com.au/?address={search_term_string}"
     },
     "query-input": "required name=search_term_string"
   }
@@ -2666,7 +2671,7 @@ th {
             <div class="more-menu-panel">
               <a href="#research" data-i18n="nav-research">Research</a>
               <a href="#about" data-i18n="nav-about">About Us</a>
-              <a href="#methodology" data-i18n="nav-methodology">Methodology</a>
+              <a href="/methodology.html" data-i18n="nav-methodology">Methodology</a>
               <a href="#contact" data-i18n="nav-contact">Contact</a>
             </div>
           </details>
@@ -2814,10 +2819,10 @@ th {
               <input id="lead-phone" type="tel" placeholder="For PDF download" />
               <label class="consent">
                 <input id="lead-consent" type="checkbox" />
-                <span>You may contact me about this property report. Optional.</span>
+                <span>Optional marketing: send me property research, product updates and relevant offers by email, phone or SMS. I can unsubscribe at any time.</span>
               </label>
               <button id="unlock-report" type="button" style="min-width:44px;min-height:44px;" aria-disabled="true">Register Free to Unlock Enhanced Summary</button>
-              <p class="form-provider-note">No payment is collected here. We securely store your registration so this property summary can be restored. We may record an approximate visitor region, but do not display your full IP address.</p>
+              <p class="form-provider-note">By registering, you ask us to process your details to create and restore this report. Marketing is optional and is not required for the report. See our <a href="/privacy.html">Privacy Policy</a> and <a href="/terms.html">Terms</a>.</p>
               <p class="form-message" id="lead-message" aria-live="polite"></p>
               <p class="existing-unlock"><span id="existing-unlock-link" style="color:#66736d;font-size:0.85rem;">Free registration unlocks Future Score, key opportunities, key risks and sample comparable evidence. Paid full reports are separate.</span></p>
             </form>
@@ -3001,7 +3006,7 @@ th {
                 <p class="eyebrow">Improve accuracy</p>
                 <h2>Upload missing evidence to revise the estimate.</h2>
                 <p>Title, Section 32, current photos and inspection notes can upgrade confidence and narrow the valuation range.</p>
-                <p class="pdf-note">PDF download requires phone number and contact consent.</p>
+                <p class="pdf-note">Files are used only for the requested property evidence review and related support—not to enrol you in marketing. Remove unnecessary personal details and only upload material you are authorised to share. <a href="/evidence-handling.html">How uploads are handled</a>.</p>
               </div>
               <div class="report-actions">
                 <button id="upload-evidence" type="button">Upload evidence</button>
@@ -3205,6 +3210,7 @@ th {
           </article>
         </div>
         <p class="methodology-note" data-i18n="methodology-note">General information only. Not financial advice, not a formal valuation and not development approval advice.</p>
+        <p class="methodology-note"><a href="/methodology.html">Read the full methodology, scoring approach and data limitations.</a></p>
       </section>
 
       <!-- ── RESEARCH ── -->
@@ -3448,8 +3454,8 @@ th {
     <dialog class="unlock-modal" id="pdf-requirements-modal">
       <div class="modal-content">
         <p class="eyebrow">PDF download requirement</p>
-        <h2>Phone number and contact consent are required.</h2>
-        <p>Please add your phone number and tick the contact consent box before downloading the full report PDF.</p>
+        <h2>A phone number is required for PDF support.</h2>
+        <p>Please add your phone number before downloading the PDF. Optional marketing consent is not required.</p>
         <div class="modal-actions">
           <button id="pdf-fill-details" type="button">Fill phone details</button>
           <button class="ghost" id="pdf-close" type="button">Not now</button>
@@ -3485,7 +3491,7 @@ th {
         <p class="footer-brand" data-i18n="footer-brand">AusHomeValue – Property Opportunity Intelligence.</p>
         <p class="footer-copy">&copy; 2026 AusHomeValue. Authorised Representatives: <a href="mailto:info@aushomevalue.com.au">info@aushomevalue.com.au</a></p>
         <nav class="footer-nav" aria-label="Footer navigation">
-          <a href="#about">About</a> &middot; <a href="#contact">Contact</a> &middot; <a href="#valuation">Valuation</a> &middot; <a href="#opportunities">Top Opportunities</a>
+          <a href="#about">About</a> &middot; <a href="#contact">Contact</a> &middot; <a href="#valuation">Valuation</a> &middot; <a href="#opportunities">Top Opportunities</a> &middot; <a href="/methodology.html">Methodology</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/terms.html">Terms</a>
         </nav>
         <p class="footer-disclaimer" data-i18n="footer-disclaimer-en" lang="en">This website provides general property information and research for educational purposes. Not financial advice, not a credit assessment, not a formal valuation. Always consult licensed professionals for legal, tax and lending decisions.</p>
         <p class="footer-disclaimer" data-i18n="footer-disclaimer-zh" lang="zh" style="display:none">本网站提供一般房产信息和研究，仅供教育参考。不构成财务建议、信贷评估或正式估值。法律、税务和贷款决策请咨询持牌专业人士。</p>
