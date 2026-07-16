@@ -6,6 +6,8 @@
   "scripts": {
     "build": "node scripts/generate-version.mjs",
     "vercel-build": "node scripts/generate-version.mjs",
+    "verify:generated": "node scripts/verify-generated.mjs",
+    "test:governance": "node --test tests/source-dist-governance-tests.mjs",
     "test:release-safeguards": "node --test tests/release-safeguards-tests.mjs",
     "audit:site-stats": "node scripts/update-site-stats.mjs --check",
     "smoke:production": "node scripts/smoke-production.mjs",
