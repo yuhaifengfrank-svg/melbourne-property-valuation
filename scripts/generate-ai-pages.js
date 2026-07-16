@@ -11,7 +11,7 @@ import fs from 'fs';
 import path from 'path';
 
 const sql = neon(process.env.DATABASE_URL, { fetchOptions: { cache: 'no-store' } });
-const OUT = 'dist';
+const OUT = 'tmp/legacy-suburb-pages';
 
 function slug(suburb, state) {
   return `${suburb.toLowerCase().replace(/\s+/g, '-')}-${(state || 'vic').toLowerCase()}`;
