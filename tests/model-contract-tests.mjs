@@ -2,7 +2,6 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
 
-const rootApp = fs.readFileSync(new URL("../app.js", import.meta.url), "utf8");
 const publicApp = fs.readFileSync(new URL("../public/app.js", import.meta.url), "utf8");
 const engine = fs.readFileSync(new URL("../lib/valuation-engine.js", import.meta.url), "utf8");
 
@@ -12,8 +11,7 @@ function addressPriorityBlock(source) {
   return source.slice(start, end);
 }
 
-test("production and root address builders use the same suburb priority", () => {
-  assert.equal(addressPriorityBlock(publicApp), addressPriorityBlock(rootApp));
+test("canonical public address builder preserves suburb priority", () => {
   assert.match(
     addressPriorityBlock(publicApp),
     /if \(inlineSuburb && !looksLikeStreetOnly\(inlineSuburb\)\)/

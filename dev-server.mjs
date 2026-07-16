@@ -6,9 +6,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PUBLIC_DIR = path.join(__dirname, "public");
 const app = express();
 app.use(express.json());
-app.use(express.static(__dirname));
+app.use(express.static(PUBLIC_DIR));
 
 /* ── Valuation (free summary) ── */
 app.post("/api/valuation", async (req, res) => {
@@ -154,6 +155,11 @@ apiEndpoints.forEach(endpoint => {
       });
     }
   });
+});
+
+app.use((req, res, next) => {
+  if (req.path.startsWith("/api/")) return next();
+  return res.status(404).sendFile(path.join(PUBLIC_DIR, "404.html"));
 });
 
 const PORT = process.env.PORT || 3000;

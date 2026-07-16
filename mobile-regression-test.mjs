@@ -42,6 +42,7 @@ class MockElement {
     this.href = "";
     this.download = "";
     this.dataset = {};
+    this.attributes = new Map();
     this.style = {};
     this.children = [];
     this.listeners = {};
@@ -52,6 +53,14 @@ class MockElement {
   addEventListener(type, handler) {
     this.listeners[type] = this.listeners[type] || [];
     this.listeners[type].push(handler);
+  }
+
+  setAttribute(name, value) {
+    this.attributes.set(name, String(value));
+  }
+
+  removeAttribute(name) {
+    this.attributes.delete(name);
   }
 
   get innerHTML() {
@@ -79,6 +88,10 @@ class MockElement {
 
   focus() {
     this.recorder?.focuses.push(this.id || "anonymous");
+  }
+
+  closest() {
+    return new MockElement("", this.recorder);
   }
 
   scrollIntoView() {
@@ -161,6 +174,7 @@ function makeDocument() {
   const document = {
     body: new MockElement("body", recorder),
     documentElement: new MockElement("html", recorder),
+    addEventListener: () => {},
     createElement: (tagName = "") => {
       const element = new MockElement("", recorder);
       element.tagName = tagName;
@@ -199,8 +213,8 @@ class MockFileReader {
   }
 }
 
-const html = fs.readFileSync(new URL("./index.html", import.meta.url), "utf8");
-const css = fs.readFileSync(new URL("./styles.css", import.meta.url), "utf8");
+const html = fs.readFileSync(new URL("./public/index.html", import.meta.url), "utf8");
+const css = fs.readFileSync(new URL("./public/styles.css", import.meta.url), "utf8");
 
 assert.match(html, /<meta name="viewport" content="width=device-width, initial-scale=1" \/>/);
 assert.ok(html.indexOf('class="mobile-value-card"') < html.indexOf('class="layout"'), "mobile summary should appear before detailed sections");
@@ -214,6 +228,9 @@ const objectUrls = [];
 const context = {
   console,
   document,
+  setTimeout,
+  clearTimeout,
+  URLSearchParams,
   FileReader: MockFileReader,
   Blob,
   URL: {
@@ -225,6 +242,7 @@ const context = {
   },
   localStorage: new Map(),
   window: {
+    location: { search: "" },
     matchMedia: (query) => ({ matches: query.includes("max-width: 680px") })
   },
   fetch: async () => ({
@@ -247,7 +265,7 @@ const context = {
 context.localStorage.getItem = (key) => context.localStorage.get(key) || null;
 context.localStorage.setItem = (key, value) => context.localStorage.set(key, value);
 
-const app = fs.readFileSync(new URL("./app.js", import.meta.url), "utf8");
+const app = fs.readFileSync(new URL("./public/app.js", import.meta.url), "utf8");
 vm.createContext(context);
 vm.runInContext(app, context, { filename: "app.js" });
 

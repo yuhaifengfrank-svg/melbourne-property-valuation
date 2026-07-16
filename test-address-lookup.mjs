@@ -65,7 +65,7 @@ function createSandbox(mocks = {}) {
   ctx.globalThis = ctx;
 
   // Load app.js
-  const appCode = $fs.readFileSync("app.js", "utf8");
+  const appCode = $fs.readFileSync("public/app.js", "utf8");
 
   // Extract just the key functions we need (skip event listeners and byId usage at top-level)
   // We'll run the relevant functions by extracting them

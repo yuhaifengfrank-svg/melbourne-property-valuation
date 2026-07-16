@@ -46,11 +46,20 @@ class MockElement {
     this.href = "";
     this.download = "";
     this.dataset = {};
+    this.attributes = new Map();
     this.style = {};
     this.classList = new MockClassList();
   }
 
   addEventListener() {}
+
+  setAttribute(name, value) {
+    this.attributes.set(name, String(value));
+  }
+
+  removeAttribute(name) {
+    this.attributes.delete(name);
+  }
 
   get innerHTML() {
     return this._innerHTML;
@@ -68,6 +77,9 @@ class MockElement {
   click() {}
   close() {}
   focus() {}
+  closest() {
+    return new MockElement();
+  }
   scrollIntoView() {}
   showModal() {
     this.open = true;
@@ -155,6 +167,9 @@ const objectUrls = [];
 const context = {
   console,
   document,
+  setTimeout,
+  clearTimeout,
+  URLSearchParams,
   FileReader: MockFileReader,
   Blob,
   URL: {
@@ -166,6 +181,7 @@ const context = {
   },
   localStorage: new Map(),
   window: {
+    location: { search: "" },
     matchMedia: () => ({ matches: false })
   },
   fetch: async (url) => {
@@ -202,7 +218,7 @@ globalThis.__asyncValuation = function(...args) {
   return runAddressValuation(...args).then(v => v);
 };`;
 
-const app = fs.readFileSync(new URL("./app.js", import.meta.url), "utf8");
+const app = fs.readFileSync(new URL("./public/app.js", import.meta.url), "utf8");
 const expose = `
 globalThis.__test = {
   valuations,
