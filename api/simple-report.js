@@ -227,7 +227,7 @@ export default async function handler(req, res) {
       .send(html);
 
   } catch (err) {
-    console.error("simple-report error:", err);
+    console.error("Simple report request failed");
     return res.status(500).json({ ok: false, error: "Internal error generating report" });
   }
 }

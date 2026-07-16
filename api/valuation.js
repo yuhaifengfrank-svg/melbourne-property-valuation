@@ -196,18 +196,16 @@ export default async function handler(request, response) {
 
   try {
     const body = typeof request.body === "string" ? JSON.parse(request.body) : request.body || {};
+    const sql = getSql();
     const result = await runValuation(body, {
       // DB 为第一数据源，CDP 浏览器仅在 DB 数据不足时作为补充
       // Vercel 环境无需 CDP（AWS Lambda 无 Chrome）
       fetch: false
     });
 
-    let sql = null;
-
     // Attach property-level Future Opportunity Outlook before snapshot creation.
     try {
       if (result.ok) {
-        sql = getSql();
         const subject = result.subject || {};
         const suburbName = subject.suburb || body.suburb || "";
         const stateName = subject.state || body.state || "VIC";
@@ -245,13 +243,12 @@ export default async function handler(request, response) {
         }
       }
     } catch (futureErr) {
-      console.error("Future outlook failed (non-fatal):", futureErr.message);
+      console.error("Future outlook unavailable");
     }
 
     try {
       if (result.ok) {
         // Query planning signals
-        if (!sql) sql = getSql();
         const { getPlanningSignals } = await import("../lib/planning-signal-service.js");
         const coords = result.subject?.coordinates;
         if (coords && coords.lat != null && coords.lon != null) {
@@ -261,7 +258,7 @@ export default async function handler(request, response) {
         }
       }
     } catch (planningErr) {
-      console.error("Planning signals query failed (non-fatal):", planningErr.message);
+      console.error("Planning signals unavailable");
     }
 
     // Generate short-lived draft token for this valuation
@@ -269,7 +266,6 @@ export default async function handler(request, response) {
     let draftExpiresAt = null;
     try {
       if (result.ok) {
-        if (!sql) sql = getSql();
         // Ensure dependent schemas exist before writing report_drafts
         await ensureCustomerFunnelSchema(sql);
         await ensureReportPaymentSchema(sql);
@@ -279,7 +275,7 @@ export default async function handler(request, response) {
       }
     } catch (draftErr) {
       // Draft creation failure should not break the free valuation
-      console.error("Draft creation failed (non-fatal):", draftErr.message);
+      console.error("Draft creation unavailable");
     }
 
     // Build free summary instead of returning full sanitized data
@@ -295,13 +291,13 @@ export default async function handler(request, response) {
       .setHeader("Cache-Control", "no-store")
       .send(JSON.stringify(freeSummary));
   } catch (error) {
-    console.error(error);
+    console.error("Valuation request failed");
     return response.status(500)
       .setHeader("Content-Type", "application/json")
       .send(JSON.stringify({
         ok: false,
         status: "error",
-        error: error.message,
+        error: "Valuation service unavailable.",
         estimate: null,
         customerDataStatus: "unavailable",
         disclaimer: "This free valuation summary is based on publicly available market data for general information only. This is not a formal valuation."
