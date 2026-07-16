@@ -10,6 +10,9 @@ node_modules/
 outputs/
 output/
 
+# macOS Finder metadata
+.DS_Store
+
 # Temporary seed database files
 .tmp-*.mjs
 
