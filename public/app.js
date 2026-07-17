@@ -135,7 +135,13 @@ const commercialPendingValuation = {
 let unlocked = false;
 let currentValuation = emptyValuation;
 let selectedLvr = 0.6;
-let language = "en";
+let language = (() => {
+  try {
+    return localStorage.getItem("aushomevalue.language") === "zh" ? "zh" : "en";
+  } catch (e) {
+    return "en";
+  }
+})();
 
 // Phase 1E3D-1A: Report draft token (memory only, never localStorage/sessionStorage/Cookie)
 var currentReportDraft = null;
@@ -3073,6 +3079,7 @@ document.querySelectorAll(".lvr").forEach((button) => {
 
 byId("language-toggle").addEventListener("click", () => {
   language = language === "en" ? "zh" : "en";
+  try { localStorage.setItem("aushomevalue.language", language); } catch (e) {}
   applyLanguage();
 });
 
