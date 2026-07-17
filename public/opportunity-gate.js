@@ -503,11 +503,11 @@
         // Not authenticated — show registration overlay
         showRegistrationGate(gateOptions, function (d) {
           if (typeof onSuccess === "function") onSuccess(d);
-          resolve({
-            authenticated: true,
-            gateLevel: "opportunity_registered",
-          });
         });
+        // Resolve as soon as the gate is visible. Waiting until registration
+        // completes leaves the search button looking unresponsive during a
+        // cold server-side access check.
+        resolve({ authenticated: false, gateShown: true });
       });
     });
   }

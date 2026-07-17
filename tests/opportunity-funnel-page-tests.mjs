@@ -5,6 +5,7 @@ import path from "node:path";
 
 const page = fs.readFileSync(path.resolve("public/opportunities/index.html"), "utf8");
 const gate = fs.readFileSync(path.resolve("public/opportunity-gate.js"), "utf8");
+const app = fs.readFileSync(path.resolve("public/app.js"), "utf8");
 
 test("opportunities page is a three-layer Future Opportunity funnel", () => {
   assert.match(page, /Future Opportunity Index/);
@@ -20,6 +21,13 @@ test("opportunities page uses live Future Opportunity and unlock APIs", () => {
   assert.match(page, /opportunityGate\.run/);
   assert.match(page, /opportunityGate\.checkTier/);
   assert.match(page, /showSubscriptionUpgrade/);
+});
+
+test("homepage opportunity search gives immediate feedback while checking access", () => {
+  assert.match(app, /oppLoading\.textContent = language === "zh" \? "正在检查访问权限……" : "Checking access…"/);
+  assert.match(app, /oppSearchBtn\.disabled = true/);
+  assert.match(app, /gateResult && gateResult\.gateShown/);
+  assert.match(gate, /resolve\(\{ authenticated: false, gateShown: true \}\)/);
 });
 
 test("free opportunity layer is capped to three preview cards", () => {

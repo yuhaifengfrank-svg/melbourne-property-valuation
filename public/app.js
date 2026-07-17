@@ -3913,14 +3913,16 @@ async function runOpportunityScan() {
   // Tier 2: registered (opportunity_registered cookie) → personalised Top 10
   // Tier 3: subscribed (opportunity_subscribed cookie) → full access (Coming Soon)
   if (window.opportunityGate) {
-    oppLoading.classList.add("hidden");
+    oppLoading.classList.remove("hidden");
+    oppLoading.textContent = language === "zh" ? "正在检查访问权限……" : "Checking access…";
+    oppSearchBtn.disabled = true;
     const strategy = document.getElementById("opp-strategy").value;
     const ptype = document.getElementById("opp-type").value;
     const minP = document.getElementById("opp-min-price").value;
     const maxP = document.getElementById("opp-max-price").value;
     const stateEl = document.getElementById("opp-state");
     const state = stateEl ? stateEl.value : "vic";
-    const waitForGate = await window.opportunityGate.run({
+    const gateResult = await window.opportunityGate.run({
       language: language,
       strategy: strategy,
       propertyType: ptype || null,
@@ -3935,7 +3937,9 @@ async function runOpportunityScan() {
         oppResults.innerHTML = '<div class="opp-placeholder"><p>Data unavailable. Please try again later.</p></div>';
       }
     });
-    if (waitForGate) return; // gate was shown
+    oppLoading.classList.add("hidden");
+    oppSearchBtn.disabled = false;
+    if (gateResult && gateResult.gateShown) return;
   }
 
   // Already authenticated — fetch personalised top 10 from server re-rank endpoint
