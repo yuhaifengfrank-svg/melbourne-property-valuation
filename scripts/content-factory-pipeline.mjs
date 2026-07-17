@@ -392,7 +392,7 @@ function generateBlogIndex(allSlugs, allSuburbs) {
     const typeBadge = e.opportunityType ? `<span class="tag tag-type">${e.opportunityType}</span>` : '';
     const confBadge = e.confidence ? `<span class="tag tag-conf">${e.confidence}</span>` : '';
     return `    <div class="blog-card">
-      <h2><a href="/blog/${Y}/${e.weekId}/${e.slug}">${e.suburb} — Market Analysis</a></h2>
+      <h2><a href="/blog/${Y}/${e.weekId}/${e.slug}.html">${e.suburb} — Market Analysis</a></h2>
       <div class="meta">Week ${e.weekId.replace(/^.*-W/, 'Week ')} · ${Y}</div>
       <p>Data-driven suburb analysis covering median price, opportunity score, school zone quality, rental yield, supply constraints and comparable suburbs.</p>
       <div class="tags">
