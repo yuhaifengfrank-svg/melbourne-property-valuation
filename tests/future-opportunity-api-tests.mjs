@@ -118,6 +118,8 @@ test("mapOpportunityRow returns one canonical public score without legacy fields
   assert.equal(mapped.score.isPriceForecast, false);
   assert.equal("legacyOpportunityScore" in mapped, false);
   assert.equal("legacyOpportunityType" in mapped, false);
+  assert.equal("_rawFutureOpportunityIndex" in mapped, false);
+  assert.equal("_rawComponentScores" in mapped, false);
   assert.equal("opportunityScore" in mapped, false);
   assert.equal(mapped.predictionType, "future_opportunity_index_0_100");
   assert.equal(mapped.isPriceForecast, false);

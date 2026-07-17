@@ -186,7 +186,7 @@ export function mapOpportunityRow(r, {
 } = {}) {
   const base = buildOpportunityBase(r);
   const outlook = calibratedOutlook || scoreFutureOpportunity(base, { strategy, propertyType });
-  const { _rawComponentScores, ...publicOutlook } = outlook;
+  const { _rawComponentScores, _rawFutureOpportunityIndex, ...publicOutlook } = outlook;
   return {
     ...base,
     ...publicOutlook,
