@@ -1,0 +1,2 @@
+# Prevent credential-bearing historical content from being rendered in review diffs.
+scripts/test-neon.mjs -diff

@@ -349,7 +349,7 @@ export default async function handler(req, res) {
       .json(leadResponse);
 
   } catch (err) {
-    console.error("valuation-lead error:", err);
+    console.error("Registered valuation request failed");
     return res.status(500).json({
       ok: false,
       error: "VALUATION_ERROR",
