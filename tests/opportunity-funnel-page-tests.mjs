@@ -33,7 +33,7 @@ test("homepage opportunity search gives immediate feedback while checking access
 
 test("homepage cache-busts opportunity scripts so search fixes reach returning visitors", () => {
   assert.match(homepage, /src="\/opportunity-gate\.js\?v=20260717-search-feedback"/);
-  assert.match(homepage, /src="\/app\.js\?v=20260717-keep-outlook"/);
+  assert.match(homepage, /src="\/app\.js\?v=20260717-outlook-strategies"/);
 });
 
 test("authenticated homepage search re-ranks with the currently selected filters", () => {
@@ -48,6 +48,17 @@ test("authenticated homepage search re-ranks with the currently selected filters
 
 test("homepage search keeps the Future Opportunity Outlook preview visible", () => {
   assert.doesNotMatch(app, /home-snippet['"]\)\s*;[\s\S]{0,100}style\.display\s*=\s*['"]none['"]/);
+});
+
+test("homepage Future Outlook renders separate strategy rankings", () => {
+  assert.match(app, /balanced: \{ label: 'Balanced Outlook'/);
+  assert.match(app, /growth:\s+\{ label: 'Growth Outlook'/);
+  assert.match(app, /cashflow: \{ label: 'Income Outlook'/);
+  assert.match(app, /school:\s+\{ label: 'School Outlook'/);
+  assert.match(app, /value:\s+\{ label: 'Value Outlook'/);
+  assert.match(app, /maxResults=3&strategy=/);
+  assert.doesNotMatch(app, /strategy=balanced'\)/);
+  assert.doesNotMatch(app, /o\.bestFor/);
 });
 
 test("free opportunity layer is capped to three preview cards", () => {

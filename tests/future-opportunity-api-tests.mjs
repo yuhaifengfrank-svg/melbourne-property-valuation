@@ -150,13 +150,16 @@ test("mapOpportunityRow changes ranking output by strategy", () => {
   assert.ok(income.futureOpportunityIndex > school.futureOpportunityIndex);
 });
 
-test("homepage Future Outlook snippet uses the real opportunity API endpoint", () => {
+test("homepage Future Outlook snippet uses the real opportunity API for each strategy", () => {
   const appJs = fs.readFileSync(path.resolve("public/app.js"), "utf8");
 
-  assert.match(
-    appJs,
-    /fetch\('\/api\/opportunity\?maxResults=50&strategy=balanced'\)/
-  );
+  assert.match(appJs, /Object\.keys\(categories\)/);
+  assert.match(appJs, /fetch\('\/api\/opportunity\?maxResults=3&strategy=' \+ encodeURIComponent\(strategy\)\)/);
+  assert.match(appJs, /balanced: \{ label: 'Balanced Outlook'/);
+  assert.match(appJs, /growth:\s+\{ label: 'Growth Outlook'/);
+  assert.match(appJs, /cashflow: \{ label: 'Income Outlook'/);
+  assert.match(appJs, /school:\s+\{ label: 'School Outlook'/);
+  assert.match(appJs, /value:\s+\{ label: 'Value Outlook'/);
   assert.doesNotMatch(appJs, /\/api\/future-opportunity/);
   assert.match(appJs, /data\.opportunities/);
 });
