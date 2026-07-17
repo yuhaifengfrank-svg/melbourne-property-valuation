@@ -16,9 +16,10 @@ test("percentile scores spread ordered values and average ties", () => {
 });
 
 test("internal ratings map from AAA to CCC minus", () => {
-  assert.equal(relativeRating(100), "AA+");
-  assert.equal(relativeRating(85), "AA-");
-  assert.equal(relativeRating(65), "BBB+");
+  assert.equal(relativeRating(100), "AAA");
+  assert.equal(relativeRating(95), "AAA");
+  assert.equal(relativeRating(85), "AA");
+  assert.equal(relativeRating(65), "A-");
   assert.equal(relativeRating(5), "CCC-");
   assert.equal(relativeRating(null), "Not rated");
 });
