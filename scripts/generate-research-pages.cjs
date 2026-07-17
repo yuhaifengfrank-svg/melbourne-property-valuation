@@ -267,19 +267,16 @@ function buildCard(r, i, page) {
 
   // For supply page, the factorScore maps from conf_supply_constraint
   let factorScore = r.factorScore;
-  let factorTier = r.factorTier;
   let confidence = r.overallConfidence;
 
   // Supply-constrained page uses conf_supply_constraint as the score
   if (page.apiSlug === null) {
     factorScore = r.conf_supply_constraint;
-    factorTier = factorScore >= 70 ? 'A' : factorScore >= 55 ? 'B+' : factorScore >= 40 ? 'B' : 'C';
     oppScore = r.opportunity_score;
     confidence = r.overall_confidence;
   }
 
   const scoreDisplay = factorScore != null ? Math.round(factorScore) + '/100' : '—';
-  const tierDisplay = factorTier || '';
   const confidenceDisplay = confidence != null ? confidence.toFixed(1) + '%' : '—';
   const priceDisplay = formatPrice(r.medianPrice || r.median_house_price);
 
@@ -295,7 +292,6 @@ function buildCard(r, i, page) {
           <div class="stat">
             <span class="stat-label">${page.navLabel}</span>
             <span class="stat-value">${scoreDisplay}</span>
-            <span class="stat-tier">${tierDisplay}</span>
           </div>
           <div class="stat">
             <span class="stat-label">Confidence</span>
@@ -423,7 +419,6 @@ function buildPage(page, results) {
     .stat { display: flex; flex-direction: column; }
     .stat-label { font-size: 0.75rem; color: #8a9b93; text-transform: uppercase; letter-spacing: 0.04em; }
     .stat-value { font-size: 1.05rem; font-weight: 700; }
-    .stat-tier { font-size: 0.8rem; color: #66736d; }
     .stat-type { font-size: 0.85rem; color: #0d6b57; font-weight: 500; }
     .explain-list { margin: 6px 0 0 0; padding: 0; list-style: none; }
     .explain-list li {
@@ -568,7 +563,6 @@ async function main() {
             suburb: r.suburb,
             state: r.state || 'VIC',
             factorScore: Number(r.conf_supply_constraint),
-            factorTier: null, // computed in buildCard
             opportunityScore: Number(r.opportunity_score),
             overallConfidence: Number(r.overall_confidence),
             medianPrice: Number(r.median_house_price) || Number(r.median_unit_price),

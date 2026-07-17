@@ -615,8 +615,7 @@
         var score = append(top, "div", "opp-score");
         var displayScore = scoreFor(item, mode);
         append(score, "strong", "", displayScore === null ? "Data unavailable" : String(displayScore) + "/100");
-        var rating = text(item.score && item.score.rating || item.rating, "Not rated");
-        append(score, "span", "", (mode === "registered" ? "Personal score" : "Future score") + " · " + rating);
+        append(score, "span", "", mode === "registered" ? "Personal score" : "Future score");
 
         var scoreline = append(card, "div", "opp-scoreline");
         addMetric(scoreline, "Horizon", text(item.forecastHorizon, "3-5 years"));
