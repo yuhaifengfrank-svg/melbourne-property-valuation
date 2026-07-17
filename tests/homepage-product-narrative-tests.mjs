@@ -22,9 +22,9 @@ test("primary navigation stays focused: Get estimate, Top Opportunity, Investor 
   assert.equal(nav.querySelector('[data-i18n="nav-get-estimate"]')?.textContent.trim(), "Get estimate");
 });
 
-test("Top Opportunity navigation opens the dedicated opportunity page", () => {
-  assert.match(INDEX, /href="\/opportunities\/"[^>]*data-i18n="nav-opportunities"/);
-  assert.doesNotMatch(INDEX, /href="#opportunities"[^>]*data-i18n="nav-opportunities"/);
+test("Top Opportunity navigation opens the original homepage ranking section", () => {
+  assert.match(INDEX, /href="\/#opportunities"[^>]*data-i18n="nav-opportunities"/);
+  assert.doesNotMatch(INDEX, /href="\/opportunities\/"[^>]*data-i18n="nav-opportunities"/);
 });
 
 test("More menu contains only secondary research and company links", () => {
