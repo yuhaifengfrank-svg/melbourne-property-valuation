@@ -3949,8 +3949,6 @@ async function runOpportunityScan() {
   oppLoading.textContent = "Personalising your rankings...";
   oppSearchBtn.disabled = true;
   oppResults.innerHTML = "";
-  var snippetEl = document.getElementById('home-snippet');
-  if (snippetEl) snippetEl.style.display = 'none';
   var coldTimer = setTimeout(function () {
     oppLoading.textContent = "Still scanning — this may take a moment on first run.";
   }, 15000);
