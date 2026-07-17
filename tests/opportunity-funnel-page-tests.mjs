@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const page = fs.readFileSync(path.resolve("public/opportunities/index.html"), "utf8");
+const homepage = fs.readFileSync(path.resolve("public/index.html"), "utf8");
 const gate = fs.readFileSync(path.resolve("public/opportunity-gate.js"), "utf8");
 const app = fs.readFileSync(path.resolve("public/app.js"), "utf8");
 
@@ -28,6 +29,11 @@ test("homepage opportunity search gives immediate feedback while checking access
   assert.match(app, /oppSearchBtn\.disabled = true/);
   assert.match(app, /gateResult && gateResult\.gateShown/);
   assert.match(gate, /resolve\(\{ authenticated: false, gateShown: true \}\)/);
+});
+
+test("homepage cache-busts opportunity scripts so search fixes reach returning visitors", () => {
+  assert.match(homepage, /src="\/opportunity-gate\.js\?v=20260717-search-feedback"/);
+  assert.match(homepage, /src="\/app\.js\?v=20260717-search-feedback"/);
 });
 
 test("free opportunity layer is capped to three preview cards", () => {
