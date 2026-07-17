@@ -6,6 +6,7 @@
 
 import { neon } from '@neondatabase/serverless';
 import {
+  calibrateFutureOpportunityOutlooks,
   isSupportedFutureStrategy,
   normalizePropertyType,
   normalizeStrategy,
@@ -61,16 +62,9 @@ export default async function handler(request, response) {
   try {
     const sql = getSql();
 
-    let where = [`opportunity_score IS NOT NULL`];
-    let params = [];
-    let p = 0;
-
-    if (suburbFilter) {
-      p++; where.push(`LOWER(suburb) LIKE $${p}`); params.push(`%${suburbFilter.toLowerCase()}%`);
-    }
-    ({ p } = appendPriceFilter({ where, params, p, propertyType, minPrice, maxPrice }));
-
-    const candidateLimit = Math.min(Math.max(maxResults * 4, 100), 500);
+    // Always calibrate against the same statewide population. Applying request
+    // filters before calibration would make a one-suburb query score 100/100.
+    const params = [1000];
     const q = `
       SELECT suburb, state,
              median_house_price, median_unit_price,
@@ -80,16 +74,22 @@ export default async function handler(request, response) {
              overall_confidence, opportunity_score, opportunity_type,
              conf_school, conf_yield, conf_vacancy, updated_at
       FROM suburb_metrics
-      WHERE ${where.join(' AND ')}
+      WHERE opportunity_score IS NOT NULL
       ORDER BY opportunity_score DESC
-      LIMIT $${++p}
+      LIMIT $1
     `;
-    params.push(candidateLimit);
 
     const rows = await sql.query(q, params);
 
+    const rawOutlooks = rows.map(r => scoreFutureOpportunity(buildOpportunityBase(r), { strategy, propertyType }));
+    const calibratedOutlooks = calibrateFutureOpportunityOutlooks(rawOutlooks);
     const opportunities = rows
-      .map(r => mapOpportunityRow(r, { strategy, propertyType }))
+      .map((r, index) => mapOpportunityRow(r, {
+        strategy,
+        propertyType,
+        calibratedOutlook: calibratedOutlooks[index],
+      }))
+      .filter(o => matchesOpportunityFilters(o, { suburbFilter, propertyType, minPrice, maxPrice }))
       .filter(o => o.futureOpportunityIndex >= minScore)
       .sort((a, b) => b.futureOpportunityIndex - a.futureOpportunityIndex)
       .slice(0, maxResults);
@@ -103,7 +103,7 @@ export default async function handler(request, response) {
         strategy,
         propertyType,
         scoreType: 'Future Opportunity Index',
-        modelVersion: opportunities[0]?.modelVersion || 'future_outlook_v1',
+        modelVersion: opportunities[0]?.modelVersion || 'future_outlook_v2',
         forecastHorizon: '3-5 years',
         isPriceForecast: false,
         disclaimer: 'Future Opportunity Index is a relative 0-100 screening signal. It is not a price forecast, financial advice, or a guaranteed return.',
@@ -119,6 +119,17 @@ export default async function handler(request, response) {
       opportunities: []
     });
   }
+}
+
+function matchesOpportunityFilters(opportunity, { suburbFilter, propertyType, minPrice, maxPrice }) {
+  if (suburbFilter && !opportunity.suburb.toLowerCase().includes(String(suburbFilter).toLowerCase())) return false;
+  if (minPrice == null && maxPrice == null) return true;
+  const prices = propertyType === 'house' ? [opportunity.medianHousePrice]
+    : propertyType === 'unit' ? [opportunity.medianUnitPrice]
+      : [opportunity.medianHousePrice, opportunity.medianUnitPrice];
+  return prices.some((price) => price != null
+    && (minPrice == null || price >= minPrice)
+    && (maxPrice == null || price <= maxPrice));
 }
 
 export function appendPriceFilter({ where, params, p, propertyType, minPrice, maxPrice }) {
@@ -151,8 +162,8 @@ export function appendPriceFilter({ where, params, p, propertyType, minPrice, ma
   return { p };
 }
 
-export function mapOpportunityRow(r, { strategy = 'balanced', propertyType = 'either' } = {}) {
-  const base = {
+function buildOpportunityBase(r) {
+  return {
     suburb: r.suburb,
     state: r.state || 'VIC',
     medianHousePrice: toNumberOrNull(r.median_house_price),
@@ -166,11 +177,20 @@ export function mapOpportunityRow(r, { strategy = 'balanced', propertyType = 'ei
     overallConfidence: toNumberOrNull(r.overall_confidence),
     dataUpdated: r.updated_at ? new Date(r.updated_at).toISOString().split('T')[0] : '',
   };
-  const outlook = scoreFutureOpportunity(base, { strategy, propertyType });
+}
+
+export function mapOpportunityRow(r, {
+  strategy = 'balanced',
+  propertyType = 'either',
+  calibratedOutlook = null,
+} = {}) {
+  const base = buildOpportunityBase(r);
+  const outlook = calibratedOutlook || scoreFutureOpportunity(base, { strategy, propertyType });
+  const { _rawComponentScores, ...publicOutlook } = outlook;
   return {
     ...base,
-    ...outlook,
-    score: buildOpportunityPublicScore(outlook),
+    ...publicOutlook,
+    score: buildOpportunityPublicScore(publicOutlook),
   };
 }
 

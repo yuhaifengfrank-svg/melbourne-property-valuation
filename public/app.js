@@ -1542,7 +1542,7 @@ function renderPropertyFutureOutlook(outlook) {
 
   panel.style.display = "";
   if (scoreEl) scoreEl.textContent = score.toFixed(1).replace(/\.0$/, "") + "/100";
-  if (bandEl) bandEl.textContent = outlook.band || (language === "zh" ? "未来机会指数" : "Future Opportunity Index");
+  if (bandEl) bandEl.textContent = [outlook.rating, outlook.band].filter(Boolean).join(" · ") || (language === "zh" ? "未来机会指数" : "Future Opportunity Index");
   if (detailEl) {
     var horizon = outlook.forecastHorizon || "3-5 years";
     var confidence = outlook.confidence || "Low";
@@ -3824,7 +3824,8 @@ async function loadHomeOpportunities() {
         const slug = String(o.suburb || '').toLowerCase().replace(/\s+/g, '-') + '-' + (o.state||'vic').toLowerCase();
         const rawScore = o.score && o.score.value != null ? o.score.value : o.futureOpportunityIndex;
         const score = Number.isFinite(Number(rawScore)) ? Number(rawScore).toFixed(1).replace(/\.0$/, '') + '/100' : 'Data unavailable';
-        html += `<div><a href="/suburb/${esc(slug)}.html">${esc(o.suburb)}</a> <span aria-label="Future Opportunity Index ${esc(score)}" style="background:${cfg.color};color:white;border-radius:20px;padding:2px 8px;font-size:0.8rem;">${esc(score)}</span> <span style="color:#66736d;font-size:0.8rem;">${esc(cfg.desc(o))}</span></div>`;
+        const rating = o.score && o.score.rating || o.rating || 'Not rated';
+        html += `<div><a href="/suburb/${esc(slug)}.html">${esc(o.suburb)}</a> <span aria-label="Future Opportunity Index ${esc(score)}" style="background:${cfg.color};color:white;border-radius:20px;padding:2px 8px;font-size:0.8rem;">${esc(score)}</span> <span style="color:#66736d;font-size:0.8rem;">${esc(rating)} · ${esc(cfg.desc(o))}</span></div>`;
       });
       html += `</div>`;
     }

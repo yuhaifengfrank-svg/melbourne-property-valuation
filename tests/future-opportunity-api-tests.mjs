@@ -112,7 +112,8 @@ test("mapOpportunityRow returns one canonical public score without legacy fields
   assert.equal(mapped.score.value, mapped.futureOpportunityIndex);
   assert.equal(mapped.score.display, `${mapped.futureOpportunityIndex}/100`);
   assert.equal(mapped.score.scale, 100);
-  assert.equal(mapped.score.modelVersion, "future_outlook_v1");
+  assert.equal(mapped.score.modelVersion, "future_outlook_v2");
+  assert.match(mapped.score.rating, /^(?:AAA|AA[+-]?|A[+-]?|BBB[+-]?|BB[+-]?|B[+-]?|CCC[+-]?)$/);
   assert.equal(mapped.score.horizon, "3-5 years");
   assert.equal(mapped.score.isPriceForecast, false);
   assert.equal("legacyOpportunityScore" in mapped, false);

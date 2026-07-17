@@ -16,14 +16,14 @@ function read(relativePath) {
   return fs.readFileSync(path.join(root, relativePath), 'utf8');
 }
 
-test('top-page generators render factor and opportunity scores on a /100 scale', () => {
+test('top-page generators do not reintroduce the obsolete legacy opportunity badge', () => {
   const legacyGenerator = read('scripts/generate-top-pages.cjs');
   const researchGenerator = read('scripts/generate-research-pages.cjs');
 
-  assert.match(legacyGenerator, /opportunityScore[^\n]+\/100/);
   assert.match(legacyGenerator, /factorScore[^\n]+\/100/);
   assert.match(researchGenerator, /scoreDisplay[^\n]+\/100/);
-  assert.match(researchGenerator, /oppDisplay[^\n]+\/100/);
+  assert.doesNotMatch(legacyGenerator, /tag tag-opp/);
+  assert.doesNotMatch(researchGenerator, /tag tag-opp/);
 });
 
 test('generated top pages do not present normalized scores as percentages', () => {
@@ -35,14 +35,15 @@ test('generated top pages do not present normalized scores as percentages', () =
   for (const page of pages) {
     const html = read(page);
     assert.doesNotMatch(html, /<span class="tag tag-opp">Opp [\d.]+<\/span>/, page);
-    assert.match(html, /<span class="tag tag-opp">Opp [\d.]+\/100<\/span>/, page);
+    assert.doesNotMatch(html, /<span class="tag tag-opp">/, page);
+    assert.match(html, /<span class="stat-tier">(?:AAA|AA[+-]?|A[+-]?|BBB[+-]?|BB[+-]?|B[+-]?|CCC[+-]?)<\/span>/, page);
 
     const factorValues = [...html.matchAll(
       /<span class="stat-label">(?:Growth|Value|Yield|Schools|Supply)<\/span>\s*<span class="stat-value">([^<]+)<\/span>/g,
     )].map(match => match[1]);
 
     assert.ok(factorValues.length > 0, `${page} should contain factor scores`);
-    assert.ok(factorValues.every(value => /^\d+(?:\.\d+)?\/100$/.test(value)), page);
+    assert.ok(factorValues.every(value => /^(?:[1-9][05]|100)\/100$/.test(value)), page);
   }
 });
 
