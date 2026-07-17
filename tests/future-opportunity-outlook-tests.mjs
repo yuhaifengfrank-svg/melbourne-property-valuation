@@ -194,3 +194,11 @@ test("candidate calibration ranks by raw total before applying 5-point display b
   ]);
   assert.deepEqual(calibrated.map((item) => item.futureOpportunityIndex), [95, 50, 5]);
 });
+
+test("raw Future Outlook totals retain component precision before public rounding", () => {
+  const first = scoreFutureOpportunity({ ...baseSuburb, medianHousePrice: 700000 });
+  const second = scoreFutureOpportunity({ ...baseSuburb, medianHousePrice: 705000 });
+  assert.notEqual(first._rawFutureOpportunityIndex, second._rawFutureOpportunityIndex);
+  assert.equal(first.futureOpportunityIndex % 5, 0);
+  assert.equal(second.futureOpportunityIndex % 5, 0);
+});
