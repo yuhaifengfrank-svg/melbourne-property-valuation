@@ -36,6 +36,7 @@ test('generated top pages do not present normalized scores as percentages', () =
     const html = read(page);
     assert.doesNotMatch(html, /<span class="tag tag-opp">Opp [\d.]+<\/span>/, page);
     assert.doesNotMatch(html, /<span class="tag tag-opp">/, page);
+    assert.doesNotMatch(html, />100\/100</, page);
     assert.match(html, /<span class="stat-tier">(?:AAA|AA[+-]?|A[+-]?|BBB[+-]?|BB[+-]?|B[+-]?|CCC[+-]?)<\/span>/, page);
 
     const factorValues = [...html.matchAll(

@@ -10,13 +10,13 @@ test("relative scores use 5-point bands and preserve missing data", () => {
 });
 
 test("percentile scores spread ordered values and average ties", () => {
-  assert.deepEqual(percentileScores([30, 20, 10, null]), [100, 50, 5, null]);
-  assert.deepEqual(percentileScores([10, 20, 30], { lowerIsBetter: true }), [100, 50, 5]);
+  assert.deepEqual(percentileScores([30, 20, 10, null]), [95, 50, 5, null]);
+  assert.deepEqual(percentileScores([10, 20, 30], { lowerIsBetter: true }), [95, 50, 5]);
   assert.deepEqual(percentileScores([30, 30, 10]), [75, 75, 5]);
 });
 
 test("internal ratings map from AAA to CCC minus", () => {
-  assert.equal(relativeRating(100), "AAA");
+  assert.equal(relativeRating(100), "AA+");
   assert.equal(relativeRating(85), "AA-");
   assert.equal(relativeRating(65), "BBB+");
   assert.equal(relativeRating(5), "CCC-");

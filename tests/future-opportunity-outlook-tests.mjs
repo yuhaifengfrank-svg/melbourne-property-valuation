@@ -183,5 +183,5 @@ test("candidate calibration spreads Future Outlook across relative 5-point bands
     { futureOpportunityIndex: 70, confidenceScore: 90, componentScores: { demand: 70 } },
     { futureOpportunityIndex: 60, confidenceScore: 90, componentScores: { demand: 60 } },
   ]);
-  assert.deepEqual(calibrated.map((item) => item.futureOpportunityIndex), [100, 50, 5]);
+  assert.deepEqual(calibrated.map((item) => item.futureOpportunityIndex), [95, 50, 5]);
 });
