@@ -346,6 +346,153 @@ function generateBlogHTML(suburb, peers) {
 </html>`;
 }
 
+// ── 博客索引页生成 ──
+
+function generateBlogIndex(allSlugs, allSuburbs) {
+  const suburbMap = {};
+  if (allSuburbs) {
+    for (const s of allSuburbs) {
+      const slug = slugify(s.suburb) + '-' + (s.state || 'vic').toLowerCase();
+      suburbMap[slug] = s;
+    }
+  }
+
+  // 扫描所有已存在的博客文件（跨周）
+  const entries = [];
+  const blogYearDir = resolve(PUBLIC, 'blog', String(Y));
+  if (existsSync(blogYearDir)) {
+    for (const weekDir of readdirSync(blogYearDir)) {
+      const full = resolve(blogYearDir, weekDir);
+      if (!existsSync(full)) continue;
+      let stats;
+      try { stats = readdirSync(full); } catch { continue; }
+      for (const f of stats) {
+        if (!f.endsWith('.html') || f === 'index.html') continue;
+        const slug = f.replace('.html', '');
+        const s = suburbMap[slug];
+        entries.push({
+          slug,
+          suburb: s ? s.suburb : slug.replace(/-vic$|-nsw$|-qld$|-sa$|-wa$|-tas$|-act$|-nt$/i, '').replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+          score: s ? Math.round(s.futureOpportunityIndex || 0) : null,
+          weekId: weekDir,
+          band: s ? (BAND_ZH[s.band] || s.band || '') : '',
+          opportunityType: s ? (TYPE_ZH[s.opportunityType] || s.opportunityType || '') : '',
+          confidence: s ? (s.confidence || '') : '',
+        });
+      }
+    }
+  }
+
+  // 按周排序（最新在前）
+  entries.sort((a, b) => b.weekId.localeCompare(a.weekId));
+
+  const cards = entries.map(e => {
+    const scoreBadge = e.score ? `<span class="tag tag-score">${e.score}/100</span>` : '';
+    const bandBadge = e.band ? `<span class="tag tag-band">${e.band}</span>` : '';
+    const typeBadge = e.opportunityType ? `<span class="tag tag-type">${e.opportunityType}</span>` : '';
+    const confBadge = e.confidence ? `<span class="tag tag-conf">${e.confidence}</span>` : '';
+    return `    <div class="blog-card">
+      <h2><a href="/blog/${Y}/${e.weekId}/${e.slug}">${e.suburb} — Market Analysis</a></h2>
+      <div class="meta">Week ${e.weekId.replace(/^.*-W/, 'Week ')} · ${Y}</div>
+      <p>Data-driven suburb analysis covering median price, opportunity score, school zone quality, rental yield, supply constraints and comparable suburbs.</p>
+      <div class="tags">
+        <span class="tag tag-vic">VIC</span>
+        ${scoreBadge}
+        ${bandBadge}
+        ${typeBadge}
+        ${confBadge}
+      </div>
+    </div>`;
+  }).join('\n\n');
+
+  const today = DATE.toISOString().split('T')[0];
+
+  const html = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suburb Research &amp; Market Analysis | AusHomeValue</title>
+  <meta name="description" content="In-depth suburb market analysis for Victorian property. Data-driven research on opportunity scores, median prices, school zones, rental yields and more." />
+  <link rel="canonical" href="https://www.aushomevalue.com.au/blog/" />
+  <meta property="og:title" content="Suburb Research &amp; Market Analysis | AusHomeValue" />
+  <meta property="og:description" content="In-depth suburb market analysis for Victorian property." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.aushomevalue.com.au/blog/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: #f4f6f5; color: #17211d; line-height: 1.6;
+    }
+    a { color: #0d6b57; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .topbar {
+      background: linear-gradient(135deg, #0d6b57 0%, #0a8f6e 100%);
+      color: white; padding: 14px 24px; position: sticky; top: 0; z-index: 100;
+    }
+    .topbar .inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 16px; }
+    .topbar a { color: white; font-weight: 600; font-size: 1.1rem; }
+    .topbar .back { opacity: 0.85; font-size: 0.95rem; }
+    .topbar .back:hover { opacity: 1; text-decoration: none; }
+    .container { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
+    h1 { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 800; line-height: 1.25; margin-bottom: 8px; color: #0d2b24; }
+    .page-desc { color: #4a5650; font-size: 0.95rem; max-width: 680px; margin-bottom: 28px; line-height: 1.6; }
+    .blog-list { display: flex; flex-direction: column; gap: 16px; }
+    .blog-card {
+      background: white; border: 1px solid #dbe2de; border-radius: 10px;
+      padding: 20px 24px; transition: box-shadow 0.15s, transform 0.12s;
+    }
+    .blog-card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.06); transform: translateY(-1px); }
+    .blog-card h2 { font-size: 1.15rem; font-weight: 700; margin-bottom: 6px; }
+    .blog-card h2 a { color: #0d2b24; }
+    .blog-card h2 a:hover { color: #0d6b57; }
+    .blog-card .meta { font-size: 0.85rem; color: #66736d; margin-bottom: 8px; }
+    .blog-card p { font-size: 0.92rem; color: #4a5650; line-height: 1.55; }
+    .blog-card .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .tag { font-size: 0.78rem; padding: 2px 10px; border-radius: 30px; font-weight: 500; }
+    .tag-vic { background: #e8eaed; color: #444; }
+    .tag-score { background: #e8f3ef; color: #0d6b57; }
+    .tag-band { background: #f0e8d8; color: #7a5a2a; }
+    .tag-type { background: #e3eef5; color: #1a5a7a; }
+    .tag-conf { background: #f5ede3; color: #7a5a1a; }
+    .footer { text-align: center; padding: 40px 20px; color: #9ca3af; font-size: 0.85rem; }
+    .empty { color: #66736d; padding: 40px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="inner">
+      <a href="/" class="back">← AusHomeValue</a>
+      <span style="opacity:0.7; font-size:0.9rem;">/ Suburb Research</span>
+    </div>
+  </div>
+  <div class="container">
+    <h1>🏡 Suburb Research</h1>
+    <p class="page-desc">Data-driven analysis of Victorian suburbs, generated weekly from our property intelligence model. Each article covers median prices, opportunity scores, school zones, supply constraints and rental dynamics.</p>
+
+    <p style="margin-bottom:20px; color:#66736d; font-size:0.85rem;">Updated ${today} &middot; ${entries.length} articles</p>
+
+    <div class="blog-list">
+${cards}
+    </div>
+  </div>
+  <div class="footer">
+    <p>⚠️ All data for research reference only. Not investment advice.</p>
+    <p>&copy; 2026 AusHomeValue &mdash; Australian Property Intelligence</p>
+  </div>
+</body>
+</html>`;
+
+  const indexPath = resolve(PUBLIC, 'blog', 'index.html');
+  writeFileSync(indexPath, html);
+  return entries.length;
+}
+
 // ── Sitemap 更新 ──
 
 function updateSitemap(newSlugs) {
@@ -439,6 +586,11 @@ async function main() {
   const sitemapUpdated = updateSitemap(newSlugs);
   console.log(`  🗺️  ${sitemapUpdated ? '已添加 ' + newSlugs.length + ' 个 URL' : '无需更新'}`);
 
+  // 5. 重新生成 blog index
+  console.log('\n[5/5] 生成博客索引页...');
+  const indexCount = generateBlogIndex(null, allSuburbs);
+  console.log(`  📋 ${indexCount} 篇博客 → public/blog/index.html`);
+
   // 写入运行标记
   const stampDir = resolve(ROOT, '.content-factory');
   mkdirSync(stampDir, { recursive: true });
@@ -452,6 +604,7 @@ async function main() {
   console.log(`   📝 博客 ${selected.length} 篇 → public/blog/${Y}/${WEEK_ID}/`);
   console.log(`   📕 小红书 ${selected.length} 篇 → output/social/${WEEK_ID}/`);
   console.log(`   🗺️  ${sitemapUpdated ? 'sitemap 已更新' : 'sitemap 无需更新'}`);
+  console.log(`   📋 博客索引已刷新 → public/blog/index.html (${indexCount} 篇)`);
   console.log('');
   console.log('📱 小红书发布步骤：');
   console.log(`   cd output/social/${WEEK_ID}/`);
@@ -461,7 +614,7 @@ async function main() {
   return { wrote: selected.length, newSlugs };
 }
 
-export { main, generateBlogHTML, generateXiaohongshu, updateSitemap, slugify, fmtPrice };
+export { main, generateBlogHTML, generateXiaohongshu, generateBlogIndex, updateSitemap, slugify, fmtPrice };
 
 // 直接运行
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1]);
