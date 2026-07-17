@@ -77,6 +77,7 @@ const TYPE_ZH = {
   'Income Opportunity': '收益型 💵',
   'Infrastructure Opportunity': '基建型 🏗️',
   'Balanced Opportunity': '平衡型 ⚖️',
+  'Smart Buy': '智选型',
 };
 const BAND_ZH = {
   'Strong': '强势',
@@ -259,6 +260,7 @@ function generateBlogHTML(suburb, peers) {
   <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/blog/blog-language.css">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -342,6 +344,7 @@ function generateBlogHTML(suburb, peers) {
       不构成投资、法律或财务建议。房产投资有风险，请结合实地考察和专业意见做出决策。
     </p>
   </div>
+  <script src="/blog/blog-language.js"></script>
 </body>
 </html>`;
 }
@@ -423,6 +426,7 @@ function generateBlogIndex(allSlugs, allSuburbs) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/blog/blog-language.css" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -485,6 +489,7 @@ ${cards}
     <p>⚠️ All data for research reference only. Not investment advice.</p>
     <p>&copy; 2026 AusHomeValue &mdash; Australian Property Intelligence</p>
   </div>
+  <script src="/blog/blog-language.js"></script>
 </body>
 </html>`;
 

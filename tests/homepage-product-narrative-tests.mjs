@@ -10,16 +10,17 @@ function dom() {
   return new JSDOM(INDEX);
 }
 
-test("primary navigation stays focused: Get estimate, Top Opportunity, Investor Watch, More", () => {
+test("primary navigation exposes Suburb Research alongside core product links", () => {
   const document = dom().window.document;
   const nav = document.querySelector(".topbar-nav");
   assert.ok(nav, "primary nav exists");
 
   const directLinks = [...nav.children].filter((el) => el.tagName === "A");
-  assert.equal(directLinks.length, 3, "only three direct nav links");
+  assert.equal(directLinks.length, 4, "four direct nav links");
   assert.equal(nav.querySelectorAll(":scope > details.more-menu").length, 1, "one More menu");
-  assert.equal(nav.children.length, 4, "four primary navigation items");
+  assert.equal(nav.children.length, 5, "five primary navigation items");
   assert.equal(nav.querySelector('[data-i18n="nav-get-estimate"]')?.textContent.trim(), "Get estimate");
+  assert.equal(nav.querySelector('.nav-suburb-research')?.getAttribute("href"), "/blog/");
 });
 
 test("Top Opportunity navigation opens the original homepage ranking section", () => {

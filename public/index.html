@@ -201,6 +201,18 @@ nav a:hover {
   color: white;
 }
 
+.nav-suburb-research {
+  background: #e8f3ef;
+  color: var(--accent) !important;
+  font-weight: 800;
+}
+
+.nav-suburb-research:hover,
+.nav-suburb-research:focus-visible {
+  background: #d6ebe4;
+  outline: none;
+}
+
 .language-toggle {
   background: white;
   border: 1px solid var(--line);
@@ -1814,6 +1826,9 @@ th {
     right: 0;
     width: min(92vw, 360px);
   }
+  .topbar-nav .nav-suburb-research {
+    flex: 1 1 42%;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2665,12 +2680,12 @@ th {
         <nav class="topbar-nav" aria-label="Primary navigation">
           <a class="nav-cta" href="#valuation" data-i18n="nav-get-estimate">Get estimate</a>
           <a href="/#opportunities" data-i18n="nav-opportunities">Top Opportunity</a>
+          <a class="nav-suburb-research" href="/blog/" data-i18n="nav-blog">Suburb Research</a>
           <a href="/investor-watch/" data-i18n="nav-investor-watch">Investor Watch</a>
           <details class="more-menu">
             <summary data-i18n="nav-more">More</summary>
             <div class="more-menu-panel">
               <a href="#research" data-i18n="nav-research">Research</a>
-              <a href="/blog/" data-i18n="nav-blog">Suburb Research</a>
               <a href="#about" data-i18n="nav-about">About Us</a>
               <a href="/methodology.html" data-i18n="nav-methodology">Methodology</a>
               <a href="#contact" data-i18n="nav-contact">Contact</a>
