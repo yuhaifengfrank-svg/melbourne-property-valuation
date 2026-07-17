@@ -165,40 +165,40 @@ test("property future score follows the 70/30 formula exactly", () => {
   assert.ok(result.propertySpecificScore > 55);
   assert.equal(
     result.futureOpportunityIndex,
-    Math.round((70 * 0.70 + result.propertySpecificScore * 0.30) / 5) * 5
+    Math.round(70 * 0.70 + result.propertySpecificScore * 0.30)
   );
   assert.equal(result.isPriceForecast, false);
 });
 
-test("Future Outlook publishes 5-point scores and internal ratings", () => {
+test("Future Outlook publishes integer relative scores without ratings", () => {
   const result = scoreFutureOpportunity(baseSuburb, { strategy: "balanced" });
-  assert.equal(result.futureOpportunityIndex % 5, 0);
-  assert.ok(Object.values(result.componentScores).filter(Number.isFinite).every((value) => value % 5 === 0));
-  assert.match(result.rating, /^(?:AAA|AA[+-]?|A[+-]?|BBB[+-]?|BB[+-]?|B[+-]?|CCC[+-]?)$/);
+  assert.ok(Number.isInteger(result.futureOpportunityIndex));
+  assert.ok(Object.values(result.componentScores).filter(Number.isFinite).every(Number.isInteger));
+  assert.equal("rating" in result, false);
 });
 
-test("candidate calibration spreads Future Outlook across relative 5-point bands", () => {
+test("candidate calibration spreads Future Outlook across integer relative scores", () => {
   const calibrated = calibrateFutureOpportunityOutlooks([
     { futureOpportunityIndex: 80, confidenceScore: 90, componentScores: { demand: 80 } },
     { futureOpportunityIndex: 70, confidenceScore: 90, componentScores: { demand: 70 } },
     { futureOpportunityIndex: 60, confidenceScore: 90, componentScores: { demand: 60 } },
   ]);
-  assert.deepEqual(calibrated.map((item) => item.futureOpportunityIndex), [95, 50, 5]);
+  assert.deepEqual(calibrated.map((item) => item.futureOpportunityIndex), [95, 48, 1]);
 });
 
-test("candidate calibration ranks by raw total before applying 5-point display bands", () => {
+test("candidate calibration ranks by raw total before applying integer display scores", () => {
   const calibrated = calibrateFutureOpportunityOutlooks([
     { futureOpportunityIndex: 80, _rawFutureOpportunityIndex: 82.1, confidenceScore: 90, componentScores: {} },
     { futureOpportunityIndex: 80, _rawFutureOpportunityIndex: 81.9, confidenceScore: 90, componentScores: {} },
     { futureOpportunityIndex: 80, _rawFutureOpportunityIndex: 80.2, confidenceScore: 90, componentScores: {} },
   ]);
-  assert.deepEqual(calibrated.map((item) => item.futureOpportunityIndex), [95, 50, 5]);
+  assert.deepEqual(calibrated.map((item) => item.futureOpportunityIndex), [95, 48, 1]);
 });
 
 test("raw Future Outlook totals retain component precision before public rounding", () => {
   const first = scoreFutureOpportunity({ ...baseSuburb, medianHousePrice: 700000 });
   const second = scoreFutureOpportunity({ ...baseSuburb, medianHousePrice: 705000 });
   assert.notEqual(first._rawFutureOpportunityIndex, second._rawFutureOpportunityIndex);
-  assert.equal(first.futureOpportunityIndex % 5, 0);
-  assert.equal(second.futureOpportunityIndex % 5, 0);
+  assert.ok(Number.isInteger(first.futureOpportunityIndex));
+  assert.ok(Number.isInteger(second.futureOpportunityIndex));
 });

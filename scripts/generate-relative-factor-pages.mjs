@@ -2,7 +2,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { percentileScores, relativeRating } from "../lib/relative-score.js";
+import { percentileScores } from "../lib/relative-score.js";
 
 const sourceArg = process.argv.find((arg) => arg.startsWith("--source="));
 if (!sourceArg) throw new Error("Use --source=/absolute/path/to/sanitized-suburb-metrics.json");
@@ -54,7 +54,7 @@ function updatePage(filePath, ranked, definition, research) {
   html = `${html.slice(0, start)}<div class="rank-list">\n${cards}\n    </div>\n  </div>${html.slice(footer)}`;
   html = html.replace(
     /Scores combine market data, confidence calibrations,[^<]+/,
-    "Scores are relative Victorian percentile bands rounded to 5 points. Ratings are AusHomeValue internal signals, not credit ratings or price forecasts. ",
+    "Scores are integer Victorian relative-ranking signals capped at 95/100. They are not price forecasts or guaranteed returns. ",
   );
   fs.writeFileSync(filePath, html);
 }
@@ -74,11 +74,11 @@ function buildCard({ row, score }, index, definition, research) {
         <h3><a href="/suburb/${slug}-vic.html">${suburb}</a></h3>
         <div class="rank-meta"><span class="tag tag-${definition.key.replace("-zone", "").replace("-constrained", "")}">${definition.icon} ${definition.label}</span></div>
         <div class="rank-stats">
-          <div class="stat"><span class="stat-label">${definition.label}</span><span class="stat-value">${score}/100</span><span class="stat-tier">${relativeRating(score)}</span></div>
+          <div class="stat"><span class="stat-label">${definition.label}</span><span class="stat-value">${score}/100</span></div>
           <div class="stat"><span class="stat-label">Confidence</span><span class="stat-value">${confidence == null ? "Data unavailable" : `${confidence.toFixed(1)}%`}</span></div>
           <div class="stat">${thirdStat}</div>
         </div>
-        <ul class="explain-list"><li>Relative Victorian percentile score rounded to the nearest 5 points</li><li>Internal signal rating — not a credit rating or price forecast</li></ul>
+        <ul class="explain-list"><li>Integer relative-ranking score across available Victorian suburbs</li><li>Screening signal — not a price forecast or guaranteed return</li></ul>
       </div>
     </div>`;
 }

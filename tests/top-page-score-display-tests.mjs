@@ -37,14 +37,14 @@ test('generated top pages do not present normalized scores as percentages', () =
     assert.doesNotMatch(html, /<span class="tag tag-opp">Opp [\d.]+<\/span>/, page);
     assert.doesNotMatch(html, /<span class="tag tag-opp">/, page);
     assert.doesNotMatch(html, />100\/100</, page);
-    assert.match(html, /<span class="stat-tier">(?:AAA|AA[+-]?|A[+-]?|BBB[+-]?|BB[+-]?|B[+-]?|CCC[+-]?)<\/span>/, page);
+    assert.doesNotMatch(html, /<span class="stat-tier">/, page);
 
     const factorValues = [...html.matchAll(
       /<span class="stat-label">(?:Growth|Value|Yield|Schools|Supply)<\/span>\s*<span class="stat-value">([^<]+)<\/span>/g,
     )].map(match => match[1]);
 
     assert.ok(factorValues.length > 0, `${page} should contain factor scores`);
-    assert.ok(factorValues.every(value => /^(?:[1-9][05]|100)\/100$/.test(value)), page);
+    assert.ok(factorValues.every(value => /^(?:[1-9]|[1-8]\d|9[0-5])\/100$/.test(value)), page);
   }
 });
 
