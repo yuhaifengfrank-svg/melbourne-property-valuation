@@ -3784,49 +3784,43 @@ async function loadHomeOpportunities() {
   const el = document.getElementById('home-snippet');
   if (!el) return;
   try {
-    const res = await fetch('/api/opportunity?maxResults=50&strategy=balanced');
-    const data = await res.json();
-    const items = Array.isArray(data.opportunities) ? data.opportunities : data.items;
-    if (!data.ok || !items || items.length === 0) return;
+    const categories = {
+      balanced: { label: 'Balanced Outlook', color: '#0d6b57' },
+      growth:   { label: 'Growth Outlook',   color: '#065f46' },
+      cashflow: { label: 'Income Outlook',   color: '#8a4b0f' },
+      school:   { label: 'School Outlook',   color: '#1e40af' },
+      value:    { label: 'Value Outlook',    color: '#475569' }
+    };
+    const strategyResults = await Promise.all(Object.keys(categories).map(async strategy => {
+      const res = await fetch('/api/opportunity?maxResults=3&strategy=' + encodeURIComponent(strategy));
+      const data = await res.json();
+      const items = Array.isArray(data.opportunities) ? data.opportunities : data.items;
+      return { strategy, items: data.ok && Array.isArray(items) ? items : [] };
+    }));
+    if (!strategyResults.some(result => result.items.length > 0)) return;
 
-    const all = items;
     const esc = value => String(value == null ? '' : value)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
 
-    // Sort into categories by best-fit signal.
-    const byType = {};
-    all.forEach(o => {
-      const t = Array.isArray(o.bestFor) && o.bestFor.length > 0 ? o.bestFor[0] : 'Balanced';
-      if (!byType[t]) byType[t] = [];
-      byType[t].push(o);
-    });
-
-    // Pick best 3 from each category
-    const categories = {
-      'Affordable entry': { label: 'Affordable Entry', color: '#0d6b57', desc: o => `${o.band || 'Outlook'} · ${o.confidence || 'Low'} confidence` },
-      'Capital growth':   { label: 'Growth Outlook',   color: '#065f46', desc: o => `${o.band || 'Outlook'} · ${o.forecastHorizon || '3-5 years'}` },
-      'School demand':    { label: 'School Demand',    color: '#1e40af', desc: o => `${o.band || 'Outlook'} · ${o.confidence || 'Low'} confidence` },
-      'Income':           { label: 'Income Outlook',   color: '#8a4b0f', desc: o => `${o.band || 'Outlook'} · rental pressure signal` },
-      'Balanced':         { label: 'Balanced Outlook', color: '#0d6b57', desc: o => `${o.band || 'Outlook'} · ${o.forecastHorizon || '3-5 years'}` }
-    };
-
     let html = `<div id="top-opportunities" style="max-width:960px;margin:40px auto;padding:0 20px;">
   <h2>Future Opportunity Outlook</h2>
   <p style="color:#66736d;margin-bottom:20px;">3-5 year 0-100 opportunity index based on demand, supply, relative value, rental pressure and evidence quality. Not a price forecast.</p>
   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;">`;
 
-    for (const [type, cfg] of Object.entries(categories)) {
-      const items = (byType[type] || []).slice(0, 3);
+    for (const result of strategyResults) {
+      const cfg = categories[result.strategy];
+      const items = result.items.slice(0, 3);
       if (items.length === 0) continue;
       html += `<div><h3 style="color:${cfg.color};">${cfg.label}</h3>`;
       items.forEach(o => {
         const slug = String(o.suburb || '').toLowerCase().replace(/\s+/g, '-') + '-' + (o.state||'vic').toLowerCase();
         const rawScore = o.score && o.score.value != null ? o.score.value : o.futureOpportunityIndex;
         const score = Number.isFinite(Number(rawScore)) ? Number(rawScore).toFixed(1).replace(/\.0$/, '') + '/100' : 'Data unavailable';
-        html += `<div><a href="/suburb/${esc(slug)}.html">${esc(o.suburb)}</a> <span aria-label="Future Opportunity Index ${esc(score)}" style="background:${cfg.color};color:white;border-radius:20px;padding:2px 8px;font-size:0.8rem;">${esc(score)}</span> <span style="color:#66736d;font-size:0.8rem;">${esc(cfg.desc(o))}</span></div>`;
+        const detail = `${o.band || 'Outlook'} · ${o.forecastHorizon || '3-5 years'}`;
+        html += `<div><a href="/suburb/${esc(slug)}.html">${esc(o.suburb)}</a> <span aria-label="Future Opportunity Index ${esc(score)}" style="background:${cfg.color};color:white;border-radius:20px;padding:2px 8px;font-size:0.8rem;">${esc(score)}</span> <span style="color:#66736d;font-size:0.8rem;">${esc(detail)}</span></div>`;
       });
       html += `</div>`;
     }
