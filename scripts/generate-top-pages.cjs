@@ -113,7 +113,6 @@ function buildPage(page, results) {
         <h3><a href="${suburbUrl}">${escapeHtml(r.suburb)}</a></h3>
         <div class="rank-meta">
           <span class="tag tag-${factorTag(page.factor)}">${page.icon} ${page.navLabel}</span>
-          <span class="tag tag-opp">Opp ${r.opportunityScore != null ? `${r.opportunityScore}/100` : '—'}</span>
         </div>
         <div class="rank-stats">
           <div class="stat">

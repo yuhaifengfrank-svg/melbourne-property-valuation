@@ -268,7 +268,6 @@ function buildCard(r, i, page) {
   // For supply page, the factorScore maps from conf_supply_constraint
   let factorScore = r.factorScore;
   let factorTier = r.factorTier;
-  let oppScore = r.opportunityScore;
   let confidence = r.overallConfidence;
 
   // Supply-constrained page uses conf_supply_constraint as the score
@@ -282,7 +281,6 @@ function buildCard(r, i, page) {
   const scoreDisplay = factorScore != null ? Math.round(factorScore) + '/100' : '—';
   const tierDisplay = factorTier || '';
   const confidenceDisplay = confidence != null ? confidence.toFixed(1) + '%' : '—';
-  const oppDisplay = oppScore != null ? `Opp ${Math.round(oppScore)}/100` : 'Opp —';
   const priceDisplay = formatPrice(r.medianPrice || r.median_house_price);
 
   return `
@@ -292,7 +290,6 @@ function buildCard(r, i, page) {
         <h3><a href="${suburbUrl}">${escapeHtml(r.suburb)}</a></h3>
         <div class="rank-meta">
           <span class="tag ${page.tagClass}">${page.icon} ${page.navLabel}</span>
-          <span class="tag tag-opp">${oppDisplay}</span>
         </div>
         <div class="rank-stats">
           <div class="stat">

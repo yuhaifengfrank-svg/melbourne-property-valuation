@@ -7,6 +7,7 @@ import {
   isSupportedFutureStrategy,
   normalizePropertyType,
   normalizeStrategy,
+  calibrateFutureOpportunityOutlooks,
   scoreFutureOpportunity,
   scoreLine,
   scorePropertyFutureOpportunity,
@@ -164,7 +165,23 @@ test("property future score follows the 70/30 formula exactly", () => {
   assert.ok(result.propertySpecificScore > 55);
   assert.equal(
     result.futureOpportunityIndex,
-    Math.round(70 * 0.70 + result.propertySpecificScore * 0.30)
+    Math.round((70 * 0.70 + result.propertySpecificScore * 0.30) / 5) * 5
   );
   assert.equal(result.isPriceForecast, false);
+});
+
+test("Future Outlook publishes 5-point scores and internal ratings", () => {
+  const result = scoreFutureOpportunity(baseSuburb, { strategy: "balanced" });
+  assert.equal(result.futureOpportunityIndex % 5, 0);
+  assert.ok(Object.values(result.componentScores).filter(Number.isFinite).every((value) => value % 5 === 0));
+  assert.match(result.rating, /^(?:AAA|AA[+-]?|A[+-]?|BBB[+-]?|BB[+-]?|B[+-]?|CCC[+-]?)$/);
+});
+
+test("candidate calibration spreads Future Outlook across relative 5-point bands", () => {
+  const calibrated = calibrateFutureOpportunityOutlooks([
+    { futureOpportunityIndex: 80, confidenceScore: 90, componentScores: { demand: 80 } },
+    { futureOpportunityIndex: 70, confidenceScore: 90, componentScores: { demand: 70 } },
+    { futureOpportunityIndex: 60, confidenceScore: 90, componentScores: { demand: 60 } },
+  ]);
+  assert.deepEqual(calibrated.map((item) => item.futureOpportunityIndex), [95, 50, 5]);
 });
