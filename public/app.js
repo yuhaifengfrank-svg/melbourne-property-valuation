@@ -3792,10 +3792,23 @@ async function loadHomeOpportunities() {
       value:    { label: 'Value Outlook',    color: '#475569' }
     };
     const strategyResults = await Promise.all(Object.keys(categories).map(async strategy => {
-      const res = await fetch('/api/opportunity?maxResults=3&strategy=' + encodeURIComponent(strategy));
+      const res = await fetch('/api/opportunity?maxResults=100&strategy=' + encodeURIComponent(strategy));
       const data = await res.json();
       const items = Array.isArray(data.opportunities) ? data.opportunities : data.items;
-      return { strategy, items: data.ok && Array.isArray(items) ? items : [] };
+      const evidenceQualified = data.ok && Array.isArray(items)
+        ? items.filter(item => Number(item.confidenceScore) >= 50
+          && (!Array.isArray(item.missingData) || item.missingData.length <= 3))
+        : [];
+      const distinctScores = new Set();
+      const displayItems = evidenceQualified.filter(item => {
+        const value = item.score && item.score.value != null
+          ? Number(item.score.value)
+          : Number(item.futureOpportunityIndex);
+        if (!Number.isFinite(value) || distinctScores.has(value)) return false;
+        distinctScores.add(value);
+        return true;
+      }).slice(0, 3);
+      return { strategy, items: displayItems };
     }));
     if (!strategyResults.some(result => result.items.length > 0)) return;
 
@@ -3812,7 +3825,7 @@ async function loadHomeOpportunities() {
 
     for (const result of strategyResults) {
       const cfg = categories[result.strategy];
-      const items = result.items.slice(0, 3);
+      const items = result.items;
       if (items.length === 0) continue;
       html += `<div><h3 style="color:${cfg.color};">${cfg.label}</h3>`;
       items.forEach(o => {
