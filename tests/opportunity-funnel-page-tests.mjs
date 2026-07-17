@@ -33,7 +33,17 @@ test("homepage opportunity search gives immediate feedback while checking access
 
 test("homepage cache-busts opportunity scripts so search fixes reach returning visitors", () => {
   assert.match(homepage, /src="\/opportunity-gate\.js\?v=20260717-search-feedback"/);
-  assert.match(homepage, /src="\/app\.js\?v=20260717-search-feedback"/);
+  assert.match(homepage, /src="\/app\.js\?v=20260717-current-filters"/);
+});
+
+test("authenticated homepage search re-ranks with the currently selected filters", () => {
+  assert.match(app, /new URLSearchParams\(\{[\s\S]*re_rank: "1"/);
+  assert.match(app, /goal: document\.getElementById\("opp-strategy"\)\.value/);
+  assert.match(app, /propertyType: document\.getElementById\("opp-type"\)\.value/);
+  assert.match(app, /activeFilters\.set\("budgetMin", activeMinPrice\)/);
+  assert.match(app, /activeFilters\.set\("budgetMax", activeMaxPrice\)/);
+  assert.match(app, /fetch\("\/api\/unlock-opportunity\?" \+ activeFilters\.toString\(\)\)/);
+  assert.doesNotMatch(app, /fetch\("\/api\/unlock-opportunity\?re_rank=1"\)/);
 });
 
 test("free opportunity layer is capped to three preview cards", () => {

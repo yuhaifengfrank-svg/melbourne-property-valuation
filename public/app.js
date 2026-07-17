@@ -3942,8 +3942,9 @@ async function runOpportunityScan() {
     if (gateResult && gateResult.gateShown) return;
   }
 
-  // Already authenticated — fetch personalised top 10 from server re-rank endpoint
-  // FIX: Only send re_rank=1 with no filters; server loads stored DB preferences
+  // Already authenticated — fetch personalised top 10 using the filters that are
+  // currently visible in the form. Stored preferences are only a server fallback
+  // when a caller does not provide active filters.
   oppLoading.classList.remove("hidden");
   oppLoading.textContent = "Personalising your rankings...";
   oppSearchBtn.disabled = true;
@@ -3954,7 +3955,21 @@ async function runOpportunityScan() {
     oppLoading.textContent = "Still scanning — this may take a moment on first run.";
   }, 15000);
   try {
-    var res = await fetch("/api/unlock-opportunity?re_rank=1");
+    var activeFilters = new URLSearchParams({
+      re_rank: "1",
+      goal: document.getElementById("opp-strategy").value || "balanced",
+      propertyType: document.getElementById("opp-type").value || "either",
+      state: (document.getElementById("opp-state") || {}).value || "vic"
+    });
+    var activeMinPrice = document.getElementById("opp-min-price").value;
+    var activeMaxPrice = document.getElementById("opp-max-price").value;
+    if (activeMinPrice && Number(activeMinPrice) > 0) {
+      activeFilters.set("budgetMin", activeMinPrice);
+    }
+    if (activeMaxPrice && Number(activeMaxPrice) < 99999999) {
+      activeFilters.set("budgetMax", activeMaxPrice);
+    }
+    var res = await fetch("/api/unlock-opportunity?" + activeFilters.toString());
     var data = await res.json();
     clearTimeout(coldTimer);
     oppLoading.classList.add("hidden");
