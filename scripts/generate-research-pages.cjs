@@ -279,10 +279,10 @@ function buildCard(r, i, page) {
     confidence = r.overall_confidence;
   }
 
-  const scoreDisplay = factorScore != null ? Math.round(factorScore) + '%' : '—';
+  const scoreDisplay = factorScore != null ? Math.round(factorScore) + '/100' : '—';
   const tierDisplay = factorTier || '';
   const confidenceDisplay = confidence != null ? confidence.toFixed(1) + '%' : '—';
-  const oppDisplay = oppScore != null ? `Opp ${Math.round(oppScore)}` : 'Opp —';
+  const oppDisplay = oppScore != null ? `Opp ${Math.round(oppScore)}/100` : 'Opp —';
   const priceDisplay = formatPrice(r.medianPrice || r.median_house_price);
 
   return `
