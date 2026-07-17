@@ -154,7 +154,10 @@ test("homepage Future Outlook snippet uses the real opportunity API for each str
   const appJs = fs.readFileSync(path.resolve("public/app.js"), "utf8");
 
   assert.match(appJs, /Object\.keys\(categories\)/);
-  assert.match(appJs, /fetch\('\/api\/opportunity\?maxResults=3&strategy=' \+ encodeURIComponent\(strategy\)\)/);
+  assert.match(appJs, /fetch\('\/api\/opportunity\?maxResults=100&strategy=' \+ encodeURIComponent\(strategy\)\)/);
+  assert.match(appJs, /Number\(item\.confidenceScore\) >= 50/);
+  assert.match(appJs, /item\.missingData\.length <= 3/);
+  assert.match(appJs, /distinctScores\.has\(value\)/);
   assert.match(appJs, /balanced: \{ label: 'Balanced Outlook'/);
   assert.match(appJs, /growth:\s+\{ label: 'Growth Outlook'/);
   assert.match(appJs, /cashflow: \{ label: 'Income Outlook'/);
