@@ -185,3 +185,12 @@ test("candidate calibration spreads Future Outlook across relative 5-point bands
   ]);
   assert.deepEqual(calibrated.map((item) => item.futureOpportunityIndex), [95, 50, 5]);
 });
+
+test("candidate calibration ranks by raw total before applying 5-point display bands", () => {
+  const calibrated = calibrateFutureOpportunityOutlooks([
+    { futureOpportunityIndex: 80, _rawFutureOpportunityIndex: 82.1, confidenceScore: 90, componentScores: {} },
+    { futureOpportunityIndex: 80, _rawFutureOpportunityIndex: 81.9, confidenceScore: 90, componentScores: {} },
+    { futureOpportunityIndex: 80, _rawFutureOpportunityIndex: 80.2, confidenceScore: 90, componentScores: {} },
+  ]);
+  assert.deepEqual(calibrated.map((item) => item.futureOpportunityIndex), [95, 50, 5]);
+});
