@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "planning-pipeline-summary-v1",
+  "source": {
+    "publisher": "City of Monash",
+    "url": "https://epathway.monash.vic.gov.au/ePathway/ePTHPROD/Web/GeneralEnquiry/EnquiryLists.aspx",
+    "retrievedAt": "2026-07-22T11:29:23.990768+00:00",
+    "crossCheck": "City of Monash December 2025 Town Planning Schedule",
+    "crossCheckUrl": "https://www.monash.vic.gov.au/files/assets/public/v/1/about-us/council/agendas/2025/16-december/7.1.1-town-planning-schedule.pdf"
+  },
+  "filters": {
+    "lodgedStart": "01/01/2025",
+    "lodgedEnd": "31/12/2025",
+    "suburb": "GLEN WAVERLEY",
+    "postcode": "3150"
+  },
+  "geography": {
+    "council": "City of Monash",
+    "councilCoverage": "full",
+    "note": "Whole suburb is listed by City of Monash"
+  },
+  "quality": {
+    "pageCount": 36,
+    "sourceRows": 1068,
+    "exactGeographyRows": 206,
+    "missingApplicationNumber": 0,
+    "missingLodgedDate": 0,
+    "missingDescription": 0,
+    "wrongGeography": 0,
+    "duplicateExactApplicationNumbers": 0,
+    "decemberScheduleApplicationCrossCheckCount": 11,
+    "decemberScheduleCrossCheckScope": "Application-number existence only; register remains the record source",
+    "excludedUnparseableRegisterRows": 1,
+    "recordLevelReuse": "Internal validation only; public output is aggregate only"
+  },
+  "summary": {
+    "rawApplicationCount": 206,
+    "uniqueProjectCount": 205,
+    "amendmentCount": 18,
+    "quantifiedResidentialProjects": 55,
+    "grossProposedDwellings": 90,
+    "netProposedDwellings": 90,
+    "weightedNetPipeline": 80,
+    "unresolvedResidentialProjects": 15
+  },
+  "publication": {
+    "publishable": true,
+    "grain": "Aggregate counts for applications lodged in 2025 at exact Glen Waverley VIC 3150 addresses",
+    "statusReferenceDate": "2026-07-22",
+    "limitations": [
+      "Application counts are not dwelling counts",
+      "Dwelling quantities are included only when explicitly stated in the official description",
+      "Status-weighted pipeline is a model indicator, not a count of commenced or completed homes",
+      "Current statuses can change after retrieval"
+    ]
+  }
+}
