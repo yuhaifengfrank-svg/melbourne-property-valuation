@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS suburb_metric_observations (
   property_type TEXT, bedrooms SMALLINT, geography_name TEXT NOT NULL, geography_type TEXT NOT NULL,
   period_start DATE, period_end DATE NOT NULL, source_key TEXT, source_url TEXT, model_version TEXT,
   sample_size INTEGER, confidence TEXT, range_low NUMERIC, range_high NUMERIC,
+  source_retrieved_at TIMESTAMPTZ, calculation_inputs JSONB NOT NULL DEFAULT '{}'::jsonb,
   definition TEXT NOT NULL, limitations JSONB NOT NULL DEFAULT '[]'::jsonb,
   is_publication_eligible BOOLEAN NOT NULL DEFAULT FALSE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(), updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -24,7 +25,7 @@ CREATE INDEX IF NOT EXISTS idx_smo_publication ON suburb_metric_observations (me
 
 CREATE TABLE IF NOT EXISTS suburb_data_research_queue (
   id BIGSERIAL PRIMARY KEY, suburb TEXT NOT NULL, state TEXT NOT NULL DEFAULT 'VIC', metric_key TEXT NOT NULL,
-  property_type TEXT, bedrooms SMALLINT, target_as_of DATE NOT NULL DEFAULT DATE '2025-12-31',
+  property_type TEXT, bedrooms SMALLINT, target_as_of DATE NOT NULL DEFAULT CURRENT_DATE,
   required_geography TEXT NOT NULL DEFAULT 'suburb', cost_constraint TEXT NOT NULL DEFAULT 'free',
   status TEXT NOT NULL DEFAULT 'source_research_required', sources_checked JSONB NOT NULL DEFAULT '[]'::jsonb,
   candidate_sources JSONB NOT NULL DEFAULT '[]'::jsonb, decision_reason TEXT,

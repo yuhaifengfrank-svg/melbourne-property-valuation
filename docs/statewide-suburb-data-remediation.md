@@ -2,7 +2,9 @@
 
 **Baseline:** `016ae3c98124327e22d4fc886c692c5afcd09aae`
 
-**Target data cutoff:** `2025-12-31`
+**Analysis policy:** use the latest verified observation available on or before
+the run date. Each metric keeps its own source period; the system does not
+pretend every source shares one common cutoff.
 
 **Scope:** every Victorian suburb represented by the canonical suburb inventory
 
@@ -32,8 +34,8 @@ reviewed data migration is required before changing Production data.
 
 ## Free-source hierarchy
 
-1. Official suburb observation dated no later than 31 December 2025.
-2. Earlier 2025 official observation plus a local, legally reusable index.
+1. Latest official suburb observation available by the analysis date.
+2. Earlier official observation plus a local, legally reusable current index.
 3. Official larger-area anchor plus a spatially calibrated local index.
 4. 2021 structural baseline plus current housing, bond, population or listing inputs.
 5. `Data not available` when minimum inputs or reuse rights are absent.
@@ -56,7 +58,7 @@ regional benchmarks unless reuse permission and finer geography are confirmed.
 For bedroom count `b` in `{3,4}`:
 
 ```text
-Rent(DE,b,Dec25)
+Rent(suburb,b,analysis date)
   = official combined-area bond-rent anchor
   × local listing index at anchor / combined listing index at anchor
   × local listing index at cutoff / local listing index at anchor
@@ -70,22 +72,53 @@ must be excluded before the index is calculated.
 ## Rental vacancy v1
 
 ```text
-estimated rental stock 2025
+estimated rental stock at analysis date
   = rented dwellings 2021
-  × dwelling stock 2025 / dwelling stock 2021
-  × rental bond index 2025 / rental bond index 2021
+  × current dwelling stock / dwelling stock 2021
+  × current rental bond index / rental bond index 2021
 
 raw vacancy rate
   = unique long-term rentals continuously advertised >= 21 days
   / estimated rental stock 2025
 ```
 
-The raw rate may be calibrated against a legally reusable metropolitan or
-regional benchmark. The result remains an estimate and is published with a
-range. The 2021 Census unoccupied-dwelling rate is excluded from this formula.
+The raw local rate may be calibrated against a legally reusable metropolitan
+or regional benchmark, then shrunk toward that benchmark when local observed
+vacancies are sparse. The local evidence weight is
+`vacancies / (vacancies + 30)`. The result remains an estimate and is published
+with its range, sample size and model inputs. The 2021 Census
+unoccupied-dwelling rate is excluded from this formula.
 
-The model cannot run credibly without local listing first-seen/last-seen dates
-and a rental-stock estimate. In their absence, the public value is unavailable.
+The model cannot run credibly without at least 21 days of deduplicated local
+listing first-seen/last-seen history and a rental-stock estimate. A one-day
+listing count is only a diagnostic snapshot. In their absence, the public value
+is unavailable.
+
+## Historical price growth
+
+Published 1-, 3-, 5- and 10-year growth must be CAGR derived from dated,
+same-geography, same-property-type official price observations:
+
+```text
+CAGR = (ending price / starting price)^(1 / actual elapsed years) - 1
+```
+
+An anchor must be within 120 days of the requested horizon. The legacy
+`growth_1y`, `growth_3y`, `growth_5y` fields are experimental short-window
+momentum signals and cannot be labelled as historical returns. The legacy
+`vgv_cagr_10y` value has no reproducible source lineage and is also blocked from
+fact publication.
+
+## Crime and points of interest
+
+Crime is publishable only with the CSA reference period, geography, count,
+population denominator and rate definition. The legacy raw `crime_total_count`
+and count-based rank have no recorded period and are blocked.
+
+The legacy POI score was built from an OSM node-only radius search around an
+approximate centre. It lacks a retrieval date, complete feature geometry,
+category counts and a versioned scoring definition. It remains unavailable for
+publication until those inputs and ODbL attribution are stored.
 
 ## Population nowcast v1
 
@@ -107,7 +140,7 @@ population input.
 2. Search official/open sources first and record period, geography, licence and
    download location.
 3. Store observations without overwriting source history.
-4. Apply the exact-suburb and cutoff filters.
+4. Apply the exact-suburb and analysis-date filters.
 5. Model only after the research task concludes `estimate_required` and all
    minimum inputs are available.
 6. Apply sample, freshness, confidence and range publication gates.
@@ -120,7 +153,7 @@ the database.
 
 ## Remaining dependency before real statewide values
 
-The repository does not currently contain a verified statewide 2025 rental
+The repository does not currently contain a verified statewide current rental
 listing time series with address-level first-seen/last-seen dates and reuse
 rights. Comparable sales cannot substitute for this dataset. Until a free,
 legally reusable source is acquired, the new code deliberately returns

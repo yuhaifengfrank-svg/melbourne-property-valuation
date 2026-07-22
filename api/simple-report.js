@@ -59,8 +59,7 @@ export default async function handler(req, res) {
           SELECT median_house_price, median_unit_price,
                  dwelling_separate_house, dwelling_flat, dwelling_semi_detached,
                  dwelling_occupancy_rate, dwelling_3br_plus,
-                 supply_housing_stock AS dwelling_housing_stock, supply_unemployment_rate,
-                 growth_1y, growth_3y, growth_5y
+                 supply_housing_stock AS dwelling_housing_stock, supply_unemployment_rate
           FROM suburb_metrics
           WHERE LOWER(suburb) = LOWER(${suburb})
             AND state = ${state}
@@ -123,12 +122,6 @@ export default async function handler(req, res) {
     const schoolsHtml = schools.length
       ? `<ul>${schools.map(s => `<li>${s.school_name} (${s.school_type || ''}${s.school_sector ? ', ' + s.school_sector : ''})</li>`).join("")}</ul>`
       : "<p style='color:#999;'>No schools mapped yet.</p>";
-
-    const growthLines = [
-      sm.growth_1y != null ? `1-year: ${Number(sm.growth_1y) >= 0 ? '+' : ''}${Number(sm.growth_1y).toFixed(1)}%` : null,
-      sm.growth_3y != null ? `3-year: ${Number(sm.growth_3y) >= 0 ? '+' : ''}${Number(sm.growth_3y).toFixed(1)}%` : null,
-      sm.growth_5y != null ? `5-year: ${Number(sm.growth_5y) >= 0 ? '+' : ''}${Number(sm.growth_5y).toFixed(1)}%` : null
-    ].filter(Boolean).join(" · ");
 
     const html = `<!DOCTYPE html>
 <html lang="en">
@@ -208,7 +201,7 @@ export default async function handler(req, res) {
       <div class="stat">${occRate != null ? occRate.toFixed(2) + ' /dwelling' : '—'}</div>
     </div>
   </div>
-  ${growthLines ? `<p style="font-size:13px;color:#555;margin-top:4px;">Price growth: ${growthLines}</p>` : ""}
+  <p style="font-size:13px;color:#555;margin-top:4px;">Historical price growth: Data not available until an official dated series passes publication checks.</p>
 
   <h2>Schools Nearby</h2>
   ${schoolsHtml}
