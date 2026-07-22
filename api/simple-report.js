@@ -56,7 +56,7 @@ export default async function handler(req, res) {
     if (suburb) {
       try {
         const [metric] = await sql`
-          SELECT median_house_price, median_unit_price, vacancy_rate,
+          SELECT median_house_price, median_unit_price,
                  dwelling_separate_house, dwelling_flat, dwelling_semi_detached,
                  dwelling_occupancy_rate, dwelling_3br_plus,
                  supply_housing_stock AS dwelling_housing_stock, supply_unemployment_rate,
@@ -199,8 +199,9 @@ export default async function handler(req, res) {
       <div class="stat">${unempRate != null ? unempRate.toFixed(1) + '%' : '—'}</div>
     </div>
     <div class="card">
-      <h3>Vacancy rate</h3>
-      <div class="stat">${sm.vacancy_rate != null ? Number(sm.vacancy_rate).toFixed(1) + '%' : '—'}</div>
+      <h3>Rental vacancy</h3>
+      <div class="stat">Data not available</div>
+      <div class="stat-sub">A current suburb rental-vacancy estimate has not passed publication checks.</div>
     </div>
     <div class="card">
       <h3>Occupancy</h3>

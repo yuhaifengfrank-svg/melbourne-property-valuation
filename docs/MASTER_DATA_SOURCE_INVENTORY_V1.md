@@ -17,7 +17,7 @@ Sources currently loaded into the production database, actively powering scoring
 | T0‑03 | **ABS Census G36** | Unoccupied dwellings (vacancy proxy) | `census_sa2_data.g36` | 524 SA2 | 5 yr | Vacancy factor input |
 | T0‑04 | **SEIFA IRSD + IEO** | Socio-Economic Indexes for Areas | `census_sa2_data.seifa` | 524 SA2 | 5 yr (2021) | Census consistency factor |
 | T0‑05 | **ACARA School Data** | School locations, ICSEA scores, enrolments | `school_locations` | All VIC schools | Annual | School score factor + SA2 mapping bridge |
-| T0‑06 | **SQM Research** | Vacancy rates by suburb | `suburb_metrics.vacancy_rate` | 230 suburbs | Quarterly? | Vacancy factor |
+| T0‑06 | **Legacy Census G36 field (deprecated)** | 2021 Census-night unoccupied-dwelling share, previously mislabelled as rental vacancy | `suburb_metrics.vacancy_rate` | 230 suburbs | 2021 only | Must not be published or scored as current rental vacancy; SQM was not the source |
 | T0‑07 | **RBA Cash Rate + Bills** | Cash rate, 90‑day bank bills | `macro_indicators` | National | Monthly | Macro adjustment |
 | T0‑08 | **comparable_sales** | Individual property sales from REA/Domain scraping | `comparable_sales` | 4,252 records | On‑demand | Valuation engine primary input |
 | T0‑09 | **VicPlan API** | Zoning info by coordinates | `vicplan-client.js` | All VIC | Real‑time | Zoning verification |

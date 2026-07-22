@@ -69,7 +69,7 @@ export default async function handler(request, response) {
       SELECT suburb, state,
              median_house_price, median_unit_price,
              growth_1y, growth_3y, growth_5y,
-             gross_yield, school_score, vacancy_rate,
+             school_score,
              supply_constraint_score, infrastructure_score,
              overall_confidence, opportunity_score, opportunity_type,
              conf_school, conf_yield, conf_vacancy, updated_at
@@ -168,10 +168,14 @@ function buildOpportunityBase(r) {
     state: r.state || 'VIC',
     medianHousePrice: toNumberOrNull(r.median_house_price),
     medianUnitPrice: toNumberOrNull(r.median_unit_price),
-    grossYield: toNumberOrNull(r.gross_yield),
-    rentalYield: toNumberOrNull(r.gross_yield),
+    // Legacy gross_yield mixes Census-period rent with newer prices. It is
+    // excluded until source-aware 3/4-bedroom rent observations are published.
+    grossYield: null,
+    rentalYield: null,
     schoolScore: toNumberOrNull(r.school_score),
-    vacancyRate: toNumberOrNull(r.vacancy_rate),
+    // Legacy vacancy_rate is the Census-night unoccupied-dwelling share, not
+    // current rental vacancy. Fail closed until rental-vacancy-v1 is available.
+    vacancyRate: null,
     supplyConstraintScore: toNumberOrNull(r.supply_constraint_score),
     infrastructureScore: toNumberOrNull(r.infrastructure_score),
     overallConfidence: toNumberOrNull(r.overall_confidence),
