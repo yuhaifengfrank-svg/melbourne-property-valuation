@@ -549,7 +549,6 @@ async function main() {
               overall_confidence,
               median_house_price,
               median_unit_price,
-              vacancy_rate,
               growth_1y, growth_3y, growth_5y,
               gross_yield
             FROM suburb_metrics
@@ -571,7 +570,6 @@ async function main() {
             overall_confidence: Number(r.overall_confidence),
             median_house_price: Number(r.median_house_price),
             median_unit_price: Number(r.median_unit_price),
-            vacancy_rate: Number(r.vacancy_rate),
             growth_1y: Number(r.growth_1y),
             growth_3y: Number(r.growth_3y),
             growth_5y: Number(r.growth_5y),
@@ -593,13 +591,7 @@ async function main() {
                 Number(r.supply_dwelling_growth) >= 40 ? 'moderate development activity balancing supply and demand' :
                 'low development pipeline reinforcing supply scarcity'
               }`,
-              Number(r.vacancy_rate) != null
-                ? `Vacancy rate of ${Number(r.vacancy_rate).toFixed(1)}% — ${
-                    Number(r.vacancy_rate) <= 3 ? 'extremely tight rental market with strong tenant demand' :
-                    Number(r.vacancy_rate) <= 5 ? 'balanced rental market with healthy demand' :
-                    'elevated vacancy levels signalling potential rental oversupply'
-                  }`
-                : 'Limited vacancy data available'
+              'Suburb rental vacancy is not published until a current source-aware estimate passes validation'
             ],
           }));
           console.log(`  ✅ Fetched ${results.length} supply-constrained results from DB`);

@@ -1,0 +1,147 @@
+{
+  "schemaVersion": "suburb-validated-metrics-v1",
+  "asOf": "2025-12-31",
+  "generatedAt": "2026-07-22",
+  "geography": {
+    "suburb": "OAKLEIGH",
+    "postcode": "3166",
+    "state": "VIC",
+    "lga": "Monash",
+    "excludedLocalities": ["Oakleigh East", "Oakleigh South"]
+  },
+  "facts": {
+    "population": {
+      "value": 8442,
+      "period": "2021 Census",
+      "geography": "Oakleigh SAL22000",
+      "source": "ABS 2021 Census QuickStats",
+      "publishable": true,
+      "note": "Historical Census baseline, not a 2025 population estimate"
+    },
+    "totalDwellings": {
+      "value": 3831,
+      "period": "2021 Census",
+      "geography": "Oakleigh SAL22000",
+      "source": "ABS 2021 Census QuickStats",
+      "publishable": true
+    },
+    "rentedHouseholds": {
+      "value": 1125,
+      "period": "2021 Census",
+      "geography": "Oakleigh SAL22000",
+      "source": "ABS 2021 Census QuickStats",
+      "publishable": true,
+      "note": "Historical tenure count, not current rental stock"
+    },
+    "censusNightUnoccupiedDwellings": {
+      "value": 458,
+      "rate": 12.3,
+      "unit": "%",
+      "period": "2021 Census night",
+      "geography": "Oakleigh SAL22000",
+      "source": "ABS 2021 Census QuickStats",
+      "publishable": true,
+      "note": "Must not be labelled rental vacancy"
+    },
+    "medianHousePrice": {
+      "value": 1311000,
+      "currency": "AUD",
+      "period": "2024 calendar year",
+      "geography": "Oakleigh suburb",
+      "source": "Valuer-General Victoria annual suburb series",
+      "publishable": true
+    },
+    "housePriceGrowth": {
+      "definition": "Compound annual growth from the same official VGV house-median series",
+      "endPeriod": "2024 calendar year",
+      "source": "Valuer-General Victoria annual suburb series",
+      "publishable": true,
+      "values": {
+        "oneYear": { "value": -1.9, "unit": "%", "startValue": 1336500, "startYear": 2023 },
+        "threeYearCagr": { "value": -1.88, "unit": "% p.a.", "startValue": 1388000, "startYear": 2021 },
+        "fiveYearCagr": { "value": 3.55, "unit": "% p.a.", "startValue": 1101000, "startYear": 2019 },
+        "tenYearCagr": { "value": 5.04, "unit": "% p.a.", "startValue": 801500, "startYear": 2014 }
+      }
+    },
+    "threeBedroomHouseRent": {
+      "value": 630,
+      "unit": "AUD/week",
+      "sampleSize": 175,
+      "period": "year to September 2025",
+      "geography": "DFFH Chadstone-Oakleigh rental area",
+      "source": "Victorian DFFH Rental Report",
+      "publishable": true,
+      "note": "Combined rental area fact, not exact-suburb Oakleigh rent"
+    },
+    "fourBedroomHouseRent": {
+      "value": 850,
+      "unit": "AUD/week",
+      "sampleSize": 79,
+      "period": "year to September 2025",
+      "geography": "DFFH Chadstone-Oakleigh rental area",
+      "source": "Victorian DFFH Rental Report",
+      "publishable": true,
+      "note": "Combined rental area fact, not exact-suburb Oakleigh rent"
+    },
+    "employment": {
+      "period": "December 2025",
+      "geography": "Oakleigh-Huntingdale SA2 212051326",
+      "source": "DEWR Small Area Labour Markets, smoothed series",
+      "employedPersons": 15326,
+      "employmentGrowthYoY": 4.67,
+      "unemploymentRate": 2.4,
+      "publishable": true,
+      "note": "Official SA2 fact allocated as context; not an exact Oakleigh observation"
+    },
+    "buildingPermits2025": {
+      "sourceArtifact": "oakleigh-building-permits-2025.json",
+      "permitCount": 141,
+      "domesticResidentialPermitCount": 97,
+      "newDwellingPermitCount": 33,
+      "demolitionPermitCount": 27,
+      "newDwellings": 43,
+      "demolishedDwellings": 27,
+      "netAdditionalDwellings": 16,
+      "publishable": true,
+      "note": "Permits issued, not commencements or completions"
+    },
+    "planningPipeline2025": {
+      "sourceArtifact": "oakleigh-planning-pipeline-2025.json",
+      "exactRegisterRecords": 82,
+      "uniqueProjects": 81,
+      "quantifiedResidentialProjects": 20,
+      "grossProposedDwellings": 36,
+      "netProposedDwellings": 34,
+      "statusWeightedNetPipeline": 26,
+      "publishable": false,
+      "note": "Internal model feature pending council reuse approval and statewide calibration; current statuses retrieved in July 2026"
+    }
+  },
+  "modelInputs": {
+    "incomeCapacity": {
+      "value": 2244,
+      "unit": "AUD/week",
+      "method": "2021 Oakleigh-Huntingdale SA2 median household income indexed by Victorian WPI to December 2025",
+      "sourceValues": { "income2021": 1956, "wpiSeptember2021": 139.2, "wpiDecember2025": 159.7 },
+      "publishable": false,
+      "note": "Nominal capacity index, not observed 2025 household income"
+    },
+    "rentalVacancy": {
+      "value": null,
+      "display": "Data not available",
+      "publishable": false,
+      "technicalEstimate": 1.55,
+      "technicalRange": { "low": 0.95, "high": 2.15 },
+      "note": "Technical diagnostic lacks an approved statewide comparison distribution; do not publish the estimate"
+    }
+  },
+  "blockedLegacyMetrics": [
+    "legacy 9.61% vacancy",
+    "legacy adjusted 2.40% vacancy",
+    "legacy opportunity 71/100",
+    "legacy short-window growth 0/-8/-5",
+    "unreproducible VGV 10-year CAGR 14.72%",
+    "crime count/rank without period and rate lineage",
+    "POI score without auditable radius and feature inventory"
+  ]
+}
