@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "planning-pipeline-summary-v1",
+  "source": {
+    "publisher": "City of Monash",
+    "url": "https://epathway.monash.vic.gov.au/ePathway/ePTHPROD/Web/GeneralEnquiry/EnquiryLists.aspx",
+    "retrievedAt": "2026-07-22T11:29:23.990768+00:00",
+    "crossCheck": "City of Monash December 2025 Town Planning Schedule",
+    "crossCheckUrl": "https://www.monash.vic.gov.au/files/assets/public/v/1/about-us/council/agendas/2025/16-december/7.1.1-town-planning-schedule.pdf"
+  },
+  "filters": {
+    "lodgedStart": "01/01/2025",
+    "lodgedEnd": "31/12/2025",
+    "suburb": "OAKLEIGH SOUTH",
+    "postcode": "3167"
+  },
+  "geography": {
+    "council": "City of Monash",
+    "councilCoverage": "part",
+    "note": "Only addresses in the City of Monash portion of Oakleigh South"
+  },
+  "quality": {
+    "pageCount": 36,
+    "sourceRows": 1068,
+    "exactGeographyRows": 31,
+    "missingApplicationNumber": 0,
+    "missingLodgedDate": 0,
+    "missingDescription": 0,
+    "wrongGeography": 0,
+    "duplicateExactApplicationNumbers": 0,
+    "decemberScheduleApplicationCrossCheckCount": 2,
+    "decemberScheduleCrossCheckScope": "Application-number existence only; register remains the record source",
+    "excludedUnparseableRegisterRows": 1,
+    "recordLevelReuse": "Internal validation only; public output is aggregate only"
+  },
+  "summary": {
+    "rawApplicationCount": 31,
+    "uniqueProjectCount": 31,
+    "amendmentCount": 6,
+    "quantifiedResidentialProjects": 8,
+    "grossProposedDwellings": 22,
+    "netProposedDwellings": 22,
+    "weightedNetPipeline": 22,
+    "unresolvedResidentialProjects": 2
+  },
+  "publication": {
+    "publishable": true,
+    "grain": "Aggregate counts for applications lodged in 2025 at exact Oakleigh South VIC 3167 addresses within City of Monash",
+    "statusReferenceDate": "2026-07-22",
+    "limitations": [
+      "Application counts are not dwelling counts",
+      "Dwelling quantities are included only when explicitly stated in the official description",
+      "Status-weighted pipeline is a model indicator, not a count of commenced or completed homes",
+      "Current statuses can change after retrieval",
+      "The suburb crosses council boundaries; this summary covers only the City of Monash portion"
+    ]
+  }
+}

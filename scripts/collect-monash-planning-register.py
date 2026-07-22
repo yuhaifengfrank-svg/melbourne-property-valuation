@@ -39,8 +39,9 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--start", required=True, help="DD/MM/YYYY")
     parser.add_argument("--end", required=True, help="DD/MM/YYYY")
-    parser.add_argument("--suburb", required=True)
-    parser.add_argument("--postcode", required=True)
+    parser.add_argument("--suburb")
+    parser.add_argument("--postcode")
+    parser.add_argument("--all", action="store_true", help="Collect all register rows for local offline partitioning")
     parser.add_argument("--delay", type=float, default=0.5)
     parser.add_argument("--output", type=Path)
     return parser.parse_args()
@@ -48,6 +49,8 @@ def parse_args():
 
 def main():
     args = parse_args()
+    if not args.all and (not args.suburb or not args.postcode):
+        raise SystemExit("--suburb and --postcode are required unless --all is used")
     opener = build_opener(HTTPCookieProcessor(CookieJar()))
     lists_document = html.fromstring(opener.open(REGISTER, timeout=45).read())
     fields = hidden_fields(lists_document)
@@ -78,10 +81,11 @@ def main():
             if len(cells) < 7:
                 continue
             source_rows += 1
-            if exact_geography(cells[3], args.suburb, args.postcode):
+            if args.all or exact_geography(cells[3], args.suburb, args.postcode):
                 record = dict(zip(schema, cells[:7]))
-                record["suburb"] = args.suburb.upper()
-                record["postcode"] = args.postcode
+                if not args.all:
+                    record["suburb"] = args.suburb.upper()
+                    record["postcode"] = args.postcode
                 records.append(record)
         if page_number < page_count and args.delay > 0:
             time.sleep(args.delay)
@@ -95,7 +99,7 @@ def main():
         "filters": {
             "lodgedStart": args.start,
             "lodgedEnd": args.end,
-            "suburb": args.suburb.upper(),
+            "suburb": args.suburb.upper() if args.suburb else None,
             "postcode": args.postcode,
         },
         "quality": {
