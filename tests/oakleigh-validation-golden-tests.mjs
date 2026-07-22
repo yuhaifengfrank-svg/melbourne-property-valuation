@@ -58,14 +58,14 @@ test("Oakleigh planning summary preserves record, project and dwelling distincti
   assert.equal(result.quality.recordLevelReuse, "Internal validation only until council reuse terms are confirmed");
 });
 
-test("Oakleigh publishable object blocks provisional and legacy values", async () => {
+test("Oakleigh publishable object labels the approved vacancy estimate and blocks legacy values", async () => {
   const result = await readJson("oakleigh-validated-metrics.json");
   assert.equal(result.geography.suburb, "OAKLEIGH");
   assert.equal(result.facts.medianHousePrice.value, 1311000);
   assert.equal(result.facts.housePriceGrowth.values.tenYearCagr.value, 5.04);
-  assert.equal(result.modelInputs.rentalVacancy.value, null);
-  assert.equal(result.modelInputs.rentalVacancy.display, "Data not available");
-  assert.equal(result.modelInputs.rentalVacancy.publishable, false);
+  assert.equal(result.modelInputs.rentalVacancy.value, 1.55);
+  assert.equal(result.modelInputs.rentalVacancy.publishable, true);
+  assert.match(result.modelInputs.rentalVacancy.note, /model estimate, not an observed suburb vacancy rate/i);
   assert.equal(result.facts.planningPipeline2025.publishable, false);
   assert.ok(result.blockedLegacyMetrics.some((item) => item.includes("14.72%")));
 });
