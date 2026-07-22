@@ -1,0 +1,34 @@
+{
+  "policy": {
+    "priority": ["ppars_statewide_reconciliation", "vicmap_zone_overlay", "council_address_register"],
+    "scope": "Greater Melbourne councils first; regional councils are onboarded only after a separate regional vacancy benchmark is approved.",
+    "publicationRule": "A planning application count is not a dwelling count unless the source reports dwelling quantity or a reviewed parser extracts it with an explicit inferred flag."
+  },
+  "sources": [
+    {
+      "council": "Casey",
+      "status": "api_confirmed",
+      "sourceKey": "casey_planning_register",
+      "url": "https://data.casey.vic.gov.au/explore/dataset/planning-permit-applications-register-only/api/",
+      "fieldsConfirmed": ["application_number", "lodged_date", "decision_date", "status", "description", "suburb", "postcode", "address"],
+      "limitation": "Dwelling quantities may need reviewed extraction from descriptions."
+    },
+    {
+      "council": "Monash",
+      "status": "interactive_register_confirmed_automation_unverified",
+      "sourceKey": "monash_epathway_planning_register",
+      "url": "https://epathway.monash.vic.gov.au/ePathway/ePTHPROD/Web/GeneralEnquiry/EnquiryLists.aspx",
+      "fieldsConfirmed": ["current_advertised_applications", "post_advertising_pending_decision", "planning_application_status_and_decisions_from_2010", "subdivision_application_status_and_decisions_from_2010"],
+      "limitation": "The official register is searchable, but no stable bulk/API access or reuse terms have been verified. Do not automate or treat search results as a complete time series. Oakleigh remains benchmark-only for this factor."
+    }
+  ],
+  "remainingGreaterMelbourneCouncils": {
+    "status": "discovery_required",
+    "councils": [
+      "Banyule", "Bayside", "Boroondara", "Brimbank", "Cardinia", "Darebin", "Frankston", "Glen Eira",
+      "Greater Dandenong", "Hobsons Bay", "Hume", "Kingston", "Knox", "Manningham", "Maribyrnong",
+      "Maroondah", "Melbourne", "Melton", "Merri-bek", "Moonee Valley", "Mornington Peninsula",
+      "Nillumbik", "Port Phillip", "Stonnington", "Whitehorse", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"
+    ]
+  }
+}

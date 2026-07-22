@@ -1,5 +1,19 @@
 # Oakleigh metric validation
 
+## Vacancy model v1 checkpoint (22 July 2026)
+
+The new benchmark-adjusted vacancy model does **not** yet publish an Oakleigh percentage. Read-only evaluation of the currently available approved inputs produced 29% weighted evidence coverage, below the 40% minimum gate:
+
+| Input | Current stored value | Comparison percentile | Quality applied | Publication note |
+|---|---:|---:|---:|---|
+| Population CAGR | 0.33% | 76.0th | 0.60 | SA2 allocation; model-only, not an Oakleigh fact |
+| Unemployment | 2.3% | 15.8th | 0.80 | SA2 allocation and older period |
+| Flat/apartment share | 16.1% | 82.3rd | 0.80 | 2021 Census-derived and spatially allocated |
+
+The comparison set contained 525 stored Victorian suburb rows, not the final approved Greater Melbourne comparison set. Therefore these percentiles are a pipeline diagnostic only. Employment growth, actual income, BPC permit supply and Monash planning pipeline remain missing. The correct current public result is **Data not available**, not 2.4%, 8.49%, or a newly invented estimate.
+
+Monash provides an official ePathway register with application and decision searches back to 2010, but a stable bulk/API route and reuse conditions have not been verified. Until they are, the planning factor is neutral and reduces confidence.
+
 **Review date:** 2026-07-22
 **Geography:** Oakleigh, VIC 3166 only (not Donvale and not a combined area)
 
