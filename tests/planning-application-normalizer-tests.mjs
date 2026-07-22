@@ -20,6 +20,20 @@ test("does not turn subdivisions or dwelling alterations into new supply", () =>
   assert.equal(extractDwellingYield("Additions and alterations to an existing dwelling").newDwellings, 0);
 });
 
+test("does not count extensions to multiple existing dwellings as new supply", () => {
+  assert.deepEqual(
+    extractDwellingYield("Extension of three (3) dwellings on a lot and removal of two canopy trees"),
+    { newDwellings: 0, demolishedDwellings: 0, netDwellings: 0, quality: "explicit_no_new_supply", warnings: [] },
+  );
+});
+
+test("does not count a covenant variation as a dwelling proposal", () => {
+  const result = extractDwellingYield("Variation of Restrictive Covenant B123 to allow erection of a dwelling house");
+  assert.equal(result.newDwellings, null);
+  assert.equal(result.quality, "unresolved");
+  assert.deepEqual(result.warnings, ["covenant_change_without_dwelling_development"]);
+});
+
 test("marks unstated residential yield as unresolved", () => {
   const result = extractDwellingYield("Use and development of the land for a rooming house");
   assert.equal(result.newDwellings, null);

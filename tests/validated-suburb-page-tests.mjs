@@ -14,8 +14,10 @@ test("Oakleigh page publishes verified facts and removes legacy metrics", () => 
 
 test("Mount Waverley uses the same template and omits unavailable market fields", () => {
   const html = buildValidatedSuburbPage(profile("mount-waverley"));
-  for (const expected of ["35,338", "$2,065/week", "20,910", "+4.68%", "1.56%", "Mount Waverley North and South SA2s", "About 1.6%"] ) assert.match(html, new RegExp(expected.replace(/[+$]/g, "\\$&")));
-  for (const absent of ["Median house price", "3-bedroom house rent", "Housing supply", "Data not available", "Opportunity Score"]) assert.doesNotMatch(html, new RegExp(absent, "i"));
+  for (const expected of ["35,338", "$2,065/week", "20,910", "+4.68%", "1.56%", "Mount Waverley North and South SA2s", "About 1.6%", "Planning pipeline", "Planning register records", "227", "Unique planning projects", "225", "Proposed dwellings", "176", "161.7"] ) assert.match(html, new RegExp(expected.replace(/[+$]/g, "\\$&")));
+  for (const absent of ["Median house price", "3-bedroom house rent", "<h2>Housing supply</h2>", "Data not available", "Opportunity Score"]) assert.doesNotMatch(html, new RegExp(absent, "i"));
+  assert.match(html, /not commencements or completions/i);
+  assert.match(html, /model indicator; not a physical dwelling count/i);
 });
 
 test("only explicitly publishable fields enter structured data", () => {
