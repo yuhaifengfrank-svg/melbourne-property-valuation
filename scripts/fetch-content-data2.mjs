@@ -71,16 +71,15 @@ async function fetch() {
   `;
   save('school_under_1m', schoolUnder1M);
 
-  // Supply-constrained: use vacancy_rate AS supply signal (low vacancy = constrained)
-  // Also check supply_constraint_score fallback
+  // Supply-constrained: use the dedicated supply signal. Census-night
+  // unoccupied dwellings are not a current rental or supply constraint metric.
   const supplyAlternate = await sql`
     SELECT suburb, opportunity_score, opportunity_type, overall_confidence,
            median_house_price, median_unit_price, gross_yield, growth_1y, growth_3y, growth_5y,
            school_score, vacancy_rate, population_growth, supply_constraint_score
     FROM suburb_metrics
-    WHERE vacancy_rate IS NOT NULL AND overall_confidence IS NOT NULL
-      AND vacancy_rate > 0 AND vacancy_rate < 100
-    ORDER BY vacancy_rate ASC
+    WHERE supply_constraint_score IS NOT NULL AND overall_confidence IS NOT NULL
+    ORDER BY supply_constraint_score DESC
     LIMIT 20
   `;
   save('supply_alternate', supplyAlternate);
