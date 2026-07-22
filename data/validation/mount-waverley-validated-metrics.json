@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "suburb-validated-metrics-v1",
+  "asOf": "2025-12-31",
+  "generatedAt": "2026-07-22",
+  "geography": {
+    "suburb": "MOUNT WAVERLEY",
+    "postcode": "3149",
+    "state": "VIC",
+    "lga": "Monash"
+  },
+  "facts": {
+    "population": {
+      "value": 35338,
+      "period": "2021 Census",
+      "geography": "Mount Waverley North and South SA2s",
+      "source": "ABS 2021 Census",
+      "publishable": true,
+      "note": "Historical Census baseline, not a 2025 population estimate"
+    },
+    "medianWeeklyHouseholdIncome": {
+      "value": 2065,
+      "unit": "AUD/week",
+      "period": "2021 Census",
+      "geography": "Mount Waverley North and South SA2s",
+      "source": "ABS 2021 Census, population-weighted aggregation",
+      "publishable": true,
+      "note": "Combined SA2 context, not an exact suburb observation"
+    },
+    "employment": {
+      "period": "December 2025",
+      "geography": "Mount Waverley North and South SA2s",
+      "source": "DEWR Small Area Labour Markets, smoothed series",
+      "employedPersons": 20910,
+      "employmentGrowthYoY": 4.68,
+      "unemploymentRate": 1.56,
+      "publishable": true,
+      "note": "Official combined SA2 context"
+    }
+  },
+  "modelInputs": {
+    "rentalVacancy": {
+      "value": 1.6,
+      "unit": "%",
+      "period": "Q4 2025 model reference date",
+      "source": "AusHomeValue benchmark-adjusted vacancy model v1",
+      "benchmark": "Greater Melbourne Q4 2025, 1.6%",
+      "publishable": true,
+      "note": "Model estimate, not an observed suburb vacancy rate"
+    }
+  },
+  "blockedLegacyMetrics": []
+}

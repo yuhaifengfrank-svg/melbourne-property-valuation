@@ -127,12 +127,15 @@
       "note": "Nominal capacity index, not observed 2025 household income"
     },
     "rentalVacancy": {
-      "value": null,
-      "display": "Data not available",
-      "publishable": false,
+      "value": 1.55,
+      "unit": "%",
+      "period": "Q4 2025 model reference date",
+      "source": "AusHomeValue benchmark-adjusted vacancy model v1",
+      "benchmark": "Greater Melbourne Q4 2025, 1.6%",
+      "publishable": true,
       "technicalEstimate": 1.55,
       "technicalRange": { "low": 0.95, "high": 2.15 },
-      "note": "Technical diagnostic lacks an approved statewide comparison distribution; do not publish the estimate"
+      "note": "Model estimate, not an observed suburb vacancy rate"
     }
   },
   "blockedLegacyMetrics": [
