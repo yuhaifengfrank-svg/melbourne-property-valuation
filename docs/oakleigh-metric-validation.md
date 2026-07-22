@@ -10,9 +10,9 @@ The new benchmark-adjusted vacancy model does **not** yet publish an Oakleigh pe
 | Unemployment | 2.3% | 15.8th | 0.80 | SA2 allocation and older period |
 | Flat/apartment share | 16.1% | 82.3rd | 0.80 | 2021 Census-derived and spatially allocated |
 
-The comparison set contained 525 stored Victorian suburb rows, not the final approved Greater Melbourne comparison set. Therefore these percentiles are a pipeline diagnostic only. BPC permit supply and Monash planning pipeline remain missing. A technical run with the new SA2 employment and income inputs returns about 1.55% with low confidence and a wide 0.95%–2.15% range, but that result is **not publication-ready** because the comparison set and two 40%-weight supply factors are incomplete. The correct current public result is **Data not available**, not 2.4%, 8.49%, 1.55%, or another provisional estimate.
+The comparison set contained 525 stored Victorian suburb rows, not the final approved Greater Melbourne comparison set. Therefore these percentiles are a pipeline diagnostic only. BPC permit supply and the Monash planning register have now been retrieved and validated offline, but they are not yet loaded into the model comparison distribution. A technical run with the employment and income inputs still returns about 1.55% with low confidence and a wide 0.95%–2.15% range. That result remains **not publication-ready** until the new supply features and final Greater Melbourne comparison set are reproduced statewide. The correct current public result is **Data not available**, not 2.4%, 8.49%, 1.55%, or another provisional estimate.
 
-Monash provides an official ePathway register with application and decision searches back to 2010, but a stable bulk/API route and reuse conditions have not been verified. Until they are, the planning factor is neutral and reduces confidence.
+Monash provides an official ePathway register with application and decision searches back to 2010. Date-range search and session-scoped `PageNumber` pagination have been verified without an account or access-control bypass. No first-party CSV/API export is exposed, so the planning factor remains offline until the HTML collector is rate-limited, schema-checked and approved for ongoing reuse.
 
 ## Official source research completed
 
@@ -39,13 +39,17 @@ For model consistency, the existing Census SA2 table maps Oakleigh to Oakleigh�
 
 ### Building permits
 
-The BPC official page confirms a permit-level 2025 XLSB and a December 2025 activity workbook. The permit data is reported by building surveyors and includes suburb-level records, but the official binary endpoint rejected unattended retrieval. The model must not infer a count from search snippets or the aggregate summary. Oakleigh's 2025 residential permit count therefore remains **Data not available** until the official file is retrieved through a supported download and its residential/new-dwelling columns are validated.
+The BPC official permit-level XLSB and supplementary field dictionary were downloaded through the normal public browser flow and parsed offline. For exact `OAKLEIGH`, postcode `3166`, municipality containing `MONASH`, and a 2025 permit issue date, the file contains **141 permits**. Of these, 97 are classified Domestic/Residential, 33 report at least one new dwelling, 43 new dwellings are reported and 27 dwellings are reported demolished, producing **net permitted supply of +16 dwellings**. The 2026 file through May contains 52 exact permits, 13 new dwellings and 4 demolitions, or net +9; it is a partial-year observation and must not be compared directly with full-year 2025.
+
+These are building permits and reported dwelling quantities, not commencements or completions. Seven rows with a 2025 levy-return year were excluded from the 2025 issued-permit count because the issue date was outside 2025, missing, or the municipality was not Monash. The source is surveyor-reported and retains the BPC accuracy disclaimer.
 
 ### Monash planning pipeline
 
-Monash publishes an official ePathway register and monthly Town Planning Schedules. The schedules expose application number, subject property, proposal and decision, and confirm Oakleigh records during 2025. They are decision schedules, not a complete unique lodged-application feed: applications and amendments can recur across months, and many entries do not add dwellings. They cannot be summed as a pipeline without deduplication and status/yield parsing.
+Monash publishes an official ePathway register and monthly Town Planning Schedules. A read-only date-range query for 1 January–31 December 2025 returned 36 pages (about 1,068 Monash applications), including **82 records whose address ends exactly in `OAKLEIGH VIC 3166`**. Oakleigh East, Oakleigh South and other postcode-3166 localities were excluded.
 
-The current publishable conclusion is therefore **planning register located, suburb pipeline count not yet established**. A compliant pipeline requires all Oakleigh applications lodged by 31 December 2025, unique application/amendment identifiers, status, decision date and explicit proposed dwelling yield. Oakleigh East and Oakleigh South must remain excluded.
+The 82 records are not 82 housing projects. They include signage, tree works, alterations, subdivisions, withdrawn/lapsed applications and amendments. Verified examples include TPA/57234 (12 dwellings, VCAT appeal), TPA/57082 (2 dwellings, permit to issue), TPA/56944 (3 dwellings, permit to issue), TPA/56984 (3 dwellings, permit to issue), TPA/56613 (2 dwellings) and TPA/56457 (2 dwellings behind an existing dwelling). Replacement projects such as TPA/57141 are net zero; lapsed or incorrectly lodged projects receive zero weight. Application suffixes `/A` and `/B` are grouped with the base application before aggregation.
+
+The current publishable conclusion is therefore **register coverage established; weighted dwelling pipeline remains a model feature pending collector/reuse approval and statewide comparison calibration**. Raw application count must never be labelled dwelling supply.
 
 **Review date:** 2026-07-22
 **Geography:** Oakleigh, VIC 3166 only (not Donvale and not a combined area)

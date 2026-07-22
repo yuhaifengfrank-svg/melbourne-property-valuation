@@ -24,7 +24,7 @@
     "video:topic": "node scripts/video-factory/capture-topic.mjs --topic",
     "test:content": "node tests/content-scan.mjs",
     "test:investor-watch:baseline": "node --test tests/vercel-function-budget-tests.mjs tests/future-opportunity-outlook-tests.mjs tests/future-opportunity-api-tests.mjs tests/homepage-product-narrative-tests.mjs tests/report-entitlement-service-tests.mjs tests/create-report-checkout-tests.mjs tests/stripe-report-webhook-signature-tests.mjs",
-    "test:suburb-data": "node --test tests/suburb-market-data-policy-tests.mjs tests/suburb-market-coverage-audit-tests.mjs tests/dffh-rent-parser-tests.mjs tests/historical-growth-tests.mjs tests/building-permit-normalizer-tests.mjs tests/suburb-vacancy-model-tests.mjs",
+    "test:suburb-data": "node --test tests/suburb-market-data-policy-tests.mjs tests/suburb-market-coverage-audit-tests.mjs tests/dffh-rent-parser-tests.mjs tests/historical-growth-tests.mjs tests/building-permit-normalizer-tests.mjs tests/planning-application-normalizer-tests.mjs tests/suburb-vacancy-model-tests.mjs",
     "audit:suburb-data": "node scripts/audit-suburb-market-coverage.mjs",
     "db:investor-watch:preview": "node scripts/run-migration-013-preview.mjs --verify",
     "db:investor-watch:production": "node scripts/run-migration-013-production.mjs --verify"
