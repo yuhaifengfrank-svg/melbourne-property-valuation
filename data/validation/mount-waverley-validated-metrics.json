@@ -35,6 +35,21 @@
       "unemploymentRate": 1.56,
       "publishable": true,
       "note": "Official combined SA2 context"
+    },
+    "planningPipeline2025": {
+      "sourceArtifact": "mount-waverley-planning-pipeline-2025.json",
+      "period": "applications lodged in 2025",
+      "geography": "exact Mount Waverley VIC 3149 addresses",
+      "source": "City of Monash ePathway register",
+      "exactRegisterRecords": 227,
+      "uniqueProjects": 225,
+      "quantifiedResidentialProjects": 80,
+      "grossProposedDwellings": 176,
+      "netProposedDwellings": 176,
+      "statusWeightedNetPipeline": 161.7,
+      "statusReferenceDate": "2026-07-22",
+      "publishable": true,
+      "note": "Aggregate planning pipeline; proposed and status-weighted quantities are not commencements or completions"
     }
   },
   "modelInputs": {

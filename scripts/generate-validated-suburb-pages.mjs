@@ -71,6 +71,16 @@ export function buildValidatedSuburbPage(profile) {
     supply.push(metricCard("Net additional dwellings", pct(b.netAdditionalDwellings, 0).replace("%", ""), "2025 permits: 43 new less 27 demolished", "Permit-based supply indicator"));
   }
 
+  const planning = [];
+  if (facts.planningPipeline2025?.publishable) {
+    const p = facts.planningPipeline2025;
+    planning.push(metricCard("Planning register records", number(p.exactRegisterRecords), `${p.period} · ${p.geography}`, "Official register records; amendments and repeat project records are included"));
+    planning.push(metricCard("Unique planning projects", number(p.uniqueProjects), `${p.period} · deduplicated by base application number`, p.source));
+    planning.push(metricCard("Projects with stated dwelling yield", number(p.quantifiedResidentialProjects), `${p.period}`, "Only projects whose official description states a dwelling quantity"));
+    planning.push(metricCard("Proposed dwellings", number(p.netProposedDwellings), `${p.period} · description-derived`, "Proposed supply, not commencements or completions"));
+    planning.push(metricCard("Status-weighted pipeline", Number(p.statusWeightedNetPipeline).toFixed(1), `Status checked ${p.statusReferenceDate}`, "AusHomeValue model indicator; not a physical dwelling count"));
+  }
+
   const structured = [];
   const addStructured = (name, value, item, unitText) => {
     if (value == null) return;
@@ -93,6 +103,11 @@ export function buildValidatedSuburbPage(profile) {
     addStructured("buildingPermitCount", facts.buildingPermits2025.permitCount, { period: "2025", source: "Victorian Building Authority" }, "permits");
     addStructured("netAdditionalDwellings", facts.buildingPermits2025.netAdditionalDwellings, { period: "2025", source: "Victorian Building Authority" }, "dwellings");
   }
+  if (facts.planningPipeline2025?.publishable) {
+    addStructured("planningRegisterRecords", facts.planningPipeline2025.exactRegisterRecords, facts.planningPipeline2025, "records");
+    addStructured("uniquePlanningProjects", facts.planningPipeline2025.uniqueProjects, facts.planningPipeline2025, "projects");
+    addStructured("proposedDwellings", facts.planningPipeline2025.netProposedDwellings, facts.planningPipeline2025, "dwellings");
+  }
   if (vacancy?.publishable) structured.push({ "@type": "PropertyValue", name: "estimatedRentalVacancy", value: vacancy.value, unitText: "%", description: vacancy.note });
 
   const sections = [
@@ -101,6 +116,7 @@ export function buildValidatedSuburbPage(profile) {
     section("People and households", "Census facts remain labelled with their reference year and geography.", people),
     section("Local economy", "Official DEWR smoothed Small Area Labour Markets context.", economy),
     section("Housing supply", "Permit figures indicate approved activity, not completed homes.", supply),
+    section("Planning pipeline", "Council planning applications are separated from building permits and completed housing supply.", planning),
   ].filter(Boolean).join("\n  ");
 
   return `<!DOCTYPE html>
@@ -115,7 +131,7 @@ export function buildValidatedSuburbPage(profile) {
   <script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "Place", name: `${suburb}, ${state}`, url: canonical, containedInPlace: { "@type": "AdministrativeArea", name: `${geography.lga}, ${state}` }, additionalProperty: structured })}</script>
 </head><body><div class="topbar"><a href="/">← AusHomeValue</a></div><main class="container">
   <div class="breadcrumb"><a href="/">Home</a> / <a href="/suburb-research.html">Suburb Research</a> / ${escapeHtml(suburb)}</div>
-  <h1>${escapeHtml(suburb)}, ${state} — Property Research</h1><p class="eyebrow">Postcode ${escapeHtml(geography.postcode)} · ${escapeHtml(geography.lga)} · Data current to each metric's stated period (publication cutoff ${escapeHtml(asOf)}).</p>
+  <h1>${escapeHtml(suburb)}, ${state} — Property Research</h1><p class="eyebrow">Postcode ${escapeHtml(geography.postcode)} · ${escapeHtml(geography.lga)} · Core market-data cutoff ${escapeHtml(asOf)}; later status checks are dated on the relevant metric.</p>
   ${sections}
   <div class="notice"><strong>How to read this page:</strong> facts, area-level context and model estimates are labelled separately. Metrics without a verified definition or source are omitted rather than replaced with legacy values.</div>
 </main><footer class="footer">© ${new Date().getFullYear()} AusHomeValue · Research information only, not financial advice.</footer></body></html>\n`;
