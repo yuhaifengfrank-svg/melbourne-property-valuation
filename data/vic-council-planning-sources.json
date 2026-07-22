@@ -19,7 +19,7 @@
       "sourceKey": "monash_epathway_planning_register",
       "url": "https://epathway.monash.vic.gov.au/ePathway/ePTHPROD/Web/GeneralEnquiry/EnquiryLists.aspx",
       "fieldsConfirmed": ["current_advertised_applications", "post_advertising_pending_decision", "planning_application_status_and_decisions_from_2010", "subdivision_application_status_and_decisions_from_2010"],
-      "limitation": "The official register is searchable, but no stable bulk/API access or reuse terms have been verified. Do not automate or treat search results as a complete time series. Oakleigh remains benchmark-only for this factor."
+      "limitation": "The official register and monthly Town Planning Schedules are searchable, but no stable bulk/API access or reuse terms have been verified. Schedules are decision lists, can repeat applications/amendments, and are not a complete lodged-application time series. Do not sum them without deduplication and dwelling-yield extraction. Oakleigh remains benchmark-only for this factor."
     }
   ],
   "remainingGreaterMelbourneCouncils": {

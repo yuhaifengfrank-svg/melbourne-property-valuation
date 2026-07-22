@@ -2,7 +2,7 @@
 
 ## Vacancy model v1 checkpoint (22 July 2026)
 
-The new benchmark-adjusted vacancy model does **not** yet publish an Oakleigh percentage. Read-only evaluation of the currently available approved inputs produced 29% weighted evidence coverage, below the 40% minimum gate:
+The new benchmark-adjusted vacancy model does **not** yet publish an Oakleigh percentage. The initial read-only evaluation produced 29% weighted evidence coverage. After retrieving DEWR employment history and reconstructing an ABS income-capacity input, technical coverage rises to approximately 42%; however, the comparison distributions are still Victorian SA2/stored suburb diagnostics rather than the final approved Greater Melbourne suburb set. The publication result therefore remains **Data not available**.
 
 | Input | Current stored value | Comparison percentile | Quality applied | Publication note |
 |---|---:|---:|---:|---|
@@ -10,9 +10,42 @@ The new benchmark-adjusted vacancy model does **not** yet publish an Oakleigh pe
 | Unemployment | 2.3% | 15.8th | 0.80 | SA2 allocation and older period |
 | Flat/apartment share | 16.1% | 82.3rd | 0.80 | 2021 Census-derived and spatially allocated |
 
-The comparison set contained 525 stored Victorian suburb rows, not the final approved Greater Melbourne comparison set. Therefore these percentiles are a pipeline diagnostic only. Employment growth, actual income, BPC permit supply and Monash planning pipeline remain missing. The correct current public result is **Data not available**, not 2.4%, 8.49%, or a newly invented estimate.
+The comparison set contained 525 stored Victorian suburb rows, not the final approved Greater Melbourne comparison set. Therefore these percentiles are a pipeline diagnostic only. BPC permit supply and Monash planning pipeline remain missing. A technical run with the new SA2 employment and income inputs returns about 1.55% with low confidence and a wide 0.95%–2.15% range, but that result is **not publication-ready** because the comparison set and two 40%-weight supply factors are incomplete. The correct current public result is **Data not available**, not 2.4%, 8.49%, 1.55%, or another provisional estimate.
 
 Monash provides an official ePathway register with application and decision searches back to 2010, but a stable bulk/API route and reuse conditions have not been verified. Until they are, the planning factor is neutral and reduces confidence.
+
+## Official source research completed
+
+### Employment growth
+
+DEWR's March-quarter 2026 smoothed SALM file contains a continuous quarterly series for **Oakleigh–Huntingdale SA2 (212051326)**. For the model cutoff:
+
+- December 2024 labour force 14,989; smoothed unemployed 347; derived employed 14,642.
+- December 2025 labour force 15,709; smoothed unemployed 383; derived employed 15,326.
+- Derived year-on-year employment growth: **4.67%**.
+- Smoothed unemployment rate: 2.3% in December 2024 and 2.4% in December 2025.
+
+This is an official SA2 estimate, not an Oakleigh SAL observation. DEWR recommends smoothed estimates and year-on-year comparisons because small-area quarterly movements can be volatile. It is suitable as a model feature with a geographic-quality discount, not as a direct Oakleigh fact.
+
+### Income capacity
+
+ABS 2021 Census QuickStats reports Oakleigh SAL22000 median weekly household income of **$1,926**. The ABS Victoria all-sectors Wage Price Index for total hourly rates excluding bonuses rose from 139.2 in September 2021 to 159.7 in December 2025. A mechanical nominal update gives:
+
+`$1,926 × 159.7 / 139.2 = approximately $2,210 per week`
+
+The $2,210 figure is a modelled income-capacity index, not observed 2025 household income. WPI measures wage-price change and deliberately excludes workforce-composition change. Applying one Victoria index to every suburb preserves the 2021 cross-sectional ordering and does not establish suburb-specific income growth.
+
+For model consistency, the existing Census SA2 table maps Oakleigh to Oakleigh–Huntingdale SA2 and reports a 2021 median weekly household income of **$1,956**. Its WPI-updated December 2025 nominal value is approximately **$2,244/week**, at the 62.2nd percentile of the 524 available Victorian SA2 rows. The SAL $1,926 value remains the exact Oakleigh historical fact; the SA2 $1,956/$2,244 series is the model feature. They must not be mixed under one label.
+
+### Building permits
+
+The BPC official page confirms a permit-level 2025 XLSB and a December 2025 activity workbook. The permit data is reported by building surveyors and includes suburb-level records, but the official binary endpoint rejected unattended retrieval. The model must not infer a count from search snippets or the aggregate summary. Oakleigh's 2025 residential permit count therefore remains **Data not available** until the official file is retrieved through a supported download and its residential/new-dwelling columns are validated.
+
+### Monash planning pipeline
+
+Monash publishes an official ePathway register and monthly Town Planning Schedules. The schedules expose application number, subject property, proposal and decision, and confirm Oakleigh records during 2025. They are decision schedules, not a complete unique lodged-application feed: applications and amendments can recur across months, and many entries do not add dwellings. They cannot be summed as a pipeline without deduplication and status/yield parsing.
+
+The current publishable conclusion is therefore **planning register located, suburb pipeline count not yet established**. A compliant pipeline requires all Oakleigh applications lodged by 31 December 2025, unique application/amendment identifiers, status, decision date and explicit proposed dwelling yield. Oakleigh East and Oakleigh South must remain excluded.
 
 **Review date:** 2026-07-22
 **Geography:** Oakleigh, VIC 3166 only (not Donvale and not a combined area)
