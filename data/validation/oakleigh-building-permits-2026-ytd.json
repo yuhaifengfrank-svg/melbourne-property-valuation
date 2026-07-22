@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "bpc-building-permits-v1",
+  "source": {
+    "publisher": "Building and Plumbing Commission Victoria",
+    "fileName": "20261200-Rawdata-May-2026.xlsb",
+    "sha256": "406d6ea2ed1cc652e01b9cc02a43b7e637fe7bf016d4b9e3ad89d58629e55b04",
+    "retrievedLocally": true
+  },
+  "filters": {
+    "periodStart": "2026-01-01",
+    "periodEnd": "2026-05-31",
+    "suburb": "OAKLEIGH",
+    "postcode": "3166",
+    "municipalityContains": "MONASH"
+  },
+  "quality": {
+    "sourceRows": 41621,
+    "includedGeographies": 1,
+    "excludedRows": {
+      "other_suburb": 39940,
+      "before_period": 1268,
+      "missing_or_invalid_issue_date": 359,
+      "other_postcode": 1,
+      "after_period": 1
+    },
+    "interpretation": "Permits issued; not commencements or completions"
+  },
+  "suburbs": [
+    {
+      "suburb": "OAKLEIGH",
+      "postcode": "3166",
+      "municipality": "MONASH, CITY OF",
+      "permitCount": 52,
+      "domesticResidentialPermitCount": 32,
+      "dwellingActivityPermitCount": 13,
+      "newDwellingPermitCount": 9,
+      "demolitionPermitCount": 4,
+      "newDwellings": 13,
+      "demolishedDwellings": 4,
+      "netAdditionalDwellings": 9,
+      "byMonth": {
+        "2026-01": 9,
+        "2026-02": 14,
+        "2026-03": 8,
+        "2026-04": 9,
+        "2026-05": 12
+      }
+    }
+  ]
+}

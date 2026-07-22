@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "suburb-data-coverage-v1",
+  "asOf": "2026-07-22",
+  "datasets": {
+    "buildingPermits": {
+      "coverage": "Victoria statewide",
+      "period": "2025-01-01 to 2025-12-31",
+      "status": "reproducible",
+      "source": "Building and Plumbing Commission Victoria permit-level XLSB",
+      "pipeline": ["scripts/extract-bpc-building-permits.py", "scripts/build-statewide-building-permit-summary.mjs"],
+      "output": "data/validation/victoria-building-permits-2025.json",
+      "limitation": "Reported municipality is retained; suburb totals with conflicting councils are blocked until checked against an official locality-LGA map"
+    },
+    "planningPipeline": {
+      "coverage": "Council-by-council",
+      "status": "partial",
+      "verifiedCouncils": ["Monash"],
+      "verifiedOutput": "data/validation/oakleigh-planning-pipeline-2025.json",
+      "limitations": [
+        "Council registers use different schemas and reuse terms",
+        "A council is Data not available until its connector, geography matching and amendment handling pass validation",
+        "Raw application counts cannot be used as dwelling counts"
+      ]
+    },
+    "populationAndHousing": {
+      "coverage": "Victoria Census geographies",
+      "status": "historical-baseline",
+      "source": "ABS 2021 Census",
+      "limitation": "2021 observations must be labelled historical; model updates must be separately identified"
+    },
+    "employment": {
+      "coverage": "SA2 statewide",
+      "status": "reproducible",
+      "source": "DEWR Small Area Labour Markets",
+      "limitation": "SA2 context is not an exact suburb observation"
+    },
+    "housePriceGrowth": {
+      "coverage": "Suburbs available in VGV annual series",
+      "status": "reproducible",
+      "source": "Valuer-General Victoria",
+      "limitation": "Use same asset type and actual elapsed-year CAGR"
+    },
+    "rent": {
+      "coverage": "DFFH rental areas",
+      "status": "reproducible-area-anchor",
+      "source": "Victorian DFFH Rental Report",
+      "limitation": "Area medians are not exact suburb medians"
+    },
+    "rentalVacancy": {
+      "coverage": "Greater Melbourne benchmark only",
+      "status": "not-publishable-at-suburb-level",
+      "source": "Cotality Q4 2025 benchmark plus approved free features",
+      "limitation": "Suburb values remain Data not available until statewide feature calibration meets evidence coverage"
+    }
+  }
+}

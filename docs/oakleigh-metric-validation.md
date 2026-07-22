@@ -132,3 +132,37 @@ and period shown, but not as direct market-growth facts.
    never label it as 1-, 3- or 5-year historical growth.
 5. Rebuild crime from the latest CSA 12-month suburb rate and rebuild POI from
    complete OSM features with stored date, radius, category counts and attribution.
+
+## Golden-sample result and statewide rollout
+
+The machine-readable Oakleigh result is stored in
+`data/validation/oakleigh-validated-metrics.json`. It deliberately separates:
+
+- directly publishable facts with period and geography;
+- area/SA2 context that may be published only with its larger geography named;
+- model inputs that must not be described as observations; and
+- unavailable or blocked legacy metrics.
+
+The 2025 BPC source has also been processed statewide into
+`data/validation/victoria-building-permits-2025.json`. It contains 2,786 exact
+suburb/postcode/reported-municipality rows after quarantining 21 rows with
+invalid Victorian postcodes or suspicious locality labels. There are 241
+suburb/postcode combinations with more than
+one reported municipality. Those rows are intentionally **not merged**. For
+example, the source contains one non-residential `OAKLEIGH 3166` row reported
+under Moonee Valley; the verified Monash result remains 141 permits, not 142.
+An official locality-to-LGA reference must resolve each conflict before a
+single-council suburb total or ranking is published.
+
+Statewide deployment therefore proceeds by dataset, not by copying Oakleigh
+numbers:
+
+1. BPC permit extraction is now reproducible for every Victorian locality.
+2. VGV growth, DFFH rent, DEWR employment and ABS baselines retain their native
+   geographies and dates; mappings reduce confidence and never change the label.
+3. Planning remains council-by-council. Monash is the first verified connector;
+   all other councils remain `Data not available` until their register schema,
+   terms, pagination, amendments and dwelling extraction pass the same tests.
+4. Suburb vacancy remains unavailable statewide until the approved features are
+   reproduced over the Greater Melbourne comparison set. The 1.6% Melbourne
+   benchmark alone is not a suburb observation.
