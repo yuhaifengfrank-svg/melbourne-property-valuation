@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "planning-pipeline-summary-v1",
+  "source": {
+    "publisher": "Whitehorse City Council",
+    "url": "https://eservices.whitehorse.vic.gov.au/ePathway/Production/Web/GeneralEnquiry/ExternalRequestBroker.aspx?Class=WH&Module=EGELAP&Type=WH",
+    "retrievedAt": "2026-07-24T07:44:08.242Z",
+    "sourceReport": "Planning Register — search by lodgement date"
+  },
+  "filters": {
+    "lodgedStart": "01/01/2025",
+    "lodgedEnd": "31/12/2025",
+    "suburb": "BURWOOD EAST",
+    "postcode": "3151"
+  },
+  "geography": {
+    "council": "Whitehorse City Council",
+    "councilCoverage": "full",
+    "note": "Whole suburb is listed by Whitehorse City Council"
+  },
+  "quality": {
+    "sourceRows": 1220,
+    "excludedDummyRows": 6,
+    "excludedMissingLocationRows": 1,
+    "exactGeographyRows": 56,
+    "missingApplicationNumber": 0,
+    "missingLodgedDate": 0,
+    "missingDescription": 0,
+    "wrongGeography": 0,
+    "duplicateExactApplicationNumbers": 0,
+    "allCouncilGeographyRowsAccountedFor": 1213,
+    "recordLevelReuse": "Internal validation only; public output is aggregate only"
+  },
+  "summary": {
+    "lodgedApplicationCount": 56,
+    "uniqueProjectCount": 56,
+    "quantifiedResidentialProjects": 6,
+    "statedProposedDwellings": 12,
+    "statusWeightedProposedDwellings": 9
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "grain": "Aggregate applications lodged in 2025 at exact Burwood East VIC 3151 addresses",
+    "statusReferenceDate": "2026-07-24",
+    "limitations": [
+      "Application counts are not dwelling counts",
+      "Dwelling quantities are included only when a new 2025 application explicitly states a new-dwelling proposal and quantity",
+      "Permit amendments are excluded from stated dwelling proposals to avoid recounting previously approved projects",
+      "Stated proposed dwellings are gross proposals, not net additions; replacement dwellings, demolitions and completions are not inferred",
+      "Status-weighted proposed dwellings are an AusHomeValue model indicator, not a physical dwelling count",
+      "Current decisions can change after retrieval"
+    ]
+  }
+}

@@ -6,6 +6,15 @@
   },
   "sources": [
     {
+      "council": "Whitehorse",
+      "status": "public_register_pagination_verified",
+      "sourceKey": "whitehorse_epathway_planning_register",
+      "url": "https://eservices.whitehorse.vic.gov.au/ePathway/Production/Web/GeneralEnquiry/ExternalRequestBroker.aspx?Class=WH&Module=EGELAP&Type=WH",
+      "fieldsConfirmed": ["application_number", "lodged_date", "application_type", "address", "description", "decision"],
+      "retrieval": "Public ePathway register supports lodgement-date search and session-scoped pagination. No account or access-control bypass is required.",
+      "limitation": "Aggregate register metadata only. Do not republish advertised documents or record-level addresses. Exclude DUMMY 9999 and missing-location rows, and do not count permit amendments as new dwelling proposals."
+    },
+    {
       "council": "Boroondara",
       "status": "annual_register_report_verified",
       "sourceKey": "boroondara_planning_register",
@@ -38,7 +47,7 @@
       "Banyule", "Bayside", "Brimbank", "Cardinia", "Darebin", "Frankston", "Glen Eira",
       "Greater Dandenong", "Hobsons Bay", "Hume", "Kingston", "Knox", "Manningham", "Maribyrnong",
       "Maroondah", "Melbourne", "Melton", "Merri-bek", "Moonee Valley", "Mornington Peninsula",
-      "Nillumbik", "Port Phillip", "Stonnington", "Whitehorse", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"
+      "Nillumbik", "Port Phillip", "Stonnington", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"
     ]
   }
 }
