@@ -51,6 +51,15 @@
       "limitation": "Do not collect or republish the ePathway application register: its published terms restrict use to the statutory planning process. Publish council context only; never label it as suburb application, dwelling, approval, commencement or completion counts."
     },
     {
+      "council": "Bayside",
+      "status": "aggregate_context_only",
+      "sourceKey": "bayside_performance_statement_and_activity_centres",
+      "url": "https://www.bayside.vic.gov.au/sites/default/files/2025-09/doc_25_487502_agenda_-_16_september_2025_-_council_meeting_with_landscape.pdf",
+      "fieldsConfirmed": ["decided_within_required_time_percent", "target_percent", "reporting_period"],
+      "retrieval": "Council-wide audited service metric from the official performance statement for the year ended 30 June 2025, supplemented only by public Victorian activity-centre program status.",
+      "limitation": "Publish council context only until a reusable suburb-level official source is reviewed. Never label the council-wide result as suburb application, dwelling, approval, commencement or completion counts."
+    },
+    {
       "council": "Monash",
       "status": "public_register_pagination_verified",
       "sourceKey": "monash_epathway_planning_register",
@@ -63,7 +72,7 @@
   "remainingGreaterMelbourneCouncils": {
     "status": "discovery_required",
     "councils": [
-      "Banyule", "Bayside", "Brimbank", "Cardinia", "Darebin", "Frankston",
+      "Banyule", "Brimbank", "Cardinia", "Darebin", "Frankston",
       "Greater Dandenong", "Hobsons Bay", "Hume", "Kingston", "Knox", "Maribyrnong",
       "Maroondah", "Melbourne", "Melton", "Merri-bek", "Moonee Valley", "Mornington Peninsula",
       "Nillumbik", "Port Phillip", "Stonnington", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"
