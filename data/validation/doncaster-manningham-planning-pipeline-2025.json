@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "planning-pipeline-summary-v1",
+  "source": {
+    "publisher": "Manningham City Council",
+    "url": "https://manningham-web.t1cloud.com/T1PRDefault/WebApps/eProperty/P1/eTrack/eTrackApplicationSearch.aspx?r=P1.WEBGUEST&f=P1.ETR.SEARCHMCC.ENQ",
+    "retrievedAt": "2026-07-24T07:55:41.297Z",
+    "sourceReport": "Planning Applications Portal — date-range search"
+  },
+  "filters": {
+    "lodgedStart": "01/01/2025",
+    "lodgedEnd": "31/12/2025",
+    "suburb": "DONCASTER",
+    "postcode": "3108"
+  },
+  "geography": {
+    "council": "Manningham City Council",
+    "councilCoverage": "full",
+    "note": "Whole suburb is listed by Manningham City Council"
+  },
+  "quality": {
+    "sourceRows": 727,
+    "exactGeographyRows": 150,
+    "missingApplicationNumber": 0,
+    "missingLodgedDate": 0,
+    "missingDescription": 0,
+    "duplicateExactApplicationNumbers": 0,
+    "allCouncilGeographyRowsAccountedFor": 727,
+    "recordLevelReuse": "Internal validation only; public output is aggregate only"
+  },
+  "summary": {
+    "lodgedApplicationCount": 150,
+    "uniqueProjectCount": 150,
+    "quantifiedResidentialProjects": 50,
+    "statedProposedDwellings": 128,
+    "statusWeightedProposedDwellings": 89.8
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "grain": "Aggregate applications lodged in 2025 at exact Doncaster VIC 3108 addresses",
+    "statusReferenceDate": "2026-07-24",
+    "limitations": [
+      "Application counts are not dwelling counts",
+      "Dwelling quantities require an explicit new-dwelling proposal and quantity",
+      "Permit amendments are excluded from stated dwelling proposals",
+      "Stated proposed dwellings are gross proposals, not net additions or completed homes",
+      "Status-weighted proposed dwellings are an AusHomeValue model indicator, not a physical dwelling count",
+      "The council warns that recently lodged applications can take several days to appear"
+    ]
+  }
+}
