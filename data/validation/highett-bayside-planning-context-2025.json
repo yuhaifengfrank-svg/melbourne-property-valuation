@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "Bayside City Council",
+      "url": "https://www.bayside.vic.gov.au/sites/default/files/2025-09/doc_25_487502_agenda_-_16_september_2025_-_council_meeting_with_landscape.pdf",
+      "report": "Performance Statement for year ending 30 June 2025",
+      "reportingPeriodEnd": "2025-06-30",
+      "pages": [
+        435,
+        436,
+        448
+      ]
+    }
+  ],
+  "geography": {
+    "suburb": "HIGHETT",
+    "postcode": "3190",
+    "council": "Bayside City Council",
+    "councilContextOnly": true,
+    "partialCouncil": true,
+    "note": "The suburb crosses council boundaries; this summary is Bayside City Council context only"
+  },
+  "councilPlanningService": {
+    "decidedWithinRequiredTimePercent": 77.49,
+    "targetPercent": 75,
+    "periodEnd": "2025-06-30",
+    "metricDefinition": "Planning application decisions made within the relevant required time divided by all planning application decisions"
+  },
+  "activityCentre": {
+    "included": false,
+    "description": "No activity-centre program claim is published for this suburb"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The 77.49% result and 75% target are council-wide service metrics, not suburb-level application counts",
+      "The suburb crosses council boundaries; this summary covers Bayside City Council context only",
+      "This metric does not measure proposed dwellings, approvals, commencements or completions",
+      "No suburb-level count is published without a reviewed reusable official source",
+      "Activity-centre inclusion is a policy signal, not a forecast that a specific property will be redeveloped"
+    ]
+  }
+}
