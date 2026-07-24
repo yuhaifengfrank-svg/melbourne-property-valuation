@@ -1,0 +1,54 @@
+{
+  "schemaVersion": "planning-pipeline-summary-v1",
+  "source": {
+    "publisher": "City of Boroondara",
+    "url": "https://eservices.boroondara.vic.gov.au/EPlanning/pages/xc.report/reportsXdate.aspx?id=ppar",
+    "retrievedAt": "2026-07-24T07:00:17.598Z",
+    "sourceReport": "Planning permit applications registered"
+  },
+  "filters": {
+    "registeredStart": "01/01/2025",
+    "registeredEnd": "31/12/2025",
+    "suburb": "GLEN IRIS",
+    "postcode": "3146"
+  },
+  "geography": {
+    "council": "City of Boroondara",
+    "councilCoverage": "part",
+    "note": "Only addresses in the City of Boroondara portion of Glen Iris"
+  },
+  "quality": {
+    "sourceDisplayedRows": 72,
+    "exactDuplicateDisplayRowsRemoved": 5,
+    "canonicalRows": 67,
+    "missingApplicationNumber": 0,
+    "missingRegisteredDate": 0,
+    "missingDescription": 0,
+    "wrongGeography": 0,
+    "duplicateCanonicalApplicationNumbers": 0,
+    "allCouncilCanonicalRowsAccountedFor": 1052,
+    "recordLevelReuse": "Internal validation only; public output is aggregate only"
+  },
+  "summary": {
+    "registeredApplicationCount": 67,
+    "uniqueProjectCount": 67,
+    "quantifiedResidentialProjects": 5,
+    "statedProposedDwellings": 12,
+    "statusWeightedPipeline": null
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "grain": "Aggregate applications registered in 2025 at exact Glen Iris VIC 3146 addresses within City of Boroondara",
+    "statusReferenceDate": null,
+    "limitations": [
+      "Application counts are not dwelling counts",
+      "Dwelling quantities are included only when an explicit new-dwelling proposal and quantity are stated in the official description",
+      "Stated proposed dwellings are gross proposals, not net additions; replacement dwellings, demolitions and completions are not inferred",
+      "Registered applications can later be withdrawn, refused, amended or approved",
+      "The annual registered-applications report does not expose a reliable current status for every row, so no status-weighted value is published",
+      "Council warns that applications can take several days to appear and gives no warranty as to register accuracy",
+      "The suburb crosses council boundaries; this summary covers only the City of Boroondara portion"
+    ]
+  }
+}
