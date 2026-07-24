@@ -6,6 +6,15 @@
   },
   "sources": [
     {
+      "council": "Manningham",
+      "status": "public_register_pagination_verified",
+      "sourceKey": "manningham_t1_planning_register",
+      "url": "https://manningham-web.t1cloud.com/T1PRDefault/WebApps/eProperty/P1/eTrack/eTrackApplicationSearch.aspx?r=P1.WEBGUEST&f=P1.ETR.SEARCHMCC.ENQ",
+      "fieldsConfirmed": ["application_number", "lodged_date", "description", "address", "status", "project_type"],
+      "retrieval": "Public TechnologyOne register supports date-range search and paginated results without an account.",
+      "limitation": "Aggregate metadata only. Do not publish record-level addresses or use register data for direct marketing. Exclude amendment prefixes from new dwelling proposals."
+    },
+    {
       "council": "Whitehorse",
       "status": "public_register_pagination_verified",
       "sourceKey": "whitehorse_epathway_planning_register",
@@ -45,7 +54,7 @@
     "status": "discovery_required",
     "councils": [
       "Banyule", "Bayside", "Brimbank", "Cardinia", "Darebin", "Frankston", "Glen Eira",
-      "Greater Dandenong", "Hobsons Bay", "Hume", "Kingston", "Knox", "Manningham", "Maribyrnong",
+      "Greater Dandenong", "Hobsons Bay", "Hume", "Kingston", "Knox", "Maribyrnong",
       "Maroondah", "Melbourne", "Melton", "Merri-bek", "Moonee Valley", "Mornington Peninsula",
       "Nillumbik", "Port Phillip", "Stonnington", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"
     ]
