@@ -42,6 +42,15 @@
       "limitation": "Publish aggregate register facts only. Application counts are not dwelling counts, commencements or completions; no record-level addresses are republished."
     },
     {
+      "council": "Glen Eira",
+      "status": "aggregate_context_only",
+      "sourceKey": "glen_eira_annual_report_and_activity_centres",
+      "url": "https://www.gleneira.vic.gov.au/media/502lfqsl/glen-eira-city-council-annual-report-2024-2025-webfile.pdf",
+      "fieldsConfirmed": ["median_planning_decision_days", "decided_within_required_time_percent", "reporting_period"],
+      "retrieval": "Council-wide service metrics from the official 2024-2025 Annual Report, supplemented only by public Victorian activity-centre program status.",
+      "limitation": "Do not collect or republish the ePathway application register: its published terms restrict use to the statutory planning process. Publish council context only; never label it as suburb application, dwelling, approval, commencement or completion counts."
+    },
+    {
       "council": "Monash",
       "status": "public_register_pagination_verified",
       "sourceKey": "monash_epathway_planning_register",
@@ -54,7 +63,7 @@
   "remainingGreaterMelbourneCouncils": {
     "status": "discovery_required",
     "councils": [
-      "Banyule", "Bayside", "Brimbank", "Cardinia", "Darebin", "Frankston", "Glen Eira",
+      "Banyule", "Bayside", "Brimbank", "Cardinia", "Darebin", "Frankston",
       "Greater Dandenong", "Hobsons Bay", "Hume", "Kingston", "Knox", "Maribyrnong",
       "Maroondah", "Melbourne", "Melton", "Merri-bek", "Moonee Valley", "Mornington Peninsula",
       "Nillumbik", "Port Phillip", "Stonnington", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"

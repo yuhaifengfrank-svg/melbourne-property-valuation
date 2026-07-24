@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "Glen Eira City Council",
+      "url": "https://www.gleneira.vic.gov.au/media/502lfqsl/glen-eira-city-council-annual-report-2024-2025-webfile.pdf",
+      "report": "Annual Report 2024-2025",
+      "reportingPeriodEnd": "2025-06-30",
+      "pages": [
+        77,
+        217
+      ]
+    },
+    {
+      "publisher": "Victorian Department of Transport and Planning",
+      "url": "https://www.planning.vic.gov.au/guides-and-resources/strategies-and-initiatives/train-and-tram-zone-activity-centres/about-our-plans",
+      "report": "Train and Tram Zone Activity Centres Program",
+      "statusChecked": "2026-07-24"
+    }
+  ],
+  "geography": {
+    "suburb": "GLEN HUNTLY",
+    "postcode": "3163",
+    "council": "Glen Eira City Council",
+    "councilContextOnly": true,
+    "note": "Council-wide service metrics are context, not suburb-level application counts"
+  },
+  "councilPlanningService": {
+    "medianDecisionDays": 70,
+    "decidedWithinRequiredTimePercent": 80,
+    "periodEnd": "2025-06-30",
+    "metricDefinitions": {
+      "medianDecisionDays": "Median days between receipt of a planning application and a decision",
+      "decidedWithinRequiredTimePercent": "Planning application decisions made within the relevant required time divided by all planning application decisions"
+    }
+  },
+  "activityCentre": {
+    "included": true,
+    "programGroup": "stage_2",
+    "description": "Included in Stage 2 of Victoria's Train and Tram Zone Activity Centres Program"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The 70-day and 80% measures are council-wide service metrics, not suburb-level application counts",
+      "These metrics do not measure proposed dwellings, approvals, commencements or completions",
+      "The Glen Eira ePathway application register is not collected or republished because its published terms restrict use to the statutory planning process",
+      "Activity-centre inclusion is a policy signal, not a forecast that a specific property will be redeveloped"
+    ]
+  }
+}
