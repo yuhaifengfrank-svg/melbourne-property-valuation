@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "planning-pipeline-summary-v1",
+  "source": {
+    "publisher": "City of Casey",
+    "url": "https://data.casey.vic.gov.au/explore/dataset/planning-permit-applications-register-only/api/",
+    "retrievedAt": "2026-07-24T09:05:11.227Z",
+    "sourceReport": "Planning Permit Application Register — official open-data API",
+    "licence": "CC BY 3.0"
+  },
+  "filters": {
+    "lodgedStart": "2025-01-01",
+    "lodgedEnd": "2025-12-31",
+    "suburb": "HALLAM",
+    "postcode": "3803"
+  },
+  "geography": {
+    "council": "City of Casey",
+    "councilCoverage": "council_records_only",
+    "note": "Only applications recorded by City of Casey for Hallam 3803"
+  },
+  "quality": {
+    "sourceRows": 997,
+    "exactGeographyRows": 62,
+    "missingApplicationNumber": 0,
+    "missingLodgedDate": 0,
+    "missingDescription": 0,
+    "duplicateExactApplicationNumbers": 0,
+    "allCouncilGeographyRowsAccountedFor": 997,
+    "recordLevelReuse": "Internal validation only; public output is aggregate only"
+  },
+  "summary": {
+    "lodgedApplicationCount": 62,
+    "uniqueProjectCount": 62,
+    "decisionRecordedCount": 58,
+    "activeApplicationCount": 4
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "grain": "Aggregate applications lodged in 2025 and recorded by City of Casey for Hallam 3803",
+    "statusReferenceDate": "2026-07-24",
+    "limitations": [
+      "Application counts are not dwelling counts, commencements or completions",
+      "Decision recorded means the open register contains a decision date; it is not a development completion",
+      "Current application means the official public status is Current and may change",
+      "This summary includes City of Casey records only and does not infer whole-suburb coverage",
+      "No record-level address or personal information is published"
+    ]
+  }
+}
