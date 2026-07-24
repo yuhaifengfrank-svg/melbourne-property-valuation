@@ -6,6 +6,15 @@
   },
   "sources": [
     {
+      "council": "Boroondara",
+      "status": "annual_register_report_verified",
+      "sourceKey": "boroondara_planning_register",
+      "url": "https://eservices.boroondara.vic.gov.au/EPlanning/pages/xc.report/reportsXdate.aspx?id=ppar",
+      "fieldsConfirmed": ["application_number", "description", "address", "received_date", "registered_date"],
+      "retrieval": "Public statutory register supports a date-range report and CSV export after accepting the published terms. Exact duplicate report rows must be removed before aggregation.",
+      "limitation": "The annual registered-applications report does not expose a reliable current status for every row. Publish aggregate suburb results only; do not retain officer fields, republish record-level addresses or use personal information for direct marketing."
+    },
+    {
       "council": "Casey",
       "status": "api_confirmed",
       "sourceKey": "casey_planning_register",
@@ -26,7 +35,7 @@
   "remainingGreaterMelbourneCouncils": {
     "status": "discovery_required",
     "councils": [
-      "Banyule", "Bayside", "Boroondara", "Brimbank", "Cardinia", "Darebin", "Frankston", "Glen Eira",
+      "Banyule", "Bayside", "Brimbank", "Cardinia", "Darebin", "Frankston", "Glen Eira",
       "Greater Dandenong", "Hobsons Bay", "Hume", "Kingston", "Knox", "Manningham", "Maribyrnong",
       "Maroondah", "Melbourne", "Melton", "Merri-bek", "Moonee Valley", "Mornington Peninsula",
       "Nillumbik", "Port Phillip", "Stonnington", "Whitehorse", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"
