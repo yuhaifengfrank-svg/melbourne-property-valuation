@@ -38,7 +38,8 @@
       "sourceKey": "casey_planning_register",
       "url": "https://data.casey.vic.gov.au/explore/dataset/planning-permit-applications-register-only/api/",
       "fieldsConfirmed": ["application_number", "lodged_date", "decision_date", "status", "description", "suburb", "postcode", "address"],
-      "limitation": "Dwelling quantities may need reviewed extraction from descriptions."
+      "retrieval": "Official open-data API and JSON export under CC BY 3.0. The 2025 publication is grouped by exact suburb and postcode.",
+      "limitation": "Publish aggregate register facts only. Application counts are not dwelling counts, commencements or completions; no record-level addresses are republished."
     },
     {
       "council": "Monash",
