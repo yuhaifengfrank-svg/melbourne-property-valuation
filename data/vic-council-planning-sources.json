@@ -78,6 +78,15 @@
       "limitation": "Do not collect or republish Banyule's public-notice register because its published conditions prohibit using applicant information to identify and market products or services. Publish council context only."
     },
     {
+      "council": "Kingston",
+      "status": "aggregate_context_only",
+      "sourceKey": "kingston_annual_report_and_activity_centres",
+      "url": "https://www.kingston.vic.gov.au/files/sharedassets/public/v/1/hptrim/corporate-planning-reporting-annual-report-annual-report-2024-2025/kingston-annual-report-2024-25_final.pdf",
+      "fieldsConfirmed": ["median_planning_decision_days", "decided_within_required_time_percent", "reporting_period"],
+      "retrieval": "Council-wide service metrics from the official 2024-25 Annual Report, supplemented only by reviewed Victorian activity-centre program status for Moorabbin and Mentone.",
+      "limitation": "Publish council context only until a reusable suburb-level official source is reviewed. Never label the council-wide result as suburb application, dwelling, approval, commencement or completion counts."
+    },
+    {
       "council": "Monash",
       "status": "public_register_pagination_verified",
       "sourceKey": "monash_epathway_planning_register",
@@ -91,7 +100,7 @@
     "status": "discovery_required",
     "councils": [
       "Brimbank", "Cardinia", "Darebin", "Frankston",
-      "Greater Dandenong", "Hobsons Bay", "Hume", "Kingston", "Knox", "Maribyrnong",
+      "Greater Dandenong", "Hobsons Bay", "Hume", "Knox", "Maribyrnong",
       "Maroondah", "Melbourne", "Melton", "Merri-bek", "Moonee Valley", "Mornington Peninsula",
       "Nillumbik", "Port Phillip", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"
     ]
