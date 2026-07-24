@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "City of Kingston",
+      "url": "https://www.kingston.vic.gov.au/files/sharedassets/public/v/1/hptrim/corporate-planning-reporting-annual-report-annual-report-2024-2025/kingston-annual-report-2024-25_final.pdf",
+      "report": "Annual Report 2024-25",
+      "reportingPeriodEnd": "2025-06-30",
+      "pages": [
+        51
+      ]
+    },
+    {
+      "publisher": "Victorian Government",
+      "url": "https://www.vic.gov.au/know-your-council-kingston-city-council",
+      "report": "Know Your Council – Kingston City Council",
+      "statusChecked": "2026-07-25"
+    }
+  ],
+  "geography": {
+    "suburb": "ASPENDALE GARDENS",
+    "postcode": "3195",
+    "council": "Kingston City Council",
+    "councilContextOnly": true,
+    "note": "Council-wide service metrics are context, not suburb-level application counts"
+  },
+  "councilPlanningService": {
+    "medianDecisionDays": 84,
+    "decidedWithinRequiredTimePercent": 67.04,
+    "periodEnd": "2025-06-30",
+    "metricDefinitions": {
+      "medianDecisionDays": "Median number of days between receipt of a planning application and a decision",
+      "decidedWithinRequiredTimePercent": "Planning application decisions made within the relevant required time divided by all planning application decisions"
+    }
+  },
+  "activityCentre": {
+    "included": false,
+    "description": "No reviewed state activity-centre program claim is published for this suburb"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The service measures are council-wide facts, not suburb-level application counts",
+      "These metrics do not measure proposed dwellings, approvals, commencements or completions",
+      "No address-level planning register data is collected or republished in this council-context release",
+      "Activity-centre inclusion is a policy signal, not a forecast that a specific property will be redeveloped"
+    ]
+  }
+}
