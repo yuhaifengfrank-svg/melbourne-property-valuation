@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "City of Stonnington",
+      "url": "https://www.stonnington.vic.gov.au/files/assets/public/v/5/about/corporate-documents/annual-report/annual-report-2024-25_final.pdf",
+      "report": "Annual Report 2024-25",
+      "reportingPeriodEnd": "2025-06-30",
+      "pages": [
+        48,
+        49,
+        141
+      ]
+    },
+    {
+      "publisher": "Victorian Department of Transport and Planning",
+      "url": "https://www.planning.vic.gov.au/guides-and-resources/strategies-and-initiatives/train-and-tram-zone-activity-centres/about-our-plans",
+      "report": "Train and Tram Zone Activity Centres Program",
+      "statusChecked": "2026-07-24"
+    }
+  ],
+  "geography": {
+    "suburb": "ARMADALE",
+    "postcode": "3143",
+    "council": "City of Stonnington",
+    "councilContextOnly": true,
+    "partialCouncil": false,
+    "note": "Council-wide service metrics are context, not suburb-level application counts"
+  },
+  "councilPlanningService": {
+    "medianDecisionDays": 57,
+    "decidedWithinRequiredTimePercent": 78.05,
+    "applicationsReceived": 1273,
+    "periodEnd": "2025-06-30",
+    "metricDefinitions": {
+      "medianDecisionDays": "Median days between receipt of a planning application and a decision",
+      "decidedWithinRequiredTimePercent": "Planning application decisions made within the relevant required time divided by all planning application decisions",
+      "applicationsReceived": "Planning applications received by the City of Stonnington during 2024-25"
+    }
+  },
+  "activityCentre": {
+    "included": true,
+    "programGroup": "stage_2",
+    "description": "Included in Stage 2 of Victoria's Train and Tram Zone Activity Centres Program"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The service measures and 1,273 applications received are council-wide facts, not suburb-level counts",
+      "Application counts are not dwelling, approval, commencement or completion counts",
+      "No suburb-level count is published without a reviewed reusable official source",
+      "Activity-centre inclusion is a policy signal, not a forecast that a specific property will be redeveloped"
+    ]
+  }
+}
