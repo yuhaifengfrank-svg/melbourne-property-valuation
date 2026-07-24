@@ -60,6 +60,15 @@
       "limitation": "Publish council context only until a reusable suburb-level official source is reviewed. Never label the council-wide result as suburb application, dwelling, approval, commencement or completion counts."
     },
     {
+      "council": "Stonnington",
+      "status": "aggregate_context_only",
+      "sourceKey": "stonnington_annual_report_and_activity_centres",
+      "url": "https://www.stonnington.vic.gov.au/files/assets/public/v/5/about/corporate-documents/annual-report/annual-report-2024-25_final.pdf",
+      "fieldsConfirmed": ["median_planning_decision_days", "decided_within_required_time_percent", "applications_received", "reporting_period"],
+      "retrieval": "Council-wide service metrics from the official 2024-25 Annual Report, supplemented only by public Victorian activity-centre program status.",
+      "limitation": "Publish council context only until a reusable suburb-level official source is reviewed. Application counts are not dwelling, approval, commencement or completion counts."
+    },
+    {
       "council": "Monash",
       "status": "public_register_pagination_verified",
       "sourceKey": "monash_epathway_planning_register",
@@ -75,7 +84,7 @@
       "Banyule", "Brimbank", "Cardinia", "Darebin", "Frankston",
       "Greater Dandenong", "Hobsons Bay", "Hume", "Kingston", "Knox", "Maribyrnong",
       "Maroondah", "Melbourne", "Melton", "Merri-bek", "Moonee Valley", "Mornington Peninsula",
-      "Nillumbik", "Port Phillip", "Stonnington", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"
+      "Nillumbik", "Port Phillip", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"
     ]
   }
 }
