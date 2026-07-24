@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "Glen Eira City Council",
+      "url": "https://www.gleneira.vic.gov.au/media/502lfqsl/glen-eira-city-council-annual-report-2024-2025-webfile.pdf",
+      "report": "Annual Report 2024-2025",
+      "reportingPeriodEnd": "2025-06-30",
+      "pages": [
+        77,
+        217
+      ]
+    }
+  ],
+  "geography": {
+    "suburb": "BRIGHTON EAST",
+    "postcode": "3187",
+    "council": "Glen Eira City Council",
+    "councilContextOnly": true,
+    "note": "Council-wide service metrics are context, not suburb-level application counts"
+  },
+  "councilPlanningService": {
+    "medianDecisionDays": 70,
+    "decidedWithinRequiredTimePercent": 80,
+    "periodEnd": "2025-06-30",
+    "metricDefinitions": {
+      "medianDecisionDays": "Median days between receipt of a planning application and a decision",
+      "decidedWithinRequiredTimePercent": "Planning application decisions made within the relevant required time divided by all planning application decisions"
+    }
+  },
+  "activityCentre": {
+    "included": false,
+    "description": "No activity-centre program claim is published for this suburb"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The 70-day and 80% measures are council-wide service metrics, not suburb-level application counts",
+      "These metrics do not measure proposed dwellings, approvals, commencements or completions",
+      "The Glen Eira ePathway application register is not collected or republished because its published terms restrict use to the statutory planning process",
+      "Activity-centre inclusion is a policy signal, not a forecast that a specific property will be redeveloped"
+    ]
+  }
+}
