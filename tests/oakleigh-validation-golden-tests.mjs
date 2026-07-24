@@ -49,11 +49,11 @@ test("Oakleigh planning summary preserves record, project and dwelling distincti
     rawApplicationCount: 82,
     uniqueProjectCount: 81,
     amendmentCount: 10,
-    quantifiedResidentialProjects: 20,
+    quantifiedResidentialProjects: 15,
     grossProposedDwellings: 36,
     netProposedDwellings: 34,
     weightedNetPipeline: 26,
-    unresolvedResidentialProjects: 4,
+    unresolvedResidentialProjects: 2,
   });
   assert.equal(result.quality.recordLevelReuse, "Internal validation only until council reuse terms are confirmed");
 });
@@ -66,7 +66,8 @@ test("Oakleigh publishable object labels the approved vacancy estimate and block
   assert.equal(result.modelInputs.rentalVacancy.value, 1.55);
   assert.equal(result.modelInputs.rentalVacancy.publishable, true);
   assert.match(result.modelInputs.rentalVacancy.note, /model estimate, not an observed suburb vacancy rate/i);
-  assert.equal(result.facts.planningPipeline2025.publishable, false);
+  assert.equal(result.facts.planningPipeline2025.publishable, true);
+  assert.match(result.facts.planningPipeline2025.note, /not commencements or completions/i);
   assert.ok(result.blockedLegacyMetrics.some((item) => item.includes("14.72%")));
 });
 

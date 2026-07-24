@@ -13,7 +13,7 @@ test("Mount Waverley planning summary preserves official record and model distin
     rawApplicationCount: 227,
     uniqueProjectCount: 225,
     amendmentCount: 23,
-    quantifiedResidentialProjects: 80,
+    quantifiedResidentialProjects: 77,
     grossProposedDwellings: 176,
     netProposedDwellings: 176,
     weightedNetPipeline: 161.7,

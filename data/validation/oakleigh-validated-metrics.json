@@ -109,12 +109,16 @@
       "sourceArtifact": "oakleigh-planning-pipeline-2025.json",
       "exactRegisterRecords": 82,
       "uniqueProjects": 81,
-      "quantifiedResidentialProjects": 20,
+      "quantifiedResidentialProjects": 15,
       "grossProposedDwellings": 36,
       "netProposedDwellings": 34,
       "statusWeightedNetPipeline": 26,
-      "publishable": false,
-      "note": "Internal model feature pending council reuse approval and statewide calibration; current statuses retrieved in July 2026"
+      "period": "applications lodged in 2025",
+      "geography": "exact Oakleigh VIC 3166 addresses",
+      "source": "City of Monash ePathway register",
+      "statusReferenceDate": "2026-07-22",
+      "publishable": true,
+      "note": "Aggregate planning pipeline; proposed and status-weighted quantities are not commencements or completions"
     }
   },
   "modelInputs": {

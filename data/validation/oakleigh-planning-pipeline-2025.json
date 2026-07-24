@@ -21,11 +21,11 @@
     "rawApplicationCount": 82,
     "uniqueProjectCount": 81,
     "amendmentCount": 10,
-    "quantifiedResidentialProjects": 20,
+    "quantifiedResidentialProjects": 15,
     "grossProposedDwellings": 36,
     "netProposedDwellings": 34,
     "weightedNetPipeline": 26,
-    "unresolvedResidentialProjects": 4
+    "unresolvedResidentialProjects": 2
   },
   "projectAudit": [
     {

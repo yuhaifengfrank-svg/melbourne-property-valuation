@@ -3,18 +3,18 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 const expected = {
-  "ashwood": [37, 36, 17, 41, 34.0],
+  "ashwood": [37, 36, 15, 41, 34.0],
   "burwood": [13, 13, 3, 5, 3.0],
-  "chadstone": [49, 49, 19, 43, 43.0],
-  "clayton": [131, 129, 19, 64, 53.55],
-  "glen-waverley": [206, 205, 55, 90, 80.0],
-  "hughesdale": [37, 37, 14, 15, 12.0],
+  "chadstone": [49, 49, 17, 43, 43.0],
+  "clayton": [131, 129, 16, 64, 53.55],
+  "glen-waverley": [206, 205, 48, 90, 80.0],
+  "hughesdale": [37, 37, 8, 15, 12.0],
   "huntingdale": [21, 21, 4, 9, 7.4],
   "mulgrave": [105, 104, 34, 92, 84.4],
   "notting-hill": [20, 20, 7, 16, 16.0],
-  "oakleigh-east": [34, 33, 10, 32, 32.0],
+  "oakleigh-east": [34, 33, 9, 32, 32.0],
   "oakleigh-south": [31, 31, 8, 22, 22.0],
-  "wheelers-hill": [74, 74, 20, 79, 79.0],
+  "wheelers-hill": [74, 74, 19, 79, 79.0],
 };
 
 for (const [slug, values] of Object.entries(expected)) {
