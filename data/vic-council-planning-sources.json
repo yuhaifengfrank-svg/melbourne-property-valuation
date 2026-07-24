@@ -69,6 +69,15 @@
       "limitation": "Publish council context only until a reusable suburb-level official source is reviewed. Application counts are not dwelling, approval, commencement or completion counts."
     },
     {
+      "council": "Banyule",
+      "status": "aggregate_context_only",
+      "sourceKey": "banyule_annual_report_and_activity_centres",
+      "url": "https://www.banyule.vic.gov.au/files/assets/public/v/1/about-us/strategies/tbs-24-25-the-banyule-story-2024%E2%80%932025.pdf",
+      "fieldsConfirmed": ["median_planning_decision_days", "decided_within_required_time_percent", "reporting_period"],
+      "retrieval": "Council-wide service metrics from the official 2024-25 Annual Report, supplemented only by public Victorian activity-centre program status.",
+      "limitation": "Do not collect or republish Banyule's public-notice register because its published conditions prohibit using applicant information to identify and market products or services. Publish council context only."
+    },
+    {
       "council": "Monash",
       "status": "public_register_pagination_verified",
       "sourceKey": "monash_epathway_planning_register",
@@ -81,7 +90,7 @@
   "remainingGreaterMelbourneCouncils": {
     "status": "discovery_required",
     "councils": [
-      "Banyule", "Brimbank", "Cardinia", "Darebin", "Frankston",
+      "Brimbank", "Cardinia", "Darebin", "Frankston",
       "Greater Dandenong", "Hobsons Bay", "Hume", "Kingston", "Knox", "Maribyrnong",
       "Maroondah", "Melbourne", "Melton", "Merri-bek", "Moonee Valley", "Mornington Peninsula",
       "Nillumbik", "Port Phillip", "Whittlesea", "Wyndham", "Yarra", "Yarra Ranges"

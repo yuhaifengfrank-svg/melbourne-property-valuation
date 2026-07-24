@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "Banyule City Council",
+      "url": "https://www.banyule.vic.gov.au/files/assets/public/v/1/about-us/strategies/tbs-24-25-the-banyule-story-2024%E2%80%932025.pdf",
+      "report": "The Banyule Story 2024-2025",
+      "reportingPeriodEnd": "2025-06-30",
+      "pages": [
+        129,
+        130
+      ]
+    }
+  ],
+  "geography": {
+    "suburb": "BELLFIELD",
+    "postcode": "3081",
+    "council": "Banyule City Council",
+    "councilContextOnly": true,
+    "note": "Council-wide service metrics are context, not suburb-level application counts"
+  },
+  "councilPlanningService": {
+    "medianDecisionDays": 17,
+    "medianDecisionDaysTarget": 25,
+    "decidedWithinRequiredTimePercent": 87.64,
+    "decidedWithinRequiredTimeTargetPercent": 78,
+    "periodEnd": "2025-06-30",
+    "metricDefinitions": {
+      "medianDecisionDays": "Median days between receipt of a planning application and a decision",
+      "decidedWithinRequiredTimePercent": "Planning application decisions made within the relevant required time divided by all planning application decisions"
+    }
+  },
+  "activityCentre": {
+    "included": false,
+    "description": "No activity-centre program claim is published for this suburb"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The service measures are council-wide facts, not suburb-level application counts",
+      "These metrics do not measure proposed dwellings, approvals, commencements or completions",
+      "The public-notice register at https://www.banyule.vic.gov.au/Planning-building/Review-local-planning-applications/Planning-applications-on-public-notice is not collected or republished because its published terms prohibit using applicant information to identify and market products or services",
+      "Activity-centre inclusion is a policy signal, not a forecast that a specific property will be redeveloped"
+    ]
+  }
+}
