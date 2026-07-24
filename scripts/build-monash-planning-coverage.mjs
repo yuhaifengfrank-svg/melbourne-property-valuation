@@ -131,7 +131,7 @@ function inject(area, data) {
   const page = path.join(ROOT, "public", "suburb", `${slug(area.suburb)}-vic.html`);
   if (!fs.existsSync(page)) throw new Error(`Missing public page: ${page}`);
   let html = fs.readFileSync(page, "utf8");
-  html = html.replace(/\n?<!-- AHV_PLANNING_PIPELINE_START -->[\s\S]*?<!-- AHV_PLANNING_PIPELINE_END -->\n?/g, "\n");
+  html = html.replace(/[\r\n]*<!-- AHV_PLANNING_PIPELINE_START -->[\s\S]*?<!-- AHV_PLANNING_PIPELINE_END -->[\r\n]*/g, "");
   if (!html.includes("</body>")) throw new Error(`Missing body close in ${page}`);
   html = html.replace("</body>", `${planningMarkup(area, data)}</body>`);
   fs.writeFileSync(page, html);
