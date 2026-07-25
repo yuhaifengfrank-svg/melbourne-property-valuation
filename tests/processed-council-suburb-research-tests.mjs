@@ -1,0 +1,75 @@
+import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
+import test from "node:test";
+
+import { generateCouncilResearchPages } from "../scripts/generate-council-suburb-research.mjs";
+
+const root = process.cwd();
+const readPage = (slug) => fs.readFileSync(path.join(root, "public", "suburb", `${slug}-vic.html`), "utf8");
+
+test("all processed council artifacts generate a reproducible research collection", () => {
+  assert.deepEqual(generateCouncilResearchPages(), {
+    councilArtifacts: 160,
+    councilSuburbs: 150,
+    validatedPages: 2,
+    publishedPages: 152,
+  });
+  const index = fs.readFileSync(path.join(root, "public", "suburb-research.html"), "utf8");
+  for (const expected of [
+    "152个区域 · 10个已处理Council",
+    "完整验证页 / Fully validated profiles",
+    "Mount Waverley",
+    "Banyule City Council",
+    "Bayside City Council",
+    "City of Boroondara",
+    "City of Casey",
+    "City of Monash",
+    "City of Stonnington",
+    "Glen Eira City Council",
+    "Kingston City Council",
+    "Manningham City Council",
+    "Whitehorse City Council",
+  ]) assert.match(index, new RegExp(expected));
+});
+
+test("exact suburb pipeline pages publish aggregates with limitations", () => {
+  const doncasterEast = readPage("doncaster-east");
+  for (const expected of ["Planning application records", ">148<", "Unique planning projects", "Stated proposed dwellings", ">143<", "Manningham City Council"]) {
+    assert.match(doncasterEast, new RegExp(expected));
+  }
+  assert.match(doncasterEast, /proposals or register records, not completed housing/i);
+  assert.doesNotMatch(doncasterEast, /Opportunity Score|95\/100|Legacy Opportunity/i);
+});
+
+test("council-context pages never invent suburb application counts", () => {
+  const bentleigh = readPage("bentleigh");
+  assert.match(bentleigh, /Council-wide planning-service context/i);
+  assert.match(bentleigh, /Council median decision time/);
+  assert.match(bentleigh, />70 days</);
+  assert.match(bentleigh, /Decisions within required time/);
+  assert.match(bentleigh, />80%</);
+  assert.doesNotMatch(bentleigh, /Planning application records/);
+});
+
+test("partial and overlapping council coverage stays separated", () => {
+  const berwick = readPage("berwick");
+  assert.match(berwick, /recorded by City of Casey for Berwick 3806/);
+  assert.match(berwick, />131</);
+
+  const brightonEast = readPage("brighton-east");
+  assert.match(brightonEast, /Bayside City Council/);
+  assert.match(brightonEast, /Glen Eira City Council/);
+  assert.equal((brightonEast.match(/Council规划背景/g) || []).length, 2);
+});
+
+test("validated Oakleigh and Mount Waverley pages retain their richer evidence", () => {
+  const oakleigh = readPage("oakleigh");
+  assert.match(oakleigh, /\$1,311,000/);
+  assert.match(oakleigh, /Verified sources/);
+  assert.doesNotMatch(oakleigh, /15,326|\+4\.67%/);
+
+  const mountWaverley = readPage("mount-waverley");
+  assert.match(mountWaverley, /Population/);
+  assert.match(mountWaverley, /Planning pipeline/);
+});
