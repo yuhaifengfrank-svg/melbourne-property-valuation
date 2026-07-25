@@ -5,11 +5,12 @@ import { buildValidatedSuburbPage } from "../scripts/generate-validated-suburb-p
 
 const profile = (name) => JSON.parse(fs.readFileSync(new URL(`../data/validation/${name}-validated-metrics.json`, import.meta.url), "utf8"));
 
-test("Oakleigh page publishes verified facts and removes legacy metrics", () => {
+test("Oakleigh page publishes verified facts, source links and the v2 editorial template", () => {
   const html = buildValidatedSuburbPage(profile("oakleigh"));
-  for (const expected of ["$1,311,000", "-1.90%", "+3.55%", "+5.04%", "$630/week", "$850/week", "15,326", "+4.67%", "About 1.6%", "Net additional dwellings"]) assert.match(html, new RegExp(expected.replace(/[+$]/g, "\\$&")));
-  for (const blocked of ["$1025K", "18.0/100", "Opportunity Score", "9.61%", "Data not available", "sampleSize"]) assert.doesNotMatch(html, new RegExp(blocked.replace(/[.$]/g, "\\$&"), "i"));
+  for (const expected of ["$1,311,000", "-1.90%", "+3.55%", "+5.04%", "$630/week", "$850/week", "2.40%", "About 1.6%", "Net additional dwellings", "区域概览", "投资阅读", "Verified sources", "Direct fact / 直接事实"]) assert.match(html, new RegExp(expected.replace(/[+$]/g, "\\$&")));
+  for (const blocked of ["$1025K", "18.0/100", "Opportunity Score", "9.61%", "Data not available", "sampleSize", "15,326", "+4.67%"]) assert.doesNotMatch(html, new RegExp(blocked.replace(/[.$+]/g, "\\$&"), "i"));
   assert.match(html, /Model estimate[^<]*not an observed suburb vacancy rate/i);
+  assert.match(html, /dewr\.gov\.au\/employment-research\/small-area-labour-markets/);
 });
 
 test("Mount Waverley uses the same template and omits unavailable market fields", () => {

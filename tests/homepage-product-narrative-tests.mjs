@@ -20,7 +20,7 @@ test("primary navigation exposes Suburb Research alongside core product links", 
   assert.equal(nav.querySelectorAll(":scope > details.more-menu").length, 1, "one More menu");
   assert.equal(nav.children.length, 5, "five primary navigation items");
   assert.equal(nav.querySelector('[data-i18n="nav-get-estimate"]')?.textContent.trim(), "Get estimate");
-  assert.equal(nav.querySelector('.nav-suburb-research')?.getAttribute("href"), "/blog/");
+  assert.equal(nav.querySelector('.nav-suburb-research')?.getAttribute("href"), "/suburb-research.html");
 });
 
 test("Top Opportunity navigation opens the original homepage ranking section", () => {

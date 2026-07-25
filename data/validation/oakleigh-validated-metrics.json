@@ -9,6 +9,39 @@
     "lga": "Monash",
     "excludedLocalities": ["Oakleigh East", "Oakleigh South"]
   },
+  "editorial": {
+    "templateVersion": "suburb-research-v2",
+    "summaryZh": "Oakleigh位于墨尔本东南部，属于Monash City Council，邮编3166。本页把直接事实、区域级背景和模型估算分开呈现，并为每项指标注明时间、地理范围和来源。",
+    "summaryEn": "Oakleigh is in Melbourne's south-east within the City of Monash, postcode 3166. This page separates direct facts, area-level context and model estimates, with a date, geography and source for every published metric.",
+    "readingZh": "现有证据显示，Oakleigh是一个成熟住宅市场：2024年独立屋中位价为131.1万澳元，过去五年年化增长3.55%，但2024年同比下降1.90%。2025年许可口径下净新增住宅为16套。租金和失业率来自覆盖范围更大的统计区域，应作为区域背景阅读，而不是Oakleigh精确观测。",
+    "readingEn": "The verified evidence describes a mature housing market: the 2024 house median was $1.311 million, five-year CAGR was 3.55%, while the one-year change was -1.90%. The 2025 permit-based net addition was 16 dwellings. Rent and unemployment measures use broader statistical areas and should be read as context rather than exact Oakleigh observations."
+  },
+  "sourceLinks": [
+    {
+      "label": "Valuer-General Victoria property sales statistics",
+      "url": "https://www.land.vic.gov.au/valuations/resources-and-reports/property-sales-statistics"
+    },
+    {
+      "label": "DFFH Rental Report — September quarter 2025",
+      "url": "https://www.dffh.vic.gov.au/publications/rental-report"
+    },
+    {
+      "label": "ABS 2021 Oakleigh QuickStats (SAL22000)",
+      "url": "https://www.abs.gov.au/census/find-census-data/quickstats/2021/SAL22000"
+    },
+    {
+      "label": "DEWR Small Area Labour Markets and methodology",
+      "url": "https://www.dewr.gov.au/employment-research/small-area-labour-markets"
+    },
+    {
+      "label": "Victorian Building Permit Activity Data",
+      "url": "https://discover.data.vic.gov.au/dataset/building-permit-activity-data"
+    },
+    {
+      "label": "City of Monash planning application enquiry",
+      "url": "https://epathway.monash.vic.gov.au/ePathway/ePTHPROD/Web/GeneralEnquiry/EnquiryLists.aspx"
+    }
+  ],
   "facts": {
     "population": {
       "value": 8442,
@@ -88,10 +121,12 @@
       "geography": "Oakleigh-Huntingdale SA2 212051326",
       "source": "DEWR Small Area Labour Markets, smoothed series",
       "employedPersons": 15326,
+      "employedPersonsPublishable": false,
       "employmentGrowthYoY": 4.67,
+      "employmentGrowthYoYPublishable": false,
       "unemploymentRate": 2.4,
       "publishable": true,
-      "note": "Official SA2 fact allocated as context; not an exact Oakleigh observation"
+      "note": "Official smoothed SA2 unemployment context; not an exact Oakleigh observation. Derived employment levels and growth are withheld because DEWR advises that employment should not be derived from SALM figures."
     },
     "buildingPermits2025": {
       "sourceArtifact": "oakleigh-building-permits-2025.json",
@@ -149,6 +184,7 @@
     "legacy short-window growth 0/-8/-5",
     "unreproducible VGV 10-year CAGR 14.72%",
     "crime count/rank without period and rate lineage",
-    "POI score without auditable radius and feature inventory"
+    "POI score without auditable radius and feature inventory",
+    "derived SALM employment level and growth"
   ]
 }
