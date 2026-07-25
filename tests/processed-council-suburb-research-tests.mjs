@@ -33,6 +33,22 @@ test("all processed council artifacts generate a reproducible research collectio
   ]) assert.match(index, new RegExp(expected));
 });
 
+test("all 152 linked research pages include market, valuation and planning layers", () => {
+  const index = fs.readFileSync(path.join(root, "public", "suburb-research.html"), "utf8");
+  const links = [...index.matchAll(/href="(\/suburb\/[^"]+\.html)"/g)].map((match) => match[1]);
+  const uniqueLinks = [...new Set(links)];
+  assert.equal(uniqueLinks.length, 152);
+  for (const link of uniqueLinks) {
+    const html = fs.readFileSync(path.join(root, "public", link), "utf8");
+    assert.match(html, /data-suburb-market/);
+    assert.match(html, /Median house price \/ 独立屋中位价/);
+    assert.match(html, /Future Opportunity Index/);
+    assert.match(html, /Rental market \/ 租赁市场/);
+    assert.match(html, /href="\/#valuation"/);
+    assert.match(html, /src="\/suburb-market-snapshot\.js"/);
+  }
+});
+
 test("exact suburb pipeline pages publish aggregates with limitations", () => {
   const doncasterEast = readPage("doncaster-east");
   for (const expected of ["Planning application records", ">148<", "Unique planning projects", "Stated proposed dwellings", ">143<", "Manningham City Council"]) {
