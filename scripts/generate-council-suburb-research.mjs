@@ -137,6 +137,7 @@ function councilContract(artifact) {
     "City of Stonnington": { marker: "AHV_STONNINGTON_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
     "Banyule City Council": { marker: "AHV_BANYULE_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
     "Kingston City Council": { marker: "AHV_KINGSTON_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
+    "City of Port Phillip": { marker: "AHV_PORT_PHILLIP_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
   };
   return contracts[artifact._council] || { marker: "AHV_COUNCIL_PLANNING", label: "Verified council planning evidence" };
 }

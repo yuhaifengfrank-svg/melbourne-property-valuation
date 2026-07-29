@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "City of Port Phillip",
+      "url": "https://www.portphillip.vic.gov.au/media/damirfji/ceo-report-september-2025-issue-122-first-quarter-review.pdf",
+      "report": "CEO Report Issue 122 — Quarter One 2025/26",
+      "reportingPeriodEnd": "2025-09-30",
+      "pages": [
+        34
+      ]
+    },
+    {
+      "publisher": "Victorian Government",
+      "url": "https://www.vic.gov.au/know-your-council-port-phillip-city-council",
+      "report": "Know Your Council — Port Phillip City Council",
+      "statusChecked": "2026-07-29"
+    }
+  ],
+  "geography": {
+    "suburb": "BALACLAVA",
+    "postcode": "3183",
+    "council": "City of Port Phillip",
+    "councilContextOnly": true,
+    "note": "Council-wide service metrics are context, not suburb-level application counts"
+  },
+  "councilPlanningService": {
+    "medianDecisionDays": 44,
+    "decidedWithinRequiredTimePercent": 87.59,
+    "periodEnd": "2025-09-30",
+    "processedApplicationDecisions": 266,
+    "processedWithinRequiredTime": 233,
+    "metricDefinitions": {
+      "medianDecisionDays": "Median processing time for all planning applications in the council's Q1 2025/26 report",
+      "decidedWithinRequiredTimePercent": "233 applications processed within the required timeframe divided by 266 applications processed"
+    }
+  },
+  "activityCentre": {
+    "included": false,
+    "description": "No state activity-centre claim is added in this council-context release"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The service measures are City of Port Phillip-wide facts, not suburb-level application counts",
+      "The 266 processed applications are planning service workload, not dwellings, approvals, commencements or completions",
+      "The 87.59% service result is calculated from the report's stated 233 of 266 applications",
+      "No address-level planning register data is collected or republished in this council-context release"
+    ]
+  }
+}
