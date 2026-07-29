@@ -32,6 +32,8 @@
     "planning:whitehorse": "node scripts/build-whitehorse-planning-coverage.mjs",
     "planning:manningham": "node scripts/build-manningham-planning-coverage.mjs",
     "planning:casey": "node scripts/build-casey-planning-coverage.mjs",
+    "planning:casey:db:check": "node scripts/import-casey-planning-metrics.mjs",
+    "planning:casey:db": "node scripts/import-casey-planning-metrics.mjs --write-database",
     "planning:glen-eira": "node scripts/build-glen-eira-planning-context.mjs",
     "planning:bayside": "node scripts/build-bayside-planning-context.mjs",
     "planning:stonnington": "node scripts/build-stonnington-planning-context.mjs",
