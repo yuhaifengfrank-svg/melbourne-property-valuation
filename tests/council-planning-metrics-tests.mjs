@@ -96,3 +96,12 @@ test("public database query is suburb-scoped and returns normalized rows", async
   assert.match(queryText, /lower\(suburb\) = lower/);
   assert.equal(result[0].lodgedApplications, 70);
 });
+
+test("suburb intelligence initializes only the council planning schema", () => {
+  const handler = fs.readFileSync(
+    new URL("../lib/suburb-intelligence-handler.js", import.meta.url),
+    "utf8",
+  );
+  assert.match(handler, /ensureCouncilPlanningMetricsSchema/);
+  assert.doesNotMatch(handler, /ensureDataLayerFoundationSchema/);
+});
