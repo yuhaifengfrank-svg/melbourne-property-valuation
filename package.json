@@ -37,6 +37,7 @@
     "planning:melbourne:build": "node scripts/build-melbourne-development-coverage.mjs --write-artifacts",
     "planning:melbourne:db:check": "node scripts/import-melbourne-development-metrics.mjs",
     "planning:melbourne:db": "node scripts/import-melbourne-development-metrics.mjs --write-database",
+    "planning:port-phillip:build": "node scripts/build-port-phillip-planning-context.mjs",
     "planning:glen-eira": "node scripts/build-glen-eira-planning-context.mjs",
     "planning:bayside": "node scripts/build-bayside-planning-context.mjs",
     "planning:stonnington": "node scripts/build-stonnington-planning-context.mjs",
