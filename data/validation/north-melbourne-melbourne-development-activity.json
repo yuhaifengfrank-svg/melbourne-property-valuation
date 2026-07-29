@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "development-activity-summary-v1",
+  "source": {
+    "key": "melbourne_development_activity_monitor",
+    "publisher": "City of Melbourne",
+    "url": "https://data.melbourne.vic.gov.au/explore/dataset/development-activity-monitor/",
+    "licence": "CC BY",
+    "licenceUrl": "https://creativecommons.org/licenses/by/4.0/legalcode",
+    "dataProcessedAt": "2026-07-16T03:56:33+00:00",
+    "sourceReport": "Development Activity Monitor — official open-data API"
+  },
+  "geography": {
+    "council": "City of Melbourne",
+    "suburb": "North Melbourne",
+    "postcode": "3051",
+    "scope": "City of Melbourne CLUE small-area mapping",
+    "sourceSmallAreas": [
+      "North Melbourne"
+    ]
+  },
+  "quality": {
+    "sourceRows": 1438,
+    "exactGeographyRows": 181,
+    "allSourceRowsAccountedFor": 1438,
+    "duplicateDevelopmentKeys": 0,
+    "missingCoordinates": 0,
+    "recordLevelReuse": "Internal validation only; public output is aggregate only"
+  },
+  "summary": {
+    "totalProjectCount": 181,
+    "appliedProjectCount": 6,
+    "approvedProjectCount": 34,
+    "underConstructionProjectCount": 4,
+    "completedProjectCount": 137,
+    "activeProjectCount": 44,
+    "activeResidentialProjectCount": 29,
+    "activeResidentialDwellingCount": 4318,
+    "planningReferenceCount": 104
+  },
+  "publication": {
+    "publishable": true,
+    "grain": "Major development sites in the current City of Melbourne Development Activity Monitor snapshot",
+    "limitations": [
+      "The Development Activity Monitor covers major development sites, not every planning application or building permit",
+      "Applied, approved and under-construction are project status labels in the official dataset and may change",
+      "Stated residential dwellings are project capacity in active major developments; they are not completed homes",
+      "Project capacity is not proof of planning approval, construction commencement or completion",
+      "CLUE small areas are mapped to public suburb labels; no property-level address is published"
+    ]
+  }
+}
