@@ -261,6 +261,52 @@ export async function ensureReportPaymentSchema(sql) {
  * Lightweight derived tables — no geometry, no DROP/TRUNCATE/DELETE.
  * Created separately from ensureSchema/ensureCustomerFunnelSchema/ensureReportPaymentSchema.
  */
+export async function ensureCouncilPlanningMetricsSchema(sql) {
+  await sql`CREATE TABLE IF NOT EXISTS council_planning_metrics (
+    id                      BIGSERIAL PRIMARY KEY,
+    council                 TEXT NOT NULL,
+    suburb                  TEXT NOT NULL,
+    state                   TEXT NOT NULL DEFAULT 'VIC',
+    postcode                TEXT,
+    period_start            DATE NOT NULL,
+    period_end              DATE NOT NULL,
+    lodged_application_count INTEGER NOT NULL,
+    unique_project_count    INTEGER NOT NULL,
+    decision_recorded_count INTEGER NOT NULL,
+    active_application_count INTEGER NOT NULL,
+    source_key              TEXT NOT NULL,
+    source_publisher        TEXT NOT NULL,
+    source_url              TEXT NOT NULL,
+    source_licence          TEXT,
+    source_retrieved_at     TIMESTAMPTZ NOT NULL,
+    status_reference_date   DATE,
+    geography_scope         TEXT NOT NULL,
+    limitations             JSONB NOT NULL DEFAULT '[]'::jsonb,
+    quality                 JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_cpm_counts CHECK (
+      lodged_application_count >= 0
+      AND unique_project_count >= 0
+      AND decision_recorded_count >= 0
+      AND active_application_count >= 0
+      AND unique_project_count <= lodged_application_count
+      AND decision_recorded_count <= lodged_application_count
+      AND active_application_count <= lodged_application_count
+    ),
+    CONSTRAINT chk_cpm_period CHECK (period_end >= period_start)
+  )`;
+
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_cpm_unique_period
+    ON council_planning_metrics (
+      LOWER(council), LOWER(suburb), COALESCE(postcode, ''), period_start, period_end, source_key
+    )`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_cpm_suburb_state
+    ON council_planning_metrics (LOWER(suburb), state, period_end DESC)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_cpm_council_period
+    ON council_planning_metrics (LOWER(council), period_end DESC)`;
+}
+
 export async function ensureDataLayerFoundationSchema(sql) {
   if (dataLayerInitialized) return;
 
@@ -323,49 +369,7 @@ export async function ensureDataLayerFoundationSchema(sql) {
   await sql`CREATE INDEX IF NOT EXISTS idx_sps_dominant_zone ON suburb_planning_summary (dominant_zone_code)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_sps_constraint ON suburb_planning_summary (planning_constraint_level)`;
 
-  await sql`CREATE TABLE IF NOT EXISTS council_planning_metrics (
-    id                      BIGSERIAL PRIMARY KEY,
-    council                 TEXT NOT NULL,
-    suburb                  TEXT NOT NULL,
-    state                   TEXT NOT NULL DEFAULT 'VIC',
-    postcode                TEXT,
-    period_start            DATE NOT NULL,
-    period_end              DATE NOT NULL,
-    lodged_application_count INTEGER NOT NULL,
-    unique_project_count    INTEGER NOT NULL,
-    decision_recorded_count INTEGER NOT NULL,
-    active_application_count INTEGER NOT NULL,
-    source_key              TEXT NOT NULL,
-    source_publisher        TEXT NOT NULL,
-    source_url              TEXT NOT NULL,
-    source_licence          TEXT,
-    source_retrieved_at     TIMESTAMPTZ NOT NULL,
-    status_reference_date   DATE,
-    geography_scope         TEXT NOT NULL,
-    limitations             JSONB NOT NULL DEFAULT '[]'::jsonb,
-    quality                 JSONB NOT NULL DEFAULT '{}'::jsonb,
-    created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    CONSTRAINT chk_cpm_counts CHECK (
-      lodged_application_count >= 0
-      AND unique_project_count >= 0
-      AND decision_recorded_count >= 0
-      AND active_application_count >= 0
-      AND unique_project_count <= lodged_application_count
-      AND decision_recorded_count <= lodged_application_count
-      AND active_application_count <= lodged_application_count
-    ),
-    CONSTRAINT chk_cpm_period CHECK (period_end >= period_start)
-  )`;
-
-  await sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_cpm_unique_period
-    ON council_planning_metrics (
-      LOWER(council), LOWER(suburb), COALESCE(postcode, ''), period_start, period_end, source_key
-    )`;
-  await sql`CREATE INDEX IF NOT EXISTS idx_cpm_suburb_state
-    ON council_planning_metrics (LOWER(suburb), state, period_end DESC)`;
-  await sql`CREATE INDEX IF NOT EXISTS idx_cpm_council_period
-    ON council_planning_metrics (LOWER(council), period_end DESC)`;
+  await ensureCouncilPlanningMetricsSchema(sql);
 
   await sql`CREATE TABLE IF NOT EXISTS property_planning_cache (
     id                          BIGSERIAL PRIMARY KEY,

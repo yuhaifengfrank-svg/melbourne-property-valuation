@@ -7,7 +7,7 @@ import { config } from "dotenv";
 import { neon } from "@neondatabase/serverless";
 import { assertDatabaseEnvironment } from "../lib/database-environment.js";
 import { normalizePlanningMetricArtifact } from "../lib/council-planning-metrics.js";
-import { ensureDataLayerFoundationSchema } from "../api/_db.js";
+import { ensureCouncilPlanningMetricsSchema } from "../api/_db.js";
 
 config({ path: path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../.env") });
 
@@ -45,7 +45,7 @@ if (!writeDatabase) {
 }
 
 const sql = neon(assertDatabaseEnvironment());
-await ensureDataLayerFoundationSchema(sql);
+await ensureCouncilPlanningMetricsSchema(sql);
 for (const metric of metrics) {
   await sql`
     INSERT INTO council_planning_metrics (
