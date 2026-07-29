@@ -307,6 +307,61 @@ export async function ensureCouncilPlanningMetricsSchema(sql) {
     ON council_planning_metrics (LOWER(council), period_end DESC)`;
 }
 
+export async function ensureCouncilDevelopmentMetricsSchema(sql) {
+  await sql`CREATE TABLE IF NOT EXISTS council_development_metrics (
+    id                              BIGSERIAL PRIMARY KEY,
+    council                         TEXT NOT NULL,
+    suburb                          TEXT NOT NULL,
+    state                           TEXT NOT NULL DEFAULT 'VIC',
+    postcode                        TEXT,
+    snapshot_at                     TIMESTAMPTZ NOT NULL,
+    total_project_count             INTEGER NOT NULL,
+    applied_project_count           INTEGER NOT NULL,
+    approved_project_count          INTEGER NOT NULL,
+    under_construction_project_count INTEGER NOT NULL,
+    completed_project_count         INTEGER NOT NULL,
+    active_project_count            INTEGER NOT NULL,
+    active_residential_project_count INTEGER NOT NULL,
+    active_residential_dwelling_count INTEGER NOT NULL,
+    planning_reference_count        INTEGER NOT NULL,
+    source_key                      TEXT NOT NULL,
+    source_publisher                TEXT NOT NULL,
+    source_url                      TEXT NOT NULL,
+    source_licence                  TEXT,
+    geography_scope                 TEXT NOT NULL,
+    limitations                     JSONB NOT NULL DEFAULT '[]'::jsonb,
+    quality                         JSONB NOT NULL DEFAULT '{}'::jsonb,
+    created_at                      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at                      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    CONSTRAINT chk_cdm_counts CHECK (
+      total_project_count >= 0
+      AND applied_project_count >= 0
+      AND approved_project_count >= 0
+      AND under_construction_project_count >= 0
+      AND completed_project_count >= 0
+      AND active_project_count >= 0
+      AND active_residential_project_count >= 0
+      AND active_residential_dwelling_count >= 0
+      AND planning_reference_count >= 0
+      AND applied_project_count + approved_project_count
+        + under_construction_project_count + completed_project_count = total_project_count
+      AND active_project_count = applied_project_count + approved_project_count
+        + under_construction_project_count
+      AND active_residential_project_count <= active_project_count
+      AND planning_reference_count <= total_project_count
+    )
+  )`;
+
+  await sql`CREATE UNIQUE INDEX IF NOT EXISTS idx_cdm_unique_snapshot
+    ON council_development_metrics (
+      LOWER(council), LOWER(suburb), COALESCE(postcode, ''), snapshot_at, source_key
+    )`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_cdm_suburb_state
+    ON council_development_metrics (LOWER(suburb), state, snapshot_at DESC)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_cdm_council_snapshot
+    ON council_development_metrics (LOWER(council), snapshot_at DESC)`;
+}
+
 export async function ensureDataLayerFoundationSchema(sql) {
   if (dataLayerInitialized) return;
 
@@ -370,6 +425,7 @@ export async function ensureDataLayerFoundationSchema(sql) {
   await sql`CREATE INDEX IF NOT EXISTS idx_sps_constraint ON suburb_planning_summary (planning_constraint_level)`;
 
   await ensureCouncilPlanningMetricsSchema(sql);
+  await ensureCouncilDevelopmentMetricsSchema(sql);
 
   await sql`CREATE TABLE IF NOT EXISTS property_planning_cache (
     id                          BIGSERIAL PRIMARY KEY,

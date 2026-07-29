@@ -32,7 +32,11 @@ function planningArtifacts() {
     } catch {
       continue;
     }
-    if (!["planning-pipeline-summary-v1", "planning-context-summary-v1"].includes(artifact.schemaVersion)) continue;
+    if (![
+      "planning-pipeline-summary-v1",
+      "planning-context-summary-v1",
+      "development-activity-summary-v1",
+    ].includes(artifact.schemaVersion)) continue;
     if (artifact.publication?.publishable !== true) continue;
     const suburb = artifact.filters?.suburb || artifact.geography?.suburb;
     const council = artifact.geography?.council;
@@ -75,8 +79,21 @@ function contextCards(artifact) {
   const targetPercent = service.targetPercent ?? service.decidedWithinRequiredTimeTargetPercent;
   if (Number.isFinite(targetPercent)) cards.push(metricCard("Council service target", `${number(targetPercent, 2)}%`, period, "Council-wide target; not a suburb-level result."));
   if (Number.isFinite(service.medianDecisionDaysTarget)) cards.push(metricCard("Council decision-time target", `${number(service.medianDecisionDaysTarget)} days`, period, "Council-wide target; not a suburb-level processing time."));
-  if (artifact.activityCentre?.included) cards.push(metricCard("Activity-centre policy signal", "Included", artifact.activityCentre.programGroup || "Victorian activity-centre program", artifact.activityCentre.description || "Policy context only; not a property-level development forecast."));
+  if (artifact.activityCentre?.included) cards.push(metricCard("Activity-centre policy signal", "Included", artifact.activityCentre.programGroup || "Victorian activity-centre program", artifact.activityCentre.description || "Policy context only; it does not predict property-level development."));
   return cards;
+}
+
+function developmentCards(artifact) {
+  const summary = artifact.summary || {};
+  const snapshot = `Official snapshot ${String(artifact.source?.dataProcessedAt || "").slice(0, 10)}`;
+  return [
+    metricCard("Active major development projects", number(summary.activeProjectCount), snapshot, "Applied, approved or under-construction major projects; not all planning applications."),
+    metricCard("Applied", number(summary.appliedProjectCount), snapshot, "Official development-status label; not an approval."),
+    metricCard("Approved", number(summary.approvedProjectCount), snapshot, "Official development-status label; not evidence of construction."),
+    metricCard("Under construction", number(summary.underConstructionProjectCount), snapshot, "Major projects recorded as under construction in the official snapshot."),
+    metricCard("Active residential projects", number(summary.activeResidentialProjectCount), snapshot, "Active major projects with a positive stated residential dwelling field."),
+    metricCard("Stated dwellings in active pipeline", number(summary.activeResidentialDwellingCount), snapshot, "Project capacity only; not completed homes and does not predict future supply."),
+  ];
 }
 
 function councilContract(artifact) {
@@ -109,6 +126,11 @@ function councilContract(artifact) {
       marker: "AHV_CASEY_PLANNING",
       label: "City of Casey planning applications lodged in 2025",
       notes: ["Casey council records only.", "Applications are not dwelling counts, commencements or completions."],
+    },
+    "City of Melbourne": {
+      marker: "AHV_MELBOURNE_DEVELOPMENT",
+      label: "City of Melbourne Development Activity Monitor",
+      notes: ["Major development sites only; not every planning application or building permit.", "Stated dwelling capacity is not an approval, commencement or completion count."],
     },
     "Glen Eira City Council": { marker: "AHV_GLEN_EIRA_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
     "Bayside City Council": { marker: "AHV_BAYSIDE_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
@@ -143,24 +165,46 @@ export function buildCouncilResearchPage(artifacts) {
   const canonical = `https://www.aushomevalue.com.au/suburb/${slug}-vic.html`;
   const sections = artifacts.map((artifact) => {
     const isPipeline = artifact.schemaVersion === "planning-pipeline-summary-v1";
-    const cards = isPipeline ? pipelineCards(artifact) : contextCards(artifact);
+    const isDevelopment = artifact.schemaVersion === "development-activity-summary-v1";
+    const cards = isPipeline
+      ? pipelineCards(artifact)
+      : isDevelopment
+        ? developmentCards(artifact)
+        : contextCards(artifact);
     const contract = councilContract(artifact);
-    const coverage = isPipeline
+    const coverage = isPipeline || isDevelopment
       ? artifact.publication?.grain || artifact.geography?.note || "Official aggregate planning records"
       : artifact.geography?.note || "Council-wide planning service context only";
-    const heading = isPipeline ? "规划申请汇总 / Planning applications" : "Council规划背景 / Council planning context";
+    const heading = isPipeline
+      ? "规划申请汇总 / Planning applications"
+      : isDevelopment
+        ? "主要开发活动 / Major development activity"
+        : "Council规划背景 / Council planning context";
     const isPartial = artifact.geography?.councilCoverage && artifact.geography.councilCoverage !== "full"
       || /crosses council boundaries|portion/i.test(artifact.geography?.note || "");
     const contractNotes = [...(contract.notes || []), ...(isPartial && contract.partial ? [contract.partial] : [])];
     return `<!-- ${contract.marker}_START --><section><div class="section-kicker">${escapeHtml(artifact._council)}</div><h2>${heading}</h2><p><strong>${escapeHtml(contract.label)}</strong></p><p class="section-intro">${escapeHtml(coverage)}</p>${contractNotes.map((item) => `<p class="contract-note">${escapeHtml(item)}</p>`).join("")}<div class="metric-grid">${cards.join("")}</div><details><summary>口径限制 / Limitations</summary><ul>${(artifact.publication?.limitations || []).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul></details></section><!-- ${contract.marker}_END -->`;
   }).join("\n  ");
   const sources = sourceLinks(artifacts);
+  const referenceLabel = artifacts.some(
+    (item) => item.schemaVersion === "development-activity-summary-v1",
+  )
+    ? "Latest official development snapshot"
+    : "Planning evidence reference year 2025";
   const evidenceType = artifacts.some((item) => item.schemaVersion === "planning-pipeline-summary-v1")
     ? "This page contains official aggregate suburb planning records. Counts remain proposals or register records, not completed housing."
+    : artifacts.some((item) => item.schemaVersion === "development-activity-summary-v1")
+      ? "This page contains official aggregate major-development activity. Project and stated-dwelling counts are pipeline facts, not completed housing, and do not predict future prices."
     : "Only council-wide planning-service context is currently verified for this suburb. No suburb application count is inferred.";
   const structured = artifacts.flatMap((artifact) => {
-    if (artifact.schemaVersion !== "planning-pipeline-summary-v1") return [];
     const summary = artifact.summary || {};
+    if (artifact.schemaVersion === "development-activity-summary-v1") {
+      return [
+        { "@type": "PropertyValue", name: `${artifact._council} activeMajorDevelopmentProjects`, value: summary.activeProjectCount, unitText: "projects" },
+        { "@type": "PropertyValue", name: `${artifact._council} statedDwellingsInActiveMajorDevelopmentPipeline`, value: summary.activeResidentialDwellingCount, unitText: "dwellings" },
+      ];
+    }
+    if (artifact.schemaVersion !== "planning-pipeline-summary-v1") return [];
     const applicationCount = summary.rawApplicationCount ?? summary.lodgedApplicationCount ?? summary.registeredApplicationCount;
     const values = [];
     if (Number.isFinite(applicationCount)) values.push({ "@type": "PropertyValue", name: `${artifact._council} planningApplicationRecords2025`, value: applicationCount, unitText: "records" });
@@ -180,7 +224,7 @@ export function buildCouncilResearchPage(artifacts) {
   <script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "Place", name: `${suburb}, VIC`, url: canonical, containedInPlace: councils.map((name) => ({ "@type": "AdministrativeArea", name })), additionalProperty: structured })}</script>
 </head><body><div class="topbar"><a href="/">← AusHomeValue</a></div><main class="container">
   <div class="breadcrumb"><a href="/">Home</a> / <a href="/suburb-research.html">Suburb Research</a> / ${escapeHtml(suburb)}</div>
-  <h1>${escapeHtml(suburb)}, VIC — 区域研究</h1><p class="eyebrow">Postcode ${escapeHtml(postcode || "not stated")} · ${escapeHtml(councils.join(" / "))} · Planning evidence reference year 2025</p>
+  <h1>${escapeHtml(suburb)}, VIC — 区域研究</h1><p class="eyebrow">Postcode ${escapeHtml(postcode || "not stated")} · ${escapeHtml(councils.join(" / "))} · ${escapeHtml(referenceLabel)}</p>
   <section class="overview"><div class="section-kicker">SUBURB RESEARCH V2 · MARKET + PLANNING</div><h2>如何阅读本页？</h2><p>${escapeHtml(evidenceType)}</p><p>顶部市场快照来自AusHomeValue当前数据库；下方规划数据来自已核验官方来源。房价是区域中位数，不是具体物业估值；租金、收益率或空置率没有合格口径时会明确标记缺失，不沿用旧值。</p></section>
   ${marketSnapshotPanel(suburb)}
   ${sections}
@@ -232,7 +276,7 @@ export function buildResearchIndex(groups, validatedFiles = []) {
 `;
 }
 
-export function generateCouncilResearchPages() {
+export function generateCouncilResearchPages({ onlyCouncil = null } = {}) {
   const artifacts = planningArtifacts();
   const groups = new Map();
   for (const artifact of artifacts) {
@@ -242,7 +286,9 @@ export function generateCouncilResearchPages() {
   }
   fs.mkdirSync(OUTPUT_DIR, { recursive: true });
   for (const [suburb, group] of groups) {
-    fs.writeFileSync(path.join(OUTPUT_DIR, `${slugify(suburb)}-vic.html`), buildCouncilResearchPage(group));
+    if (onlyCouncil && !group.some((artifact) => artifact._council === onlyCouncil)) continue;
+    const outputPath = path.join(OUTPUT_DIR, `${slugify(suburb)}-vic.html`);
+    fs.writeFileSync(outputPath, buildCouncilResearchPage(group));
   }
   const validated = generateValidatedPages();
   fs.writeFileSync(INDEX_PATH, buildResearchIndex(groups, validated));
@@ -258,5 +304,8 @@ export function generateCouncilResearchPages() {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  console.log(JSON.stringify(generateCouncilResearchPages()));
+  const councilArg = process.argv.find((arg) => arg.startsWith("--council="));
+  console.log(JSON.stringify(generateCouncilResearchPages({
+    onlyCouncil: councilArg ? councilArg.slice("--council=".length) : null,
+  })));
 }
