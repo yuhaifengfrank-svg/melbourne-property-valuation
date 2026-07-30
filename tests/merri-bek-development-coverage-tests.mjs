@@ -68,3 +68,15 @@ test("all generated pages expose the Merri-bek development contract", () => {
     assert.doesNotMatch(html, /street_address|property_id|record no/i);
   }
 });
+
+test("database import is environment-guarded and remains council-scoped", () => {
+  const source = fs.readFileSync(
+    path.join(ROOT, "scripts", "import-merri-bek-development-metrics.mjs"),
+    "utf8",
+  );
+  assert.match(source, /assertDatabaseEnvironment\(\)/);
+  assert.match(source, /ensureCouncilDevelopmentMetricsSchema/);
+  assert.match(source, /Merri-bek City Council/);
+  assert.match(source, /ON CONFLICT/);
+  assert.doesNotMatch(source, /DATABASE_URL|PREVIEW_DATABASE_URL/);
+});
