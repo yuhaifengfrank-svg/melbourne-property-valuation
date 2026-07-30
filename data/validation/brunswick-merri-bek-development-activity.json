@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "development-activity-summary-v1",
+  "source": {
+    "key": "merri_bek_residential_development_monitor",
+    "publisher": "Merri-bek City Council",
+    "url": "https://www.merri-bek.vic.gov.au/building-and-business/planning-and-building/strategic-planning/residential-development-monitor/",
+    "csvUrl": "https://www.merri-bek.vic.gov.au/globalassets/website-merri-bek/areas/building-business/planning-and-building/strategic-planning/residential-development-monitor/rdm_merri-bek.csv",
+    "notesUrl": "https://www.merri-bek.vic.gov.au/globalassets/website-merri-bek/areas/building-business/planning-and-building/strategic-planning/residential-development-monitor/250821---rdm-data-notes.pdf",
+    "dataProcessedAt": "2025-08-01",
+    "sourceReport": "Residential Development Monitor — official council CSV"
+  },
+  "geography": {
+    "council": "Merri-bek City Council",
+    "suburb": "Brunswick",
+    "postcode": "3056",
+    "scope": "Exact suburb label recorded in the City of Merri-bek RDM",
+    "councilCoverage": "full"
+  },
+  "quality": {
+    "sourceRows": 184,
+    "exactGeographyRows": 34,
+    "allSourceRowsAccountedFor": 184,
+    "duplicateProjectIds": 0,
+    "missingCoordinates": 0,
+    "snapshotDate": "2025-08-01",
+    "recordLevelReuse": "Internal validation only; public output is aggregate only"
+  },
+  "summary": {
+    "totalProjectCount": 34,
+    "appliedProjectCount": 0,
+    "approvedProjectCount": 27,
+    "underConstructionProjectCount": 6,
+    "completedProjectCount": 1,
+    "activeProjectCount": 33,
+    "activeResidentialProjectCount": 33,
+    "activeResidentialDwellingCount": 2372,
+    "totalTrackedDwellingCount": 2443,
+    "apartmentProjectCount": 29,
+    "townhouseProjectCount": 5,
+    "planningReferenceCount": 34
+  },
+  "publication": {
+    "publishable": true,
+    "grain": "City of Merri-bek Residential Development Monitor projects with five or more dwellings",
+    "limitations": [
+      "The RDM includes permitted residential developments of five or more dwellings, not every planning application or building permit",
+      "Approved, under construction and constructed are official RDM status estimates at 1 August 2025 and may change",
+      "Stated dwellings are project capacity; active-pipeline dwellings are not completed homes and do not predict future prices",
+      "The source is continuously updated, while this published aggregate is a dated snapshot",
+      "No property address, record number or coordinate is republished"
+    ]
+  }
+}

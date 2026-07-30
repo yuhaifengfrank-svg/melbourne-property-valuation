@@ -139,6 +139,12 @@ function councilContract(artifact) {
     "Kingston City Council": { marker: "AHV_KINGSTON_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
     "City of Port Phillip": { marker: "AHV_PORT_PHILLIP_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
     "City of Yarra": { marker: "AHV_YARRA_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
+    "Merri-bek City Council": {
+      marker: "AHV_MERRI_BEK_DEVELOPMENT",
+      label: "Merri-bek Residential Development Monitor",
+      notes: ["Permitted residential developments of five or more dwellings only; not every planning application or building permit.", "Stated dwelling capacity is not a completion count and does not predict future prices."],
+      partial: "Merri-bek-council portion only",
+    },
   };
   return contracts[artifact._council] || { marker: "AHV_COUNCIL_PLANNING", label: "Verified council planning evidence" };
 }
