@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "City of Yarra",
+      "url": "https://www.yarracity.vic.gov.au/sites/default/files/2025-10/2024-25_Yarra_City_Council_Annual_Report.pdf",
+      "report": "Annual Report 2024/25",
+      "reportingPeriodEnd": "2025-06-30",
+      "pages": [
+        270,
+        271
+      ]
+    },
+    {
+      "publisher": "Victorian Government",
+      "url": "https://www.vic.gov.au/know-your-council-yarra-city-council",
+      "report": "Know Your Council - Yarra City Council",
+      "statusChecked": "2026-07-30"
+    }
+  ],
+  "geography": {
+    "suburb": "PRINCES HILL",
+    "postcode": "3054",
+    "council": "City of Yarra",
+    "councilContextOnly": true,
+    "note": "Council-wide service metrics are context, not suburb-level application counts"
+  },
+  "councilPlanningService": {
+    "medianDecisionDays": 119,
+    "decidedWithinRequiredTimePercent": 46.63,
+    "periodEnd": "2025-06-30",
+    "metricDefinitions": {
+      "medianDecisionDays": "Median number of days between receipt of a planning application and a decision",
+      "decidedWithinRequiredTimePercent": "Regular decisions within 60 days plus VicSmart decisions within 10 days, divided by all planning application decisions"
+    }
+  },
+  "activityCentre": {
+    "included": false,
+    "description": "No state activity-centre claim is added in this council-context release"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The service measures are City of Yarra-wide facts, not suburb-level application counts",
+      "The service measures do not count proposed dwellings, approvals, commencements or completions",
+      "No address-level planning register data is collected or republished in this council-context release",
+      "The public register was not treated as a reusable suburb dataset because the reviewed interface does not provide a stable official bulk export"
+    ]
+  }
+}
