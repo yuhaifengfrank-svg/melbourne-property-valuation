@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "Darebin City Council",
+      "url": "https://www.darebin.vic.gov.au/files/assets/public/v/2/about-council/documents/darebin-city-council-annual-report_20242025.pdf",
+      "report": "Annual Report 2024/25",
+      "reportingPeriodEnd": "2025-06-30",
+      "page": 101
+    },
+    {
+      "publisher": "Victorian Government",
+      "url": "https://www.vic.gov.au/know-your-council-darebin-city-council",
+      "report": "Know Your Council - Darebin City Council",
+      "statusChecked": "2026-07-30"
+    },
+    {
+      "publisher": "Darebin City Council",
+      "url": "https://www.darebin.vic.gov.au/Planning-and-building/Planning/Planning-step-6-feedback-and-assessment/Advertised-applications-and-planning-register",
+      "report": "Advertised applications and planning register access page",
+      "statusChecked": "2026-07-30"
+    }
+  ],
+  "geography": {
+    "suburb": "BUNDOORA",
+    "postcode": "3083",
+    "council": "Darebin City Council",
+    "councilContextOnly": true,
+    "note": "This locality crosses council boundaries; the service metrics describe Darebin City Council only, not the whole suburb"
+  },
+  "councilPlanningService": {
+    "medianDecisionDays": 104,
+    "decidedWithinRequiredTimePercent": 55.77,
+    "periodEnd": "2025-06-30",
+    "metricDefinitions": {
+      "medianDecisionDays": "Median number of days between receipt of a planning application and a decision",
+      "decidedWithinRequiredTimePercent": "Planning application decisions made within the statutory required timeframes divided by all planning application decisions"
+    }
+  },
+  "activityCentre": {
+    "included": false,
+    "description": "No activity-centre claim is added in this council-context release"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The service measures are Darebin-wide facts, not suburb-level application counts",
+      "The suburb crosses council boundaries; Darebin context applies only to the Darebin portion",
+      "The service measures do not count proposed dwellings, approvals, commencements or completions",
+      "No address-level planning register data is collected or republished in this council-context release",
+      "The reviewed planning register interface does not provide a stable official bulk export, so no suburb application count is inferred"
+    ]
+  }
+}
