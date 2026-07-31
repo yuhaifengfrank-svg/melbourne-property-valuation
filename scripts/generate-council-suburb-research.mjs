@@ -76,6 +76,7 @@ function contextCards(artifact) {
   if (Number.isFinite(service.medianDecisionDays)) cards.push(metricCard("Council median decision time", `${number(service.medianDecisionDays)} days`, period, "Council-wide service metric; not a suburb-level processing time."));
   if (Number.isFinite(service.decidedWithinRequiredTimePercent)) cards.push(metricCard("Decisions within required time", `${number(service.decidedWithinRequiredTimePercent, 2)}%`, period, "Council-wide service metric; not a suburb-level application result."));
   if (Number.isFinite(service.applicationsReceived)) cards.push(metricCard("Applications received by council", number(service.applicationsReceived), period, "Whole-council total; not the number lodged in this suburb."));
+  if (Number.isFinite(service.applicationsDecided)) cards.push(metricCard("Planning decisions by council", number(service.applicationsDecided), period, "Whole-council Standard and VicSmart decision count; not the number decided in this suburb."));
   const targetPercent = service.targetPercent ?? service.decidedWithinRequiredTimeTargetPercent;
   if (Number.isFinite(targetPercent)) cards.push(metricCard("Council service target", `${number(targetPercent, 2)}%`, period, "Council-wide target; not a suburb-level result."));
   if (Number.isFinite(service.medianDecisionDaysTarget)) cards.push(metricCard("Council decision-time target", `${number(service.medianDecisionDaysTarget)} days`, period, "Council-wide target; not a suburb-level processing time."));
@@ -146,6 +147,7 @@ function councilContract(artifact) {
       partial: "Merri-bek-council portion only",
     },
     "Darebin City Council": { marker: "AHV_DAREBIN_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
+    "Moonee Valley City Council": { marker: "AHV_MOONEE_VALLEY_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
   };
   return contracts[artifact._council] || { marker: "AHV_COUNCIL_PLANNING", label: "Verified council planning evidence" };
 }
