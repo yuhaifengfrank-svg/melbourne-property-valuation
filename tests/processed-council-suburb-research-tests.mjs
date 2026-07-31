@@ -10,14 +10,14 @@ const readPage = (slug) => fs.readFileSync(path.join(root, "public", "suburb", `
 
 test("all processed council artifacts generate a reproducible research collection", () => {
   assert.deepEqual(generateCouncilResearchPages({ onlyCouncil: "City of Yarra" }), {
-    councilArtifacts: 223,
-    councilSuburbs: 199,
+    councilArtifacts: 237,
+    councilSuburbs: 213,
     validatedPages: 2,
-    publishedPages: 201,
+    publishedPages: 215,
   });
   const index = fs.readFileSync(path.join(root, "public", "suburb-research.html"), "utf8");
   for (const expected of [
-    "201个区域 · 15个已处理Council",
+    "215个区域 · 16个已处理Council",
     "完整验证页 / Fully validated profiles",
     "Mount Waverley",
     "Banyule City Council",
@@ -34,15 +34,16 @@ test("all processed council artifacts generate a reproducible research collectio
     "Kingston City Council",
     "Manningham City Council",
     "Merri-bek City Council",
+    "Moonee Valley City Council",
     "Whitehorse City Council",
   ]) assert.match(index, new RegExp(expected));
 });
 
-test("all 201 linked research pages include market, valuation and planning layers", () => {
+test("all 215 linked research pages include market, valuation and planning layers", () => {
   const index = fs.readFileSync(path.join(root, "public", "suburb-research.html"), "utf8");
   const links = [...index.matchAll(/href="(\/suburb\/[^"]+\.html)"/g)].map((match) => match[1]);
   const uniqueLinks = [...new Set(links)];
-  assert.equal(uniqueLinks.length, 201);
+  assert.equal(uniqueLinks.length, 215);
   for (const link of uniqueLinks) {
     const html = fs.readFileSync(path.join(root, "public", link), "utf8");
     assert.match(html, /data-suburb-market/);

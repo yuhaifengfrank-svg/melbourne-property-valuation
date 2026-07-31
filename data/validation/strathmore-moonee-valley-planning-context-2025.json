@@ -1,0 +1,60 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "Moonee Valley City Council",
+      "url": "https://mvcc.vic.gov.au/wp-content/uploads/2025/10/Annual-Report-2024-25.pdf",
+      "report": "Annual Report 2024/25",
+      "reportingPeriodEnd": "2025-06-30",
+      "pages": [
+        138,
+        139,
+        167
+      ]
+    },
+    {
+      "publisher": "Victorian Government",
+      "url": "https://www.vic.gov.au/know-your-council-moonee-valley-city-council",
+      "report": "Know Your Council - Moonee Valley City Council",
+      "statusChecked": "2026-07-31"
+    },
+    {
+      "publisher": "Moonee Valley City Council",
+      "url": "https://online.mvcc.vic.gov.au/epathway/Production/web/Default.aspx",
+      "report": "Planning Application Enquiries portal",
+      "statusChecked": "2026-07-31"
+    }
+  ],
+  "geography": {
+    "suburb": "STRATHMORE",
+    "postcode": "3041",
+    "council": "Moonee Valley City Council",
+    "councilContextOnly": true,
+    "note": "Council-wide service metrics are context, not suburb-level application counts"
+  },
+  "councilPlanningService": {
+    "medianDecisionDays": 79,
+    "decidedWithinRequiredTimePercent": 84.48,
+    "applicationsDecided": 786,
+    "periodEnd": "2025-06-30",
+    "metricDefinitions": {
+      "medianDecisionDays": "Median number of days between receipt of a planning application and a decision",
+      "decidedWithinRequiredTimePercent": "Percentage of Standard and VicSmart planning application decisions made within their relevant required timeframes",
+      "applicationsDecided": "Standard and VicSmart planning application decisions made during 2024/25"
+    }
+  },
+  "activityCentre": {
+    "included": false,
+    "description": "No activity-centre claim is added in this council-context release"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The service measures are Moonee Valley-wide facts, not suburb-level application counts",
+      "Applications decided is a whole-council service count, not a proposed dwelling, approval, commencement or completion count",
+      "No address-level planning register data is collected or republished",
+      "The reviewed planning enquiry portal does not provide a stable official bulk export, so no suburb application count is inferred"
+    ]
+  }
+}

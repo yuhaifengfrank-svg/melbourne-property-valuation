@@ -146,6 +146,7 @@ function councilContract(artifact) {
       partial: "Merri-bek-council portion only",
     },
     "Darebin City Council": { marker: "AHV_DAREBIN_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
+    "Moonee Valley City Council": { marker: "AHV_MOONEE_VALLEY_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
   };
   return contracts[artifact._council] || { marker: "AHV_COUNCIL_PLANNING", label: "Verified council planning evidence" };
 }
