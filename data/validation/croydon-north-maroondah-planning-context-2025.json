@@ -1,0 +1,56 @@
+{
+  "schemaVersion": "planning-context-summary-v1",
+  "sources": [
+    {
+      "publisher": "Maroondah City Council",
+      "url": "https://www.maroondah.vic.gov.au/files/assets/public/v/3/documents/about-council/reporting-on-our-progress/annual-report-2024-25.pdf",
+      "report": "Annual Report 2024/25",
+      "reportingPeriodEnd": "2025-06-30",
+      "pages": [
+        171
+      ]
+    },
+    {
+      "publisher": "Victorian Government",
+      "url": "https://www.vic.gov.au/know-your-council-maroondah-city-council",
+      "report": "Know Your Council - Maroondah City Council",
+      "statusChecked": "2026-07-31"
+    },
+    {
+      "publisher": "Maroondah City Council",
+      "url": "https://www.maroondah.vic.gov.au/Development/Planning/Planning-applications",
+      "report": "Planning applications service",
+      "statusChecked": "2026-07-31"
+    }
+  ],
+  "geography": {
+    "suburb": "CROYDON NORTH",
+    "postcode": "3136",
+    "council": "Maroondah City Council",
+    "councilContextOnly": true,
+    "note": "Council-wide service metrics are context, not suburb-level application counts"
+  },
+  "councilPlanningService": {
+    "medianDecisionDays": 29,
+    "decidedWithinRequiredTimePercent": 85.83,
+    "periodEnd": "2025-06-30",
+    "metricDefinitions": {
+      "medianDecisionDays": "Median number of days between receipt of a planning application and a decision",
+      "decidedWithinRequiredTimePercent": "Percentage of regular and VicSmart planning application decisions made within legislated timeframes"
+    }
+  },
+  "activityCentre": {
+    "included": false,
+    "description": "No activity-centre claim is added in this council-context release"
+  },
+  "publication": {
+    "publishable": true,
+    "pagePublished": true,
+    "limitations": [
+      "The service measures are Maroondah-wide facts, not suburb-level application counts",
+      "No address-level planning application data is collected or republished",
+      "No suburb application, dwelling, approval, commencement or completion count is inferred",
+      "Localities can cross council boundaries; the metrics describe Maroondah City Council only"
+    ]
+  }
+}
