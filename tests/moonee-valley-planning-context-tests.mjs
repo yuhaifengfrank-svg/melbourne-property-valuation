@@ -32,3 +32,10 @@ test("artifacts never republish register records or addresses", () => {
     assert.doesNotMatch(fs.readFileSync(path.join(ROOT, "data", "validation", filename), "utf8"), /propertyNumber|streetAddress|applicationNumber/i);
   }
 });
+
+test("generated page publishes the whole-council decision count with its boundary", () => {
+  const html = fs.readFileSync(path.join(ROOT, "public", "suburb", "moonee-ponds-vic.html"), "utf8");
+  assert.match(html, /Planning decisions by council/);
+  assert.match(html, />786</);
+  assert.match(html, /Whole-council Standard and VicSmart decision count/);
+});
