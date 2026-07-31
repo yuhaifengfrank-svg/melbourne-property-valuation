@@ -145,6 +145,7 @@ function councilContract(artifact) {
       notes: ["Permitted residential developments of five or more dwellings only; not every planning application or building permit.", "Stated dwelling capacity is not a completion count and does not predict future prices."],
       partial: "Merri-bek-council portion only",
     },
+    "Darebin City Council": { marker: "AHV_DAREBIN_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
   };
   return contracts[artifact._council] || { marker: "AHV_COUNCIL_PLANNING", label: "Verified council planning evidence" };
 }
