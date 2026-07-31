@@ -149,6 +149,7 @@ function councilContract(artifact) {
     "Darebin City Council": { marker: "AHV_DAREBIN_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
     "Moonee Valley City Council": { marker: "AHV_MOONEE_VALLEY_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
     "Maribyrnong City Council": { marker: "AHV_MARIBYRNONG_PLANNING_CONTEXT", label: "Council-wide planning service facts (audited 2023/24 period)" },
+    "Maroondah City Council": { marker: "AHV_MAROONDAH_PLANNING_CONTEXT", label: "Council-wide planning service facts" },
   };
   return contracts[artifact._council] || { marker: "AHV_COUNCIL_PLANNING", label: "Verified council planning evidence" };
 }
