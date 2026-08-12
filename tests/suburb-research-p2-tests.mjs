@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import test from 'node:test';
+const read=p=>readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
+const html=read('public/suburb-research.html'),js=read('public/suburb-research.js'),css=read('public/suburb-research.css');
+test('P2 research workflow uses maintainable external assets',()=>{assert.match(html,/\/suburb-research\.css/);assert.match(html,/\/suburb-research\.js/);assert.doesNotMatch(html,/<script>\s*\(\(\)=>/)});
+test('comparison is shareable through explicit URL state',()=>{assert.match(js,/searchParams\.set\('suburbs'/);assert.match(js,/searchParams\.set\('type'/);assert.match(js,/searchParams\.set\('lang'/);assert.match(js,/history\.replaceState/)});
+test('comparison can be saved locally without transmitting user data',()=>{assert.match(js,/aushomevalue\.suburbComparison/);assert.match(js,/localStorage\.setItem/);assert.doesNotMatch(js,/create-report-checkout|lead-consent/)});
+test('English and Chinese cover static and dynamic research results',()=>{assert.match(js,/Compare the signals behind a suburb/);assert.match(js,/比较一个区域背后的投资信号/);assert.match(js,/House中位价/);assert.match(js,/数据暂不可用/)});
+test('P2 includes print, conversion and provenance controls',()=>{assert.match(html,/id="print-comparison"/);assert.match(html,/href="\/#valuation"/);assert.match(html,/href="\/investor-watch\/"/);assert.match(html,/Data provenance and model identity/);assert.match(css,/@media print/)});
+test('missing values remain unavailable rather than zero',()=>{assert.match(js,/Data unavailable/);assert.doesNotMatch(js,/\?\?\s*0/)});
