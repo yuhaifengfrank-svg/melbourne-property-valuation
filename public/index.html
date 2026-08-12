@@ -1665,6 +1665,16 @@ th {
     font-size: 0.92rem;
   }
 
+  .hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hero-actions a {
+    text-align: center;
+    width: 100%;
+  }
+
   .home-stats {
     gap: 8px;
   }
@@ -1946,12 +1956,37 @@ th {
   margin: 0 0 28px;
 }
 
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin: 0 0 24px;
+}
+
+.hero-actions a {
+  border-radius: 10px;
+  font-weight: 800;
+  min-height: 46px;
+  padding: 13px 20px;
+  text-decoration: none;
+}
+
+.hero-primary { background: var(--accent); color: white; }
+.hero-secondary { background: white; border: 1px solid var(--accent); color: var(--accent); }
+
 .home-stats {
   display: flex;
   gap: 24px;
   justify-content: center;
   margin: 0 0 36px;
   flex-wrap: wrap;
+}
+
+.stats-freshness {
+  color: var(--muted);
+  font-size: 0.78rem;
+  margin: -26px 0 30px;
 }
 
 .stat strong {
@@ -1978,6 +2013,21 @@ th {
   font-size: 0.78rem;
   color: var(--muted);
   margin: -4px 0 20px;
+}
+
+.report-preview ul {
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 16px;
+  padding-left: 20px;
+}
+
+.report-preview a { color: var(--accent); font-weight: 800; }
+
+body:not(.valuation-started) #valuation .mobile-value-card,
+body:not(.valuation-started) #valuation .layout {
+  display: none;
 }
 
 .home-product-visual {
@@ -2678,9 +2728,9 @@ th {
           <h1>AusHomeValue</h1>
         </div>
         <nav class="topbar-nav" aria-label="Primary navigation">
-          <a class="nav-cta" href="#valuation" data-i18n="nav-get-estimate">Get estimate</a>
+          <a class="nav-suburb-research nav-cta" href="/suburb-research.html" data-i18n="nav-blog">Suburb Research</a>
           <a href="/#opportunities" data-i18n="nav-opportunities">Top Opportunity</a>
-          <a class="nav-suburb-research" href="/suburb-research.html" data-i18n="nav-blog">Suburb Research</a>
+          <a href="#valuation" data-i18n="nav-get-estimate">Get estimate</a>
           <a href="/investor-watch/" data-i18n="nav-investor-watch">Investor Watch</a>
           <details class="more-menu">
             <summary data-i18n="nav-more">More</summary>
@@ -2703,8 +2753,12 @@ th {
       <section id="home" class="home-panel">
         <div class="home-hero">
           <p class="eyebrow" data-i18n="hero-eyebrow">Property Opportunity Intelligence</p>
-          <h2 data-i18n="hero-heading">Move from "What is this property worth?" to "Is this a smart opportunity?"</h2>
-          <p class="hero-sub" data-i18n="hero-sub">Get a first-layer valuation, understand suburb opportunity signals, and review planning constraints before you make a property decision.</p>
+          <h2 data-i18n="hero-heading">Find better property investment opportunities across Victoria.</h2>
+          <p class="hero-sub" data-i18n="hero-sub">Compare recent sales, rental yield, supply, schools, planning signals and future opportunity before deciding where to research next.</p>
+          <div class="hero-actions" aria-label="Start property research">
+            <a class="hero-primary" href="/suburb-research.html" data-i18n="hero-research-cta">Research a suburb</a>
+            <a class="hero-secondary" href="#valuation" data-i18n="hero-estimate-cta">Estimate a property</a>
+          </div>
           <div class="home-product-visual" aria-label="AusHomeValue product flow">
             <div class="signal-card signal-card-estimate">
               <span data-i18n="visual-estimate-label">Estimate</span>
@@ -2720,10 +2774,11 @@ th {
             </div>
           </div>
           <div class="home-stats">
-            <div class="stat"><strong data-site-stat="comparableSales">—</strong> <span data-i18n="stat-sales">sales records indexed</span></div>
-            <div class="stat"><strong data-site-stat="schoolsMapped">—</strong> <span data-i18n="stat-schools">schools mapped</span></div>
-            <div class="stat"><strong data-site-stat="suburbsCovered">—</strong> <span data-i18n="stat-suburbs">suburbs with sales coverage</span></div>
+            <div class="stat"><strong data-site-stat="comparableSales">240,000+</strong> <span data-i18n="stat-sales">sales records indexed</span></div>
+            <div class="stat"><strong data-site-stat="schoolsMapped">2,800+</strong> <span data-i18n="stat-schools">schools mapped</span></div>
+            <div class="stat"><strong data-site-stat="suburbsCovered">500+</strong> <span data-i18n="stat-suburbs">suburbs with sales coverage</span></div>
           </div>
+          <p class="stats-freshness"><span data-i18n="stats-freshness">Sales data updated weekly</span> · <span data-site-as-of>12 Aug 2026</span></p>
           <section class="product-funnel" aria-label="AusHomeValue product levels">
             <article class="funnel-card">
               <p class="funnel-step" data-i18n="funnel-free-step">Step 1</p>
@@ -2738,15 +2793,20 @@ th {
             <article class="funnel-card">
               <p class="funnel-step" data-i18n="funnel-watch-step">Step 3</p>
               <h3 data-i18n="funnel-watch-title">Investor Watch — AUD $9.99/month</h3>
-              <p data-i18n="funnel-watch-copy">Save suburbs and properties, track Future Opportunity Scores and monitor planning signals when new data is available. Coming Soon.</p>
+              <p data-i18n="funnel-watch-copy">Save suburbs and properties, track Future Opportunity Scores and monitor planning signals when new data is available.</p>
             </article>
           </section>
           <section class="product-difference" aria-label="Top Opportunity versus Investor Watch">
             <p data-i18n="product-difference-copy">Top Opportunity helps you discover where to look. Investor Watch helps you keep watching what matters.</p>
           </section>
-          <div class="home-search-preview">
-            <p class="eyebrow" data-i18n="hero-estimate-eyebrow">Free first-layer estimate</p>
-            <p class="hero-note">本估值基于评估时可获得的公开市场信息、房产特征及统计分析生成，仅供一般信息和研究参考。本报告并非正式估价、信贷决定、法律、税务或财务建议。</p>
+          <div class="home-search-preview report-preview">
+            <p class="eyebrow" data-i18n="report-preview-eyebrow">What the AUD $3.99 report includes</p>
+            <ul>
+              <li data-i18n="report-preview-comps">Comparable sales evidence and valuation range</li>
+              <li data-i18n="report-preview-planning">Planning, zoning and overlay signals where available</li>
+              <li data-i18n="report-preview-outlook">Future Opportunity Outlook, key risks and data limitations</li>
+            </ul>
+            <a href="/sample-report.html" data-i18n="report-preview-cta">Preview the full report →</a>
           </div>
         </div>
       </section>
@@ -3108,7 +3168,7 @@ th {
         <div class="content">
           <p class="eyebrow" data-i18n="opp-preview-eyebrow">Ranked Opportunities</p>
           <h2 data-i18n="opp-preview-heading">Discover Victoria&#39;s top investment opportunities.</h2>
-          <p class="opp-preview-sub" data-i18n="opp-preview-sub">Data-driven rankings across growth, value, rental yield and school zones. Updated nightly from market data.</p>
+          <p class="opp-preview-sub" data-i18n="opp-preview-sub">Data-driven rankings across growth, value, rental yield and school zones. Sales inputs are refreshed weekly.</p>
           <div class="opp-preview-grid">
 
             <div class="opp-preview-card">
@@ -3118,17 +3178,17 @@ th {
                 <a href="/suburb/werribee-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">1</span>
                   <span class="opp-preview-name">Werribee</span>
-                  <span class="opp-preview-score">85</span>
+                  <span class="opp-preview-score">85/100</span>
                 </a>
                 <a href="/suburb/sunshine-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">2</span>
                   <span class="opp-preview-name">Sunshine</span>
-                  <span class="opp-preview-score">85</span>
+                  <span class="opp-preview-score">85/100</span>
                 </a>
                 <a href="/suburb/dandenong-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">3</span>
                   <span class="opp-preview-name">Dandenong</span>
-                  <span class="opp-preview-score">85</span>
+                  <span class="opp-preview-score">85/100</span>
                 </a>
               </div>
               <a href="/top-growth-suburbs-victoria.html" class="opp-preview-cta" data-i18n="opp-preview-cta">View full ranking →</a>
@@ -3141,17 +3201,17 @@ th {
                 <a href="/suburb/dandenong-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">1</span>
                   <span class="opp-preview-name">Dandenong</span>
-                  <span class="opp-preview-score">90</span>
+                  <span class="opp-preview-score">90/100</span>
                 </a>
                 <a href="/suburb/west-melbourne-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">2</span>
                   <span class="opp-preview-name">West Melbourne</span>
-                  <span class="opp-preview-score">90</span>
+                  <span class="opp-preview-score">90/100</span>
                 </a>
                 <a href="/suburb/murrumbeena-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">3</span>
                   <span class="opp-preview-name">Murrumbeena</span>
-                  <span class="opp-preview-score">90</span>
+                  <span class="opp-preview-score">90/100</span>
                 </a>
               </div>
               <a href="/top-value-suburbs-victoria.html" class="opp-preview-cta" data-i18n="opp-preview-cta">View full ranking →</a>
@@ -3164,17 +3224,17 @@ th {
                 <a href="/suburb/caulfield-east-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">1</span>
                   <span class="opp-preview-name">Caulfield East</span>
-                  <span class="opp-preview-score">60</span>
+                  <span class="opp-preview-score">60/100</span>
                 </a>
                 <a href="/suburb/notting-hill-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">2</span>
                   <span class="opp-preview-name">Notting Hill</span>
-                  <span class="opp-preview-score">60</span>
+                  <span class="opp-preview-score">60/100</span>
                 </a>
                 <a href="/suburb/caulfield-south-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">3</span>
                   <span class="opp-preview-name">Caulfield South</span>
-                  <span class="opp-preview-score">54</span>
+                  <span class="opp-preview-score">54/100</span>
                 </a>
               </div>
               <a href="/top-yield-suburbs-victoria.html" class="opp-preview-cta" data-i18n="opp-preview-cta">View full ranking →</a>
@@ -3187,17 +3247,17 @@ th {
                 <a href="/suburb/fairfield-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">1</span>
                   <span class="opp-preview-name">Fairfield</span>
-                  <span class="opp-preview-score">85</span>
+                  <span class="opp-preview-score">85/100</span>
                 </a>
                 <a href="/suburb/burwood-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">2</span>
                   <span class="opp-preview-name">Burwood</span>
-                  <span class="opp-preview-score">85</span>
+                  <span class="opp-preview-score">85/100</span>
                 </a>
                 <a href="/suburb/canterbury-vic.html" class="opp-preview-item">
                   <span class="opp-preview-rank">3</span>
                   <span class="opp-preview-name">Canterbury</span>
-                  <span class="opp-preview-score">85</span>
+                  <span class="opp-preview-score">85/100</span>
                 </a>
               </div>
               <a href="/top-school-zone-suburbs-victoria.html" class="opp-preview-cta" data-i18n="opp-preview-cta">View full ranking →</a>
@@ -3235,7 +3295,7 @@ th {
           <div class="research-intro">
             <p class="eyebrow" data-i18n="research-eyebrow">Research</p>
             <h2 data-i18n="research-heading">Market intelligence for Melbourne property.</h2>
-            <p class="research-sub" data-i18n="research-sub">Curated market research from Australia's leading property data sources. Own analysis coming soon.</p>
+            <p class="research-sub" data-i18n="research-sub">AusHomeValue suburb analysis alongside selected Australian market and government research.</p>
           </div>
           <div class="research-grid">
             <article class="research-card">
@@ -3259,7 +3319,7 @@ th {
                 <li><a href="https://www.domain.com.au/suburb-profile" target="_blank" rel="noopener">Domain — Suburb Profiles &amp; Trends</a></li>
                 <li><a href="https://www.openagent.com.au/suburb-profiles/melbourne-property-market" target="_blank" rel="noopener">OpenAgent — Melbourne Suburb Data</a></li>
                 <li><a href="https://propertyupdate.com.au/property-investment-melbourne" target="_blank" rel="noopener">Property Update — Melbourne Market Outlook</a></li>
-                <li><span class="tag tag-internal" data-i18n="soon-suburb">Own Suburb Deep Dives <span class="tag-inner">Coming</span></span></li>
+                <li><a href="/suburb-research.html" data-i18n="own-suburb-research">Explore AusHomeValue Suburb Research →</a></li>
               </ul>
             </article>
             <article class="research-card">
@@ -3281,7 +3341,7 @@ th {
                 <li><a href="https://www.aucoreelite.com/en/post/melbourne-s-top-10-school-zones-in-2026-where-education-meets-property-growth" target="_blank" rel="noopener">Aucore Elite — Top 10 School Zones 2026</a></li>
                 <li><a href="https://www.realestate.com.au/news/the-40-most-popular-suburbs-for-aussie-buyers-and-sellers" target="_blank" rel="noopener">REA — Most Popular Suburbs 2026</a></li>
                 <li><a href="https://www.domain.com.au/news/melbourne-property-prices-the-top-school-zones-for-house-price-growth-20170206-gu3ylc" target="_blank" rel="noopener">Domain — Top School Zones Growth</a></li>
-                <li><span class="tag tag-internal" data-i18n="soon-rankings">Own Rankings <span class="tag-inner">Coming</span></span></li>
+                <li><a href="/#top-opportunities" data-i18n="own-rankings">Explore AusHomeValue Rankings →</a></li>
               </ul>
             </article>
             <!-- ── INVESTOR THEMES (card 5) ── -->

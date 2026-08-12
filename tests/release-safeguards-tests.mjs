@@ -64,7 +64,7 @@ test("site stats script renders verified rounded counts into the homepage DOM", 
   assert.equal(fetchCalls.length, 1);
   assert.equal(fetchCalls[0].url, "/site-stats.json");
   assert.equal(fetchCalls[0].options.cache, "no-cache");
-  assert.equal(elements.get("comparableSales")[0].textContent, "190,000+");
+  assert.equal(elements.get("comparableSales")[0].textContent, "240,000+");
   assert.equal(elements.get("schoolsMapped")[0].textContent, "2,800+");
   assert.equal(elements.get("suburbsCovered")[0].textContent, "500+");
 });

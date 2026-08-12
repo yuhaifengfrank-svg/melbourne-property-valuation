@@ -18,10 +18,10 @@ function blogArticles() {
 }
 
 test("Suburb Research is a highlighted direct navigation item with mobile layout support", () => {
-  assert.match(index, /class="nav-suburb-research" href="\/blog\/" data-i18n="nav-blog"/);
+  assert.match(index, /class="nav-suburb-research nav-cta" href="\/suburb-research\.html" data-i18n="nav-blog"/);
   assert.match(index, /\.nav-suburb-research\s*\{/);
   assert.match(index, /@media \(max-width: 720px\)[\s\S]*\.topbar-nav \.nav-suburb-research/);
-  assert.doesNotMatch(index, /more-menu-panel[\s\S]{0,300}href="\/blog\/"/);
+  assert.doesNotMatch(index, /more-menu-panel[\s\S]{0,300}href="\/suburb-research\.html"/);
 });
 
 test("homepage language choice persists for linked Suburb Research pages", () => {
