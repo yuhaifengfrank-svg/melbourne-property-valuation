@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import test from 'node:test';
+const read=p=>readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
+const research=read('public/suburb-research.html'),validation=read('public/model-validation.html'),sample=read('public/sample-report.html'),home=read('public/index.html');
+test('research page compares up to three current API suburbs',()=>{assert.match(research,/maximum 3/i);assert.match(research,/maxResults=200&strategy=balanced/);assert.match(research,/state\.selected\.length>=3/)});
+test('research page can fetch an exact suburb outside the initial suggestions',()=>{assert.match(research,/maxResults=1&strategy=balanced&suburb=/);assert.match(research,/encodeURIComponent\(query\)/)});
+test('research page separates House and Unit prices',()=>{assert.match(research,/data-type="house"/);assert.match(research,/data-type="unit"/);assert.match(research,/medianHousePrice/);assert.match(research,/medianUnitPrice/)});
+test('research page preserves unavailable values and exposes score components',()=>{assert.match(research,/Data unavailable/);assert.match(research,/componentScores/);assert.match(research,/futureOpportunityIndex/);assert.doesNotMatch(research,/\?\?\s*0/)});
+test('research metrics explain source semantics and date',()=>{assert.match(research,/Current suburb_metrics dataset/);assert.match(research,/Current model input/);assert.match(research,/Updated \$\{esc\(i\.dataUpdated/)});
+test('validation page distinguishes tests from predictive accuracy',()=>{assert.match(validation,/does not prove a future price outcome/);assert.match(validation,/time-separated holdout sales/);assert.match(validation,/median absolute percentage error/)});
+test('sample report is explicitly non-live and contains core report sections',()=>{assert.match(sample,/NOT A LIVE VALUATION/);for(const s of ['Comparable sales','Planning signals','Future Opportunity Outlook','Evidence limitations'])assert.match(sample,new RegExp(s))});
+test('homepage links the paid report preview before purchase',()=>{assert.match(home,/href="\/sample-report\.html" data-i18n="report-preview-cta"/)});

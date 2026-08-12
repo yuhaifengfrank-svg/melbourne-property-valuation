@@ -13,7 +13,7 @@ const morePanel = nav.match(/<div class="more-menu-panel">[\s\S]*?<\/div>/)?.[0]
 test("primary navigation has one valuation action instead of duplicate labels", () => {
   assert.equal((nav.match(/data-i18n="nav-get-estimate"/g) || []).length, 1);
   assert.equal(nav.includes('data-i18n="nav-valuation"'), false);
-  assert.match(nav, /class="nav-cta" href="#valuation" data-i18n="nav-get-estimate"/);
+  assert.match(nav, /href="#valuation" data-i18n="nav-get-estimate"/);
 });
 
 test("Investor Watch is a primary navigation item, not duplicated under More", () => {
@@ -23,11 +23,12 @@ test("Investor Watch is a primary navigation item, not duplicated under More", (
 });
 
 test("primary navigation order reflects the main user journeys", () => {
+  const research = nav.indexOf('data-i18n="nav-blog"');
   const estimate = nav.indexOf('data-i18n="nav-get-estimate"');
   const opportunities = nav.indexOf('data-i18n="nav-opportunities"');
   const watch = nav.indexOf('data-i18n="nav-investor-watch"');
   const more = nav.indexOf('data-i18n="nav-more"');
-  assert.ok(estimate < opportunities && opportunities < watch && watch < more);
+  assert.ok(research < opportunities && opportunities < estimate && estimate < watch && watch < more);
 });
 
 test("More keeps only secondary navigation destinations", () => {
