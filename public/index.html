@@ -20,6 +20,7 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="AusHomeValue property opportunity intelligence" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content="https://www.aushomevalue.com.au/assets/aushomevalue-og.png" />
     <style>:root {
@@ -113,6 +114,14 @@ input {
 
 .topbar h1 {
   font-size: 22px;
+}
+
+.primary-brand { align-items: center; display: inline-flex; min-height: 48px; text-decoration: none; }
+.primary-brand img { display: block; height: 48px; width: auto; }
+
+@media (max-width: 720px) {
+  .primary-brand { min-height: 40px; }
+  .primary-brand img { height: auto; width: 190px; }
 }
 
 nav {
@@ -2736,7 +2745,9 @@ body:not(.valuation-started) #valuation .layout {
       <div class="topbar-row">
         <div class="header-left">
           <p class="eyebrow" data-i18n="hero-banner">Currently expanding across Melbourne and Victoria</p>
-          <h1>AusHomeValue</h1>
+          <a class="primary-brand" href="/" aria-label="AusHomeValue home">
+            <img src="/assets/brand/aushomevalue-logo-reverse.svg" width="390" height="72" alt="AusHomeValue — Property Opportunity Intelligence">
+          </a>
         </div>
         <nav class="topbar-nav" aria-label="Primary navigation">
           <a class="nav-suburb-research nav-cta" href="/suburb-research.html" data-i18n="nav-blog">Suburb Research</a>

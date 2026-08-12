@@ -1,0 +1,16 @@
+.brand,
+.site-brand {
+  align-items: center;
+  display: inline-flex;
+}
+
+.brand::before,
+.site-brand::before {
+  background: url('/assets/brand/aushomevalue-mark.svg') center / contain no-repeat;
+  content: "";
+  display: inline-block;
+  flex: 0 0 34px;
+  height: 34px;
+  margin-right: 9px;
+  width: 34px;
+}
