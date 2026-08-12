@@ -39,10 +39,25 @@ test("More menu contains only secondary research and company links", () => {
 });
 
 test("homepage hero explains the product narrative, not only valuation", () => {
-  assert.match(INDEX, /smart opportunity/i);
-  assert.match(INDEX, /suburb opportunity signals/i);
-  assert.match(INDEX, /planning constraints/i);
-  assert.match(APP, /不只是知道房子值多少钱/);
+  assert.match(INDEX, /investment opportunities across Victoria/i);
+  assert.match(INDEX, /rental yield/i);
+  assert.match(INDEX, /planning signals/i);
+  assert.match(APP, /寻找维州更值得研究的房产投资机会/);
+});
+
+test("P0 homepage prioritises suburb research and hides empty result modules", () => {
+  const document = dom().window.document;
+  assert.equal(document.querySelector('.hero-primary')?.getAttribute('href'), '/suburb-research.html');
+  assert.match(INDEX, /body:not\(\.valuation-started\).*#valuation \.layout/s);
+  assert.match(APP, /document\.body\.classList\.add\("valuation-started"\)/);
+  assert.doesNotMatch(INDEX, /Own Suburb Deep Dives[\s\S]*Coming/);
+  assert.doesNotMatch(INDEX, /Own Rankings[\s\S]*Coming/);
+});
+
+test("homepage ranking preview always labels relative scores out of 100", () => {
+  const scores = [...dom().window.document.querySelectorAll('.opp-preview-score')].map(node => node.textContent.trim());
+  assert.ok(scores.length > 0);
+  assert.ok(scores.every(score => /^\d+\/100$/.test(score)));
 });
 
 test("lightweight product visual uses three signal cards and reduced-motion fallback", () => {
@@ -90,7 +105,7 @@ test("Top Opportunity and Investor Watch distinction is visible", () => {
   const text = document.querySelector(".product-difference")?.textContent || "";
   assert.match(text, /Top Opportunity helps you discover where to look/);
   assert.match(text, /Investor Watch helps you keep watching what matters/);
-  assert.match(APP, /Top Opportunity 帮你发现该看哪里/);
+  assert.match(APP, /机会榜单帮你发现该看哪里/);
 });
 
 test("Methodology section exists and the full methodology is reachable from More menu", () => {

@@ -12,6 +12,17 @@
     return `${roundedDown.toLocaleString("en-AU")}+`;
   }
 
+  function publicDate(value) {
+    const date = new Date(`${value}T00:00:00Z`);
+    if (!value || Number.isNaN(date.getTime())) return null;
+    return new Intl.DateTimeFormat("en-AU", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      timeZone: "UTC"
+    }).format(date);
+  }
+
   fetch("/site-stats.json", { cache: "no-cache" })
     .then(response => {
       if (!response.ok) throw new Error(`site stats unavailable (${response.status})`);
@@ -21,6 +32,12 @@
       for (const [key, step] of Object.entries(displayRules)) {
         document.querySelectorAll(`[data-site-stat="${key}"]`).forEach(element => {
           element.textContent = publicCount(stats[key], step);
+        });
+      }
+      const asOf = publicDate(stats.asOf);
+      if (asOf) {
+        document.querySelectorAll("[data-site-as-of]").forEach(element => {
+          element.textContent = asOf;
         });
       }
     })
