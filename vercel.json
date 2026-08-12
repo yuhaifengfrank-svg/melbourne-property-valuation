@@ -4,6 +4,13 @@
       "maxDuration": 60
     }
   },
+  "redirects": [
+    {
+      "source": "/investor-watch.html",
+      "destination": "/investor-watch/",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/api/lead-consent",

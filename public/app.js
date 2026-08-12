@@ -532,6 +532,8 @@ const uiText = {
       '[data-i18n="hero-banner"]': "Currently expanding across Melbourne and Victoria",
       '[data-i18n="hero-eyebrow"]': "Property Opportunity Intelligence",
       '[data-i18n="hero-heading"]': "Find better property investment opportunities across Victoria.",
+      '[data-i18n="hero-image-title"]': "See the suburb, then study the evidence.",
+      '[data-i18n="hero-image-copy"]': "Sales · Yield · Supply · Schools · Planning",
       '[data-i18n="hero-estimate-eyebrow"]': "Free first-layer estimate",
       '[data-i18n="hero-sub"]': "Compare recent sales, rental yield, supply, schools, planning signals and future opportunity before deciding where to research next.",
       '[data-i18n="hero-research-cta"]': "Research a suburb",
@@ -746,6 +748,8 @@ const uiText = {
       '[data-i18n="hero-banner"]': "当前覆盖墨尔本和维多利亚州",
       '[data-i18n="hero-eyebrow"]': "澳洲房产机会情报",
       '[data-i18n="hero-heading"]': "寻找维州更值得研究的房产投资机会。",
+      '[data-i18n="hero-image-title"]': "先看区域，再研究证据。",
+      '[data-i18n="hero-image-copy"]': "成交 · 收益率 · 供应 · 学校 · 规划",
       '[data-i18n="hero-estimate-eyebrow"]': "免费估值（首层）",
       '[data-i18n="hero-sub"]': "比较近期成交、租金收益、供需、学校、规划信号和未来机会，再决定哪里值得深入研究。",
       '[data-i18n="hero-research-cta"]': "研究一个区域",
@@ -2173,8 +2177,16 @@ function renderValuation(data) {
 
 function setTexts(items) {
   Object.entries(items).forEach(([selector, text]) => {
-    const element = document.querySelector(selector);
-    if (element) element.textContent = text;
+    document.querySelectorAll(selector).forEach((element) => {
+      element.textContent = text;
+    });
+  });
+}
+
+function syncBilingualVisibility() {
+  const activeLanguage = language === "zh" ? "zh" : "en";
+  document.querySelectorAll('[lang="en"], [lang="zh"]').forEach((element) => {
+    element.hidden = element.getAttribute("lang") !== activeLanguage;
   });
 }
 
@@ -2202,6 +2214,7 @@ function applyLanguage() {
   document.body.classList.toggle("zh-mode", language === "zh");
   byId("language-toggle").textContent = text.toggle;
   setTexts(text.selectors);
+  syncBilingualVisibility();
   setCollectionText(".checklist li", labels.checkItems);
   setCollectionText(".chip", labels.chips);
   setCollectionText("th", labels.tableHeaders);
@@ -3900,6 +3913,7 @@ setTimeout(loadHomeOpportunities, 100);
 const oppSearchBtn = document.getElementById("opp-search-btn");
 const oppResults = document.getElementById("opp-results");
 const oppLoading = document.getElementById("opp-loading");
+const oppHint = document.querySelector(".opp-hint");
 
 /**
  * Render personalised Top 10 cards.
@@ -3968,6 +3982,11 @@ async function runOpportunityScan() {
   if (window.opportunityGate) {
     oppLoading.classList.remove("hidden");
     oppLoading.textContent = language === "zh" ? "正在检查访问权限……" : "Checking access…";
+    if (oppHint) {
+      oppHint.textContent = language === "zh"
+        ? "正在打开免费个性化排名表单……"
+        : "Opening the free personalised ranking form…";
+    }
     oppSearchBtn.disabled = true;
     const strategy = document.getElementById("opp-strategy").value;
     const ptype = document.getElementById("opp-type").value;
@@ -3992,7 +4011,14 @@ async function runOpportunityScan() {
     });
     oppLoading.classList.add("hidden");
     oppSearchBtn.disabled = false;
-    if (gateResult && gateResult.gateShown) return;
+    if (gateResult && gateResult.gateShown) {
+      if (oppHint) {
+        oppHint.textContent = language === "zh"
+          ? "表单已打开。填写邮箱和偏好后即可生成个性化 Top 10。"
+          : "Form opened. Enter your email and preferences to generate a personalised Top 10.";
+      }
+      return;
+    }
   }
 
   // Already authenticated — fetch personalised top 10 using the filters that are

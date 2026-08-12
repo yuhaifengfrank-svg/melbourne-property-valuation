@@ -61,10 +61,14 @@
     var isZh = lang === "zh";
 
     removeOverlay();
+    var previouslyFocused = document.activeElement;
 
     var overlay = document.createElement("div");
     overlay.id = "opp-gate-overlay";
     overlay.className = "opp-gate-overlay";
+    overlay.setAttribute("role", "dialog");
+    overlay.setAttribute("aria-modal", "true");
+    overlay.setAttribute("aria-labelledby", "opp-gate-title");
 
     var formTitle = isZh
       ? "解锁个性化机会排名"
@@ -84,7 +88,7 @@
       '<button id="opp-gate-close" style="position:absolute;top:12px;right:12px;width:32px;height:32px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#889994;display:flex;align-items:center;justify-content:center;border-radius:50%;" aria-label="' +
       (isZh ? "关闭" : "Close") +
       '">×</button>' +
-      '<h2 style="margin-top:0;">' +
+      '<h2 id="opp-gate-title" style="margin-top:0;">' +
       formTitle +
       "</h2>" +
       '<p style="color:#66736d;font-size:0.9rem;margin-bottom:20px;line-height:1.5;">' +
@@ -259,8 +263,18 @@
     document.head.appendChild(style);
     document.body.appendChild(overlay);
 
+    var firstField = document.getElementById("opp-gate-email");
+    if (firstField) {
+      window.requestAnimationFrame(function () {
+        firstField.focus();
+      });
+    }
+
     function closeGate() {
       removeOverlay();
+      if (previouslyFocused && typeof previouslyFocused.focus === "function") {
+        previouslyFocused.focus();
+      }
     }
 
     var closeBtn = document.getElementById("opp-gate-close");
