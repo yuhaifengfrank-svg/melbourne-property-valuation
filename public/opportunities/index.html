@@ -38,7 +38,25 @@
       border-radius: 22px;
       padding: clamp(28px, 5vw, 56px);
       box-shadow: 0 18px 50px rgba(18, 63, 51, 0.18);
+      display: grid;
+      gap: clamp(24px, 4vw, 46px);
+      grid-template-columns: minmax(0, 1.08fr) minmax(280px, 0.92fr);
+      overflow: hidden;
     }
+
+    .opp-hero-copy { align-self: center; }
+
+    .opp-hero-image {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
+      box-shadow: 0 18px 36px rgba(4, 24, 19, 0.26);
+      margin: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .opp-hero-image img { display: block; height: 100%; min-height: 310px; object-fit: cover; width: 100%; }
+    .opp-hero-image figcaption { background: linear-gradient(transparent,rgba(5,35,28,.88)); bottom: 0; color: #fff; font-size: .8rem; font-weight: 750; left: 0; padding: 46px 16px 14px; position: absolute; right: 0; }
 
     .opp-kicker {
       color: #c9ded6;
@@ -67,6 +85,11 @@
 
     .opp-hero strong {
       color: #fff;
+    }
+
+    @media (max-width: 760px) {
+      .opp-hero { grid-template-columns: 1fr; }
+      .opp-hero-image img { max-height: 300px; min-height: 0; }
     }
 
     .opp-funnel {
@@ -396,14 +419,20 @@
 
   <main class="opp-shell">
     <section class="opp-hero">
-      <p class="opp-kicker">Future Opportunity Outlook</p>
-      <h1>Find the next suburb shortlist before the crowd does.</h1>
-      <p>
-        AusHomeValue ranks suburbs with a <strong>Future Opportunity Index</strong> from 0 to 100.
-        It is a relative screening score built from available yield, affordability, supply, school,
-        infrastructure and confidence signals. It is not a price forecast and it does not claim a
-        future percentage gain.
-      </p>
+      <div class="opp-hero-copy">
+        <p class="opp-kicker">Future Opportunity Outlook</p>
+        <h1>Find the next suburb shortlist before the crowd does.</h1>
+        <p>
+          AusHomeValue ranks suburbs with a <strong>Future Opportunity Index</strong> from 0 to 100.
+          It is a relative screening score built from available yield, affordability, supply, school,
+          infrastructure and confidence signals. It is not a price forecast and it does not claim a
+          future percentage gain.
+        </p>
+      </div>
+      <figure class="opp-hero-image">
+        <img src="/assets/property-research/melbourne-opportunity-960.webp" width="960" height="720" alt="A Melbourne suburb viewed through the lens of property research" loading="eager" decoding="async">
+        <figcaption>Shortlist places with evidence, not promises.</figcaption>
+      </figure>
     </section>
 
     <section class="opp-funnel" aria-label="Opportunity funnel">
