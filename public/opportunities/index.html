@@ -342,6 +342,18 @@
       display: none !important;
     }
 
+    .opp-confidence-warning {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border: 1px solid #e5a94f;
+      border-radius: 10px;
+      background: #fff8e8;
+      color: #6d470b;
+      font-size: 0.86rem;
+      font-weight: 650;
+      line-height: 1.45;
+    }
+
     @media (min-width: 720px) {
       .opp-funnel {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -358,7 +370,6 @@
       .opp-grid.preview {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
-
       .opp-grid.results {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -505,7 +516,7 @@
     </section>
   </main>
 
-  <script src="/opportunity-gate.js"></script>
+  <script src="/opportunity-gate.js?v=20260812-ux-feedback"></script>
   <script>
     (function () {
       "use strict";
@@ -565,6 +576,11 @@
         if (n >= 70) return "High";
         if (n >= 45) return "Medium";
         return "Limited";
+      }
+
+      function hasLimitedEvidence(item) {
+        var label = confidenceLabel(item.confidence || item.confidenceScore).toLowerCase();
+        return label === "low" || label === "very low" || label === "limited" || label === "data unavailable";
       }
 
       function append(parent, tag, className, content) {
@@ -643,6 +659,15 @@
           confidenceLabel(item.confidence) +
           " | Updated: " +
           text(item.dataUpdated || item.updatedAt || item.dataAsOf, "Data unavailable");
+
+        if (displayScore !== null && displayScore >= 80 && hasLimitedEvidence(item)) {
+          append(
+            card,
+            "div",
+            "opp-confidence-warning",
+            "High relative score, limited evidence — do not treat this as a high-confidence recommendation. Verify recent sales, local demand and supply before acting."
+          );
+        }
 
         append(
           card,

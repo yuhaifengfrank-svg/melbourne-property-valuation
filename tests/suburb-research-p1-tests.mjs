@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 const read=p=>readFileSync(new URL(`../${p}`,import.meta.url),'utf8');
 const research=read('public/suburb-research.html'),researchJs=read('public/suburb-research.js'),validation=read('public/model-validation.html'),sample=read('public/sample-report.html'),home=read('public/index.html');
-test('research page compares up to three current API suburbs',()=>{assert.match(research,/maximum 3/i);assert.match(researchJs,/maxResults=200&strategy=balanced/);assert.match(researchJs,/state\.selected\.length>=3/)});
+test('research page compares up to three current API suburbs without blocking on a large suggestion list',()=>{assert.match(research,/maximum 3/i);assert.match(researchJs,/maxResults=60&strategy=balanced/);assert.match(researchJs,/Promise\.allSettled\(requested\.map\(fetchExact\)\)/);assert.match(researchJs,/state\.selected\.length>=3/)});
 test('research page can fetch an exact suburb outside the initial suggestions',()=>{assert.match(researchJs,/maxResults=1&strategy=balanced&suburb=/);assert.match(researchJs,/encodeURIComponent\(query\)/)});
 test('research page retains the existing Council suburb directory',()=>{assert.match(research,/\/council-suburb-directory\.html/);assert.match(read('public/council-suburb-directory.html'),/235个区域/)});
 test('research page separates House and Unit prices',()=>{assert.match(research,/data-type="house"/);assert.match(research,/data-type="unit"/);assert.match(researchJs,/medianHousePrice/);assert.match(researchJs,/medianUnitPrice/)});

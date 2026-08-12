@@ -32,8 +32,8 @@ test("homepage opportunity search gives immediate feedback while checking access
 });
 
 test("homepage cache-busts opportunity scripts so search fixes reach returning visitors", () => {
-  assert.match(homepage, /src="\/opportunity-gate\.js\?v=20260717-search-feedback"/);
-  assert.match(homepage, /src="\/app\.js\?v=20260717-outlook-evidence"/);
+  assert.match(homepage, /src="\/opportunity-gate\.js\?v=20260812-ux-feedback"/);
+  assert.match(homepage, /src="\/app\.js\?v=20260812-ux-feedback"/);
 });
 
 test("authenticated homepage search re-ranks with the currently selected filters", () => {

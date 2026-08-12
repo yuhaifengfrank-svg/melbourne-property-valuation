@@ -2173,8 +2173,16 @@ function renderValuation(data) {
 
 function setTexts(items) {
   Object.entries(items).forEach(([selector, text]) => {
-    const element = document.querySelector(selector);
-    if (element) element.textContent = text;
+    document.querySelectorAll(selector).forEach((element) => {
+      element.textContent = text;
+    });
+  });
+}
+
+function syncBilingualVisibility() {
+  const activeLanguage = language === "zh" ? "zh" : "en";
+  document.querySelectorAll('[lang="en"], [lang="zh"]').forEach((element) => {
+    element.hidden = element.getAttribute("lang") !== activeLanguage;
   });
 }
 
@@ -2202,6 +2210,7 @@ function applyLanguage() {
   document.body.classList.toggle("zh-mode", language === "zh");
   byId("language-toggle").textContent = text.toggle;
   setTexts(text.selectors);
+  syncBilingualVisibility();
   setCollectionText(".checklist li", labels.checkItems);
   setCollectionText(".chip", labels.chips);
   setCollectionText("th", labels.tableHeaders);
@@ -3900,6 +3909,7 @@ setTimeout(loadHomeOpportunities, 100);
 const oppSearchBtn = document.getElementById("opp-search-btn");
 const oppResults = document.getElementById("opp-results");
 const oppLoading = document.getElementById("opp-loading");
+const oppHint = document.querySelector(".opp-hint");
 
 /**
  * Render personalised Top 10 cards.
@@ -3968,6 +3978,11 @@ async function runOpportunityScan() {
   if (window.opportunityGate) {
     oppLoading.classList.remove("hidden");
     oppLoading.textContent = language === "zh" ? "正在检查访问权限……" : "Checking access…";
+    if (oppHint) {
+      oppHint.textContent = language === "zh"
+        ? "正在打开免费个性化排名表单……"
+        : "Opening the free personalised ranking form…";
+    }
     oppSearchBtn.disabled = true;
     const strategy = document.getElementById("opp-strategy").value;
     const ptype = document.getElementById("opp-type").value;
@@ -3992,7 +4007,14 @@ async function runOpportunityScan() {
     });
     oppLoading.classList.add("hidden");
     oppSearchBtn.disabled = false;
-    if (gateResult && gateResult.gateShown) return;
+    if (gateResult && gateResult.gateShown) {
+      if (oppHint) {
+        oppHint.textContent = language === "zh"
+          ? "表单已打开。填写邮箱和偏好后即可生成个性化 Top 10。"
+          : "Form opened. Enter your email and preferences to generate a personalised Top 10.";
+      }
+      return;
+    }
   }
 
   // Already authenticated — fetch personalised top 10 using the filters that are

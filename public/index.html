@@ -184,6 +184,10 @@ nav a:hover {
   z-index: 30;
 }
 
+.more-menu:not([open]) .more-menu-panel {
+  display: none;
+}
+
 .more-menu-panel a {
   color: var(--ink);
   justify-content: flex-start;
@@ -3424,7 +3428,7 @@ body:not(.valuation-started) #valuation .layout {
             <div class="filter-actions">
               <button id="opp-search-btn" type="button" data-i18n="opp-search-btn">Search opportunities</button>
               <span class="opp-loading hidden" id="opp-loading">Scanning database...</span>
-              <span class="opp-hint" data-i18n="opp-placeholder">Adjust filters and click "Search opportunities" to see ranked results.</span>
+              <span class="opp-hint" role="status" aria-live="polite" data-i18n="opp-placeholder">Adjust filters and click "Search opportunities" to see ranked results.</span>
             </div>
           </div>
           <!-- ── HOME PAGE TOP OPPORTUNITIES SNIPPET (loaded dynamically by app.js) ── -->
@@ -3574,10 +3578,10 @@ body:not(.valuation-started) #valuation .layout {
       </div>
     </footer>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    <script src="/opportunity-gate.js?v=20260717-search-feedback"></script>
+    <script src="/opportunity-gate.js?v=20260812-ux-feedback"></script>
     <script src="/trust-layer.js"></script>
     <script src="/site-stats.js"></script>
-    <script src="/app.js?v=20260717-outlook-evidence"></script>
+    <script src="/app.js?v=20260812-ux-feedback"></script>
   <!-- hidden fallback elements for JS safety (app.js byId references) -->
   <div id="check-status" class="hidden"></div>
   <div id="market-crosscheck-title" class="hidden"></div>
