@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 72" role="img" aria-labelledby="title desc">
+  <title id="title">AusHomeValue</title>
+  <desc id="desc">Property opportunity intelligence</desc>
+  <g transform="translate(4 4)">
+    <rect width="64" height="64" rx="16" fill="#0b342a" stroke="#4f796e"/>
+    <path d="M13 31.5 32 16l19 15.5" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M19 30v18h26V30" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/>
+    <path d="m22 39 8 7 13-17" fill="none" stroke="#f09a67" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="43" cy="29" r="3" fill="#ffc19a"/>
+  </g>
+  <text x="84" y="37" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="800" letter-spacing="-.7">AusHomeValue</text>
+  <text x="85" y="57" fill="#c9ded6" font-family="Inter,Arial,sans-serif" font-size="11" font-weight="700" letter-spacing="1.45">PROPERTY OPPORTUNITY INTELLIGENCE</text>
+</svg>
