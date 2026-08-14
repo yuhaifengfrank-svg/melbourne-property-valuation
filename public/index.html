@@ -83,12 +83,24 @@ input {
   gap: 8px;
 }
 @media (max-width: 720px) {
-  .topbar-row { gap: 12px; }
+  .topbar { padding: 10px 12px 8px; }
+  .topbar .topbar-row {
+    display: grid;
+    gap: 8px 10px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    width: 100%;
+  }
   .topbar .header-left { min-width: 0; }
-  .topbar .header-left h1 { font-size: 20px; }
-  .topbar .header-left .eyebrow { font-size: 0.65rem; }
-  .topbar .header-right { display: flex; align-items: center; gap: 6px; }
-  .language-toggle { margin-left: 0; }
+  .topbar .header-left .eyebrow { display: none; }
+  .topbar .header-right {
+    align-items: center;
+    display: flex;
+    gap: 6px;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+  .language-toggle { margin-left: 0; min-height: 40px; padding: 8px 10px; }
 }
 
 .topbar {
@@ -121,7 +133,7 @@ input {
 
 @media (max-width: 720px) {
   .primary-brand { min-height: 40px; }
-  .primary-brand img { height: auto; width: 190px; }
+  .primary-brand img { height: auto; width: min(180px, 48vw); }
 }
 
 nav {
@@ -1827,31 +1839,39 @@ th {
 }
 
 @media (max-width: 720px) {
-  .topbar {
-    position: relative;
-  }
-  .topbar-row {
-    flex-wrap: wrap;
-  }
-  .topbar-nav {
+  .topbar { position: relative; }
+  .topbar .topbar-nav {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    flex-wrap: nowrap;
+    gap: 4px;
+    justify-content: flex-start;
+    margin: 0 -2px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    padding: 2px 2px 4px;
+    scrollbar-width: none;
     width: 100%;
   }
-  .topbar-nav a,
-  .more-menu summary {
-    flex: 1 1 auto;
+  .topbar .topbar-nav::-webkit-scrollbar { display: none; }
+  .topbar .topbar-nav a,
+  .topbar .more-menu summary {
+    flex: 0 0 auto;
+    font-size: 0.84rem;
     justify-content: center;
+    min-height: 40px;
+    padding: 8px 9px;
+    white-space: nowrap;
   }
   .more-menu {
-    flex: 1 1 auto;
+    flex: 0 0 auto;
   }
   .more-menu-panel {
     left: 0;
     right: 0;
     width: min(92vw, 360px);
   }
-  .topbar-nav .nav-suburb-research {
-    flex: 1 1 42%;
-  }
+  .topbar-nav .nav-suburb-research { flex: 0 0 auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {
