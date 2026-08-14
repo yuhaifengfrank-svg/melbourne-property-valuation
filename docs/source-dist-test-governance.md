@@ -1,5 +1,7 @@
 # Source, generated output, and test governance baseline
 
+> Historical PR A baseline. PR B implementation and current policy are recorded in `docs/canonical-source-migration.md`.
+
 ## Scope and baseline
 
 - Production baseline: `3a2cb8a4e95534fc24ae7d7b70af8aa332808568`

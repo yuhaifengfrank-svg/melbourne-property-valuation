@@ -22,7 +22,7 @@ describe("P0: 阻断问题", () => {
   it("app.js 语法正确", async () => {
     // 实际检查子进程语法
     const { execSync } = await import("node:child_process");
-    const result = execSync("node --check app.js 2>&1 || echo syntax-error", { encoding: "utf8" });
+    const result = execSync("node --check public/app.js 2>&1 || echo syntax-error", { encoding: "utf8" });
     assert.equal(result.trim(), "", `app.js syntax error: ${result}`);
   });
 
@@ -336,7 +336,7 @@ describe("P2: 核验规则", () => {
 
 describe("P2: 上传文件不自动调整估值", () => {
   it("上传4个文件不能自动变成High", () => {
-    const appJs = execSync("cat app.js", { encoding: "utf8" });
+    const appJs = execSync("cat public/app.js", { encoding: "utf8" });
     const hasAutoHigh = /completeness\s*>=\s*4/.test(appJs) && /"High"/.test(appJs);
     const hasHasPositiveCondition = /hasPositiveCondition/.test(appJs);
     const hasHasQuietStreet = /hasQuietStreet/.test(appJs);
@@ -346,7 +346,7 @@ describe("P2: 上传文件不自动调整估值", () => {
   });
 
   it("上传含renovated/quiet street关键词不改变估值", () => {
-    const appJs = execSync("cat app.js", { encoding: "utf8" });
+    const appJs = execSync("cat public/app.js", { encoding: "utf8" });
     // 检查函数体：如果 adjustedMidpoint 出现在计算语句而非参数定义中，就是旧版
     // 函数定义中含 _adjustedMidpoint（unused prefix）是预期的新版签名
     // 但如果有 completion >= 4 或 hasPositiveCondition 等调整逻辑，就还有问题
@@ -610,12 +610,12 @@ function mapCustomerDataStatus(obj) {
 
 describe("P4: 前端代码契约检查", () => {
   it("app.js comparables 包含 saleDate 列", () => {
-    const appJs = fs.readFileSync("app.js", "utf8");
+    const appJs = fs.readFileSync("public/app.js", "utf8");
     assert.ok(appJs.includes("c.saleDate"), "comparables map must include c.saleDate");
   });
 
   it("app.js 不包含旧字段引用", () => {
-    const appJs = fs.readFileSync("app.js", "utf8");
+    const appJs = fs.readFileSync("public/app.js", "utf8");
     const forbidden = ["evidenceMode", "isFallback", "adjustedPrice", "qualityBand", "qualityScore"];
     for (const f of forbidden) {
       assert.ok(!appJs.includes(f), `app.js must not contain "${f}"`);
@@ -623,13 +623,13 @@ describe("P4: 前端代码契约检查", () => {
   });
 
   it("app.js 使用 customerDataStatus 默认 unavailable", () => {
-    const appJs = fs.readFileSync("app.js", "utf8");
+    const appJs = fs.readFileSync("public/app.js", "utf8");
     assert.ok(appJs.includes("customerDataStatus || \"unavailable\""),
       "parseValuationResponse should default to unavailable");
   });
 
   it("index.html 表头 8 列齐全", () => {
-    const html = fs.readFileSync("index.html", "utf8");
+    const html = fs.readFileSync("public/index.html", "utf8");
     const headers = ["Address", "Price", "Date", "Distance", "Bed", "Bath", "Car", "Land"];
     for (const h of headers) {
       assert.ok(html.includes(`<th>${h}</th>`), `table header missing: ${h}`);
@@ -637,7 +637,7 @@ describe("P4: 前端代码契约检查", () => {
   });
 
   it("app.js 渲染标签不含旧误导文字", () => {
-    const appJs = fs.readFileSync("app.js", "utf8");
+    const appJs = fs.readFileSync("public/app.js", "utf8");
     assert.ok(!appJs.includes("\u5b9e\u65f6\u6570\u636e\u9a8c\u8bc1"), "must not contain old text");
     assert.ok(!appJs.includes("Live data verified"), "must not contain old text");
     assert.ok(appJs.includes("\u57fa\u4e8e\u6709\u9650\u5e02\u573a\u8bc1\u636e\u7684\u521d\u6b65\u4f30\u503c"),
@@ -692,21 +692,21 @@ describe("P4: 前端代码契约检查", () => {
   });
 
   it("API payload: suburb 和 state 单独传参", () => {
-    const appJs = fs.readFileSync("app.js", "utf8");
+    const appJs = fs.readFileSync("public/app.js", "utf8");
     assert.ok(appJs.includes("suburb: normalizedSuburb"), "API payload must have suburb");
     assert.ok(appJs.includes("state: resolvedState"), "API payload must have state");
   });
 
   it("页面最终地址: renderValuation 用 data.address 显示", () => {
-    const appJs = fs.readFileSync("app.js", "utf8");
+    const appJs = fs.readFileSync("public/app.js", "utf8");
     assert.ok(appJs.includes("property-address") && appJs.includes("data.address"),
       "page title uses full data.address with suburb");
   });
 
 it("地址输入框初始为空（无默认值）", () => {
-    const html = fs.readFileSync("index.html", "utf8");
+    const html = fs.readFileSync("public/index.html", "utf8");
     assert.ok(!html.match(/<input[^>]*id="address"[^>]*value=/), "input#address must not have value attribute");
-    const appJs = fs.readFileSync("app.js", "utf8");
+    const appJs = fs.readFileSync("public/app.js", "utf8");
     assert.ok(appJs.includes("byId(\"address\").value = \"\""), "app.js must clear address.value on DOMContentLoaded");
     assert.ok(!html.includes("McIntosh"), "placeholder must not contain McIntosh");
   });
@@ -715,7 +715,7 @@ it("地址输入框初始为空（无默认值）", () => {
 // ── P4 测试辅助函数 ──
 /** 为 buildEnteredAddress 测试创建 VM 沙箱 */
 function addressSandbox({ address = "", suburb = "", state = "VIC" } = {}) {
-  const appCode = fs.readFileSync("app.js", "utf8");
+  const appCode = fs.readFileSync("public/app.js", "utf8");
 
   // Extract all needed functions
   const fns = ["buildEnteredAddress", "suburbFromAddress", "looksLikeStreetOnly",

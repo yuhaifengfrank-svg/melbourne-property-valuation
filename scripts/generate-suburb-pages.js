@@ -5,7 +5,7 @@
  * + /opportunities/ index pages.
  *
  * Run: node scripts/generate-suburb-pages.js [--limit=230]
- * Output: dist/opportunities/  and  dist/suburb/
+ * Output: tmp/legacy-suburb-pages/opportunities/ and tmp/legacy-suburb-pages/suburb/
  */
 
 import { neon } from '@neondatabase/serverless';
@@ -13,7 +13,7 @@ import fs from 'fs';
 import path from 'path';
 
 const sql = neon(process.env.DATABASE_URL, { fetchOptions: { cache: 'no-store' } });
-const OUT = 'dist';
+const OUT = 'tmp/legacy-suburb-pages';
 
 function slug(suburb, state) {
   return `${suburb.toLowerCase().replace(/\s+/g, '-')}-${(state || 'vic').toLowerCase()}`;

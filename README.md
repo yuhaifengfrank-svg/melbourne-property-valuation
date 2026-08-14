@@ -28,13 +28,13 @@ The current market-source cross-check module generates a weighted public evidenc
 
 This repository contains a static client interface plus a Vercel serverless lead-capture API:
 
-- `index.html`: client UI
-- `styles.css`: visual styling
-- `app.js`: curated public-evidence records and interactive behavior
+- `public/index.html`: canonical client UI
+- `public/styles.css`: canonical visual styling
+- `public/app.js`: canonical curated public-evidence records and interactive behavior
 - `api/leads.js`: PostgreSQL-backed lead capture and admin API
-- `admin.html`: private lead analysis dashboard
+- `public/admin.html`: private lead analysis dashboard
 
-Open `index.html` in a browser to run the prototype locally.
+Run `node dev-server.mjs` and open `http://127.0.0.1:3000` to use the canonical `public/` client locally.
 
 ## Deployment Environment
 

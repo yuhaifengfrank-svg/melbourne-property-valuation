@@ -16,7 +16,7 @@ test("published site statistics cannot regress below verified minimums", () => {
 });
 
 test("homepage uses the single site-stats source and contains no legacy claims", () => {
-  for (const file of ["index.html", "public/index.html"]) {
+  for (const file of ["public/index.html"]) {
     const html = read(file);
     assert.match(html, /data-site-stat="comparableSales"/);
     assert.match(html, /data-site-stat="schoolsMapped"/);

@@ -4,15 +4,23 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { compareTrees, formatReport } from "../scripts/verify-generated.mjs";
+import {
+  FORBIDDEN_ROOT_STATIC,
+  REQUIRED_PUBLIC_ENTRIES,
+  formatReport,
+  inspectCanonicalSource,
+} from "../scripts/verify-generated.mjs";
 
 function fixture() {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), "ahv-generated-"));
-  const left = path.join(root, "left");
-  const right = path.join(root, "right");
-  fs.mkdirSync(left);
-  fs.mkdirSync(right);
-  return { root, left, right };
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), "ahv-canonical-source-"));
+  for (const relative of REQUIRED_PUBLIC_ENTRIES) write(root, relative, "fixture");
+  write(root, "dev-server.mjs", [
+    "const PUBLIC_DIR = path.join(__dirname, \"public\");",
+    "app.use(express.static(PUBLIC_DIR));",
+  ].join("\n"));
+  write(root, "scripts/generate-suburb-pages.js", "const OUT = 'tmp/legacy-suburb-pages';");
+  write(root, "scripts/generate-ai-pages.js", "const OUT = 'tmp/legacy-suburb-pages';");
+  return root;
 }
 
 function write(root, relative, content) {
@@ -21,43 +29,43 @@ function write(root, relative, content) {
   fs.writeFileSync(target, content);
 }
 
-test("identical generated trees report no drift", (t) => {
-  const dirs = fixture();
-  t.after(() => fs.rmSync(dirs.root, { recursive: true, force: true }));
-  write(dirs.left, "suburb/example.html", "same");
-  write(dirs.right, "suburb/example.html", "same");
-  const result = compareTrees(dirs.left, dirs.right);
-  assert.equal(result.drift, 0);
-  assert.equal(result.counts.identical, 1);
+test("canonical public-only fixture passes", (t) => {
+  const root = fixture();
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  assert.deepEqual(inspectCanonicalSource(root), []);
 });
 
-test("content differences are reported with hashes", (t) => {
-  const dirs = fixture();
-  t.after(() => fs.rmSync(dirs.root, { recursive: true, force: true }));
-  write(dirs.left, "page.html", "legacy");
-  write(dirs.right, "page.html", "deployed");
-  const result = compareTrees(dirs.left, dirs.right);
-  assert.equal(result.drift, 1);
-  assert.equal(result.entries[0].status, "different");
-  assert.notEqual(result.entries[0].leftHash, result.entries[0].rightHash);
+test("tracked-style dist output is rejected", (t) => {
+  const root = fixture();
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  write(root, "dist/index.html", "generated");
+  assert.match(inspectCanonicalSource(root).join("\n"), /dist\/ exists/);
 });
 
-test("missing and additional files are both visible", (t) => {
-  const dirs = fixture();
-  t.after(() => fs.rmSync(dirs.root, { recursive: true, force: true }));
-  write(dirs.left, "left.html", "left");
-  write(dirs.right, "right.html", "right");
-  const result = compareTrees(dirs.left, dirs.right);
-  assert.deepEqual(result.counts, { identical: 0, different: 0, "left-only": 1, "right-only": 1 });
-  assert.match(formatReport(result, { leftLabel: "left", rightLabel: "right" }), /left-only\tleft\.html/);
-  assert.match(formatReport(result, { leftLabel: "left", rightLabel: "right" }), /right-only\tright\.html/);
+test("every former root duplicate is rejected", (t) => {
+  const root = fixture();
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  for (const relative of FORBIDDEN_ROOT_STATIC) write(root, relative, "duplicate");
+  const violations = inspectCanonicalSource(root);
+  for (const relative of FORBIDDEN_ROOT_STATIC) {
+    assert.ok(violations.some((violation) => violation.startsWith(relative)), relative);
+  }
 });
 
-test("build-generated version metadata is the only default exclusion", (t) => {
-  const dirs = fixture();
-  t.after(() => fs.rmSync(dirs.root, { recursive: true, force: true }));
-  write(dirs.right, "version.json", '{"commit":"runtime"}');
-  const result = compareTrees(dirs.left, dirs.right);
-  assert.equal(result.drift, 0);
-  assert.equal(result.entries.length, 0);
+test("missing canonical entries and a non-public dev server are rejected", (t) => {
+  const root = fixture();
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  fs.rmSync(path.join(root, "public/index.html"));
+  write(root, "dev-server.mjs", "app.use(express.static(__dirname));");
+  const report = formatReport(inspectCanonicalSource(root));
+  assert.match(report, /public\/index\.html is missing/);
+  assert.match(report, /does not define public\/ as its static root/);
+  assert.match(report, /does not serve the canonical PUBLIC_DIR/);
+});
+
+test("legacy generators cannot write to dist", (t) => {
+  const root = fixture();
+  t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  write(root, "scripts/generate-ai-pages.js", "const OUT = 'dist';");
+  assert.match(inspectCanonicalSource(root).join("\n"), /generate-ai-pages\.js still writes to tracked dist/);
 });
